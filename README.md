@@ -2,6 +2,9 @@
 
 An attempt to bring full featured Go support to Vim.
 
+## Features
+
+* Auto go fmt on save
 
 
 ## Install

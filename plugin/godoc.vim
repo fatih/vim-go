@@ -31,7 +31,7 @@ if !exists('g:go_godoc_commands')
 endif
 
 if g:go_godoc_commands
-  command! -nargs=* -range -complete=customlist,go#complete#Package Godoc :call s:Godoc(<f-args>)
+  command! -nargs=* -range -complete=customlist,go#package#Package Godoc :call s:Godoc(<f-args>)
 endif
 
 nnoremap <silent> <Plug>(godoc-keyword) :<C-u>call <SID>Godoc('')<CR>
