@@ -22,6 +22,10 @@
 "
 "       Flag naming the gofmt executable to use.
 "
+"   g:go_fmt_autosave [default=1]
+"
+"       Flag to auto call :Fmt when saved file
+"
 if exists("b:did_ftplugin_go_fmt")
     finish
 endif
@@ -34,9 +38,18 @@ if !exists("g:gofmt_command")
     let g:gofmt_command = "gofmt"
 endif
 
+if !exists('g:go_fmt_autosave')
+    let g:go_fmt_autosave = 1
+endif
+
+if g:go_fmt_autosave
+    autocmd BufWritePre <buffer> :Fmt 
+endif
+
 if g:go_fmt_commands
     command! -buffer Fmt call s:GoFormat()
 endif
+
 
 function! s:GoFormat()
     let view = winsaveview()
