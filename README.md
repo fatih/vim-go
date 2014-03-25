@@ -8,8 +8,9 @@ automatically. Open an issue for bugs/improvements.
 
 * Syntax highlighting
 * Auto go fmt on save
+* Go to symbol/declaration with godef
 * Automatically import packages with goimports
-* Autocomplete with `<C-x><C-o>` (omnicomplete)
+* Autocomplete with `<C-x><C-o>` (gocode omnicomplete)
 
 ## Install
 
