@@ -1,8 +1,8 @@
 # go.vim
 
-# ** WIP, do not use it until it's finished. **
-
-An attempt to bring full featured Go support to Vim. All necessary binaries are installed once at startup (can be disabled if path is provided, see [#Customize]()).
+An attempt to bring full featured Go support to Vim. All necessary binaries are
+installed once at startup (can be disabled if path is provided, see
+[#Customize]()).
 
 
 ## Features
@@ -18,6 +18,16 @@ If you use pathogen, just clone it into your bundle directory:
 ```bash
 $ cd ~/.vim/bundle
 $ git clone git://github.com/fatih/go.vim.git
+```
+
+Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
+completion (completion by type) install YCM:
+
+```bash
+$ cd ~/.vim/bundle
+$ git clone git@github.com:Valloric/YouCompleteMe.git
+$ cd YouCompleteMe
+$ ./install.sh
 ```
 
 ## Customize
