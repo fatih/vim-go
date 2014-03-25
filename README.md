@@ -41,10 +41,9 @@ Disable goimports
 
     let g:gofmt_command = "gofmt"
 
-Change gocode path, disables automatic installing of goimports
-
-    let g:goimports_bin="~/your/custom/goimports/path"
-
-Change gocode path, disables automatic installing of gocode
+Change binary paths. It also disables automatic installing.
 
     let g:gocode_bin="~/your/custom/gocode/path"
+    let g:goimports_bin="~/your/custom/goimports/path"
+    let g:godef_bin="~/your/custom/godef/path"
+    let g:oracle_bin="~/your/custom/godef/path"
