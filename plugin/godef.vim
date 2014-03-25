@@ -1,7 +1,3 @@
-if !exists("g:godef_command")
-    let g:godef_command = "godef"
-endif
-
 if !exists("g:godef_split")
     let g:godef_split = 1
 endif
@@ -25,7 +21,7 @@ function! GodefUnderCursor()
 endfunction
 
 function! Godef(arg)
-    let out=system(g:godef_command . " -f=" . expand("%:p") . " -i " . shellescape(a:arg), join(getbufline(bufnr('%'), 1, '$'), "\n"))
+    let out=system(g:godef_bin . " -f=" . expand("%:p") . " -i " . shellescape(a:arg), join(getbufline(bufnr('%'), 1, '$'), "\n"))
 
     let old_errorformat = &errorformat
     let &errorformat = "%f:%l:%c"

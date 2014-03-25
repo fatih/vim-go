@@ -41,7 +41,6 @@ if !filereadable(g:godef_bin)
   execute "!go get -u -v ".shellescape(import_path)
 endif
 
-
 " install oracle if not available
 if !exists("g:oracle_bin")
     let g:oracle_bin = expand("$HOME/.vim/bundle/go.vim/binary/oracle")
@@ -53,3 +52,16 @@ if !filereadable(g:oracle_bin)
   echom "Installing oracle  ..."
   execute "!go get -u -v ".shellescape(import_path)
 endif
+
+" install golint if not available
+if !exists("g:golint_bin")
+    let g:golint_bin = expand("$HOME/.vim/bundle/go.vim/binary/golint")
+endif
+
+if !filereadable(g:golint_bin)
+  let import_path = "github.com/golang/lint/golint"
+  let $GOBIN = expand("$HOME/.vim/bundle/go.vim/binary/")
+  echom "Installing golint  ..."
+  execute "!go get -u -v ".shellescape(import_path)
+endif
+
