@@ -9,6 +9,7 @@ installed once at startup (can be disabled if path is provided, see
 
 * Syntax highlighting
 * Auto go fmt on save
+* Automatically import packages with goimports
 * Autocomplete with `<C-x><C-o>` (omnicomplete)
 
 ## Install
@@ -34,9 +35,15 @@ $ ./install.sh
 
 ```vimrc
 " disable auto go fmt on save
-let g:go_fmt_autosave=0
+let g:go_fmt_autosave = 0
+
+" disable goimports
+let g:gofmt_command = "gofmt"
+
+" change gocode path, disables automatic installing of goimports
+let g:goimports_bin="~/your/custom/goimports/path"
 
 " change gocode path, disables automatic installing of gocode
-let g:gocode_bin="~/custom/path"
+let g:gocode_bin="~/your/custom/gocode/path"
 
 ```
