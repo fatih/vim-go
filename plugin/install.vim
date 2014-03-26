@@ -4,8 +4,8 @@ if exists("g:loaded_install")
 endif
 let g:loaded_install = 1
 
-
 let g:bin_path = expand("$HOME/.vim-go/")
+let $GOBIN = g:bin_path
 
 
 " install gocode if not available
@@ -15,8 +15,6 @@ endif
 
 if !filereadable(g:gocode_bin)
   let import_path = "github.com/nsf/gocode"
-  let $GOBIN = g:bin_path
-  echom "Installing gocode ..."
   execute "!go get -u -v ".shellescape(import_path)
 endif
 
@@ -27,8 +25,6 @@ endif
 
 if !filereadable(g:goimports_bin)
   let import_path = "code.google.com/p/go.tools/cmd/goimports"
-  let $GOBIN = g:bin_path
-  echom "Installing goimports ..."
   execute "!go get -u -v ".shellescape(import_path)
 endif
 
@@ -40,8 +36,6 @@ endif
 
 if !filereadable(g:godef_bin)
   let import_path = "code.google.com/p/rog-go/exp/cmd/godef"
-  let $GOBIN = g:bin_path
-  echom "Installing godef ..."
   execute "!go get -u -v ".shellescape(import_path)
 endif
 
@@ -52,8 +46,6 @@ endif
 
 if !filereadable(g:oracle_bin)
   let import_path = "code.google.com/p/go.tools/cmd/oracle"
-  let $GOBIN = g:bin_path
-  echom "Installing oracle  ..."
   execute "!go get -u -v ".shellescape(import_path)
 endif
 
@@ -64,8 +56,6 @@ endif
 
 if !filereadable(g:golint_bin)
   let import_path = "github.com/golang/lint/golint"
-  let $GOBIN = g:bin_path
-  echom "Installing golint  ..."
   execute "!go get -u -v ".shellescape(import_path)
 endif
 
