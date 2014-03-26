@@ -1,5 +1,7 @@
 # vim-go
 
+** WIP, use with cautious until it's released **
+
 An attempt to bring full featured Go support to Vim. This is a single pathogen
 package to be easily installed. Do not use it with any other vim go plugin.
 
@@ -80,14 +82,17 @@ Build your package
 
 ## Settings
 
-
 Disable auto go fmt on save
 
-    let g:go_fmt_autosave = 0
+```vim
+let g:go_fmt_autosave = 0
+```
 
 Disable goimports and use gofmt instead of
 
-    let g:gofmt_command = "gofmt"
+```vim
+let g:gofmt_command = "gofmt"
+```
 
 By default binaries are installed to `$HOME/.vim-go/`. To change it:
 
@@ -96,14 +101,15 @@ let g:bin_path = expand("~/.mypath")
 let g:bin_path = "/home/fatih/.mypath"      "or give relative path
 ```
 
-
 Change binary paths. It also disables automatic installing for the given package.
 
-    let g:gocode_bin="~/your/custom/gocode/path"
-    let g:goimports_bin="~/your/custom/goimports/path"
-    let g:godef_bin="~/your/custom/godef/path"
-    let g:oracle_bin="~/your/custom/godef/path"
-    let g:lint_bin="~/your/custom/lint/path"
+```vim
+let g:gocode_bin="~/your/custom/gocode/path"
+let g:goimports_bin="~/your/custom/goimports/path"
+let g:godef_bin="~/your/custom/godef/path"
+let g:oracle_bin="~/your/custom/godef/path"
+let g:lint_bin="~/your/custom/lint/path"
+```
 
 ## Credits
 
