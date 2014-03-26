@@ -18,10 +18,10 @@ save)
 
 * Syntax highlighting
 * Auto go fmt on save
-* Go to symbol/declaration 
-* Automatically import packages 
+* Go to symbol/declaration
+* Automatically import packages
 * Autocomplete with `<C-x><C-o>` (omnicomplete)
-* Compile and build package 
+* Compile and build package
 * Lint your code
 * Advanced source analysis tool with oracle
 
@@ -78,7 +78,8 @@ Build your package
 
 	:make
 
-## Customize
+## Settings
+
 
 Disable auto go fmt on save
 
@@ -88,7 +89,8 @@ Disable goimports and use gofmt instead of
 
     let g:gofmt_command = "gofmt"
 
-Change binary paths. It also disables automatic installing.
+By default binaries are installed to `$HOME/.vim-go/`.
+Change binary paths. It also disables automatic installing for the given package.
 
     let g:gocode_bin="~/your/custom/gocode/path"
     let g:goimports_bin="~/your/custom/goimports/path"
