@@ -1,3 +1,8 @@
+if exists("g:go_loaded_godef")
+  finish
+endif
+let g:go_loaded_godef = 1
+
 " modified and improved version of vim-godef
 function! Godef(...)
     if !len(a:000)
