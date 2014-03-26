@@ -108,14 +108,14 @@ let g:go_oracle_bin="~/your/custom/godef/path"
 let g:go_lint_bin="~/your/custom/lint/path"
 ```
 
-## Why another plugin ?
+## Why another plugin?
 
 This plugin/package is born mainly by frustrating. I had to re-install my Vim
 plugins and especially for Go I had to install a lot of seperate different
 plugins, setup the necessary binaries to make them work together and hope not
 to lose them again. Also lot's of the plugins lacks of proper settings. This
-plugin is improved in every way and is used by me for months. Use it and decide
-your self.
+plugin is improved in every way and is used by me for months. Use it and give
+it a try. I hope you like it. If not, feel free to contribute to the project.
 
 ## Credits
 
