@@ -89,7 +89,14 @@ Disable goimports and use gofmt instead of
 
     let g:gofmt_command = "gofmt"
 
-By default binaries are installed to `$HOME/.vim-go/`.
+By default binaries are installed to `$HOME/.vim-go/`. To change it:
+
+```vim
+let g:bin_path = expand("~/.mypath")
+let g:bin_path = "/home/fatih/.mypath"      "or give relative path
+```
+
+
 Change binary paths. It also disables automatic installing for the given package.
 
     let g:gocode_bin="~/your/custom/gocode/path"
