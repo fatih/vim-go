@@ -4,7 +4,10 @@ if exists("g:loaded_install")
 endif
 let g:loaded_install = 1
 
-let g:bin_path = expand("$HOME/.vim-go/")
+if !exists("g:bin_path")
+    let g:bin_path = expand("$HOME/.vim-go/")
+endif
+
 let $GOBIN = g:bin_path
 
 let packages = ["github.com/nsf/gocode", "code.google.com/p/go.tools/cmd/goimports", "code.google.com/p/go.tools/cmd/goimports", "code.google.com/p/rog-go/exp/cmd/godef", "code.google.com/p/go.tools/cmd/oracle", "github.com/golang/lint/golint"]
