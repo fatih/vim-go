@@ -1,6 +1,6 @@
 # Snippets for Go
 
-priority -50
+priority -10
 
 # when to abbriviate and when not?
 # b doesn't work here, because it ignores whitespace
@@ -126,6 +126,38 @@ endsnippet
 
 snippet json "JSON field"
 \`json:"${1:displayName}"\`
+endsnippet
+
+
+snippet err "Error statement" !b
+if err != nil {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet errn "Error return " !b
+if err != nil {
+	return err
+}
+${0}
+endsnippet
+
+snippet ok "OK statement" !b
+if !ok {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet gof "Anonymous Goroutine" !b
+go func() {
+	${1}
+}()
+endsnippet
+
+snippet def "Anonymous Defer" !b
+defer func() {
+	${1}
+}()
 endsnippet
 
 # vim:ft=snippets:
