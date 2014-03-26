@@ -15,8 +15,6 @@
 " - reject buffers with no filename.
 " - hide all filenames in quickfix buffer.
 
-let s:go_oracle = g:oracle_bin
-
 func! s:qflist(output)
   let qflist = []
   " Parse GNU-style 'file:line.col-line.col: message' format.
@@ -59,12 +57,12 @@ func! s:RunOracle(mode, selected) range abort
     let pos1 = s:getpos(line("'<"), col("'<"))
     let pos2 = s:getpos(line("'>"), col("'>"))
     let cmd = printf('%s -pos=%s:#%d,#%d %s %s',
-      \  s:go_oracle,
+      \  g:go_oracle_bin,
       \  shellescape(fname), pos1, pos2, a:mode, shellescape(sname))
   else
     let pos = s:getpos(line('.'), col('.'))
     let cmd = printf('%s -pos=%s:#%d %s %s',
-      \  s:go_oracle,
+      \  g:go_oracle_bin,
       \  shellescape(fname), pos, a:mode, shellescape(sname))
   endif
   call s:qflist(system(cmd))

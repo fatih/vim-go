@@ -42,7 +42,7 @@ fu! s:gocodeCommand(cmd, preargs, args)
   for i in range(0, len(a:preargs) - 1)
     let a:preargs[i] = s:gocodeShellescape(a:preargs[i])
   endfor
-  let result = s:system(printf('%s %s %s %s', g:gocode_bin, join(a:preargs), a:cmd, join(a:args)))
+  let result = s:system(printf('%s %s %s %s', g:go_gocode_bin, join(a:preargs), a:cmd, join(a:args)))
   if v:shell_error != 0
     return "[\"0\", []]"
   else

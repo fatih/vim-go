@@ -34,8 +34,8 @@ if !exists("g:go_fmt_commands")
     let g:go_fmt_commands = 1
 endif
 
-if !exists("g:gofmt_command")
-    let g:gofmt_command = "goimports"
+if !exists("g:go_fmt_command")
+    let g:go_fmt_command = "goimports"
 endif
 
 if !exists('g:go_fmt_autosave')
@@ -53,7 +53,7 @@ endif
 
 function! s:GoFormat()
     let view = winsaveview()
-    silent execute "%!" . g:gofmt_command
+    silent execute "%!" . g:go_fmt_command
     if v:shell_error
         let errors = []
         for line in getline(1, line('$'))

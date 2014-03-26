@@ -91,24 +91,24 @@ let g:go_fmt_autosave = 0
 Disable goimports and use gofmt instead of
 
 ```vim
-let g:gofmt_command = "gofmt"
+let g:go_fmt_command = "gofmt"
 ```
 
 By default binaries are installed to `$HOME/.vim-go/`. To change it:
 
 ```vim
-let g:bin_path = expand("~/.mypath")
-let g:bin_path = "/home/fatih/.mypath"      "or give relative path
+let g:go_bin_path = expand("~/.mypath")
+let g:go_bin_path = "/home/fatih/.mypath"      "or give relative path
 ```
 
-Change binary paths. It also disables automatic installing for the given package.
+Change individual binary paths, this also disables automatic installing for the given package.
 
 ```vim
-let g:gocode_bin="~/your/custom/gocode/path"
-let g:goimports_bin="~/your/custom/goimports/path"
-let g:godef_bin="~/your/custom/godef/path"
-let g:oracle_bin="~/your/custom/godef/path"
-let g:lint_bin="~/your/custom/lint/path"
+let g:go_gocode_bin="~/your/custom/gocode/path"
+let g:go_goimports_bin="~/your/custom/goimports/path"
+let g:go_godef_bin="~/your/custom/godef/path"
+let g:go_oracle_bin="~/your/custom/godef/path"
+let g:go_lint_bin="~/your/custom/lint/path"
 ```
 
 ## Credits

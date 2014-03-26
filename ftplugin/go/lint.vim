@@ -19,7 +19,7 @@ endif
 command! -buffer Lint call s:GoLint()
 
 function! s:GoLint() abort
-    cexpr system(g:golint_bin . " " . shellescape(expand('%')))
+    cexpr system(g:go_golint_bin . " " . shellescape(expand('%')))
 endfunction
 
 let b:did_ftplugin_go_lint = 1
