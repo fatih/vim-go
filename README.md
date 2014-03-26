@@ -1,20 +1,15 @@
 # vim-go
 
-** WIP, use with cautious until it's released **
+**WIP, use with cautious until it's released**
 
 An attempt to bring full featured Go support to Vim. This is a single pathogen
 package to be easily installed. Do not use it with any other vim go plugin.
 
-This plugin/package is born mainly by frustrating. I had to re-install my Vim
-plugins and especially for Go I had to install a lot of seperate different
-plugins, setup the necessary binaries to make them work together and hope not
-to lose them again.
-
-vim-go is different, you just drop it and everything else works. No need to
-install binaries, configure plugins, add additional dependencies. etc..  vim-go
-installs automatically all necessary binaries if they are not found in the
-specified paths and comes with pre-defined sensible settings (like auto fmt on
-save)
+vim-go is different, you just drop it and everything else works. Most of the
+plugins are improved for a better experience. No need to install binaries,
+configure plugins, add additional dependencies. etc.. vim-go installs
+automatically all necessary binaries if they are not found. It comes with
+pre-defined sensible settings (like auto fmt on save).
 
 ## Features
 
@@ -46,7 +41,7 @@ $ cd YouCompleteMe
 $ ./install.sh
 ```
 
-## Commands
+## Usage
 
 Import a package
 
@@ -113,8 +108,17 @@ let g:go_oracle_bin="~/your/custom/godef/path"
 let g:go_lint_bin="~/your/custom/lint/path"
 ```
 
+## Why another plugin ?
+
+This plugin/package is born mainly by frustrating. I had to re-install my Vim
+plugins and especially for Go I had to install a lot of seperate different
+plugins, setup the necessary binaries to make them work together and hope not
+to lose them again. Also lot's of the plugins lacks of proper settings. This
+plugin is improved in every way and is used by me for months. Use it and decide
+your self.
+
 ## Credits
 
-- Go Authors for offical vim plugins
-- Gocode, Godef, Golint, Oracle, Goimports projects
-- Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode)
+* Go Authors for offical vim plugins
+* Gocode, Godef, Golint, Oracle, Goimports projects
+* Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode, vim-godef)
