@@ -64,17 +64,19 @@ Lint your current file
 
 	:Lint
 
-Open relevant Godoc under your cursor
+Open relevant Godoc under your cursor or give package name
 
 	:Godoc
+	:Godoc <identifier>
 
 Fmt your file
 
 	:Fmt
 
-Go to a declaration under your cursor
+Go to a declaration under your cursor or give an identifier
 
-	gd
+	:Godef
+	:Godef <identifier>
 
 Build your package
 
