@@ -18,7 +18,7 @@
 "
 "       Flag to indicate whether to enable the commands listed above.
 "
-"   g:gofmt_command [default="gofmt"]
+"   g:go_fmt_command [default="gofmt"]
 "
 "       Flag naming the gofmt executable to use.
 "
@@ -50,7 +50,6 @@ if g:go_fmt_commands
     command! -buffer Fmt call s:GoFormat()
 endif
 
-
 function! s:GoFormat()
     let view = winsaveview()
     silent execute "%!" . g:go_fmt_command
@@ -70,7 +69,7 @@ function! s:GoFormat()
         endif
         undo
         if !empty(errors)
-            call setloclist(0, errors, 'r')
+            call setqflist(errors, 'r')
         endif
         echohl Error | echomsg "Gofmt returned error" | echohl None
     endif
