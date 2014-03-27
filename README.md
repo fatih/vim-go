@@ -107,7 +107,8 @@ let g:go_bin_path = expand("~/.mypath")
 let g:go_bin_path = "/home/fatih/.mypath"      "or give relative path
 ```
 
-Change individual binary paths, this also disables automatic installing for the given package.
+Change individual binary paths, if the binary doesn't exist vim-go will 
+download and install it to `g:go_bin_path`
 
 ```vim
 let g:go_gocode_bin="~/your/custom/gocode/path"
@@ -115,6 +116,12 @@ let g:go_goimports_bin="~/your/custom/goimports/path"
 let g:go_godef_bin="~/your/custom/godef/path"
 let g:go_oracle_bin="~/your/custom/godef/path"
 let g:go_lint_bin="~/your/custom/lint/path"
+```
+
+If you wish you can disable auto installation of binaries completely.
+
+```vim
+let g:go_disable_autoinstall = 1
 ```
 
 ## Why another plugin?

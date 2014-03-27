@@ -4,6 +4,10 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
+if exists("g:go_disable_autoinstall")
+    finish
+endif
+
 if !exists("g:go_bin_path")
     let g:go_bin_path = expand("$HOME/.vim-go/")
 endif
