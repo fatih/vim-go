@@ -1,7 +1,7 @@
-if exists("g:go_loaded_snippets")
+if exists("g:go_loaded_gosnippets")
   finish
 endif
-let g:go_loaded_snippets = 1
+let g:go_loaded_gosnippets = 1
 
 " If this exists, it means UltiSnips is installed Return if it's not installed
 if globpath(&rtp, 'plugin/UltiSnips.vim') == ""
