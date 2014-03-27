@@ -14,10 +14,10 @@ pre-defined sensible settings (like auto fmt on save).
 ## Features
 
 * Syntax highlighting
-* Auto go fmt on save
+* Autocompletion support with `<C-x><C-o>` (omnicomplete)
+* Better go fmt on save, keeps cursor position and doesn't break your undo history
 * Go to symbol/declaration
 * Automatically import packages
-* Autocomplete with `<C-x><C-o>` (omnicomplete)
 * Compile and build package
 * Lint your code
 * Advanced source analysis tool with oracle
