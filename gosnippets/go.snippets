@@ -105,6 +105,12 @@ func ${1:name}(${2:params})${3/(.+)/ /}${3:type} {
 }
 endsnippet
 
+snippet anon "Anonymous Function" !b
+${1:fn} := func() {
+	${2}
+}
+endsnippet
+
 # types and variables
 snippet map "Map type" b
 map[${1:keytype}]${2:valtype}
@@ -158,6 +164,24 @@ snippet def "Anonymous Defer" !b
 defer func() {
 	${1}
 }()
+endsnippet
+
+snippet ff "Fmt Printf debug" !b
+fmt.Printf("${1} %+v\n", $1)
+endsnippet
+
+snippet fn "Fmt Println debug" !b
+fmt.Println("${1}")
+${2}
+endsnippet
+
+snippet lf "Log Printf debug" !b
+log.Printf("${1} %+v\n", $1)
+endsnippet
+
+snippet ln "Log Println debug" !b
+log.Println("${1}")
+${2}
 endsnippet
 
 # vim:ft=snippets:
