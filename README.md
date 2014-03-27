@@ -83,7 +83,7 @@ Go to a declaration under your cursor or give an identifier
 	:Godef
 	:Godef <identifier>
 
-Build your package 
+Build your package, it doesn't pollute your working directory by not producing any output binary, but it outputs any errors in quickfix window
 
 	:make
 
