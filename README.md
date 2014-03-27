@@ -28,17 +28,26 @@ If you use pathogen, just clone it into your bundle directory:
 
 ```bash
 $ cd ~/.vim/bundle
-$ git clone git://github.com/fatih/go.vim.git
+$ git clone https://github.com/fatih/vim-go.git
 ```
+
+### Optional
 
 Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
 completion (completion by type) install YCM:
 
 ```bash
 $ cd ~/.vim/bundle
-$ git clone git@github.com:Valloric/YouCompleteMe.git
+$ git clone https://github.com/Valloric/YouCompleteMe.git
 $ cd YouCompleteMe
 $ ./install.sh
+```
+
+Snippets and integration with YCM is already done. Just install UltiSnips:
+
+```bash
+$ cd ~/.vim/bundle
+$ git clone https://github.com/SirVer/ultisnips.git
 ```
 
 ## Usage
