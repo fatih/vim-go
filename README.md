@@ -21,6 +21,7 @@ pre-defined sensible settings (like auto fmt on save).
 * Compile and build package
 * Lint your code
 * Advanced source analysis tool with oracle
+* Integrated and improved snippets support to UltiSnips
 
 ## Install
 
@@ -82,9 +83,17 @@ Go to a declaration under your cursor or give an identifier
 	:Godef
 	:Godef <identifier>
 
-Build your package
+Build your package 
 
 	:make
+
+Show .go source files for the current package
+
+	:Gofiles
+
+Show dependencies for the current package
+
+	:Godeps
 
 ## Settings
 
