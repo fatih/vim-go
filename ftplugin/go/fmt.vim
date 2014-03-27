@@ -43,19 +43,30 @@ if !exists('g:go_fmt_autosave')
 endif
 
 if g:go_fmt_autosave
-    autocmd BufWritePre <buffer> :Fmt 
+    autocmd BufWritePre <buffer> :Fmt
 endif
 
 if g:go_fmt_commands
     command! -buffer Fmt call s:GoFormat()
 endif
 
+
+"  modified and improved version, doesn't undo changes and break undo history
+"  - fatih 2014
 function! s:GoFormat()
-    let view = winsaveview()
-    silent execute "%!" . g:go_fmt_command
-    if v:shell_error
+    let l:curw=winsaveview()
+    let l:tmpname=tempname()
+    call writefile(getline(1,'$'), l:tmpname)
+    let out = system(g:go_fmt_command . " " . l:tmpname)
+
+    "if there is no error on the temp file, gofmt our original file
+    if v:shell_error == 0
+        try | silent undojoin | catch | endtry
+        silent execute "%!" . g:go_fmt_command
+    else
+        "otherwise get the errors and put them to quickfix window
         let errors = []
-        for line in getline(1, line('$'))
+        for line in split(out, '\n')
             let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
             if !empty(tokens)
                 call add(errors, {"filename": @%,
@@ -67,13 +78,13 @@ function! s:GoFormat()
         if empty(errors)
             % | " Couldn't detect gofmt error format, output errors
         endif
-        undo
         if !empty(errors)
             call setqflist(errors, 'r')
         endif
         echohl Error | echomsg "Gofmt returned error" | echohl None
     endif
-    call winrestview(view)
+    call delete(l:tmpname)
+    call winrestview(l:curw)
 endfunction
 
 let b:did_ftplugin_go_fmt = 1
