@@ -135,8 +135,8 @@ receive/send operation:
 ## Snippets
 
 Snippets are useful and very powerful. Vim-go has a sensible integration with
-UltiSnips and YCM. It just works, write the trigger keyword and expand with
-`<tab>` key. Just install UltiSnips to use it :
+UltiSnips and YCM. Just type the trigger keyword and expand with
+`<tab>` key. To make use of it, install UltiSnips:
 
 ```bash
 $ cd ~/.vim/bundle
@@ -174,15 +174,15 @@ To add `json` tags to a struct field, use `json` trigger:
 
 ```
 type foo struct {
-	bar string  `json:"myCustomField"
-		   ^ type `json` here, hit tab and type "myCustomField". Itwill expand to `json:"yourFieldName"`
+	bar string  `json:"myField"
+		   ^ type `json` here, hit tab and type "myField". It will expand to `json:"myField"`
 }
 ```
 
 ...
 
 And many more! For the full list have a look at
-[gnosnippets.vim](https://github.com/fatih/vim-go/blob/master/gosnippets/go.snippets):
+[included snippets](https://github.com/fatih/vim-go/blob/master/gosnippets/go.snippets):
 
 
 ## Settings
