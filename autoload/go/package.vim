@@ -56,6 +56,23 @@ function! go#package#Paths()
     return dirs
 endfunction
 
+function! go#package#ImportPath(arg)
+    let path = fnamemodify(resolve(a:arg), ':p')
+    let dirs = go#package#Paths()
+
+    for dir in dirs
+        if len(dir) && match(path, dir) == 0
+            let workspace = dir
+        endif
+    endfor
+
+    if !exists('workspace')
+        return -1
+    endif
+
+    return substitute(path, workspace . '/src/', '', '')
+endfunction
+
 function! go#package#FromPath(arg)
     let path = fnamemodify(resolve(a:arg), ':p')
     let dirs = go#package#Paths()

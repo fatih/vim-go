@@ -52,7 +52,13 @@ endfun
 
 func! s:RunOracle(mode, selected) range abort
   let fname = expand('%:p')
-  let sname = get(g:, 'go_oracle_scope_file', fname)
+  let pkg = go#package#ImportPath(getcwd())
+  if pkg != -1
+    let sname = pkg
+  else
+    let sname = get(g:, 'go_oracle_scope_file', fname)
+  endif
+
   if a:selected != -1
     let pos1 = s:getpos(line("'<"), col("'<"))
     let pos2 = s:getpos(line("'>"), col("'>"))
@@ -65,7 +71,13 @@ func! s:RunOracle(mode, selected) range abort
       \  g:go_oracle_bin,
       \  shellescape(fname), pos, a:mode, shellescape(sname))
   endif
-  call s:qflist(system(cmd))
+
+  let out = system(cmd)
+  if v:shell_error
+    echohl Error | echomsg out | echohl None
+  else
+    call s:qflist(out)
+  endif
 endfun
 
 " Describe the expression at the current point.
