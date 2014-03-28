@@ -4,9 +4,6 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
-if exists("g:go_disable_autoinstall")
-    finish
-endif
 
 if !exists("g:go_bin_path")
     let g:go_bin_path = expand("$HOME/.vim-go/")
@@ -14,20 +11,37 @@ endif
 
 let $GOBIN = g:go_bin_path
 
-let packages = ["github.com/nsf/gocode", "code.google.com/p/go.tools/cmd/goimports", "code.google.com/p/go.tools/cmd/goimports", "code.google.com/p/rog-go/exp/cmd/godef", "code.google.com/p/go.tools/cmd/oracle", "github.com/golang/lint/golint"]
+let s:packages = ["github.com/nsf/gocode", "code.google.com/p/go.tools/cmd/goimports", "code.google.com/p/go.tools/cmd/goimports", "code.google.com/p/rog-go/exp/cmd/godef", "code.google.com/p/go.tools/cmd/oracle", "github.com/golang/lint/golint"]
 
-" Install and set global binary paths
-for pkg in packages
+
+function! s:CheckAndSetBinaryPaths() 
+  for pkg in s:packages
     let basename = fnamemodify(pkg, ":t")
     let binname = "go_" . basename . "_bin"
-
+  
     if !exists("g:{binname}")
         let g:{binname} = g:go_bin_path . basename
     endif
+  endfor
+endfunction
 
+
+function! s:InstallGoBinaries() 
+  for pkg in s:packages
+    let basename = fnamemodify(pkg, ":t")
+    let binname = "go_" . basename . "_bin"
+  
     if !executable(g:{binname})
         execute "!go get -u -v ".shellescape(pkg)
     endif
+  endfor
+endfunction
 
-endfor
+
+
+call s:CheckAndSetBinaryPaths()
+
+if !exists("g:go_disable_autoinstall")
+  call s:InstallGoBinaries()
+endif
 
