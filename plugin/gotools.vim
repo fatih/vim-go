@@ -1,7 +1,7 @@
-if exists("g:go_loaded_godeps")
+if exists("g:go_loaded_gotools")
   finish
 endif
-let g:go_loaded_godeps = 1
+let g:go_loaded_gotools = 1
 
 function! GoFiles() 
     let out=system("go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'")
@@ -13,8 +13,12 @@ function! s:GoDeps()
     return out
 endfunction
 
-function! s:GoRun() 
-    exec "!go run " . join(split(GoFiles(), '\n'), ' ')
+function! s:GoRun(...) 
+    if !len(a:000)
+      exec "!go run " . join(split(GoFiles(), '\n'), ' ')
+    else
+      exec "!go run " . expand(a:1)
+    endif
 endfunction
 
 function! s:GoTest() 
@@ -45,5 +49,6 @@ endfunction
 
 command! Gofiles echo GoFiles()
 command! Godeps echo s:GoDeps()
-command! Gorun call s:GoRun()
 command! Gotest call s:GoTest()
+
+command! -nargs=* -range Gorun call s:GoRun(<f-args>)

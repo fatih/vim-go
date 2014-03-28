@@ -73,9 +73,11 @@ Fmt your file explicitly
 
 	:Fmt
 
-Build and run your current main package, useful for experimentation: 
+Build and run your current main package. By default all main files in your
+current directory are used. Use `:Gorun %` to use only for your current file.
 
-	:Gorun
+	:Gorun 
+	:Gorun <expand>
 
 Go to a declaration under your cursor or identifier
 
