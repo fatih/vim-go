@@ -107,6 +107,39 @@ Show dependencies for the current package
 
 	:Godeps
 
+Source analysis is implemented via
+[Oracle](https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view).
+Quickly find which interface is implemented by others, callers of a function,
+calles of a function call, etc.  The plugin itself is improved and shows errors
+instead of failing silently.
+
+Describe the expression at the current point:
+
+	:GoOracleDescribe
+
+Show possible callees of the function call at the current point:
+
+	:GoOracleCallees
+
+Show the set of callers of the function containing the current point:
+
+	:GoOracleCallers
+
+Show the callgraph of the current program:
+
+	:GoOracleCallgraph
+
+Describe the 'implements' relation for types in the package containing the
+current point:
+
+	:GoOracleImplements
+
+Enumerate the set of possible corresponding sends/receives for this channel
+receive/send operation:
+
+	:GoOracleChannelPeers
+
+
 ## Settings
 
 Disable auto go fmt on save
