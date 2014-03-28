@@ -42,6 +42,8 @@ function! s:GoTest()
             call setqflist(errors, 'r')
         endif
         echohl Error | echomsg "Go test returned error" | echohl None
+    else
+        call setqflist([]) 
     endif  
     cwindow
 endfunction

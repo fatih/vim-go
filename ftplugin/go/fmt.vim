@@ -63,6 +63,7 @@ function! s:GoFormat()
     if v:shell_error == 0
         try | silent undojoin | catch | endtry
         silent execute "%!" . g:go_fmt_command
+        call setqflist([]) 
     else
         "otherwise get the errors and put them to quickfix window
         let errors = []
