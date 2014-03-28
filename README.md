@@ -33,7 +33,7 @@ $ git clone https://github.com/fatih/vim-go.git
 
 For the first Vim start it will try to download and install all necessary go
 binaries. To disable this behabeviour please check out
-[settings](#Settings).
+[settings](#settings).
 
 ### Optional
 
