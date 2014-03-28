@@ -1,11 +1,9 @@
 # vim-go
 
-Full featured Go support for Vim. vim-go is different, you just drop it and
-everything else works. It's improved in every aspect for a better experience.
-No need to install binaries, configure plugins, add additional dependencies.
-etc.. vim-go installs automatically all necessary binaries if they are not
-found. It comes with pre-defined sensible settings (like auto gofmt on save,
-autocomplete, snippet, go toolchain functions, etc..).
+Full featured Go development environment support for Vim. vim-go installs
+automatically all necessary binaries if they are not found. It comes with
+pre-defined sensible settings (like auto gofmt on save), has autocomplete,
+snippet support, go toolchain commands, etc...
 
 ## Features
 
@@ -35,8 +33,6 @@ For the first Vim start it will try to download and install all necessary go
 binaries. To disable this behabeviour please check out
 [settings](#settings).
 
-### Optional
-
 Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
 completion (completion by type) install YCM:
 
@@ -47,14 +43,10 @@ $ cd YouCompleteMe
 $ ./install.sh
 ```
 
-Snippets and integration with YCM is already done. Just install UltiSnips:
-
-```bash
-$ cd ~/.vim/bundle
-$ git clone https://github.com/SirVer/ultisnips.git
-```
-
 ## Usage
+
+Import/Drop is automatically done via goimports, however you always have the
+option to call explicitly:
 
 Import a package
 
@@ -81,21 +73,21 @@ Fmt your file explicitly
 
 	:Fmt
 
-Run quickly go run on your current main package
+Build and run your current main package, useful for experimentation: 
 
 	:Gorun
 
-Go to a declaration under your cursor or give an identifier
+Go to a declaration under your cursor or identifier
 
 	:Godef
 	:Godef <identifier>
 
-Run go test in current directory. Errors are populated in quickfix window.
+Test your _test.go files via in your current directory. Errors are populated in quickfix window.
 
 	:Gotest
 
-Build your package. It doesn't create any output binary. Errors are populated
-in quickfix window.
+Build your package. It doesn't create any output binary (to not pollute your
+working directory). Errors are populated in quickfix window.
 
 	:make
 
@@ -111,7 +103,8 @@ Source analysis is implemented via
 [Oracle](https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view).
 Quickly find which interface is implemented by others, callers of a function,
 calles of a function call, etc.  The plugin itself is improved and shows errors
-instead of failing silently.
+instead of failing silently. Each command works for the word under your cursor
+or for a selected idenfifier:
 
 Describe the expression at the current point:
 
@@ -138,6 +131,58 @@ Enumerate the set of possible corresponding sends/receives for this channel
 receive/send operation:
 
 	:GoOracleChannelPeers
+
+## Snippets
+
+Snippets are useful and very powerful. Vim-go has a sensible integration with
+UltiSnips and YCM. It just works, write the trigger keyword and expand with
+`<tab>` key. Just install UltiSnips to use it :
+
+```bash
+$ cd ~/.vim/bundle
+$ git clone https://github.com/SirVer/ultisnips.git
+```
+
+Below are some examples snippets and the correspondings trigger keywords, 
+The `|` character defines the cursor. Ultisnips has suppport for multiple
+cursors
+
+
+`ff` is useful for debugging:
+
+```go
+fmt.Printf(" | %+v\n", |)
+```
+
+`errn` expands to:
+
+```go
+if err != nil {
+	return err
+}
+```
+
+Use `gof` to quickly create a anonymous goroutine :
+
+```go
+go func() {
+	|
+}()
+```
+
+To add `json` tags to a struct field, use `json` trigger:
+
+```
+type foo struct {
+	bar string  `json:"myCustomField"
+		   ^ type `json` here, hit tab and type "myCustomField". Itwill expand to `json:"yourFieldName"`
+}
+```
+
+...
+
+And many more! For the full list have a look at
+[gnosnippets.vim](https://github.com/fatih/vim-go/blob/master/gosnippets/go.snippets):
 
 
 ## Settings
