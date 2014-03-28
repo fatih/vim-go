@@ -141,6 +141,22 @@ receive/send operation:
 
 
 ## Settings
+Below are some settings you might find useful:
+
+Import the package under your cursor with `<leader>i`
+
+```vim
+au Filetype go nnoremap <buffer> <leader>i :exe 'Import ' . expand('<cword>')<CR>
+```
+
+Open a vertical, horizontal or a new tab and go to defintion/declaration of the
+identified under your cursor:
+
+```vim
+au Filetype go nnoremap <leader>v :vsp <CR>:exe "Godef" <CR>
+au Filetype go nnoremap <leader>s :sp <CR>:exe "Godef"<CR>
+au Filetype go nnoremap <leader>t :tab split <CR>:exe "Godef"<CR>
+```
 
 Disable auto go fmt on save
 
