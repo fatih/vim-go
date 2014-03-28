@@ -47,8 +47,7 @@ function! s:GoTest()
     cwindow
 endfunction
 
-command! Gofiles echo GoFiles()
-command! Godeps echo s:GoDeps()
-command! Gotest call s:GoTest()
-
-command! -nargs=* -range Gorun call s:GoRun(<f-args>)
+command! GoFiles echo GoFiles()
+command! GoDeps echo s:GoDeps()
+command! GoTest call s:GoTest()
+command! -nargs=* -range GoRun call s:GoRun(<f-args>)

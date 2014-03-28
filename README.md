@@ -81,17 +81,17 @@ Fmt your file explicitly
 Build and run your current main package. By default all main files in your
 current directory are used. Use `:Gorun %` to use only for your current file.
 
-	:Gorun 
-	:Gorun <expand>
+	:GoRun 
+	:GoRun <expand>
 
 Go to a declaration under your cursor or identifier
 
-	:Godef
-	:Godef <identifier>
+	:GoDef
+	:GoDef <identifier>
 
 Test your _test.go files via in your current directory. Errors are populated in quickfix window.
 
-	:Gotest
+	:GoTest
 
 Build your package. It doesn't create any output binary (to not pollute your
 working directory). Errors are populated in quickfix window.
@@ -100,11 +100,15 @@ working directory). Errors are populated in quickfix window.
 
 Show .go source files for the current package
 
-	:Gofiles
+	:GoFiles
 
 Show dependencies for the current package
 
-	:Godeps
+	:GoDeps
+
+Update all Go binaries under `g:go_bin_path`:
+
+	:GoUpdateBinaries
 
 Source analysis is implemented via
 [Oracle](https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view).
@@ -189,7 +193,7 @@ type foo struct {
 
 ...
 
-And many more! For the full list have a look at
+And many more! For the full list have a look at the
 [included snippets](https://github.com/fatih/vim-go/blob/master/gosnippets/go.snippets):
 
 
@@ -206,9 +210,9 @@ Open a vertical, horizontal or a new tab and go to defintion/declaration of the
 identified under your cursor:
 
 ```vim
-au Filetype go nnoremap <leader>v :vsp <CR>:exe "Godef" <CR>
-au Filetype go nnoremap <leader>s :sp <CR>:exe "Godef"<CR>
-au Filetype go nnoremap <leader>t :tab split <CR>:exe "Godef"<CR>
+au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
+au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
+au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
 ```
 
 Disable auto go fmt on save

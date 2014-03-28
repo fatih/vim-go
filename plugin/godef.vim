@@ -37,4 +37,4 @@ endfunction
 
 autocmd FileType go nnoremap <buffer> gd :call Godef()<cr>
 
-command! -range -nargs=* Godef :call Godef(<f-args>)
+command! -range -nargs=* GoDef :call Godef(<f-args>)
