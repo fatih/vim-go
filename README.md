@@ -15,13 +15,15 @@ pre-defined sensible settings (like auto fmt on save).
 
 * Syntax highlighting
 * Autocompletion support with `<C-x><C-o>` (omnicomplete)
-* Better go fmt on save, keeps cursor position and doesn't break your undo history
+* Integrated and improved snippets support 
+* Better go fmt on save, keeps cursor position and doesn't break your undo
+  history
 * Go to symbol/declaration
 * Automatically import packages
 * Compile and build package
+* Run quickly your snippet
 * Lint your code
 * Advanced source analysis tool with oracle
-* Integrated and improved snippets support to UltiSnips
 
 ## Install
 
@@ -74,16 +76,21 @@ Open relevant Godoc under your cursor or give package name
 	:Godoc
 	:Godoc <identifier>
 
-Fmt your file
+Fmt your file explicitly
 
 	:Fmt
+
+Run quickly go run on your current main package
+
+	:Gorun
 
 Go to a declaration under your cursor or give an identifier
 
 	:Godef
 	:Godef <identifier>
 
-Build your package, it doesn't pollute your working directory by not producing any output binary, but it outputs any errors in quickfix window
+Build your package, it doesn't create any output binary, however it outputs any
+errors (if anny) in quickfix window
 
 	:make
 

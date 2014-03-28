@@ -13,5 +13,10 @@ function! GoDeps()
     return out
 endfunction
 
-command! Gofiles echo GoFiles()
-command! Godeps echo GoDeps()
+function! GoRun() 
+    exec "!go run " . join(split(GoFiles(), '\n'), ' ')
+endfunction
+
+command! -buffer Gofiles echo GoFiles()
+command! -buffer Godeps echo GoDeps()
+command! -buffer Gorun call GoRun()
