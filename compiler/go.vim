@@ -20,7 +20,7 @@ set cpo-=C
 " Does not produce any output binary that pollutes the working directory
 let gofiles = join(split(GoFiles(), '\n'), '\ ')
 if v:shell_error
-    let golang_makeprg = 'go\ build\ -o\ /dev/null\ .'
+    let golang_makeprg = 'go\ build\ -o\ . errors'
 else 
     let golang_makeprg = 'go\ build\ -o\ /dev/null\ ' . join(split(GoFiles(), '\n'), '\ ')
 endif

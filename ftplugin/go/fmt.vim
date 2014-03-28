@@ -48,7 +48,17 @@ endif
 
 if g:go_fmt_commands
     command! -buffer Fmt call s:GoFormat()
+    command! -buffer DisableGoimports call s:DisableGoimports()
+    command! -buffer EnableGoimports call s:EnableGoimports()
 endif
+
+function! s:DisableGoimports()
+    let g:go_fmt_command = "gofmt"
+endfunction
+
+function! s:EnableGoimports()
+    let g:go_fmt_command = "goimports"
+endfunction
 
 
 "  modified and improved version, doesn't undo changes and break undo history

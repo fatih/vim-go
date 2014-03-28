@@ -60,7 +60,12 @@ Drop a package
 
 	:Drop <path>
 
-Lint your current file
+Disable or enable goimports at any time:
+
+	:DisableGoimports
+	:EnableGoimports
+
+Lint your current file, suggestions are listed in quickfix window
 
 	:Lint
 
@@ -133,6 +138,7 @@ Enumerate the set of possible corresponding sends/receives for this channel
 receive/send operation:
 
 	:GoOracleChannelPeers
+
 
 ## Snippets
 
