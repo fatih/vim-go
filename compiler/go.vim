@@ -17,7 +17,7 @@ let s:save_cpo = &cpo
 set cpo-=C
 
 " Does not produce any output binary, which is we want
-let golang_makeprg = 'go\ build\ -o\ /dev/null\ ' . join(split(GoFiles(), '\n'), '\ ')
+let golang_makeprg = 'go\ build\ -o\ /dev/null\ ' . join(split(g:GoFiles(), '\n'), '\ ')
 exec ':CompilerSet makeprg=' . golang_makeprg
 CompilerSet errorformat=
         \%-G#\ %.%#,

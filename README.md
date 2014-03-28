@@ -16,12 +16,13 @@ pre-defined sensible settings (like auto fmt on save).
 * Syntax highlighting
 * Autocompletion support with `<C-x><C-o>` (omnicomplete)
 * Integrated and improved snippets support 
-* Better go fmt on save, keeps cursor position and doesn't break your undo
+* Better gofmt on save, keeps cursor position and doesn't break your undo
   history
 * Go to symbol/declaration
 * Automatically import packages
 * Compile and build package
 * Run quickly your snippet
+* Run tests and see any errors in quick window
 * Lint your code
 * Advanced source analysis tool with oracle
 
@@ -89,8 +90,12 @@ Go to a declaration under your cursor or give an identifier
 	:Godef
 	:Godef <identifier>
 
+Run go test in current directory, any errors will be populate in quickfix window
+
+	:Gotest
+
 Build your package, it doesn't create any output binary, however it outputs any
-errors (if anny) in quickfix window
+errors (if ann) in quickfix window
 
 	:make
 
