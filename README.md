@@ -8,7 +8,7 @@ snippet support, go toolchain commands, etc...
 ## Features
 
 * Syntax highlighting
-* Autocompletion support with `<C-x><C-o>` (omnicomplete)
+* Autocompletion support
 * Integrated and improved snippets support
 * Better gofmt on save, keeps cursor position and doesn't break your undo
   history
