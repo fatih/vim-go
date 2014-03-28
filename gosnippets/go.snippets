@@ -5,13 +5,13 @@ priority -10
 # when to abbriviate and when not?
 # b doesn't work here, because it ignores whitespace
 # optional local name?
-snippet /^import/ "Import declaration" r
+snippet import "Import declaration" b
 import (
 	"${1:package}"
 )
 endsnippet
 
-snippet /^package/ "Package declaration" r
+snippet package "Package declaration" b
 // Package $1 provides ...
 package ${1:main}
 endsnippet
