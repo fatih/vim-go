@@ -85,6 +85,7 @@ function! s:GoFormat()
     endif
     call delete(l:tmpname)
     call winrestview(l:curw)
+    cwindow
 endfunction
 
 let b:did_ftplugin_go_fmt = 1

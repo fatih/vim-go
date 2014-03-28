@@ -43,7 +43,7 @@ function! s:GoTest()
         endif
         echohl Error | echomsg "Go test returned error" | echohl None
     endif  
- 
+    cwindow
 endfunction
 
 command! Gofiles echo g:GoFiles()
