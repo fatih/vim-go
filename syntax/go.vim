@@ -81,8 +81,7 @@ hi def link     goComplexes         Type
 
 " Treat func specially: it's a declaration at the start of a line, but a type
 " elsewhere. Order matters here.
-syn match       goType              /\<func\>/
-syn match       goDeclaration       /^func\>/
+syn match       goDeclaration       /\<func\>/
 
 syn match   	goFunction 	    "\%(\%(func\s\)\s*\)\@<=\h\%(\w\|\.\)*" 
 hi def link     goFunction          Function
