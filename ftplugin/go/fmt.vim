@@ -91,8 +91,8 @@ function! s:GoFormat()
         endif
         if !empty(errors)
             call setqflist(errors, 'r')
+            echohl Error | echomsg "Gofmt returned error" | echohl None
         endif
-        echohl Error | echomsg "Gofmt returned error" | echohl None
     endif
     call delete(l:tmpname)
     call winrestview(l:curw)
