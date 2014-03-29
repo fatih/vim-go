@@ -53,8 +53,11 @@ Get a list of all commands from the the vim doc:
 
 	:he go-commands
 
+
 Usage and commands are listed below until we moved them all into
 `doc/vim-go.txt`
+
+** CAUTIOUS: command with a non `Go` prefix will be replaced in the following days with a `Go` prefix. Please do not forget to update your mappings,settings,etc.. accordingly **
 
 Import/Drop is automatically done via goimports, however you always have the
 option to call explicitly:
