@@ -3,7 +3,9 @@
 Full featured Go development environment support for Vim. vim-go installs
 automatically all necessary binaries if they are not found. It comes with
 pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, go toolchain commands, etc...
+snippet support, go toolchain commands, etc... Do not use it with other Go 
+plugins.
+
 
 ## Features
 
@@ -22,6 +24,7 @@ snippet support, go toolchain commands, etc...
 * Checking for unchecked errors.
 
 ## Install
+
 
 If you use pathogen, just clone it into your bundle directory:
 
@@ -271,5 +274,5 @@ Give it a try. I hope you like it. Feel free to contribute to the project.
 ## Credits
 
 * Go Authors for offical vim plugins
-* Gocode, Godef, Golint, Oracle, Goimports projects and authors of those projects.
+* Gocode, Godef, Golint, Oracle, Goimports, Errcheck projects and authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode, vim-godef)
