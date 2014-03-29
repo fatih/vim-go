@@ -49,6 +49,13 @@ $ ./install.sh
 
 ## Usage
 
+Get a list of all commands from the the vim doc:
+
+	:he go-commands
+
+Usage and commands are listed below until we moved them all into
+`doc/vim-go.txt`
+
 Import/Drop is automatically done via goimports, however you always have the
 option to call explicitly:
 
