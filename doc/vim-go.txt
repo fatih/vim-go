@@ -1,0 +1,110 @@
+*vim-go.txt* Go development plugin
+
+=============================================================================== CONTENTS                                                       	  *go-contents*
+
+    Intro..................................: |go-intro|
+    Install................................: |go-install|
+    Commands...............................: |go-commands|
+    Settings...............................: |go-settings|
+    Credits................................: |go-credits|
+
+===============================================================================
+INTRO                                                             *go-intro*
+
+Full featured Go development environment support for Vim. vim-go installs
+automatically all necessary binaries if they are not found. It comes with
+pre-defined sensible settings (like auto gofmt on save), has autocomplete,
+snippet support, go toolchain commands, etc... Do not use it with other Go
+plugins.
+
+	* Syntax highlighting
+	* Autocompletion support
+	* Integrated and improved snippets support
+	* Better gofmt on save, keeps cursor position and doesn't break your
+	  undo history
+	* Go to symbol/declaration
+	* Automatically import packages
+	* Compile and build package
+	* Run quickly your snippet
+	* Run tests and see any errors in quick window
+	* Lint your code
+	* Advanced source analysis tool with oracle
+	* Checking for unchecked errors.
+
+===============================================================================
+INSTALL                                                             *go-install*
+
+If you use pathogen, just clone it into your bundle directory: >
+
+	$ cd ~/.vim/bundle
+	$ git clone https://github.com/fatih/vim-go.git
+<
+
+For the first Vim start it will try to download and install all necessary go
+binaries. To disable this behabeviour please check out |go-settings|.
+
+Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
+completion (completion by type) install YCM: >
+
+	$ cd ~/.vim/bundle
+	$ git clone https://github.com/Valloric/YouCompleteMe.git
+	$ cd YouCompleteMe
+	$ ./install.sh
+
+
+===============================================================================
+COMMANDS							   *go-commands*
+
+
+:Import [path] *:Import*
+
+:ImportAs [localname] [path]
+
+:Drop [path]
+
+:DisableGoimports
+
+:EnableGoimports
+
+:Lint
+
+:Godoc [identifier]
+
+:Fmt
+
+:GoDef [identifier]
+
+:GoRun [expand]
+
+:make
+
+:GoBuild
+
+:GoTest
+
+:GoErrCheck
+
+:GoFiles
+
+:GoDeps
+
+:GoUpdateBinaries
+
+:GoOracleDescribe
+
+:GoOracleCallees
+
+:GoOracleCallers
+
+:GoOracleCallgraph
+
+:GoOracleImplements
+
+:GoOracleChannelPeers
+
+===============================================================================
+SETTINGS 							*go-settings*
+
+
+===============================================================================
+CREDITS 							*go-credits*
