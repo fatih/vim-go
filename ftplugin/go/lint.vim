@@ -19,7 +19,7 @@ endif
 command! -buffer Lint call s:GoLint()
 
 function! s:GoLint() abort
-    cexpr system(g:go_golint_bin . " " . shellescape(expand('%')))
+    silent cexpr system(g:go_golint_bin . " " . shellescape(expand('%')))
     cwindow
 endfunction
 
