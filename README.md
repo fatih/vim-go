@@ -19,6 +19,7 @@ snippet support, go toolchain commands, etc...
 * Run tests and see any errors in quick window
 * Lint your code
 * Advanced source analysis tool with oracle
+* Checking for unchecked errors.
 
 ## Install
 
@@ -92,6 +93,11 @@ Go to a declaration under your cursor or identifier
 Test your _test.go files via in your current directory. Errors are populated in quickfix window.
 
 	:GoTest
+
+
+Check for unchecked errors in you current package. Errors are populated in quickfix window.
+
+	:GoErrCheck
 
 Build your package. It doesn't create any output binary (to not pollute your
 working directory). Errors are populated in quickfix window.
