@@ -1,9 +1,9 @@
-if exists("b:go_loaded_errcheck") 
+if exists("g:go_loaded_errcheck") 
   finish
 endif
-let b:go_loaded_errcheck = 1
+let g:go_loaded_errcheck = 1
 
-command! -buffer GoErrCheck call s:ErrCheck()
+command! GoErrCheck call s:ErrCheck()
 
 function! s:ErrCheck() abort
   let mx = '\S\+:\d\+:\d\+:[^:]\+:[^:]\+$'
@@ -13,4 +13,6 @@ function! s:ErrCheck() abort
   cexpr splitted
   cwindow
 endfunction
+
+
 
