@@ -84,6 +84,9 @@ hi def link     goComplexes         Type
 syn match       goType              /\<func\>/
 syn match       goDeclaration       /^func\>/
 
+syn match   	goFunction 	    "\%(\%(func\s\)\s*\)\@<=\h\%(\w\|\.\)*" 
+hi def link     goFunction          Function
+
 " Predefined functions and values
 syn keyword     goBuiltins          append cap close complex copy delete imag len
 syn keyword     goBuiltins          make new panic print println real recover
