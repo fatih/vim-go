@@ -79,30 +79,31 @@ Fmt your file explicitly
 
 	:Fmt
 
+Go to a declaration under your cursor or identifier
+
+	:GoDef
+	:GoDef <identifier>
+
 Build and run your current main package. By default all main files in your
 current directory are used. Use `:Gorun %` to use only for your current file.
 
 	:GoRun 
 	:GoRun <expand>
 
-Go to a declaration under your cursor or identifier
+Build your package. Default :make doesn't create any output binary (to not
+pollute your working directory). :GoBuild does create a binary. Errors are
+populated in quickfix window.
 
-	:GoDef
-	:GoDef <identifier>
+	:make
+	:GoBuild
 
 Test your _test.go files via in your current directory. Errors are populated in quickfix window.
 
 	:GoTest
 
-
 Check for unchecked errors in you current package. Errors are populated in quickfix window.
 
 	:GoErrCheck
-
-Build your package. It doesn't create any output binary (to not pollute your
-working directory). Errors are populated in quickfix window.
-
-	:make
 
 Show .go source files for the current package
 

@@ -35,9 +35,21 @@ endfunction
 function! s:GoRun(...)
   let default_makeprg = &makeprg
   if !len(a:000)
-    let $makeprg = "go run " . join(split(GoFiles(), '\n'), ' ')
+    let &makeprg = "go run " . join(split(GoFiles(), '\n'), ' ')
   else
     let &makeprg = "go run " . expand(a:1)
+  endif
+	make
+  let &makeprg = default_makeprg
+endfunction
+
+function! s:GoBuild()
+  let default_makeprg = &makeprg
+	let gofiles = join(split(GoFiles(), '\n'), '\ ')
+  if v:shell_error
+    let &makeprg = "go build"
+  else
+    let &makeprg = "go build " . join(split(GoFiles(), '\n'), ' ')
   endif
 	make
   let &makeprg = default_makeprg
@@ -57,3 +69,4 @@ command! GoFiles echo GoFiles()
 command! GoDeps echo s:GoDeps()
 command! GoTest call s:GoTest()
 command! -nargs=* -range GoRun call s:GoRun(<f-args>)
+command! -range GoBuild call s:GoBuild()
