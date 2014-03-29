@@ -42,7 +42,7 @@ completion (completion by type) install YCM:
 
 ```bash
 $ cd ~/.vim/bundle
-$ git clone https://github.com/Valloric/YouCompleteMe.git
+$ git clone --recursive https://github.com/Valloric/YouCompleteMe.git
 $ cd YouCompleteMe
 $ ./install.sh
 ```
