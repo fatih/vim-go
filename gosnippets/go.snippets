@@ -116,7 +116,7 @@ snippet map "Map type" b
 map[${1:keytype}]${2:valtype}
 endsnippet
 
-snippet : "Variable declaration :=" b
+snippet : "Short variable declaration :=" !b
 ${1:name} := ${0:value}
 endsnippet
 
@@ -134,12 +134,6 @@ snippet json "JSON field"
 \`json:"${1:displayName}"\`
 endsnippet
 
-
-snippet err "Error statement" !b
-if err != nil {
-	${0:${VISUAL}}
-}
-endsnippet
 
 snippet errn "Error return " !b
 if err != nil {
@@ -172,7 +166,6 @@ endsnippet
 
 snippet fn "Fmt Println debug" !b
 fmt.Println("${1}")
-${2}
 endsnippet
 
 snippet lf "Log Printf debug" !b
@@ -181,7 +174,10 @@ endsnippet
 
 snippet ln "Log Println debug" !b
 log.Println("${1}")
-${2}
+endsnippet
+
+snippet make "make allocation" !b
+make(${1:Type}, ${2:size})${0}
 endsnippet
 
 # vim:ft=snippets:
