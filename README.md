@@ -133,7 +133,7 @@ Update all Go binaries under `g:go_bin_path`:
 Source analysis is implemented via
 [Oracle](https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view).
 Quickly find which interface is implemented by others, callers of a function,
-calles of a function call, etc.  The plugin itself is improved and shows errors
+callees of a function call, etc.  The plugin itself is improved and shows errors
 instead of failing silently. Each command works for the word under your cursor
 or for a selected idenfifier:
 
