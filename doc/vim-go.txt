@@ -182,10 +182,40 @@ COMMANDS                                                          *go-commands*
 
 
 ===============================================================================
-SETTINGS 							*go-settings*
+SETTINGS                                                        *go-settings*
 
+
+                                                        *'g:go_fmt_autosave'*
+
+Use this option to auto |:GoFmt| on save. By default it's enabled >
+
+  let g:go_fmt_autosave = 1
+<
+                                                        *'g:go_fmt_command'*
+
+Use this option to define which tool is used to gofmt. By default `goimports`
+is used >
+
+  let g:go_fmt_command = "goimports"
+<
+                                                *'g:go_disable_autoinstall'*
+
+By default vim-go automatically install all necessary tools which are used
+for |:go-commands|. Disable it if you don't wish to be updated. Also disable
+|:GoUpdateBinaries| >
+
+  let g:go_disable_autoinstall = 0
+<
+
+                                                           *'g:go_bin_path'*
+
+Use this option to change default path for vim-go tools. By default it's set
+to `$HOME/.vim-go/`. To change it: >
+
+  let g:go_bin_path = expand("$HOME/.vim-go/")
 
 ===============================================================================
-CREDITS 							*go-credits*
+CREDITS                                                         *go-credits*
+
 
 vim:ft=help:et:ts=2:sw=2:sts=2:norl
