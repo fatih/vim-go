@@ -221,7 +221,7 @@ Below are some settings you might find useful:
 Import the package under your cursor with `<leader>i`
 
 ```vim
-au Filetype go nnoremap <buffer> <leader>i :exe 'Import ' . expand('<cword>')<CR>
+au Filetype go nnoremap <buffer> <leader>i :exe 'GoImport ' . expand('<cword>')<CR>
 ```
 
 Open a vertical, horizontal or a new tab and go to defintion/declaration of the
