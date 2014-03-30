@@ -94,6 +94,7 @@ COMMANDS                                                          *go-commands*
 
 :Godoc [identifier]
 
+                                                                   *:GoFmt*
 :GoFmt
 
 :GoDef [identifier]
