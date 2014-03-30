@@ -1,14 +1,24 @@
 *vim-go.txt* Go development plugin
+*vim-go*
 
+===============================================================================
+#                                                                             #
+#             ##     ## #### ##     ##          ######    #######             #
+#             ##     ##  ##  ###   ###         ##    ##  ##     ##            #
+#             ##     ##  ##  #### ####         ##        ##     ##            #
+#             ##     ##  ##  ## ### ## ####### ##   #### ##     ##            #
+#              ##   ##   ##  ##     ##         ##    ##  ##     ##            #
+#               ## ##    ##  ##     ##         ##    ##  ##     ##            #
+#                ###    #### ##     ##          ######    #######             #
+#                                                                             #
 ===============================================================================
 CONTENTS                                                          *go-contents*
 
-	Intro..................................: |go-intro|
-	Install................................: |go-install|
-	Commands...............................: |go-commands|
-	Settings...............................: |go-settings|
-	Credits................................: |go-credits|
-
+	1. Intro........................................|go-intro|
+	2. Install......................................|go-install|
+	3. Commands.....................................|go-commands|
+	4. Settings.....................................|go-settings|
+	5. Credits......................................|go-credits|
 
 ===============================================================================
 INTRO                                                                *go-intro*
@@ -20,7 +30,7 @@ snippet support, go toolchain commands, etc... Do not use it with other Go
 plugins.
 
 	* Syntax highlighting
-	* Autocompletion support
+	* Auto completion support
 	* Integrated and improved snippets support
 	* Better gofmt on save, keeps cursor position and doesn't break your
 	  undo history
