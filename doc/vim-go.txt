@@ -115,28 +115,43 @@ COMMANDS                                                          *go-commands*
     current file is used. An argument that is passed to |expand| can be used as
     file selector. For example use `:Gorun %` to select the current file only.
 
+                                                                   *:GoBuild*
 :GoBuild
 
+    Build your package with `go build`. It automatically builds only the files
+    that depends on the current file
+
+                                                                    *:GoTest*
 :GoTest
 
+                                                                *:GoErrCheck*
 :GoErrCheck
 
+                                                                   *:GoFiles*
 :GoFiles
 
+                                                                    *:GoDeps*
 :GoDeps
 
+                                                          *:GoUpdateBinaries*
 :GoUpdateBinaries
 
+                                                          *:GoOracleDescribe*
 :GoOracleDescribe
 
+                                                           *:GoOracleCallees*
 :GoOracleCallees
 
+                                                           *:GoOracleCallers*
 :GoOracleCallers
 
+                                                         *:GoOracleCallgraph*
 :GoOracleCallgraph
 
+                                                        *:GoOracleImplements*
 :GoOracleImplements
 
+                                                      *:GoOracleChannelPeers*
 :GoOracleChannelPeers
 
 ===============================================================================
