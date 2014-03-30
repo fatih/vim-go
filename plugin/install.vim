@@ -4,7 +4,6 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
-
 if !exists("g:go_bin_path")
     let g:go_bin_path = expand("$HOME/.vim-go/")
 endif
@@ -49,15 +48,36 @@ function! s:InstallGoBinaries(updateBin)
   endfor
 endfunction
 
+function! s:CheckBinaries()
+  let out = system("which go")
+  if v:shell_error != 0
+    echohl Error | echomsg "vim-go: go executable not found." | echohl None
+		return -1
+	endif
+
+  let out = system("which git")
+  if v:shell_error != 0
+    echohl Error | echomsg "vim-go: git executable not found." | echohl None
+		return -1
+	endif
+
+  let out = system("which hg")
+  if v:shell_error != 0
+    echohl Error | echomsg "vim.go: hg (mercurial) executable not found." | echohl None
+		return -1
+	endif
+
+endfunction
+
 
 call s:CheckAndSetBinaryPaths()
 
 if !exists("g:go_disable_autoinstall")
-  let out = system("which go")
-  if v:shell_error != 0
-    echohl Error | echomsg "Go executable not found." | echohl None
-  else
+	let err = s:CheckBinaries()
+	if err == 0
     call s:InstallGoBinaries(-1)
+	else
+    echohl Error | echomsg "vim.go: you can disable auto install with 'let g:go_disable_autoinstall = 1'" | echohl None
   endif
 endif
 
