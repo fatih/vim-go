@@ -48,15 +48,15 @@ endif
 
 if g:go_fmt_commands
     command! -buffer Fmt call s:GoFormat()
-    command! -buffer DisableGoimports call s:DisableGoimports()
-    command! -buffer EnableGoimports call s:EnableGoimports()
+    command! -buffer GoDisableGoimports call s:GoDisableGoimports()
+    command! -buffer GoEnableGoimports call s:GoEnableGoimports()
 endif
 
-function! s:DisableGoimports()
+function! s:GoDisableGoimports()
     let g:go_fmt_command = "gofmt"
 endfunction
 
-function! s:EnableGoimports()
+function! s:GoEnableGoimports()
     let g:go_fmt_command = "goimports"
 endfunction
 

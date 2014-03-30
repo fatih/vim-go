@@ -1,15 +1,17 @@
 *vim-go.txt* Go development plugin
 
-=============================================================================== CONTENTS                                                       	  *go-contents*
+===============================================================================
+CONTENTS                                                          *go-contents*
 
-    Intro..................................: |go-intro|
-    Install................................: |go-install|
-    Commands...............................: |go-commands|
-    Settings...............................: |go-settings|
-    Credits................................: |go-credits|
+	Intro..................................: |go-intro|
+	Install................................: |go-install|
+	Commands...............................: |go-commands|
+	Settings...............................: |go-settings|
+	Credits................................: |go-credits|
+
 
 ===============================================================================
-INTRO                                                             *go-intro*
+INTRO                                                                *go-intro*
 
 Full featured Go development environment support for Vim. vim-go installs
 automatically all necessary binaries if they are not found. It comes with
@@ -32,14 +34,13 @@ plugins.
 	* Checking for unchecked errors.
 
 ===============================================================================
-INSTALL                                                             *go-install*
+INSTALL                                                           *go-install*
 
 If you use pathogen, just clone it into your bundle directory: >
 
 	$ cd ~/.vim/bundle
 	$ git clone https://github.com/fatih/vim-go.git
 <
-
 For the first Vim start it will try to download and install all necessary go
 binaries. To disable this behabeviour please check out |go-settings|.
 
@@ -53,24 +54,47 @@ completion (completion by type) install YCM: >
 
 
 ===============================================================================
-COMMANDS							   *go-commands*
+COMMANDS                                                          *go-commands*
 
+                                                                    *:Import*
+:Import [path]
 
-:Import [path] *:Import*
+    Import ensures that the provided package {path} is imported
+    in the current Go buffer, using proper style and ordering.
+    If {path} is already being imported, an error will be
+    displayed and the buffer will be untouched.
 
+                                                                  *:ImportAs*
 :ImportAs [localname] [path]
 
+    Same as Import, but uses a custom local name for the package.
+
+                                                                      *:Drop*
 :Drop [path]
 
-:DisableGoimports
+    Remove the import line for the provided package {path}, if
+    present in the current Go buffer.  If {path} is not being
+    imported, an error will be displayed and the buffer will be
+    untouched.
 
-:EnableGoimports
+                                                        *:GoDisableGoimports*
+:GoDisableGoimports
 
-:Lint
+    Disable goimports and use "fmt" for *:GoFmt* command
+
+                                                         *:GoEnableGoimports*
+:GoEnableGoimports
+
+    Enable goimports and use "goimports" for *:GoFmt* command
+
+                                                                    *:GoLint*
+:GoLint
+
+    Run golint for the current Go file.
 
 :Godoc [identifier]
 
-:Fmt
+:GoFmt
 
 :GoDef [identifier]
 
@@ -108,3 +132,5 @@ SETTINGS 							*go-settings*
 
 ===============================================================================
 CREDITS 							*go-credits*
+
+vim:ft=help:et:ts=2:sw=2:sts=2:norl

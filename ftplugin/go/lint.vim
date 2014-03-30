@@ -16,7 +16,7 @@ if exists("b:did_ftplugin_go_lint")
     finish
 endif
 
-command! -buffer Lint call s:GoLint()
+command! -buffer GoLint call s:GoLint()
 
 function! s:GoLint() abort
     silent cexpr system(g:go_golint_bin . " " . shellescape(expand('%')))
