@@ -7,7 +7,7 @@
 "
 " Commands:
 "
-"   :Godoc
+"   :GoDoc
 "
 "       Open the relevant Godoc for either the word[s] passed to the command or
 "       the, by default, the word under the cursor.
@@ -31,7 +31,7 @@ if !exists('g:go_godoc_commands')
 endif
 
 if g:go_godoc_commands
-  command! -nargs=* -range -complete=customlist,go#package#Package Godoc :call s:Godoc(<f-args>)
+  command! -nargs=* -range -complete=customlist,go#package#Package GoDoc :call s:Godoc(<f-args>)
 endif
 
 nnoremap <silent> <Plug>(godoc-keyword) :<C-u>call <SID>Godoc('')<CR>

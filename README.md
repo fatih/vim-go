@@ -63,7 +63,7 @@ Current commands:
 :GoDisableGoimports
 :GoEnableGoimports
 :GoLint
-:Godoc <identifier>
+:GoDoc <identifier>
 :GoFmt
 :GoDef <identifier>
 :GoRun <expand>

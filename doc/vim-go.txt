@@ -100,10 +100,10 @@ COMMANDS                                                          *go-commands*
 
     Run golint for the current Go file.
 
-                                                                     *:Godoc*
-:Godoc [word]
+                                                                     *:GoDoc*
+:GoDoc [word]
 
-    Open the relevant Godoc for either the word[s] passed to the command or
+    Open the relevant GoDoc for either the word[s] passed to the command or
     the, by default, the word under the cursor.
 
                                                                      *:GoFmt*
