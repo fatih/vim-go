@@ -35,7 +35,7 @@ if !exists("g:go_fmt_commands")
 endif
 
 if !exists("g:go_fmt_command")
-    let g:go_fmt_command = "goimports"
+    let g:go_fmt_command = g:go_goimports_bin
 endif
 
 if !exists('g:go_fmt_autosave')
@@ -57,7 +57,7 @@ function! s:GoDisableGoimports()
 endfunction
 
 function! s:GoEnableGoimports()
-    let g:go_fmt_command = "goimports"
+    let g:go_fmt_command = g:go_goimports_bin
 endfunction
 
 
