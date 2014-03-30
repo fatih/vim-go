@@ -11,7 +11,14 @@ endif
 
 let $GOBIN = g:go_bin_path
 
-let s:packages = ["github.com/nsf/gocode", "code.google.com/p/go.tools/cmd/goimports", "code.google.com/p/rog-go/exp/cmd/godef", "code.google.com/p/go.tools/cmd/oracle", "github.com/golang/lint/golint", "github.com/kisielk/errcheck"]
+let s:packages = [
+\ "github.com/nsf/gocode", 
+\ "code.google.com/p/go.tools/cmd/goimports", 
+\ "code.google.com/p/rog-go/exp/cmd/godef", 
+\ "code.google.com/p/go.tools/cmd/oracle", 
+\ "github.com/golang/lint/golint", 
+\ "github.com/kisielk/errcheck",
+\ ]
 
 
 function! s:CheckAndSetBinaryPaths() 
