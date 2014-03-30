@@ -80,12 +80,12 @@ COMMANDS                                                          *go-commands*
                                                         *:GoDisableGoimports*
 :GoDisableGoimports
 
-    Disable goimports and use "fmt" for *:GoFmt* command
+    Disable goimports and use "fmt" for |:GoFmt| command
 
                                                          *:GoEnableGoimports*
 :GoEnableGoimports
 
-    Enable goimports and use "goimports" for *:GoFmt* command
+    Enable goimports and use "goimports" for |:GoFmt| command
 
                                                                     *:GoLint*
 :GoLint
