@@ -59,10 +59,9 @@ COMMANDS                                                          *go-commands*
                                                                     *:Import*
 :Import [path]
 
-    Import ensures that the provided package {path} is imported
-    in the current Go buffer, using proper style and ordering.
-    If {path} is already being imported, an error will be
-    displayed and the buffer will be untouched.
+    Import ensures that the provided package {path} is imported in the current
+    Go buffer, using proper style and ordering.  If {path} is already being
+    imported, an error will be displayed and the buffer will be untouched.
 
                                                                   *:ImportAs*
 :ImportAs [localname] [path]
@@ -72,10 +71,9 @@ COMMANDS                                                          *go-commands*
                                                                       *:Drop*
 :Drop [path]
 
-    Remove the import line for the provided package {path}, if
-    present in the current Go buffer.  If {path} is not being
-    imported, an error will be displayed and the buffer will be
-    untouched.
+    Remove the import line for the provided package {path}, if present in the
+    current Go buffer.  If {path} is not being imported, an error will be
+    displayed and the buffer will be untouched.
 
                                                         *:GoDisableGoimports*
 :GoDisableGoimports
@@ -94,8 +92,11 @@ COMMANDS                                                          *go-commands*
 
 :Godoc [identifier]
 
-                                                                   *:GoFmt*
+                                                                     *:GoFmt*
 :GoFmt
+
+    Filter the current Go buffer through gofmt.  It tries to preserve cursor
+    position and avoids replacing the buffer with stderr output.
 
 :GoDef [identifier]
 

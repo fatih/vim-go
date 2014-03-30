@@ -76,12 +76,12 @@ Drop a package
 
 Disable or enable goimports at any time:
 
-	:DisableGoimports
-	:EnableGoimports
+	:GoDisableGoimports
+	:GoEnableGoimports
 
 Lint your current file, suggestions are listed in quickfix window
 
-	:Lint
+	:GoLint
 
 Open relevant Godoc under your cursor or give package name
 
@@ -90,7 +90,7 @@ Open relevant Godoc under your cursor or give package name
 
 Fmt your file explicitly
 
-	:Fmt
+	:GoFmt
 
 Go to a declaration under your cursor or identifier
 

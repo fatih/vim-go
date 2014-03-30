@@ -8,7 +8,7 @@
 "
 " This filetype plugin add a new commands for go buffers:
 "
-"   :Lint
+"   :GoLint
 "
 "       Run golint for the current Go file.
 "

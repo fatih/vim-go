@@ -43,11 +43,11 @@ if !exists('g:go_fmt_autosave')
 endif
 
 if g:go_fmt_autosave
-    autocmd BufWritePre <buffer> :Fmt
+    autocmd BufWritePre <buffer> :GoFmt
 endif
 
 if g:go_fmt_commands
-    command! -buffer Fmt call s:GoFormat()
+    command! -buffer GoFmt call s:GoFormat()
     command! -buffer GoDisableGoimports call s:GoDisableGoimports()
     command! -buffer GoEnableGoimports call s:GoEnableGoimports()
 endif
