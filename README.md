@@ -3,13 +3,13 @@
 Full featured Go development environment support for Vim. vim-go installs
 automatically all necessary binaries if they are not found. It comes with
 pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, go toolchain commands, etc... Do not use it with other Go 
+snippet support, go toolchain commands, etc... Do not use it with other Go
 plugins.
 
 
 ## Features
 
-* Syntax highlighting
+* Improved Syntax highlighting
 * Autocompletion support
 * Integrated and improved snippets support
 * Better gofmt on save, keeps cursor position and doesn't break your undo
@@ -49,118 +49,37 @@ $ ./install.sh
 
 ## Usage
 
-Get a list of all commands from the the vim doc:
+Usage and commands are listed in `doc/vim-go.txt`. Just open the help page to
+see all commands:
 
-	:he go-commands
+	:help vim-go
 
+Current commands:
 
-Usage and commands are listed below until we moved them all into
-`doc/vim-go.txt`
-
-Import/Drop is automatically done via goimports, however you always have the
-option to call explicitly:
-
-Import a package
-
-	:GoImport <path>
-
-Import a package with custom local name
-
-	:GoImportAs <localname> <path>
-
-Drop a package
-
-	:GoDrop <path>
-
-Disable or enable goimports at any time:
-
-	:GoDisableGoimports
-	:GoEnableGoimports
-
-Lint your current file, suggestions are listed in quickfix window
-
-	:GoLint
-
-Open relevant Godoc under your cursor or give package name
-
-	:Godoc
-	:Godoc <identifier>
-
-Fmt your file explicitly
-
-	:GoFmt
-
-Go to a declaration under your cursor or identifier
-
-	:GoDef
-	:GoDef <identifier>
-
-Build and run your current main package. By default all main files in your
-current directory are used. Use `:Gorun %` to use only for your current file.
-
-	:GoRun 
-	:GoRun <expand>
-
-Build your package. Default :make doesn't create any output binary (to not
-pollute your working directory). :GoBuild does create a binary. Errors are
-populated in quickfix window.
-
-	:make
-	:GoBuild
-
-Test your _test.go files via in your current directory. Errors are populated in quickfix window.
-
-	:GoTest
-
-Check for unchecked errors in you current package. Errors are populated in quickfix window.
-
-	:GoErrCheck
-
-Show .go source files for the current package
-
-	:GoFiles
-
-Show dependencies for the current package
-
-	:GoDeps
-
-Update all Go binaries under `g:go_bin_path`:
-
-	:GoUpdateBinaries
-
-Source analysis is implemented via
-[Oracle](https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view).
-Quickly find which interface is implemented by others, callers of a function,
-callees of a function call, etc.  The plugin itself is improved and shows errors
-instead of failing silently. Each command works for the word under your cursor
-or for a selected idenfifier:
-
-Describe the expression at the current point:
-
-	:GoOracleDescribe
-
-Show possible callees of the function call at the current point:
-
-	:GoOracleCallees
-
-Show the set of callers of the function containing the current point:
-
-	:GoOracleCallers
-
-Show the callgraph of the current program:
-
-	:GoOracleCallgraph
-
-Describe the 'implements' relation for types in the package containing the
-current point:
-
-	:GoOracleImplements
-
-Enumerate the set of possible corresponding sends/receives for this channel
-receive/send operation:
-
-	:GoOracleChannelPeers
-
+```vimrc
+:GoImport <path>
+:GoImportAs <localname> <path>
+:GoDrop <path>
+:GoDisableGoimports
+:GoEnableGoimports
+:GoLint
+:Godoc <identifier>
+:GoFmt
+:GoDef <identifier>
+:GoRun <expand>
+:GoBuild
+:GoTest
+:GoErrCheck
+:GoFiles
+:GoDeps
+:GoUpdateBinaries
+:GoOracleDescribe
+:GoOracleCallees
+:GoOracleCallers
+:GoOracleCallgraph
+:GoOracleImplements
+:GoOracleChannelPeers
+```
 
 ## Snippets
 
@@ -173,7 +92,7 @@ $ cd ~/.vim/bundle
 $ git clone https://github.com/SirVer/ultisnips.git
 ```
 
-Below are some examples snippets and the correspondings trigger keywords, 
+Below are some examples snippets and the correspondings trigger keywords,
 The `|` character defines the cursor. Ultisnips has suppport for multiple
 cursors
 
