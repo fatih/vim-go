@@ -66,20 +66,20 @@ completion (completion by type) install YCM: >
 ===============================================================================
 COMMANDS                                                          *go-commands*
 
-                                                                    *:Import*
-:Import [path]
+                                                                  *:GoImport*
+:GoImport [path]
 
     Import ensures that the provided package {path} is imported in the current
     Go buffer, using proper style and ordering.  If {path} is already being
     imported, an error will be displayed and the buffer will be untouched.
 
-                                                                  *:ImportAs*
-:ImportAs [localname] [path]
+                                                                *:GoImportAs*
+:GoImportAs [localname] [path]
 
     Same as Import, but uses a custom local name for the package.
 
-                                                                      *:Drop*
-:Drop [path]
+                                                                    *:GoDrop*
+:GoDrop [path]
 
     Remove the import line for the provided package {path}, if present in the
     current Go buffer.  If {path} is not being imported, an error will be
