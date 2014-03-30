@@ -124,35 +124,62 @@ COMMANDS                                                          *go-commands*
                                                                     *:GoTest*
 :GoTest
 
+    Test your _test.go files via in your current directory. Errors are
+    populated in quickfix window.
+
                                                                 *:GoErrCheck*
 :GoErrCheck
+
+    Check for unchecked errors in you current package. Errors are populated in
+    quickfix window.
 
                                                                    *:GoFiles*
 :GoFiles
 
+    Show dependencies for the current package
+
                                                                     *:GoDeps*
 :GoDeps
+
+    Show dependencies for the current package
 
                                                           *:GoUpdateBinaries*
 :GoUpdateBinaries
 
+    Update all Go binaries under `g:go_bin_path`
+
                                                           *:GoOracleDescribe*
 :GoOracleDescribe
+
+    Describe the expression at the current point.
 
                                                            *:GoOracleCallees*
 :GoOracleCallees
 
+    Show possible callees of the function call at the current point.
+
                                                            *:GoOracleCallers*
 :GoOracleCallers
+
+    Show the set of callers of the function containing the current point.
 
                                                          *:GoOracleCallgraph*
 :GoOracleCallgraph
 
+    Show the callgraph of the current program.
+
                                                         *:GoOracleImplements*
 :GoOracleImplements
 
+    Describe the 'implements' relation for types in the package containing the
+    current point.
+
                                                       *:GoOracleChannelPeers*
 :GoOracleChannelPeers
+
+    Enumerate the set of possible corresponding sends/receives for this
+    channel receive/send operation.
+
 
 ===============================================================================
 SETTINGS 							*go-settings*
