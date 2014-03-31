@@ -52,7 +52,7 @@ If you use pathogen, just clone it into your bundle directory: >
 	$ git clone https://github.com/fatih/vim-go.git
 <
 For the first Vim start it will try to download and install all necessary go
-binaries. To disable this behabeviour please check out |go-settings|.
+binaries. To disable this behaviour please check out |go-settings|.
 
 Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
 completion (completion by type) install YCM: >

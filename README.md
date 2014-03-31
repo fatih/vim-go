@@ -34,7 +34,7 @@ $ git clone https://github.com/fatih/vim-go.git
 ```
 
 For the first Vim start it will try to download and install all necessary go
-binaries. To disable this behabeviour please check out
+binaries. To disable this behaviour please check out
 [settings](#settings).
 
 Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
