@@ -3,7 +3,8 @@ if exists("g:go_loaded_gosnippets")
 endif
 let g:go_loaded_gosnippets = 1
 
-" If this exists, it means UltiSnips is installed Return if it's not installed
+" Check if UltiSnips exists, if not don't change any settings and return
+" early.
 if globpath(&rtp, 'plugin/UltiSnips.vim') == ""
     finish
 endif
