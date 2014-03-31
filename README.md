@@ -10,7 +10,7 @@ plugins.
 ## Features
 
 * Improved Syntax highlighting
-* Autocompletion support
+* Auto completion support
 * Integrated and improved snippets support
 * Better gofmt on save, keeps cursor position and doesn't break your undo
   history
@@ -18,7 +18,7 @@ plugins.
 * Automatically import packages
 * Compile and build package
 * Run quickly your snippet
-* Run tests and see any errors in quick window
+* Run tests and see any errors in quickfix window
 * Lint your code
 * Advanced source analysis tool with oracle
 * Checking for unchecked errors.
@@ -49,8 +49,9 @@ $ ./install.sh
 
 ## Usage
 
-Usage and commands are listed in `doc/vim-go.txt`. Just open the help page to
-see all commands:
+All [features](#features) are enabled by default. There is no additional
+settings needed.  Usage and commands are listed in `doc/vim-go.txt`. Just open
+the help page to see all commands:
 
 	:help vim-go
 
