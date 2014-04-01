@@ -19,7 +19,6 @@ let s:packages = [
 \ "github.com/kisielk/errcheck",
 \ ]
 
-
 function! s:CheckAndSetBinaryPaths() 
   for pkg in s:packages
     let basename = fnamemodify(pkg, ":t")
@@ -31,22 +30,7 @@ function! s:CheckAndSetBinaryPaths()
   endfor
 endfunction
 
-
-function! s:InstallGoBinaries(updateBin) 
-  for pkg in s:packages
-    let basename = fnamemodify(pkg, ":t")
-    let binname = "go_" . basename . "_bin"
-
-    if !executable(g:{binname}) || a:updateBin == 1
-      echo "Installing ".pkg
-      let out = system("go get -u -v ".shellescape(pkg))
-      if v:shell_error
-	echo "Error installing ". pkg . ": " . out
-      endif
-    endif
-
-  endfor
-endfunction
+call s:CheckAndSetBinaryPaths()
 
 function! s:CheckBinaries()
   let out = system("which go")
@@ -66,20 +50,43 @@ function! s:CheckBinaries()
     echohl Error | echomsg "vim.go: hg (mercurial) executable not found." | echohl None
 		return -1
 	endif
-
 endfunction
 
+function! s:GoInstallBinaries(updateBin) 
+	if exists("g:go_disable_autoinstall")
+    echom "vim.go: auto install is disabled. Enable it with 'let g:go_disable_autoinstall = 0'"
+		return
+	endif
 
-call s:CheckAndSetBinaryPaths()
+	if $GOPATH == ""
+		echohl Error 
+		echomsg "vim.go: $GOPATH is not set"
+		echomsg "vim.go: you can disable auto install with 'let g:go_disable_autoinstall = 1'"
+		echohl None
+		return
+	endif
 
-if !exists("g:go_disable_autoinstall")
 	let err = s:CheckBinaries()
-	if err == 0
-    call s:InstallGoBinaries(-1)
-	else
-    echohl Error | echomsg "vim.go: you can disable auto install with 'let g:go_disable_autoinstall = 1'" | echohl None
+	if err != 0
+		echohl Error | echomsg "vim.go: you can disable auto install with 'let g:go_disable_autoinstall = 1'" | echohl None
+		return
   endif
-endif
 
-command! GoUpdateBinaries call s:InstallGoBinaries(1)
+  for pkg in s:packages
+    let basename = fnamemodify(pkg, ":t")
+    let binname = "go_" . basename . "_bin"
 
+    if !executable(g:{binname}) || a:updateBin == 1
+      echo "Installing ".pkg
+      let out = system("go get -u -v ".shellescape(pkg))
+      if v:shell_error
+				echo "Error installing ". pkg . ": " . out
+      endif
+    endif
+  endfor
+endfunction
+
+" try to install once
+call s:GoInstallBinaries(-1)
+
+command! GoUpdateBinaries call s:GoInstallBinaries(1)
