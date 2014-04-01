@@ -9,8 +9,8 @@ function! s:ErrCheck() abort
   let out = system(g:go_errcheck_bin . ' ' . shellescape(expand('%:p:h')))
   if v:shell_error
 		let errors = []
+		let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
 		for line in split(out, '\n')
-				let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
 				let tokens = matchlist(line, mx)
 
 				if !empty(tokens)
