@@ -85,17 +85,17 @@ Current commands:
 ## Snippets
 
 Snippets are useful and very powerful. Vim-go has a sensible integration with
-UltiSnips and YCM. Just type the trigger keyword and expand with
-`<tab>` key. To make use of it, install UltiSnips:
+[ultisnips](https://github.com/SirVer/ultisnips) and
+[neosnippet](https://github.com/Shougo/neosnippet.vim). By default ultisnips is
+used, however you can change it to neosnippet with:
 
-```bash
-$ cd ~/.vim/bundle
-$ git clone https://github.com/SirVer/ultisnips.git
+```vimrc
+let g:go_snippet_engine = "neosnippet"
 ```
 
-Below are some examples snippets and the correspondings trigger keywords,
-The `|` character defines the cursor. Ultisnips has suppport for multiple
-cursors
+Snippet feature is enabled only if the snippet plugin are installed.  Below are
+some examples snippets and the correspondings trigger keywords, The `|`
+character defines the cursor. Ultisnips has suppport for multiple cursors
 
 
 `ff` is useful for debugging:
@@ -132,7 +132,7 @@ type foo struct {
 ...
 
 And many more! For the full list have a look at the
-[included snippets](https://github.com/fatih/vim-go/blob/master/gosnippets/go.snippets):
+[included snippets](https://github.com/fatih/vim-go/blob/master/gosnippets/):
 
 
 ## Settings

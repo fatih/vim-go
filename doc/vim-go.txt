@@ -208,6 +208,13 @@ is used >
 
   let g:go_fmt_command = "goimports"
 <
+                                                        *'g:go_snippet_engine'*
+
+Use this option to define the default snippet engine.  By default "ultisnips"
+is enabled. Use "neosnippet" for neosnippet.vim: >
+
+  let g:go_snippet_engine = "ultisnips"
+<
                                                 *'g:go_disable_autoinstall'*
 
 By default vim-go automatically install all necessary tools which are used
@@ -216,7 +223,6 @@ for |:go-commands|. Disable it if you don't wish to be updated. Also disable
 
   let g:go_disable_autoinstall = 0
 <
-
                                                            *'g:go_bin_path'*
 
 Use this option to change default path for vim-go tools. By default it's set
