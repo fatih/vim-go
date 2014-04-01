@@ -13,7 +13,7 @@ function! s:GoDeps()
  return out
 endfunction
 
-function! s:CatchErrors(out)
+function! g:GoCatchErrors(out)
 	let errors = []
 	for line in split(a:out, '\n')
 			let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
@@ -58,7 +58,7 @@ endfunction
 function! s:GoTest()
   let out = system("go test .")
   if v:shell_error
-		call s:CatchErrors(out)
+		call s:GoCatchErrors(out)
   else
     call setqflist([])
   endif
