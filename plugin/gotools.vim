@@ -13,7 +13,7 @@ function! s:GoDeps()
  return out
 endfunction
 
-function! g:GoCatchErrors(out)
+function! g:GoCatchErrors(out, name)
 	let errors = []
 	for line in split(a:out, '\n')
 			let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
@@ -29,7 +29,7 @@ function! g:GoCatchErrors(out)
 	if !empty(errors)
 			call setqflist(errors, 'r')
 	endif
-	echohl Error | echomsg "Go test returned error" | echohl None
+	echohl Error | echomsg a:name . " returned error" | echohl None
 endfunction
 
 function! s:GoRun(...)
@@ -58,7 +58,7 @@ endfunction
 function! s:GoTest()
   let out = system("go test .")
   if v:shell_error
-		call s:GoCatchErrors(out)
+		call g:GoCatchErrors(out, "Go test")
   else
     call setqflist([])
   endif
