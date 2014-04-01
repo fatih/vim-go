@@ -42,6 +42,10 @@ if !exists('g:go_fmt_autosave')
     let g:go_fmt_autosave = 1
 endif
 
+if !exists('g:go_fmt_fail_silently')
+    let g:go_fmt_fail_silently = 0
+endif
+
 if g:go_fmt_autosave
     autocmd BufWritePre <buffer> :GoFmt
 endif
@@ -74,7 +78,7 @@ function! s:GoFormat()
         try | silent undojoin | catch | endtry
         silent execute "%!" . g:go_fmt_command
         call setqflist([]) 
-    else
+    elseif g:go_fmt_fail_silently == 0 
         "otherwise get the errors and put them to quickfix window
         let errors = []
         for line in split(out, '\n')
@@ -94,6 +98,7 @@ function! s:GoFormat()
             echohl Error | echomsg "Gofmt returned error" | echohl None
         endif
     endif
+
     call delete(l:tmpname)
     call winrestview(l:curw)
     cwindow

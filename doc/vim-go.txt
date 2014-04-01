@@ -201,29 +201,37 @@ Use this option to auto |:GoFmt| on save. By default it's enabled >
 
   let g:go_fmt_autosave = 1
 <
-                                                        *'g:go_fmt_command'*
+                                                         *'g:go_fmt_command'*
 
 Use this option to define which tool is used to gofmt. By default `goimports`
 is used >
 
   let g:go_fmt_command = "goimports"
 <
-                                                        *'g:go_snippet_engine'*
+                                                   *'g:go_fmt_fail_silently'*
+
+Use this option to disable showing a quickfix window when |g:go_fmt_command|
+fails. By default it's disabled. >
+
+  let g:go_fmt_fail_silently = 0
+<
+
+                                                      *'g:go_snippet_engine'*
 
 Use this option to define the default snippet engine.  By default "ultisnips"
 is enabled. Use "neosnippet" for neosnippet.vim: >
 
   let g:go_snippet_engine = "ultisnips"
 <
-                                                *'g:go_disable_autoinstall'*
+                                                 *'g:go_disable_autoinstall'*
 
 By default vim-go automatically install all necessary tools which are used
-for |:go-commands|. Disable it if you don't wish to be updated. Also disable
-|:GoUpdateBinaries| >
+for |:go-commands|. Disable it if you don't wish to be updated. This also disables
+the |:GoUpdateBinaries| command. >
 
   let g:go_disable_autoinstall = 0
 <
-                                                           *'g:go_bin_path'*
+                                                            *'g:go_bin_path'*
 
 Use this option to change default path for vim-go tools. By default it's set
 to `$HOME/.vim-go/`. To change it: >
