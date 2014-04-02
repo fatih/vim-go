@@ -156,7 +156,7 @@ Snippets are useful and very powerful. Vim-go has a sensible integration with
 [neosnippet](https://github.com/Shougo/neosnippet.vim). By default ultisnips is
 used, however you can change it to neosnippet with:
 
-```vimrc
+```vim
 let g:go_snippet_engine = "neosnippet"
 ```
 
