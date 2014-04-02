@@ -82,6 +82,73 @@ Current commands:
 :GoOracleChannelPeers
 ```
 
+## Settings
+Below are some settings for `.vimrc` you might find useful :
+
+Import the package under your cursor with `<leader>i`
+
+```vim
+au Filetype go nnoremap <buffer> <leader>i :exe 'GoImport ' . expand('<cword>')<CR>
+```
+
+Run `go run` for the current file with `<leader>r`
+
+```vim
+au Filetype go nnoremap <leader>r :GoRun %<CR>
+```
+
+Open a vertical, horizontal or a new tab and go to defintion/declaration of the
+identified under your cursor:
+
+```vim
+au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
+au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
+au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
+```
+
+By default vim-go shows errors for the fmt command, you can disable it:
+
+```vim
+let g:go_fmt_fail_silently = 1
+```
+
+Disable auto fmt on save
+
+```vim
+let g:go_fmt_autosave = 0
+```
+
+Disable goimports and use gofmt for the fmt command:
+
+```vim
+let g:go_fmt_command = "gofmt"
+```
+
+By default binaries are installed to `$HOME/.vim-go/`. To change it:
+
+```vim
+let g:go_bin_path = expand("~/.mypath")
+let g:go_bin_path = "/home/fatih/.mypath"      "or give relative path
+```
+
+Change individual binary paths, if the binary doesn't exist vim-go will
+download and install it to `g:go_bin_path`
+
+```vim
+let g:go_gocode_bin="~/your/custom/gocode/path"
+let g:go_goimports_bin="~/your/custom/goimports/path"
+let g:go_godef_bin="~/your/custom/godef/path"
+let g:go_oracle_bin="~/your/custom/godef/path"
+let g:go_golint_bin="~/your/custom/golint/path"
+let g:go_errcheck_bin="~/your/custom/errcheck/path"
+```
+
+If you wish you can disable auto installation of binaries completely.
+
+```vim
+let g:go_disable_autoinstall = 1
+```
+
 ## Snippets
 
 Snippets are useful and very powerful. Vim-go has a sensible integration with
@@ -135,72 +202,6 @@ And many more! For the full list have a look at the
 [included snippets](https://github.com/fatih/vim-go/blob/master/gosnippets/):
 
 
-## Settings
-Below are some settings for `.vimrc` you might find useful :
-
-Import the package under your cursor with `<leader>i`
-
-```vim
-au Filetype go nnoremap <buffer> <leader>i :exe 'GoImport ' . expand('<cword>')<CR>
-```
-
-Run `go run` for the current file with `<leader>r`
-
-```vim
-au Filetype go nnoremap <leader>r :GoRun %<CR>
-```
-
-Open a vertical, horizontal or a new tab and go to defintion/declaration of the
-identified under your cursor:
-
-```vim
-au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
-au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
-au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
-```
-
-By default vim-go shows errors for the fmt command, to disable it add:
-
-```vim
-let g:go_fmt_fail_silently = 1
-```
-
-Disable auto go fmt on save
-
-```vim
-let g:go_fmt_autosave = 0
-```
-
-Disable goimports and use gofmt instead of
-
-```vim
-let g:go_fmt_command = "gofmt"
-```
-
-By default binaries are installed to `$HOME/.vim-go/`. To change it:
-
-```vim
-let g:go_bin_path = expand("~/.mypath")
-let g:go_bin_path = "/home/fatih/.mypath"      "or give relative path
-```
-
-Change individual binary paths, if the binary doesn't exist vim-go will
-download and install it to `g:go_bin_path`
-
-```vim
-let g:go_gocode_bin="~/your/custom/gocode/path"
-let g:go_goimports_bin="~/your/custom/goimports/path"
-let g:go_godef_bin="~/your/custom/godef/path"
-let g:go_oracle_bin="~/your/custom/godef/path"
-let g:go_golint_bin="~/your/custom/golint/path"
-let g:go_errcheck_bin="~/your/custom/errcheck/path"
-```
-
-If you wish you can disable auto installation of binaries completely.
-
-```vim
-let g:go_disable_autoinstall = 1
-```
 
 ## Why another plugin?
 
