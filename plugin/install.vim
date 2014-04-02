@@ -54,7 +54,10 @@ endfunction
 
 function! s:GoInstallBinaries(updateBin) 
 	if exists("g:go_disable_autoinstall")
-    echom "vim.go: auto install is disabled. Enable it with 'let g:go_disable_autoinstall = 0'"
+		if a:updateBin == 1
+			echom "vim.go: auto install is disabled. Enable it with 'let g:go_disable_autoinstall = 0'"
+		endif
+
 		return
 	endif
 
