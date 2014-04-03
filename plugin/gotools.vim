@@ -76,9 +76,6 @@ function! s:GoVet()
 													 \"text":     tokens[3]})
 			endif
 	endfor
-	if empty(errors)
-			% | " Couldn't detect error format, output errors
-	endif
 	if !empty(errors)
 			call setqflist(errors, 'r')
 	endif
