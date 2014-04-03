@@ -9,19 +9,21 @@ plugins.
 
 ## Features
 
-* Improved Syntax highlighting
-* Auto completion support
-* Integrated and improved snippets support
-* Better gofmt on save, keeps cursor position and doesn't break your undo
+* Improved Syntax highlighting, such as Functions, Operators, Methods..
+* Auto completion support via `gocode`
+* Better `gofmt` on save, keeps cursor position and doesn't break your undo
   history
-* Go to symbol/declaration
-* Automatically import packages
-* Compile and build package
-* Run quickly your snippet
-* Run tests and see any errors in quickfix window
-* Lint your code
-* Advanced source analysis tool with oracle
-* Checking for unchecked errors.
+* Go to symbol/declaration with `godef`
+* Automatically import packages via `goimports`
+* Compile and `go build` your package
+* `go run` quickly your current file/files
+* Run `go test` and see any errors in quickfix window
+* Lint your code with `golint`
+* Run your code trough `go vet` to catch static errors.
+* Advanced source analysis tool with `oracle`
+* List all source files and dependencies
+* Checking with `errcheck` for unchecked errors.
+* Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
 
 ## Install
 
@@ -66,6 +68,7 @@ Current commands:
 :GoLint
 :GoDoc <identifier>
 :GoFmt
+:GoVet
 :GoDef <identifier>
 :GoRun <expand>
 :GoBuild
