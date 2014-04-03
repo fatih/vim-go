@@ -40,14 +40,9 @@ binaries. To disable this behaviour please check out
 [settings](#settings).
 
 Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
-completion (completion by type) install YCM:
-
-```bash
-$ cd ~/.vim/bundle
-$ git clone --recursive https://github.com/Valloric/YouCompleteMe.git
-$ cd YouCompleteMe
-$ ./install.sh
-```
+completion (completion by type) install:
+[YCM](https://github.com/Valloric/YouCompleteMe) or
+[neocomplete](https://github.com/Shougo/neocomplete.vim)
 
 ## Usage
 
