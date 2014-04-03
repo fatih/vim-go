@@ -45,11 +45,11 @@ endfunction
 
 function! s:GoBuild()
   let default_makeprg = &makeprg
-	let gofiles = join(split(GoFiles(), '\n'), '\ ')
+	let gofiles = join(split(GoFiles(), '\n'), ' ')
   if v:shell_error
     let &makeprg = "go build . errors"
   else
-    let &makeprg = "go build -o /dev/null " . join(split(GoFiles(), '\n'), ' ')
+    let &makeprg = "go build -o /dev/null " . gofiles
   endif
 	make
   let &makeprg = default_makeprg
