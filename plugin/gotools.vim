@@ -47,9 +47,9 @@ function! s:GoBuild()
   let default_makeprg = &makeprg
 	let gofiles = join(split(GoFiles(), '\n'), '\ ')
   if v:shell_error
-    let &makeprg = "go build"
+    let &makeprg = "go build . errors"
   else
-    let &makeprg = "go build " . join(split(GoFiles(), '\n'), ' ')
+    let &makeprg = "go build -o /dev/null " . join(split(GoFiles(), '\n'), ' ')
   endif
 	make
   let &makeprg = default_makeprg
