@@ -65,8 +65,43 @@ function! s:GoTest()
   cwindow
 endfunction
 
+function! s:GoVet()
+	let out = s:ExecuteInCurrentDir('go vet')
+	let errors = []
+	for line in split(out, '\n')
+			let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
+			if !empty(tokens)
+					call add(errors, {"filename": @%,
+													 \"lnum":     tokens[2],
+													 \"text":     tokens[3]})
+			endif
+	endfor
+	if empty(errors)
+			% | " Couldn't detect error format, output errors
+	endif
+	if !empty(errors)
+			call setqflist(errors, 'r')
+	endif
+  cwindow
+endfunction
+
+" Executed the command and returns the output in the directory of the current
+" file and returns back to original cwd
+function! s:ExecuteInCurrentDir(cmd) abort
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let dir = getcwd()
+  try
+    execute cd.'`=expand("%:p:h")`'
+		let out = system(a:cmd)
+  finally
+    execute cd.'`=dir`'
+  endtry
+	return out
+endfunction
+
 command! GoFiles echo GoFiles()
 command! GoDeps echo s:GoDeps()
 command! GoTest call s:GoTest()
+command! GoVet call s:GoVet()
 command! -nargs=* -range GoRun call s:GoRun(<f-args>)
 command! -range GoBuild call s:GoBuild()
