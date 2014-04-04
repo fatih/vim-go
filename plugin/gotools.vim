@@ -96,6 +96,32 @@ function! s:ExecuteInCurrentDir(cmd) abort
 	return out
 endfunction
 
+
+if !hasmapto('<Plug>(go-run)')
+	nnoremap <silent> <Plug>(go-run) :call <SID>GoRun(expand('%'))<CR>
+endif
+
+if !hasmapto('<Plug>(go-build)')
+	nnoremap <silent> <Plug>(go-build) :call <SID>GoBuild()<CR>
+endif
+
+if !hasmapto('<Plug>(go-test)')
+	nnoremap <silent> <Plug>(go-test) :call <SID>GoTest()<CR>
+endif
+
+if !hasmapto('<Plug>(go-vet)')
+	nnoremap <silent> <Plug>(go-vet) :call <SID>GoVet()<CR>
+endif
+
+if !hasmapto('<Plug>(go-files)')
+	nnoremap <silent> <Plug>(go-files) :call <SID>GoFiles()<CR>
+endif
+
+if !hasmapto('<Plug>(go-deps)')
+	nnoremap <silent> <Plug>(go-deps) :call <SID>GoDeps()<CR>
+endif
+
+
 command! GoFiles echo GoFiles()
 command! GoDeps echo s:GoDeps()
 command! GoTest call s:GoTest()

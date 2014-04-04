@@ -92,8 +92,13 @@ au Filetype go nnoremap <buffer> <leader>i :exe 'GoImport ' . expand('<cword>')<
 Run `go run` for the current file with `<leader>r`
 
 ```vim
-au Filetype go nnoremap <leader>r :GoRun %<CR>
+au FileType go nmap  <leader>r  <Plug>(go-run)
 ```
+
+Or easy `go build` and `go test` for the current package with `<leader>b` and `<leader>t`
+
+au FileType go nmap  <leader>b  <Plug>(go-build)
+au FileType go nmap  <leader>t  <Plug>(go-test)
 
 Open a vertical, horizontal or a new tab and go to defintion/declaration of the
 identified under your cursor:
