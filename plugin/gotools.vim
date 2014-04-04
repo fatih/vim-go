@@ -72,8 +72,8 @@ function! s:GoVet()
 			let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
 			if !empty(tokens)
 					call add(errors, {"filename": @%,
-													 \"lnum":     tokens[2],
-													 \"text":     tokens[3]})
+								\"lnum":     tokens[2],
+								\"text":     tokens[3]})
 			endif
 	endfor
 	if !empty(errors)
@@ -98,27 +98,27 @@ endfunction
 
 
 if !hasmapto('<Plug>(go-run)')
-	nnoremap <silent> <Plug>(go-run) :call <SID>GoRun(expand('%'))<CR>
+	nnoremap <silent> <Plug>(go-run) :<C-u>call <SID>GoRun(expand('%'))<CR>
 endif
 
 if !hasmapto('<Plug>(go-build)')
-	nnoremap <silent> <Plug>(go-build) :call <SID>GoBuild()<CR>
+	nnoremap <silent> <Plug>(go-build) :<C-u>call <SID>GoBuild()<CR>
 endif
 
 if !hasmapto('<Plug>(go-test)')
-	nnoremap <silent> <Plug>(go-test) :call <SID>GoTest()<CR>
+	nnoremap <silent> <Plug>(go-test) :<C-u>call <SID>GoTest()<CR>
 endif
 
 if !hasmapto('<Plug>(go-vet)')
-	nnoremap <silent> <Plug>(go-vet) :call <SID>GoVet()<CR>
+	nnoremap <silent> <Plug>(go-vet) :<C-u>call <SID>GoVet()<CR>
 endif
 
 if !hasmapto('<Plug>(go-files)')
-	nnoremap <silent> <Plug>(go-files) :call <SID>GoFiles()<CR>
+	nnoremap <silent> <Plug>(go-files) :<C-u>call <SID>GoFiles()<CR>
 endif
 
 if !hasmapto('<Plug>(go-deps)')
-	nnoremap <silent> <Plug>(go-deps) :call <SID>GoDeps()<CR>
+	nnoremap <silent> <Plug>(go-deps) :<C-u>call <SID>GoDeps()<CR>
 endif
 
 

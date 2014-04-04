@@ -81,7 +81,9 @@ Current commands:
 ```
 
 ## Settings
-Below are some settings for `.vimrc` you might find useful :
+
+Below are some settings and mappings for `.vimrc` you might find useful. Each
+mappings is provided via VimL's `<Plug>` functionality. See examples:
 
 Import the package under your cursor with `<leader>i`
 
@@ -89,24 +91,22 @@ Import the package under your cursor with `<leader>i`
 au Filetype go nnoremap <buffer> <leader>i :exe 'GoImport ' . expand('<cword>')<CR>
 ```
 
-Run `go run` for the current file with `<leader>r`
+Run commands, such as  `go run` with `<leader>r` for the current file or `go build` and `go test` for
+the current package with `<leader>b` and `<leader>t`.
 
 ```vim
-au FileType go nmap  <leader>r  <Plug>(go-run)
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
 ```
-
-Or easy `go build` and `go test` for the current package with `<leader>b` and `<leader>t`
-
-au FileType go nmap  <leader>b  <Plug>(go-build)
-au FileType go nmap  <leader>t  <Plug>(go-test)
 
 Open a vertical, horizontal or a new tab and go to defintion/declaration of the
 identified under your cursor:
 
 ```vim
-au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
-au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
-au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 ```
 
 By default vim-go shows errors for the fmt command, you can disable it:
