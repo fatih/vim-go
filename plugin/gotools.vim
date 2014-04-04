@@ -122,6 +122,13 @@ if !hasmapto('<Plug>(go-deps)')
 endif
 
 
+" This needs to be here, it doesn't get sourced when put into a file under ftplugin/go
+if !hasmapto('<Plug>(go-import)')
+  nnoremap <silent> <Plug>(go-import) :<C-u>call GoSwitchImport(1, '', expand('<cword>'))<CR>
+endif
+
+
+
 command! GoFiles echo GoFiles()
 command! GoDeps echo s:GoDeps()
 command! GoTest call s:GoTest()

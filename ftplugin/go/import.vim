@@ -54,12 +54,13 @@ if !exists("g:go_import_commands")
 endif
 
 if g:go_import_commands
-    command! -buffer -nargs=? -complete=customlist,go#package#Complete GoDrop call s:SwitchImport(0, '', <f-args>)
-    command! -buffer -nargs=1 -complete=customlist,go#package#Complete GoImport call s:SwitchImport(1, '', <f-args>)
-    command! -buffer -nargs=* -complete=customlist,go#package#Complete GoImportAs call s:SwitchImport(1, <f-args>)
+    command! -buffer -nargs=? -complete=customlist,go#package#Complete GoDrop call GoSwitchImport(0, '', <f-args>)
+    command! -buffer -nargs=1 -complete=customlist,go#package#Complete GoImport call GoSwitchImport(1, '', <f-args>)
+    command! -buffer -nargs=* -complete=customlist,go#package#Complete GoImportAs call GoSwitchImport(1, <f-args>)
 endif
 
-function! s:SwitchImport(enabled, localname, path)
+
+function! GoSwitchImport(enabled, localname, path)
     let view = winsaveview()
     let path = a:path
 
@@ -240,6 +241,7 @@ function! s:SwitchImport(enabled, localname, path)
     call winrestview(view)
 
 endfunction
+
 
 function! s:Error(s)
     echohl Error | echo a:s | echohl None

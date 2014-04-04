@@ -83,12 +83,12 @@ Current commands:
 ## Settings
 
 Below are some settings and mappings for `.vimrc` you might find useful. Each
-mappings is provided via VimL's `<Plug>` functionality. See examples:
+mapping is provided via VimL's `<Plug>` functionality. See examples:
 
 Import the package under your cursor with `<leader>i`
 
 ```vim
-au Filetype go nnoremap <buffer> <leader>i :exe 'GoImport ' . expand('<cword>')<CR>
+au FileType go nmap <Leader>i <Plug>(go-import)
 ```
 
 Run commands, such as  `go run` with `<leader>r` for the current file or `go build` and `go test` for
