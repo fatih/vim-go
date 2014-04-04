@@ -232,6 +232,9 @@ if go_highlight_operators != 0
 	syn match goOperator />=/
 	syn match goOperator /<=/
 	syn match goOperator /==/
+	syn match goOperator /!=/
+	syn match goOperator /+=/
+	syn match goOperator /-=/
 	syn match goOperator /\s>\s/
 	syn match goOperator /\s<\s/
 	syn match goOperator /\s+\s/
