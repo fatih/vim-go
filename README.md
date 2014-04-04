@@ -80,12 +80,14 @@ Current commands:
 :GoOracleChannelPeers
 ```
 
-## Settings
+## Mappings
 
-Below are some settings and mappings for `.vimrc` you might find useful. Each
-mapping is provided via VimL's `<Plug>` functionality. See examples:
+Below are some mappings for `.vimrc` you might find useful to improve your
+vim-go experience more. Each mapping is provided via VimL's `<Plug>`
+functionality to provide an additional abstraction later. Examples:
 
-Import the package under your cursor with `<leader>i`
+Import the package under your cursor with `<leader>i` (useful if you have
+disabled auto import via `GoDisableGoimport`)
 
 ```vim
 au FileType go nmap <Leader>i <Plug>(go-import)
@@ -100,8 +102,14 @@ au FileType go nmap <leader>b <Plug>(go-build)
 au FileType go nmap <leader>t <Plug>(go-test)
 ```
 
-Open a vertical, horizontal or a new tab and go to defintion/declaration of the
-identified under your cursor:
+Replace `gd` (Goto Declaration) for the word under your cursor (replaces current buffer):
+
+```vim
+au FileType go nmap gd <Plug>(go-def)
+```
+
+Or open the defitinion/declaration in a new vertical, horizontal or tab for the
+word under your cursor:
 
 ```vim
 au FileType go nmap <Leader>ds <Plug>(go-def-split)
@@ -109,13 +117,19 @@ au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 ```
 
-By default vim-go shows errors for the fmt command, you can disable it:
+These are just recommendations, you are free to build your own mappings or
+functions based on the commands defined in [usage](#usage) section (or just
+type `:he go-commands` to see the full list).
+
+## Settings
+
+By default vim-go shows errors for the fmt command, to disable it:
 
 ```vim
 let g:go_fmt_fail_silently = 1
 ```
 
-Disable auto fmt on save
+Disable auto fmt on save:
 
 ```vim
 let g:go_fmt_autosave = 0
