@@ -74,6 +74,7 @@ function! s:GoInstallBinaries(updateBin)
 		return
   endif
 
+
 	if $GOBIN != "" 
 		let s:go_bin_old_path = $GOBIN
 	endif
@@ -92,7 +93,12 @@ function! s:GoInstallBinaries(updateBin)
     endif
 	endfor
 
-	let $GOBIN = s:go_bin_old_path 
+
+       if  s:go_bin_old_path != "" 
+              let $GOBIN = s:go_bin_old_path
+	endif
+
+	 
 endfunction
 
 " try to install once
