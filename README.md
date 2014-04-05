@@ -80,37 +80,62 @@ Current commands:
 :GoOracleChannelPeers
 ```
 
+## Mappings
+
+vim-go has several `<Plug>` mappings which can be used to create custom
+mappings. Below are some examples you might find userful:
+
+
+Import the package under your cursor with `<leader>i` (useful if you have
+disabled auto import via `GoDisableGoimport`)
+
+```vim
+au FileType go nmap <Leader>i <Plug>(go-import)
+```
+
+Open the relevant Godoc for the word under the cursor with `<leader>d`
+
+```vim
+au FileType go nmap <Leader>d <Plug>(go-doc)
+```
+
+Run commands, such as  `go run` with `<leader>r` for the current file or `go build` and `go test` for
+the current package with `<leader>b` and `<leader>t`.
+
+```vim
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
+```
+
+Replace `gd` (Goto Declaration) for the word under your cursor (replaces current buffer):
+
+```vim
+au FileType go nmap gd <Plug>(go-def)
+```
+
+Or open the defitinion/declaration in a new vertical, horizontal or tab for the
+word under your cursor:
+
+```vim
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+```
+
+More `<Plug>` mappings can be seen with `:he go-mappings`. Also these are just
+recommendations, you are free to create more advanced mappings or functions
+based on `:he go-commands`.
+
 ## Settings
-Below are some settings for `.vimrc` you might find useful :
 
-Import the package under your cursor with `<leader>i`
-
-```vim
-au Filetype go nnoremap <buffer> <leader>i :exe 'GoImport ' . expand('<cword>')<CR>
-```
-
-Run `go run` for the current file with `<leader>r`
-
-```vim
-au Filetype go nnoremap <leader>r :GoRun %<CR>
-```
-
-Open a vertical, horizontal or a new tab and go to defintion/declaration of the
-identified under your cursor:
-
-```vim
-au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
-au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
-au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
-```
-
-By default vim-go shows errors for the fmt command, you can disable it:
+By default vim-go shows errors for the fmt command, to disable it:
 
 ```vim
 let g:go_fmt_fail_silently = 1
 ```
 
-Disable auto fmt on save
+Disable auto fmt on save:
 
 ```vim
 let g:go_fmt_autosave = 0

@@ -24,17 +24,16 @@ endif
 let g:loaded_godoc = 1
 
 let s:buf_nr = -1
-let s:last_word = ''
 
 if !exists('g:go_godoc_commands')
   let g:go_godoc_commands = 1
 endif
 
 if g:go_godoc_commands
-  command! -nargs=* -range -complete=customlist,go#package#Package GoDoc :call s:Godoc(<f-args>)
+  command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call s:Godoc(<f-args>)
 endif
 
-nnoremap <silent> <Plug>(godoc-keyword) :<C-u>call <SID>Godoc('')<CR>
+nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc()<CR>
 
 function! s:GodocView()
   if !bufexists(s:buf_nr)
@@ -73,22 +72,22 @@ function! s:GodocWord(word)
     echohl None
     return 0
   endif
+
   let word = a:word
-  silent! let content = system('godoc ' . word)
+  let packages = GoImports() 
+
+  if has_key(packages, word)
+    let command = 'godoc ' . packages[word]
+  else
+    let command = 'godoc ' . word
+  endif
+
+  silent! let content = system(command)
   if v:shell_error || !len(content)
-    if len(s:last_word)
-      silent! let content = system('godoc ' . s:last_word.'/'.word)
-      if v:shell_error || !len(content)
-        echo 'No documentation found for "' . word . '".'
-        return 0
-      endif
-      let word = s:last_word.'/'.word
-    else
       echo 'No documentation found for "' . word . '".'
       return 0
-    endif
   endif
-  let s:last_word = word
+
   silent! call s:GodocView()
   setlocal modifiable
   silent! %d _
@@ -110,9 +109,11 @@ function! s:Godoc(...)
   else
     let words = a:000
   endif
+
   if !len(words)
     return
   endif
+
   if s:GodocWord(words[0])
     if len(words) > 1
       if search('^\%(const\|var\|type\|\s\+\) ' . words[1] . '\s\+=\s')

@@ -18,7 +18,8 @@ CONTENTS                                                          *go-contents*
 	2. Install......................................|go-install|
 	3. Commands.....................................|go-commands|
 	4. Settings.....................................|go-settings|
-	5. Credits......................................|go-credits|
+	5. Mappings.....................................|go-mappings|
+	6. Credits......................................|go-credits|
 
 ===============================================================================
 INTRO                                                                *go-intro*
@@ -160,7 +161,7 @@ COMMANDS                                                          *go-commands*
                                                                    *:GoFiles*
 :GoFiles
 
-    Show dependencies for the current package
+    Show source files that depends for the current package
 
                                                                     *:GoDeps*
 :GoDeps
@@ -203,6 +204,71 @@ COMMANDS                                                          *go-commands*
 
     Enumerate the set of possible corresponding sends/receives for this
     channel receive/send operation.
+
+===============================================================================
+MAPPINGS                                                        *go-mappings*
+
+vim-go has several <Plug> keys which can be used to create custom mappings
+For example, to create a mapping that `go run` the current file create a
+mapping for the `(go-run)`: >
+
+  au FileType go nmap <leader>r <Plug>(go-run)
+
+As always one is free to create more advanced mappings or functions based
+with |go-commands|. Available <Plug> keys are:
+
+                                                                  *(go-run)*
+
+Calls `go run` for the current file
+
+
+                                                                *(go-build)*
+
+Calls `go build` for the current package
+
+
+                                                                 *(go-test)*
+
+Calls `go test` for the current package
+
+
+                                                                  *(go-vet)*
+
+Calls `go vet` for the current package
+
+
+                                                                *(go-files)*
+
+Show source files that depends for the current package
+
+
+                                                                 *(go-deps)*
+
+Show dependencies for the current package
+
+                                                                  *(go-doc)*
+
+Show the relevant GoDoc for the word under the cursor.
+
+                                                                  *(go-def)*
+
+Goto declaration/definition. Results are shown in the current buffer.
+
+
+                                                            *(go-def-split)*
+
+Goto declaration/definition. Results are shown in a split window.
+
+
+                                                         *(go-def-vertical)*
+
+Goto declaration/definition. Results are shown in a vertical split window.
+
+
+                                                              *(go-def-tab)*
+
+Goto declaration/definition. Results are shown in a tab window.
+
 
 
 ===============================================================================

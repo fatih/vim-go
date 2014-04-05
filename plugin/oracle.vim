@@ -52,11 +52,14 @@ endfun
 
 func! s:RunOracle(mode, selected) range abort
   let fname = expand('%:p')
-  let pkg = go#package#ImportPath(getcwd())
-  if pkg != -1
-    let sname = pkg
+  let dname = expand('%:p:h')
+  let pkg = go#package#ImportPath(dname)
+  if exists('g:go_oracle_scope_file')
+    let sname = get(g:, 'go_oracle_scope_file')
+  elseif pkg != -1
+     let sname = pkg
   else
-    let sname = get(g:, 'go_oracle_scope_file', fname)
+    let sname = fname
   endif
 
   if a:selected != -1
