@@ -74,25 +74,23 @@ function! s:GoInstallBinaries(updateBin)
 		return
   endif
 
-	if $GOBIN != "" 
-		let s:go_bin_old_path = $GOBIN
-	endif
+    let s:go_bin_old_path = $GOBIN
 	let $GOBIN = g:go_bin_path
 
-  for pkg in s:packages
-    let basename = fnamemodify(pkg, ":t")
-    let binname = "go_" . basename . "_bin"
+    for pkg in s:packages
+        let basename = fnamemodify(pkg, ":t")
+        let binname = "go_" . basename . "_bin"
 
-    if !executable(g:{binname}) || a:updateBin == 1
-      echo "Installing ".pkg
-      let out = system("go get -u -v ".shellescape(pkg))
-      if v:shell_error
-				echo "Error installing ". pkg . ": " . out
-      endif
-    endif
-	endfor
+        if !executable(g:{binname}) || a:updateBin == 1
+            echo "Installing ".pkg
+            let out = system("go get -u -v ".shellescape(pkg))
+            if v:shell_error
+                echo "Error installing ". pkg . ": " . out
+            endif
+        endif
+    endfor
 
-	let $GOBIN = s:go_bin_old_path 
+    let $GOBIN = s:go_bin_old_path 
 endfunction
 
 " try to install once

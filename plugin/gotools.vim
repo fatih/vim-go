@@ -58,10 +58,13 @@ function! s:GoRun(...)
 endfunction
 
 function! s:GoInstall(...)
-  let default_makeprg = &makeprg
-  let &makeprg = "go install " . join(a:000, ' ')
-  make
-  let &makeprg = default_makeprg
+    let pkgs = join(a:000, ' ')
+    let out = system('go install '.pkgs)
+    if v:shell_error
+        echo out
+    else
+        echo 'Installed'
+    endif
 endfunction
 
 function! s:GoBuild()
