@@ -43,6 +43,17 @@ function! s:GoRun(...)
   let &makeprg = default_makeprg
 endfunction
 
+function! s:GoInstall(...)
+  let default_makeprg = &makeprg
+  if !len(a:000)
+    let &makeprg = "go install " . join(split(GoFiles(), '\n'), ' ')
+  else
+    let &makeprg = "go install " . expand(a:1)
+  endif
+	make
+  let &makeprg = default_makeprg
+endfunction
+
 function! s:GoBuild()
   let default_makeprg = &makeprg
 	let gofiles = join(split(GoFiles(), '\n'), '\ ')
@@ -104,4 +115,5 @@ command! GoDeps echo s:GoDeps()
 command! GoTest call s:GoTest()
 command! GoVet call s:GoVet()
 command! -nargs=* -range GoRun call s:GoRun(<f-args>)
+command! -nargs=* -range GoInstall call s:GoInstall(<f-args>)
 command! -range GoBuild call s:GoBuild()

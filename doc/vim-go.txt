@@ -140,6 +140,11 @@ COMMANDS                                                          *go-commands*
     Build your package with `go build`. It automatically builds only the files
     that depends on the current file
 
+
+:GoInstall                                                        *:GoInstall*
+
+  Install your package with `go install`. 
+
                                                                     *:GoTest*
 :GoTest
 
