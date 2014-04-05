@@ -57,6 +57,16 @@ function! s:GoRun(...)
   let &makeprg = default_makeprg
 endfunction
 
+function! s:GoInstall(...)
+    let pkgs = join(a:000, ' ')
+    let out = system('go install '.pkgs)
+    if v:shell_error
+        echo out
+    else
+        echo 'Installed'
+    endif
+endfunction
+
 function! s:GoBuild()
   let default_makeprg = &makeprg
 	let gofiles = join(split(GoFiles(), '\n'), ' ')
@@ -148,6 +158,7 @@ command! GoDeps echo s:GoDeps()
 command! GoImports call GoImports()
 
 command! -nargs=* -range GoRun call s:GoRun(<f-args>)
+command! -nargs=* -range GoInstall call s:GoInstall(<f-args>)
 command! -range GoBuild call s:GoBuild()
 command! GoTest call s:GoTest()
 command! GoVet call s:GoVet()
