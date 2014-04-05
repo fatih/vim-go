@@ -15,7 +15,7 @@ plugins.
   history
 * Go to symbol/declaration with `godef`
 * Automatically import packages via `goimports`
-* Compile and `go build` your package
+* Compile and `go build` your package, install it with `go install`
 * `go run` quickly your current file/files
 * Run `go test` and see any errors in quickfix window
 * Lint your code with `golint`
@@ -67,6 +67,7 @@ Current commands:
 :GoDef <identifier>
 :GoRun <expand>
 :GoBuild
+:GoInstall
 :GoTest
 :GoErrCheck
 :GoFiles
