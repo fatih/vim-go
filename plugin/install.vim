@@ -74,7 +74,7 @@ function! s:GoInstallBinaries(updateBin)
 		return
   endif
 
-    let s:go_bin_old_path = $GOBIN
+	let s:go_bin_old_path = $GOBIN
 	let $GOBIN = g:go_bin_path
 
     for pkg in s:packages
@@ -97,3 +97,5 @@ endfunction
 call s:GoInstallBinaries(-1)
 
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
+
+" vim:ts=4:sw=4:et
