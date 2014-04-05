@@ -227,6 +227,11 @@ Calls `go run` for the current file
 Calls `go build` for the current package
 
 
+                                                                *(go-install)*
+
+Calls `go install` for the current package
+
+
                                                                  *(go-test)*
 
 Calls `go test` for the current package

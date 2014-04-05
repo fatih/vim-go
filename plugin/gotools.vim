@@ -18,12 +18,14 @@ function! GoImports()
     let out=system("go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'")
     if v:shell_error
         echo out
-        return
+        return -1
     endif
+
     for package_path in split(out, '\n')
         let package_name = fnamemodify(package_path, ":t")
         let imports[package_name] = package_path
     endfor
+
     return imports
 endfunction
 
@@ -138,6 +140,10 @@ if !hasmapto('<Plug>(go-build)')
     nnoremap <silent> <Plug>(go-build) :<C-u>call <SID>GoBuild()<CR>
 endif
 
+if !hasmapto('<Plug>(go-install)')
+    nnoremap <silent> <Plug>(go-install) :<C-u>call <SID>GoInstall()<CR>
+endif
+
 if !hasmapto('<Plug>(go-test)')
     nnoremap <silent> <Plug>(go-test) :<C-u>call <SID>GoTest()<CR>
 endif
@@ -163,12 +169,11 @@ endif
 
 command! GoFiles echo GoFiles()
 command! GoDeps echo s:GoDeps()
-command! GoImports call GoImports()
 
 command! -nargs=* -range GoRun call s:GoRun(<f-args>)
 command! -nargs=* -range GoInstall call s:GoInstall(<f-args>)
 command! -range GoBuild call s:GoBuild()
-command! GoTest call s:GoTest()
-command! GoVet call s:GoVet()
+command! -nargs=0 GoTest call s:GoTest()
+command! -nargs=0 GoVet call s:GoVet()
 
 " vim:ts=4:sw=4:et
