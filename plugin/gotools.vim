@@ -61,10 +61,15 @@ function! s:GoInstall(...)
     let out = system('go install '.pkgs)
     if v:shell_error
       call g:GoCatchErrors(out)
-    else
-      echo "Installed to ".$GOPATH."/bin"
-    endif
-    cwindow
+			cwindow
+			return
+		endif
+		
+		if exists("$GOBIN")
+			echo "Installed to ".$GOBIN
+		else
+			echo "Installed to ".$GOPATH/bin
+		endif
 endfunction
 
 function! s:GoBuild()
@@ -144,7 +149,6 @@ endif
 if !hasmapto('<Plug>(go-deps)')
 	nnoremap <silent> <Plug>(go-deps) :<C-u>call <SID>GoDeps()<CR>
 endif
-
 
 " This needs to be here, it doesn't get sourced when put into a file under ftplugin/go
 if !hasmapto('<Plug>(go-import)')
