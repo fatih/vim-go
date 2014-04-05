@@ -37,11 +37,15 @@ function! g:GoCatchErrors(out)
                         \"text":     tokens[3]})
         endif
     endfor
-    if empty(errors)
-        % | " Couldn't detect error format, output errors
-    endif
+
     if !empty(errors)
         call setqflist(errors, 'r')
+        return
+    endif
+
+    if empty(errors)
+        " Couldn't detect error format, output errors
+        echo out
     endif
 endfunction
 
