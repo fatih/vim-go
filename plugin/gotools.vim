@@ -13,6 +13,20 @@ function! s:GoDeps()
  return out
 endfunction
 
+function! GoImports()
+ let imports = {}
+ let out=system("go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'")
+ if v:shell_error
+	 echo out
+	 return
+ endif
+ for package_path in split(out, '\n')
+	 let package_name = fnamemodify(package_path, ":t")
+	 let imports[package_name] = package_path
+ endfor
+ return imports
+endfunction
+
 function! g:GoCatchErrors(out, name)
 	let errors = []
 	for line in split(a:out, '\n')
@@ -131,7 +145,9 @@ endif
 
 command! GoFiles echo GoFiles()
 command! GoDeps echo s:GoDeps()
-command! GoTest call s:GoTest()
-command! GoVet call s:GoVet()
+command! GoImports call GoImports()
+
 command! -nargs=* -range GoRun call s:GoRun(<f-args>)
 command! -range GoBuild call s:GoBuild()
+command! GoTest call s:GoTest()
+command! GoVet call s:GoVet()
