@@ -82,9 +82,9 @@ Current commands:
 
 ## Mappings
 
-Below are some mappings for `.vimrc` you might find useful to improve your
-vim-go experience more. Each mapping is provided via VimL's `<Plug>`
-functionality to provide an additional abstraction later. Examples:
+vim-go has several `<Plug>` mappings which can be used to create custom
+mappings. Below are some examples you might find userful:
+
 
 Import the package under your cursor with `<leader>i` (useful if you have
 disabled auto import via `GoDisableGoimport`)
@@ -117,9 +117,9 @@ au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 ```
 
-These are just recommendations, you are free to build your own mappings or
-functions based on the commands defined in [usage](#usage) section (or just
-type `:he go-commands` to see the full list).
+More `<Plug>` mappings can be seen with `:he go-mappings`. Also these are just
+recommendations, you are free to create more advanced mappings or functions
+based on `:he go-commands`.
 
 ## Settings
 
