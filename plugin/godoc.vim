@@ -31,10 +31,10 @@ if !exists('g:go_godoc_commands')
 endif
 
 if g:go_godoc_commands
-  command! -nargs=* -range -complete=customlist,go#package#Package GoDoc :call s:Godoc(<f-args>)
+  command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call s:Godoc(<f-args>)
 endif
 
-nnoremap <silent> <Plug>(godoc-keyword) :<C-u>call <SID>Godoc('')<CR>
+nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc(expand('<cword>'))<CR>
 
 function! s:GodocView()
   if !bufexists(s:buf_nr)

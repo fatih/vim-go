@@ -241,6 +241,9 @@ Show source files that depends for the current package
 
 Show dependencies for the current package
 
+                                                                  *(go-doc)*
+
+Show the relevant GoDoc for the word under the cursor.
 
                                                                   *(go-def)*
 
