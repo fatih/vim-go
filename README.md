@@ -93,6 +93,12 @@ disabled auto import via `GoDisableGoimport`)
 au FileType go nmap <Leader>i <Plug>(go-import)
 ```
 
+Open the relevant Godoc for the word under the cursor with `<leader>d`
+
+```vim
+au FileType go nmap <Leader>d <Plug>(go-doc)
+```
+
 Run commands, such as  `go run` with `<leader>r` for the current file or `go build` and `go test` for
 the current package with `<leader>b` and `<leader>t`.
 
