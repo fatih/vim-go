@@ -8,8 +8,6 @@ if !exists("g:go_bin_path")
     let g:go_bin_path = expand("$HOME/.vim-go/")
 endif
 
-let $GOBIN = g:go_bin_path
-
 let s:packages = [
 \ "github.com/nsf/gocode", 
 \ "code.google.com/p/go.tools/cmd/goimports", 
@@ -69,11 +67,17 @@ function! s:GoInstallBinaries(updateBin)
 		return
 	endif
 
+
 	let err = s:CheckBinaries()
 	if err != 0
 		echohl Error | echomsg "vim.go: you can disable auto install with 'let g:go_disable_autoinstall = 1'" | echohl None
 		return
   endif
+
+	if $GOBIN != "" 
+		let s:go_bin_old_path = $GOBIN
+	endif
+	let $GOBIN = g:go_bin_path
 
   for pkg in s:packages
     let basename = fnamemodify(pkg, ":t")
@@ -86,7 +90,9 @@ function! s:GoInstallBinaries(updateBin)
 				echo "Error installing ". pkg . ": " . out
       endif
     endif
-  endfor
+	endfor
+
+	let $GOBIN = s:go_bin_old_path 
 endfunction
 
 " try to install once
