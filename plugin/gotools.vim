@@ -45,12 +45,8 @@ endfunction
 
 function! s:GoInstall(...)
   let default_makeprg = &makeprg
-  if !len(a:000)
-    let &makeprg = "go install " . join(split(GoFiles(), '\n'), ' ')
-  else
-    let &makeprg = "go install " . expand(a:1)
-  endif
-	make
+  let &makeprg = "go install " . join(a:000, ' ')
+  make
   let &makeprg = default_makeprg
 endfunction
 
