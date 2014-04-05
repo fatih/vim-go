@@ -27,15 +27,15 @@ function! GoImports()
  return imports
 endfunction
 
-function! g:GoCatchErrors(out, name)
+function! g:GoCatchErrors(out)
 	let errors = []
 	for line in split(a:out, '\n')
-			let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
-			if !empty(tokens)
-					call add(errors, {"filename": @%,
-													 \"lnum":     tokens[2],
-													 \"text":     tokens[3]})
-			endif
+        let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
+        if !empty(tokens)
+            call add(errors, {"filename": @%,
+                        \"lnum":     tokens[2],
+                        \"text":     tokens[3]})
+        endif
 	endfor
 	if empty(errors)
 			% | " Couldn't detect error format, output errors
@@ -43,7 +43,6 @@ function! g:GoCatchErrors(out, name)
 	if !empty(errors)
 			call setqflist(errors, 'r')
 	endif
-	echohl Error | echomsg a:name . " returned error" | echohl None
 endfunction
 
 function! s:GoRun(...)
@@ -61,10 +60,11 @@ function! s:GoInstall(...)
     let pkgs = join(a:000, ' ')
     let out = system('go install '.pkgs)
     if v:shell_error
-        echo out
+      call g:GoCatchErrors(out)
     else
-        echo 'Installed'
+      echo "Installed to ".$GOPATH."/bin"
     endif
+    cwindow
 endfunction
 
 function! s:GoBuild()
@@ -75,16 +75,16 @@ function! s:GoBuild()
   else
     let &makeprg = "go build -o /dev/null " . gofiles
   endif
-	make
+  make
   let &makeprg = default_makeprg
 endfunction
 
 function! s:GoTest()
   let out = system("go test .")
   if v:shell_error
-		call g:GoCatchErrors(out, "Go test")
+      call g:GoCatchErrors(out)
   else
-    call setqflist([])
+      call setqflist([])
   endif
   cwindow
 endfunction
