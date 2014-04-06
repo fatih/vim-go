@@ -17,7 +17,7 @@ function! s:GoPlay(count, line1, line2)
     let command = "curl -s -X POST http://play.golang.org/share --data-binary '@".share_file."'"
 
     " we can remove the temp file because it's now posted.
-    delete share_file 
+    call delete(share_file)
 
     let snippet_id = system(command)
     if v:shell_error
