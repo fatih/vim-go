@@ -18,7 +18,7 @@ function! GoImports()
     let out=system("go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'")
     if v:shell_error
         echo out
-        return -1
+        return imports
     endif
 
     for package_path in split(out, '\n')
