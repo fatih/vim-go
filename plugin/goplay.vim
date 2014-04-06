@@ -15,11 +15,11 @@ function! s:GoPlay(count, line1, line2)
     call writefile(split(content, "\n"), share_file, "b")
 
     let command = "curl -s -X POST http://play.golang.org/share --data-binary '@".share_file."'"
+    let snippet_id = system(command)
 
     " we can remove the temp file because it's now posted.
     call delete(share_file)
 
-    let snippet_id = system(command)
     if v:shell_error
         echo 'A error has occured. Run this command to see what the problem is:'
         echo command
