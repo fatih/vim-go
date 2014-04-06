@@ -15,6 +15,10 @@ function! s:GoPlay(count, line1, line2)
     call writefile(split(content, "\n"), share_file, "b")
 
     let command = "curl -s -X POST http://play.golang.org/share --data-binary '@".share_file."'"
+
+    " we can remove the temp file because it's posted already
+    delete share_file 
+
     let snippet_id = system(command)
     if v:shell_error
         echo 'A error has occured. Run this command to see what the problem is:'
@@ -22,6 +26,7 @@ function! s:GoPlay(count, line1, line2)
         return
     endif
 
+    " TODO: copy url into a well known register, open in browser, etc...
     echo "Snippet uploaded: http://play.golang.org/p/".snippet_id
 endfunction
 
