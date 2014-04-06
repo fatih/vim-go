@@ -24,6 +24,7 @@ plugins.
 * List all source files and dependencies
 * Checking with `errcheck` for unchecked errors.
 * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
+* Share your current code to [play.golang.org](http://play.golang.org)
 
 ## Install
 
@@ -68,6 +69,7 @@ Current commands:
 :GoRun <expand>
 :GoBuild
 :GoInstall
+:GoPlay
 :GoTest
 :GoErrCheck
 :GoFiles
