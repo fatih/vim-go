@@ -86,7 +86,7 @@ Current commands:
 ## Mappings
 
 vim-go has several `<Plug>` mappings which can be used to create custom
-mappings. Below are some examples you might find userful:
+mappings. Below are some examples you might find useful:
 
 
 Import the package under your cursor with `<leader>i` (useful if you have
@@ -131,6 +131,13 @@ recommendations, you are free to create more advanced mappings or functions
 based on `:he go-commands`.
 
 ## Settings
+Below are some settings you might find useful. For the full list see `:he go-settings`:
+
+Disable opening browser after posting to your snippet to `play.golang.org`:
+
+```vim
+let g:go_play_open_browser = 0
+```
 
 By default vim-go shows errors for the fmt command, to disable it:
 

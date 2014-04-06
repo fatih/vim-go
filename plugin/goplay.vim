@@ -3,6 +3,9 @@ if exists("g:go_loaded_goplay")
 endif
 let g:go_loaded_goplay = 1
 
+if !exists("g:go_play_open_browser")
+    let g:go_play_open_browser = 1
+endif
 
 function! s:GoPlay(count, line1, line2)
     if !executable('curl')
@@ -26,8 +29,14 @@ function! s:GoPlay(count, line1, line2)
         return
     endif
 
+    let url = "http://play.golang.org/p/".snippet_id
+
+    if "g:go_play_open_browser" != 0
+        call s:open_browser(url)
+    endif
+
     " TODO: copy url into a well known register, open in browser, etc...
-    echo "Snippet uploaded: http://play.golang.org/p/".snippet_id
+    echo "Snippet uploaded: ".url
 endfunction
 
 command! -nargs=0 -range=% GoPlay call s:GoPlay(<count>, <line1>, <line2>)
@@ -58,6 +67,48 @@ function! s:get_visual_selection()
     let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
     let lines[0] = lines[0][col1 - 1:]
     return join(lines, "\n")
+endfunction
+
+" following two functions are from: https://github.com/mattn/gist-vim 
+" thanks  @mattn
+function! s:get_browser_command()
+  let go_play_browser_command = get(g:, 'go_play_browser_command', '')
+  if go_play_browser_command == ''
+    if has('win32') || has('win64')
+      let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
+    elseif has('mac') || has('macunix') || has('gui_macvim') || system('uname') =~? '^darwin'
+      let go_play_browser_command = 'open %URL%'
+    elseif executable('xdg-open')
+      let go_play_browser_command = 'xdg-open %URL%'
+    elseif executable('firefox')
+      let go_play_browser_command = 'firefox %URL% &'
+    else
+      let go_play_browser_command = ''
+    endif
+  endif
+  return go_play_browser_command
+endfunction
+
+function! s:open_browser(url)
+  let cmd = s:get_browser_command()
+  if len(cmd) == 0
+    redraw
+    echohl WarningMsg
+    echo "It seems that you don't have general web browser. Open URL below."
+    echohl None
+    echo a:url
+    return
+  endif
+  if cmd =~ '^!'
+    let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
+    silent! exec cmd
+  elseif cmd =~ '^:[A-Z]'
+    let cmd = substitute(cmd, '%URL%', '\=a:url', 'g')
+    exec cmd
+  else
+    let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
+    call system(cmd)
+  endif
 endfunction
 
 
