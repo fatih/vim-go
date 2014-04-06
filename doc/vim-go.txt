@@ -30,19 +30,22 @@ pre-defined sensible settings (like auto gofmt on save), has autocomplete,
 snippet support, go toolchain commands, etc... Do not use it with other Go
 plugins.
 
-	* Syntax highlighting
-	* Auto completion support
-	* Integrated and improved snippets support
-	* Better gofmt on save, keeps cursor position and doesn't break your
-	  undo history
-	* Go to symbol/declaration
-	* Automatically import packages
-	* Compile and build package
-	* Run quickly your snippet
-	* Run tests and see any errors in quick window
-	* Lint your code
-	* Advanced source analysis tool with oracle
-	* Checking for unchecked errors.
+  * Improved Syntax highlighting, such as Functions, Operators, Methods..
+  * Auto completion support via `gocode`
+  * Better `gofmt` on save, keeps cursor position and doesn't break your undo
+    history
+  * Go to symbol/declaration with `godef`
+  * Automatically import packages via `goimports`
+  * Compile and `go build` your package, install it with `go install`
+  * `go run` quickly your current file/files
+  * Run `go test` and see any errors in quickfix window
+  * Lint your code with `golint`
+  * Run your code trough `go vet` to catch static errors.
+  * Advanced source analysis tool with `oracle`
+  * List all source files and dependencies
+  * Checking with `errcheck` for unchecked errors.
+  * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
+  * Share your current code to play.golang.org
 
 ===============================================================================
 INSTALL                                                           *go-install*
@@ -113,6 +116,12 @@ COMMANDS                                                          *go-commands*
     Filter the current Go buffer through gofmt.  It tries to preserve cursor
     position and avoids replacing the buffer with stderr output.
 
+                                                                     *:GoPlay*
+:[range]GoPlay
+
+    Share snippet to play.golang.org. If no [range] is given it shares
+    the whole file, otherwise it only shares the selected lines.
+
                                                                      *:GoVet*
 :GoVet
 
@@ -126,7 +135,7 @@ COMMANDS                                                          *go-commands*
 :GoDef [identifier]
 
     Goto declaration/definition for the given [identifier]. If no argument is
-    given, it will jump to the declaration under the cursor. 
+    given, it will jump to the declaration under the cursor.
 
                                                                      *:GoRun*
 :GoRun [expand]
@@ -144,7 +153,7 @@ COMMANDS                                                          *go-commands*
 
 :GoInstall                                                        *:GoInstall*
 
-  Install your package with `go install`. 
+  Install your package with `go install`.
 
                                                                     *:GoTest*
 :GoTest
