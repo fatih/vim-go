@@ -74,7 +74,7 @@ function! s:GodocWord(word)
   endif
 
   let word = a:word
-  let packages = GoImports() 
+  let packages = GoImports()
 
   if has_key(packages, word)
     let command = 'godoc ' . packages[word]

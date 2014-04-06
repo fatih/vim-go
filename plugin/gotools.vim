@@ -14,13 +14,13 @@ function! s:GoDeps()
 endfunction
 
 function! GoImports()
-    let imports = {}
     let out=system("go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'")
     if v:shell_error
         echo out
-        return -1
+        return {}
     endif
 
+    let imports = {}
     for package_path in split(out, '\n')
         let package_name = fnamemodify(package_path, ":t")
         let imports[package_name] = package_path
