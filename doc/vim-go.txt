@@ -58,14 +58,11 @@ If you use pathogen, just clone it into your bundle directory: >
 For the first Vim start it will try to download and install all necessary go
 binaries. To disable this behaviour please check out |go-settings|.
 
+
 Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
-completion (completion by type) install YCM: >
-
-	$ cd ~/.vim/bundle
-	$ git clone https://github.com/Valloric/YouCompleteMe.git
-	$ cd YouCompleteMe
-	$ ./install.sh
-
+completion (completion by type) install:
+https://github.com/Valloric/YouCompleteMe or
+https://github.com/Shougo/neocomplete.vim
 
 ===============================================================================
 COMMANDS                                                          *go-commands*
@@ -140,17 +137,22 @@ COMMANDS                                                          *go-commands*
     given, it will jump to the declaration under the cursor.
 
                                                                      *:GoRun*
-:GoRun [expand]
+:GoRun[!] [expand]
 
     Build and run your current main package. By default all main files for the
-    current file is used. An argument that is passed to |expand| can be used as
-    file selector. For example use `:Gorun %` to select the current file only.
+    current file is used. If an argument is passed, 'expand' is used as file
+    selector. For example use `:GoRun %` to select only the current file only.  
+
+    If [!] is not given the first error is jumped to.
 
                                                                    *:GoBuild*
-:GoBuild
+:GoBuild[!]
 
     Build your package with `go build`. It automatically builds only the files
-    that depends on the current file
+    that depends on the current file. GoBuild doesn't produce a result file.
+    Use 'make' to create a result file. 
+
+    If [!] is not given the first error is jumped to.
 
 
 :GoInstall                                                        *:GoInstall*
@@ -238,7 +240,7 @@ Calls `go run` for the current file
 Calls `go build` for the current package
 
 
-                                                                *(go-install)*
+                                                              *(go-install)*
 
 Calls `go install` for the current package
 
@@ -336,7 +338,7 @@ fails. By default it's disabled. >
                                                       *'g:go_snippet_engine'*
 
 Use this option to define the default snippet engine.  By default "ultisnips"
-is enabled. Use "neosnippet" for neosnippet.vim: >
+is used. Use "neosnippet" for neosnippet.vim: >
 
   let g:go_snippet_engine = "ultisnips"
 <
@@ -357,6 +359,13 @@ to `$HOME/.vim-go/`. To change it: >
 
 ===============================================================================
 CREDITS                                                         *go-credits*
+
+* Go Authors for offical vim plugins
+* Gocode, Godef, Golint, Oracle, Goimports, Errcheck projects and authors of
+  those projects.
+* Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
+  vim-godef)
+* vim-go contributors: https://github.com/fatih/vim-go/graphs/contributors
 
 
 vim:ft=help:et:ts=2:sw=2:sts=2:norl

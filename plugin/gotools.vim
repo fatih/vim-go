@@ -54,14 +54,19 @@ function! g:GoCatchErrors(out)
     endif
 endfunction
 
-function! s:GoRun(...)
+function! s:GoRun(bang, ...)
     let default_makeprg = &makeprg
     if !len(a:000)
         let &makeprg = "go run " . join(split(GoFiles(), '\n'), ' ')
     else
         let &makeprg = "go run " . expand(a:1)
     endif
-    make
+
+    exe 'make!'
+    if !a:bang
+        exe (a:0 ? a:1 : 'cwindow')
+    endif
+
     let &makeprg = default_makeprg
 endfunction
 
@@ -82,7 +87,7 @@ function! s:GoInstall(...)
     endif
 endfunction
 
-function! s:GoBuild()
+function! s:GoBuild(bang)
     let default_makeprg = &makeprg
     let gofiles = join(split(GoFiles(), '\n'), ' ')
     if v:shell_error
@@ -90,7 +95,11 @@ function! s:GoBuild()
     else
         let &makeprg = "go build -o /dev/null " . gofiles
     endif
-    make
+
+    exe 'make!'
+    if !a:bang
+        exe (a:0 ? a:1 : 'cwindow')
+    endif
     let &makeprg = default_makeprg
 endfunction
 
@@ -142,7 +151,7 @@ if !hasmapto('<Plug>(go-run)')
 endif
 
 if !hasmapto('<Plug>(go-build)')
-    nnoremap <silent> <Plug>(go-build) :<C-u>call <SID>GoBuild()<CR>
+    nnoremap <silent> <Plug>(go-build) :<C-u>call <SID>GoBuild('')<CR>
 endif
 
 if !hasmapto('<Plug>(go-install)')
@@ -172,12 +181,13 @@ endif
 
 
 
-command! GoFiles echo GoFiles()
-command! GoDeps echo s:GoDeps()
+command! -nargs=0 GoFiles echo GoFiles()
+command! -nargs=0 GoDeps echo s:GoDeps()
 
-command! -nargs=* -range GoRun call s:GoRun(<f-args>)
-command! -nargs=* -range GoInstall call s:GoInstall(<f-args>)
-command! -range GoBuild call s:GoBuild()
+command! -nargs=* -range -bang GoRun call s:GoRun(<bang>0,<f-args>)
+command! -nargs=? -range -bang GoBuild call s:GoBuild(<bang>0)
+
+command! -nargs=* GoInstall call s:GoInstall(<f-args>)
 command! -nargs=0 GoTest call s:GoTest()
 command! -nargs=0 GoVet call s:GoVet()
 
