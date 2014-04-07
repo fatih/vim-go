@@ -64,7 +64,7 @@ function! s:GoRun(bang, ...)
 
     exe 'make!'
     if !a:bang
-        exe (a:0 ? a:1 : 'cwindow')
+        cwindow
     endif
 
     let &makeprg = default_makeprg
@@ -98,8 +98,9 @@ function! s:GoBuild(bang)
 
     exe 'make!'
     if !a:bang
-        exe (a:0 ? a:1 : 'cwindow')
+        cwindow
     endif
+
     let &makeprg = default_makeprg
 endfunction
 
