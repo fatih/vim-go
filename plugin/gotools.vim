@@ -5,20 +5,20 @@ let g:go_loaded_gotools = 1
 
 function! GoFiles()
     let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
-    let out = s:ExecuteInCurrentDir(command)
+    let out = s:execute_in_current_dir(command)
     return out
 endfunction
 
 function! s:GoDeps()
     let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
-    let out = s:ExecuteInCurrentDir(command)
+    let out = s:execute_in_current_dir(command)
     return out
 endfunction
 
 function! GoImports()
     let imports = {}
     let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
-    let out = s:ExecuteInCurrentDir(command)
+    let out = s:execute_in_current_dir(command)
     if v:shell_error
         echo out
         return imports
@@ -68,7 +68,7 @@ endfunction
 function! s:GoInstall(...)
     let pkgs = join(a:000, ' ')
     let command = 'go install '.pkgs
-    let out = s:ExecuteInCurrentDir(command)
+    let out = s:execute_in_current_dir(command)
     if v:shell_error
         call g:GoCatchErrors(out)
         cwindow
@@ -96,7 +96,7 @@ endfunction
 
 function! s:GoTest()
     let command = "go test ."
-    let out = s:ExecuteInCurrentDir(command)
+    let out = s:execute_in_current_dir(command)
     if v:shell_error
         call g:GoCatchErrors(out)
     else
@@ -106,7 +106,7 @@ function! s:GoTest()
 endfunction
 
 function! s:GoVet()
-    let out = s:ExecuteInCurrentDir('go vet')
+    let out = s:execute_in_current_dir('go vet')
     let errors = []
     for line in split(out, '\n')
         let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
@@ -124,7 +124,7 @@ endfunction
 
 " Execute the command with system() in the current files directory instead of
 " in current directory. Returns  the result.
-function! s:ExecuteInCurrentDir(cmd) abort
+function! s:execute_in_current_dir(cmd) abort
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     let dir = getcwd()
     try
