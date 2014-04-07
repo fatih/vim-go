@@ -305,7 +305,6 @@ with |:GoPlay|. By default it's enabled. >
 
   let g:go_play_open_browser = 1
 <
-
                                                         *'g:go_fmt_autosave'*
 
 Use this option to auto |:GoFmt| on save. By default it's enabled >
@@ -318,6 +317,13 @@ Use this option to define which tool is used to gofmt. By default `goimports`
 is used >
 
   let g:go_fmt_command = "goimports"
+<
+                                                         *'g:go_fmt_options'*
+
+Use this option to add additional options to the |g:go_fmt_command|. Default
+is empty. >
+
+  let g:go_fmt_options = ''
 <
                                                    *'g:go_fmt_fail_silently'*
 

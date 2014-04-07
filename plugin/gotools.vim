@@ -123,7 +123,7 @@ function! s:GoVet()
 endfunction
 
 " Execute the command with system() in the current files directory instead of
-" in current directory. Returns  the result. 
+" in current directory. Returns  the result.
 function! s:ExecuteInCurrentDir(cmd) abort
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     let dir = getcwd()

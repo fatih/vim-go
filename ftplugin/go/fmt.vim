@@ -46,6 +46,10 @@ if !exists('g:go_fmt_fail_silently')
     let g:go_fmt_fail_silently = 0
 endif
 
+if !exists('g:go_fmt_options')
+    let g:go_fmt_options = ''
+endif
+
 if g:go_fmt_autosave
     autocmd BufWritePre <buffer> :GoFmt
 endif
@@ -71,12 +75,14 @@ function! s:GoFormat()
     let l:curw=winsaveview()
     let l:tmpname=tempname()
     call writefile(getline(1,'$'), l:tmpname)
-    let out = system(g:go_fmt_command . " " . l:tmpname)
+
+    let command = g:go_fmt_command . ' ' . g:go_fmt_options
+    let out = system(command . " " . l:tmpname)
 
     "if there is no error on the temp file, gofmt our original file
     if v:shell_error == 0
         try | silent undojoin | catch | endtry
-        silent execute "%!" . g:go_fmt_command
+        silent execute "%!" . command
         call setqflist([]) 
     elseif g:go_fmt_fail_silently == 0 
         "otherwise get the errors and put them to quickfix window
