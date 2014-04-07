@@ -121,8 +121,8 @@ COMMANDS                                                          *go-commands*
 
     Share snippet to play.golang.org. If no [range] is given it shares
     the whole file, otherwise the selected lines are shared. Snippet URL
-    is copied to system clipboard if Vim is compiled with |+clipboard| or
-    |+xterm_clipboard| otherwise it's get yanked into the `""` register.
+    is copied to system clipboard if Vim is compiled with 'clipboard' or
+     'xterm-clipboard' otherwise it's get yanked into the `""` register.
 
                                                                      *:GoVet*
 :GoVet
