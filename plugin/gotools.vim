@@ -4,18 +4,21 @@ endif
 let g:go_loaded_gotools = 1
 
 function! GoFiles()
-    let out=system("go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'")
+    let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
+    let out = s:ExecuteInCurrentDir(command)
     return out
 endfunction
 
 function! s:GoDeps()
-    let out=system("go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'")
+    let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
+    let out = s:ExecuteInCurrentDir(command)
     return out
 endfunction
 
 function! GoImports()
     let imports = {}
-    let out=system("go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'")
+    let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
+    let out = s:ExecuteInCurrentDir(command)
     if v:shell_error
         echo out
         return imports
@@ -47,7 +50,7 @@ function! g:GoCatchErrors(out)
 
     if empty(errors)
         " Couldn't detect error format, output errors
-        echo out
+        echo a:out
     endif
 endfunction
 
@@ -64,7 +67,8 @@ endfunction
 
 function! s:GoInstall(...)
     let pkgs = join(a:000, ' ')
-    let out = system('go install '.pkgs)
+    let command = 'go install '.pkgs
+    let out = s:ExecuteInCurrentDir(command)
     if v:shell_error
         call g:GoCatchErrors(out)
         cwindow
@@ -91,7 +95,8 @@ function! s:GoBuild()
 endfunction
 
 function! s:GoTest()
-    let out = system("go test .")
+    let command = "go test ."
+    let out = s:ExecuteInCurrentDir(command)
     if v:shell_error
         call g:GoCatchErrors(out)
     else
@@ -117,8 +122,8 @@ function! s:GoVet()
     cwindow
 endfunction
 
-" Executed the command and returns the output in the directory of the current
-" file and returns back to original cwd
+" Execute the command with system() in the current files directory instead of
+" in current directory. Returns  the result. 
 function! s:ExecuteInCurrentDir(cmd) abort
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     let dir = getcwd()
