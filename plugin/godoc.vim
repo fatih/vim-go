@@ -59,7 +59,7 @@ function! s:GodocView()
   setlocal iskeyword+=:
   setlocal iskeyword-=-
 
-  nnoremap <buffer> <silent> K :Godoc<cr>
+  nnoremap <buffer> <silent> K :GoDoc<cr>
 
   au BufHidden <buffer> call let <SID>buf_nr = -1
 endfunction
