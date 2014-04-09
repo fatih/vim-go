@@ -38,6 +38,59 @@ nnoremap <silent> <Plug>(go-doc-tab) :<C-u>call <SID>Godoc("tabnew")<CR>
 nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call <SID>Godoc("vnew")<CR>
 nnoremap <silent> <Plug>(go-doc-split) :<C-u>call <SID>Godoc("split")<CR>
 
+function! s:Godoc(mode, ...)
+    if !executable('godoc')
+        echohl WarningMsg
+        echo "godoc command not found."
+        echo "  install with: go get code.google.com/p/go.tools/cmd/godoc"
+        echohl None
+        return -1
+    endif
+
+    if !len(a:000)
+        let oldiskeyword = &iskeyword
+        setlocal iskeyword+=.
+        let word = expand('<cword>')
+        let &iskeyword = oldiskeyword
+        let word = substitute(word, '[^a-zA-Z0-9\\/._~-]', '', 'g')
+        let words = split(word, '\.\ze[^./]\+$')
+    else
+        let words = a:000
+    endif
+
+    if !len(words)
+        return
+    endif
+
+    let pkg = words[0]
+    let packages = GoImports() 
+
+    if has_key(packages, pkg)
+        let command = 'godoc ' . packages[pkg]
+    else
+        let command = 'godoc ' . pkg
+    endif
+
+    silent! let content = system(command)
+    if v:shell_error || !len(content)
+        echo 'No documentation found for "' . pkg . '".'
+        return -1
+    endif
+
+    call s:GodocView(a:mode, content)
+
+    if len(words) > 1
+        if search('^\%(const\|var\|type\|\s\+\) ' . pkg . '\s\+=\s')
+            return
+        endif
+        if search('^func ' . words[1] . '(')
+            silent! normal zt
+            return
+        endif
+        echo 'No documentation found for "' . pkg . '".'
+    endif
+endfunction
+
 function! s:GodocView(position, content)
     if !bufexists(s:buf_nr)
         exe a:position
@@ -66,62 +119,5 @@ function! s:GodocView(position, content)
     setlocal nomodifiable
 endfunction
 
-function! s:GodocWord(mode, word)
-    if !executable('godoc')
-        echohl WarningMsg
-        echo "godoc command not found."
-        echo "  install with: go get code.google.com/p/go.tools/cmd/godoc"
-        echohl None
-        return 0
-    endif
-
-    let word = a:word
-    let packages = GoImports() 
-
-    if has_key(packages, word)
-        let command = 'godoc ' . packages[word]
-    else
-        let command = 'godoc ' . word
-    endif
-
-    silent! let content = system(command)
-    if v:shell_error || !len(content)
-        echo 'No documentation found for "' . word . '".'
-        return 0
-    endif
-
-    call s:GodocView(a:mode, content)
-    return 1
-endfunction
-
-function! s:Godoc(mode, ...)
-    if !len(a:000)
-        let oldiskeyword = &iskeyword
-        setlocal iskeyword+=.
-        let word = expand('<cword>')
-        let &iskeyword = oldiskeyword
-        let word = substitute(word, '[^a-zA-Z0-9\\/._~-]', '', 'g')
-        let words = split(word, '\.\ze[^./]\+$')
-    else
-        let words = a:000
-    endif
-
-    if !len(words)
-        return
-    endif
-
-    if s:GodocWord(a:mode, words[0])
-        if len(words) > 1
-            if search('^\%(const\|var\|type\|\s\+\) ' . words[1] . '\s\+=\s')
-                return
-            endif
-            if search('^func ' . words[1] . '(')
-                silent! normal zt
-                return
-            endif
-            echo 'No documentation found for "' . words[1] . '".'
-        endif
-    endif
-endfunction
 
 " vim:ts=4:sw=4:et
