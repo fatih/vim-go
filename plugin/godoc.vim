@@ -43,7 +43,6 @@ function! s:GodocView(content)
     elseif bufwinnr(s:buf_nr) == -1
         leftabove split
         execute s:buf_nr . 'buffer'
-        delete _
     elseif bufwinnr(s:buf_nr) != bufwinnr('%')
         execute bufwinnr(s:buf_nr) . 'wincmd w'
     endif
