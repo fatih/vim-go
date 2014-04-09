@@ -35,7 +35,7 @@ endif
 
 nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc()<CR>
 
-function! s:GodocView()
+function! s:GodocView(content)
     if !bufexists(s:buf_nr)
         leftabove new
         file `="[Godoc]"`
@@ -53,15 +53,15 @@ function! s:GodocView()
     setlocal buftype=nofile
     setlocal noswapfile
     setlocal nobuflisted
-    setlocal modifiable
     setlocal nocursorline
     setlocal nocursorcolumn
     setlocal iskeyword+=:
     setlocal iskeyword-=-
 
-    nnoremap <buffer> <silent> K :GoDoc<cr>
-
-    au BufHidden <buffer> call let <SID>buf_nr = -1
+    setlocal modifiable
+    normal! ggdG
+    call append(0, split(a:content, "\n"))
+    setlocal nomodifiable
 endfunction
 
 function! s:GodocWord(word)
@@ -88,13 +88,7 @@ function! s:GodocWord(word)
         return 0
     endif
 
-    silent! call s:GodocView()
-    setlocal modifiable
-    silent! %d _
-    silent! put! =content
-    silent! normal gg
-    setlocal nomodifiable
-    setfiletype godoc
+    call s:GodocView(content)
     return 1
 endfunction
 
