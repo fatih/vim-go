@@ -79,16 +79,21 @@ function! s:Godoc(mode, ...)
 
     call s:GodocView(a:mode, content)
 
-    if len(words) > 1
-        if search('^\%(const\|var\|type\|\s\+\) ' . pkg . '\s\+=\s')
-            return -1
-        endif
-        if search('^func ' . words[1] . '(')
-            silent! normal zt
-            return -1
-        endif
+    if len(words) < 2
+        return
         echo 'No documentation found for "' . pkg . '".'
+    endif 
+
+    if search('^\%(const\|var\|type\|\s\+\) ' . pkg . '\s\+=\s')
+        silent! normal zt
+        return -1
     endif
+
+    if search('^func ' . words[1] . '(')
+        silent! normal zt
+        return -1
+    endif
+
 endfunction
 
 function! s:GodocView(position, content)
@@ -116,6 +121,7 @@ function! s:GodocView(position, content)
     setlocal modifiable
     %delete _ 
     call append(0, split(a:content, "\n"))
+    $delete _ 
     setlocal nomodifiable
 endfunction
 
