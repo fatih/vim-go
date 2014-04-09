@@ -81,11 +81,11 @@ function! s:Godoc(mode, ...)
 
     if len(words) > 1
         if search('^\%(const\|var\|type\|\s\+\) ' . pkg . '\s\+=\s')
-            return
+            return -1
         endif
         if search('^func ' . words[1] . '(')
             silent! normal zt
-            return
+            return -1
         endif
         echo 'No documentation found for "' . pkg . '".'
     endif
