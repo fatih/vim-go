@@ -30,10 +30,13 @@ if !exists('g:go_godoc_commands')
 endif
 
 if g:go_godoc_commands
-    command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call s:Godoc(<f-args>)
+    command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call s:Godoc('new', <f-args>)
 endif
 
-nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc()<CR>
+nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc("enew")<CR>
+nnoremap <silent> <Plug>(go-doc-tab) :<C-u>call <SID>Godoc("tabnew")<CR>
+nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call <SID>Godoc("vnew")<CR>
+nnoremap <silent> <Plug>(go-doc-split) :<C-u>call <SID>Godoc("split")<CR>
 
 function! s:GodocView(position, content)
     if !bufexists(s:buf_nr)
@@ -63,7 +66,7 @@ function! s:GodocView(position, content)
     setlocal nomodifiable
 endfunction
 
-function! s:GodocWord(word)
+function! s:GodocWord(mode, word)
     if !executable('godoc')
         echohl WarningMsg
         echo "godoc command not found."
@@ -87,11 +90,11 @@ function! s:GodocWord(word)
         return 0
     endif
 
-    call s:GodocView("vnew", content)
+    call s:GodocView(a:mode, content)
     return 1
 endfunction
 
-function! s:Godoc(...)
+function! s:Godoc(mode, ...)
     if !len(a:000)
         let oldiskeyword = &iskeyword
         setlocal iskeyword+=.
@@ -107,7 +110,7 @@ function! s:Godoc(...)
         return
     endif
 
-    if s:GodocWord(words[0])
+    if s:GodocWord(a:mode, words[0])
         if len(words) > 1
             if search('^\%(const\|var\|type\|\s\+\) ' . words[1] . '\s\+=\s')
                 return
