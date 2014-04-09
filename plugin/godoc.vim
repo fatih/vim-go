@@ -30,10 +30,10 @@ if !exists('g:go_godoc_commands')
 endif
 
 if g:go_godoc_commands
-    command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call s:Godoc('new', <f-args>)
+    command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call s:Godoc('leftabove new', <f-args>)
 endif
 
-nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc("enew")<CR>
+nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc("leftabove new")<CR>
 nnoremap <silent> <Plug>(go-doc-tab) :<C-u>call <SID>Godoc("tabnew")<CR>
 nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call <SID>Godoc("vnew")<CR>
 nnoremap <silent> <Plug>(go-doc-split) :<C-u>call <SID>Godoc("split")<CR>
