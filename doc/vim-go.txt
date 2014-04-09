@@ -266,7 +266,22 @@ Show dependencies for the current package
 
                                                                   *(go-doc)*
 
-Show the relevant GoDoc for the word under the cursor.
+Show the relevant GoDoc for the word under the cursor in a split window
+leftabove (default mode).
+
+                                                            *(go-doc-split)*
+
+Show the relevant GoDoc for the word under the cursor in a split window.
+
+
+                                                         *(go-doc-vertical)*
+
+Show the relevant GoDoc for the word under the cursor in a vertical split
+window.
+
+                                                              *(go-doc-tab)*
+
+Show the relevant GoDoc for the word under the cursor in a tab window.
 
                                                                   *(go-def)*
 

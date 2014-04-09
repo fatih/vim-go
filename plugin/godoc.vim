@@ -97,12 +97,13 @@ function! s:Godoc(mode, ...)
 endfunction
 
 function! s:GodocView(position, content)
+    " reuse existing buffer window if it exists othwersie create a new one
     if !bufexists(s:buf_nr)
-        exe a:position
+        execute a:position
         file `="[Godoc]"`
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
-        exe a:position
+        execute a:position
         execute s:buf_nr . 'buffer'
     elseif bufwinnr(s:buf_nr) != bufwinnr('%')
         execute bufwinnr(s:buf_nr) . 'wincmd w'
