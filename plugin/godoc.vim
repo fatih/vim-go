@@ -35,13 +35,13 @@ endif
 
 nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc()<CR>
 
-function! s:GodocView(content)
+function! s:GodocView(position, content)
     if !bufexists(s:buf_nr)
-        leftabove new
+        exe a:position
         file `="[Godoc]"`
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
-        leftabove split
+        exe a:position
         execute s:buf_nr . 'buffer'
     elseif bufwinnr(s:buf_nr) != bufwinnr('%')
         execute bufwinnr(s:buf_nr) . 'wincmd w'
@@ -58,7 +58,7 @@ function! s:GodocView(content)
     setlocal iskeyword-=-
 
     setlocal modifiable
-    normal! ggdG
+    %delete _ 
     call append(0, split(a:content, "\n"))
     setlocal nomodifiable
 endfunction
@@ -87,7 +87,7 @@ function! s:GodocWord(word)
         return 0
     endif
 
-    call s:GodocView(content)
+    call s:GodocView("vnew", content)
     return 1
 endfunction
 
