@@ -372,6 +372,42 @@ to `$HOME/.vim-go/`. To change it: >
 
   let g:go_bin_path = expand("$HOME/.vim-go/")
 
+<
+
+                                      *'g:go_highlight_array_whitespace_error'*
+
+Highlights white space after "[]". >
+
+  let g:go_highlight_array_whitespace_error = 1
+<
+
+                                      *'g:go_highlight_chan_whitespace_error'*
+
+Highlights white space around the communications operator that don't follow
+the standard style. >
+
+  let g:go_highlight_chan_whitespace_error = 1
+<
+
+                                                *'g:go_highlight_extra_types'*
+
+Highlights commonly used library types (io.Reader, etc.). >
+
+  let g:go_highlight_extra_types = 1
+<
+
+                                            *'g:go_highlight_space_tab_error'*
+
+Highlights instances of tabs following spaces. >
+
+  let g:go_highlight_extra_types = 1
+<
+                                  *'g:go_highlight_trailing_whitespace_error'*
+
+Highlights trailing white space. >
+
+  let g:go_highlight_trailing_whitespace_error = 1
+<
 ===============================================================================
 CREDITS                                                         *go-credits*
 
