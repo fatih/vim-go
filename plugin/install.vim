@@ -31,20 +31,17 @@ endfunction
 call s:CheckAndSetBinaryPaths()
 
 function! s:CheckBinaries()
-  let out = system("which go")
-  if v:shell_error != 0
+  if !executable('go')
     echohl Error | echomsg "vim-go: go executable not found." | echohl None
 		return -1
 	endif
 
-  let out = system("which git")
-  if v:shell_error != 0
+  if !executable('git')
     echohl Error | echomsg "vim-go: git executable not found." | echohl None
 		return -1
 	endif
 
-  let out = system("which hg")
-  if v:shell_error != 0
+  if !executable('hg')
     echohl Error | echomsg "vim.go: hg (mercurial) executable not found." | echohl None
 		return -1
 	endif
