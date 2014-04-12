@@ -12,6 +12,8 @@ let b:did_ftplugin = 1
 setlocal comments=s1:/*,mb:*,ex:*/,://
 setlocal commentstring=//\ %s
 
+setlocal noexpandtab
+
 let b:undo_ftplugin = "setl com< cms<"
 
 " Set gocode completion
