@@ -407,30 +407,30 @@ Highlights instances of tabs following spaces. >
 Highlights trailing white space. >
 
   let g:go_highlight_trailing_whitespace_error = 1
+
 <
+                                                  *'g:go_highlight_operators'*
 
-
-                                  *'g:go_highlight_operators'*
-
-Highlights trailing white space. >
+Highlights operators such as `:=` , `==`, `-=`, etc ...By default it's
+enabled. >
 
 	let g:go_highlight_operators = 1
 <
-                                  *'g:go_highlight_functions'*
+                                                *'g:go_highlight_functions'*
 
-Highlights trailing white space. >
+Highlights function names. By default it's enabled. >
 
 	let g:go_highlight_functions = 1
 <
-                                  *'g:go_highlight_methods'*
+                                                  *'g:go_highlight_methods'*
 
-Highlights trailing white space. >
+Highlights method names. By default it's enabled. >
 
 	let g:go_highlight_methods = 1
 <
-                                  *'g:go_highlight_structs'*
+                                                  *'g:go_highlight_structs'*
 
-Highlights trailing white space. >
+Highlights struct names. By default it's enabled. >
 
 	let g:go_highlight_structs = 1
 <
