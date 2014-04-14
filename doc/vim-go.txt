@@ -408,6 +408,32 @@ Highlights trailing white space. >
 
   let g:go_highlight_trailing_whitespace_error = 1
 <
+
+
+                                  *'g:go_highlight_operators'*
+
+Highlights trailing white space. >
+
+	let g:go_highlight_operators = 1
+<
+                                  *'g:go_highlight_functions'*
+
+Highlights trailing white space. >
+
+	let g:go_highlight_functions = 1
+<
+                                  *'g:go_highlight_methods'*
+
+Highlights trailing white space. >
+
+	let g:go_highlight_methods = 1
+<
+                                  *'g:go_highlight_structs'*
+
+Highlights trailing white space. >
+
+	let g:go_highlight_structs = 1
+<
 ===============================================================================
 CREDITS                                                         *go-credits*
 
