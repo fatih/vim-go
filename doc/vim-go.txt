@@ -360,8 +360,8 @@ is used. Use "neosnippet" for neosnippet.vim: >
                                                  *'g:go_disable_autoinstall'*
 
 By default vim-go automatically install all necessary tools which are used
-for |:go-commands|. Disable it if you don't wish to be updated. This also disables
-the |:GoUpdateBinaries| command. >
+for |:go-commands| at startup. Disable it if you don't wish to be updated.
+By default it is enabled.  >
 
   let g:go_disable_autoinstall = 0
 <

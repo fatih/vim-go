@@ -51,26 +51,15 @@ function! s:CheckBinaries()
 endfunction
 
 function! s:GoInstallBinaries(updateBin) 
-    if exists("g:go_disable_autoinstall")
-        if a:updateBin == 1
-            echom "vim.go: auto install is disabled. Enable it with 'let g:go_disable_autoinstall = 0'"
-        endif
-
-        return
-    endif
-
     if $GOPATH == ""
         echohl Error 
         echomsg "vim.go: $GOPATH is not set"
-        echomsg "vim.go: you can disable auto install with 'let g:go_disable_autoinstall = 1'"
         echohl None
         return
     endif
 
-
     let err = s:CheckBinaries()
     if err != 0
-        echohl Error | echomsg "vim.go: you can disable auto install with 'let g:go_disable_autoinstall = 1'" | echohl None
         return
     endif
 
@@ -93,8 +82,10 @@ function! s:GoInstallBinaries(updateBin)
     let $GOBIN = s:go_bin_old_path 
 endfunction
 
-" try to install once
-call s:GoInstallBinaries(-1)
+" try to install at startup
+if !exists("g:go_disable_autoinstall")
+    call s:GoInstallBinaries(-1)
+endif
 
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
 
