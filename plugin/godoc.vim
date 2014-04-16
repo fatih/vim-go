@@ -31,12 +31,51 @@ endif
 
 if g:go_godoc_commands
     command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call s:Godoc('leftabove new', <f-args>)
+    command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser :call s:GodocBrowser(<f-args>)
 endif
 
 nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc("leftabove new")<CR>
 nnoremap <silent> <Plug>(go-doc-tab) :<C-u>call <SID>Godoc("tabnew")<CR>
 nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call <SID>Godoc("vnew")<CR>
 nnoremap <silent> <Plug>(go-doc-split) :<C-u>call <SID>Godoc("split")<CR>
+
+function! s:GodocBrowser(...)
+    if !executable('godoc')
+        echohl WarningMsg
+        echo "godoc command not found."
+        echo "  install with: go get code.google.com/p/go.tools/cmd/godoc"
+        echohl None
+        return -1
+    endif
+
+    if !len(a:000)
+        let oldiskeyword = &iskeyword
+        setlocal iskeyword+=.
+        let word = expand('<cword>')
+        let &iskeyword = oldiskeyword
+        let word = substitute(word, '[^a-zA-Z0-9\\/._~-]', '', 'g')
+        let words = split(word, '\.\ze[^./]\+$')
+    else
+        let words = a:000
+    endif
+
+    if !len(words)
+        return
+    endif
+
+    let pkg = words[0]
+    let packages = GoImports() 
+
+    if has_key(packages, pkg)
+        let pkg = packages[pkg]
+    endif
+
+    let command = 'godoc ' . pkg
+
+    " example url: https://godoc.org/github.com/fatih/set#Set
+    let godoc_url = "https://godoc.org/" . pkg . "#" . words[1]
+    call GoOpenBrowser(godoc_url)
+endfunction
 
 function! s:Godoc(mode, ...)
     if !executable('godoc')

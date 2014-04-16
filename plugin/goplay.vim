@@ -39,7 +39,7 @@ function! s:GoPlay(count, line1, line2)
     endif
 
     if g:go_play_open_browser != 0
-        call s:open_browser(url)
+        call GoOpenBrowser(url)
     endif
 
     echo "Snippet uploaded: ".url
@@ -95,7 +95,7 @@ function! s:get_browser_command()
     return go_play_browser_command
 endfunction
 
-function! s:open_browser(url)
+function! GoOpenBrowser(url)
     let cmd = s:get_browser_command()
     if len(cmd) == 0
         redraw
