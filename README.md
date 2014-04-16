@@ -14,6 +14,7 @@ plugins.
 * Better `gofmt` on save, keeps cursor position and doesn't break your undo
   history
 * Go to symbol/declaration with `godef`
+* Look up documentation with `godoc` inside Vim or open it in browser.
 * Automatically import packages via `goimports`
 * Compile and `go build` your package, install it with `go install`
 * `go run` quickly your current file/files
@@ -51,7 +52,7 @@ All [features](#features) are enabled by default. There is no additional
 settings needed.  Usage and commands are listed in `doc/vim-go.txt`. Just open
 the help page to see all commands:
 
-	:help vim-go
+    :help vim-go
 
 Current commands:
 
@@ -63,6 +64,7 @@ Current commands:
 :GoEnableGoimports
 :GoLint
 :GoDoc <identifier>
+:GoDocBrowser <identifier>
 :GoFmt
 :GoVet
 :GoDef <identifier>
@@ -210,7 +212,7 @@ fmt.Printf(" | %+v\n", |)
 
 ```go
 if err != nil {
-	return err
+    return err
 }
 ```
 
@@ -218,7 +220,7 @@ Use `gof` to quickly create a anonymous goroutine :
 
 ```go
 go func() {
-	|
+    |
 }()
 ```
 
@@ -226,8 +228,8 @@ To add `json` tags to a struct field, use `json` trigger:
 
 ```
 type foo struct {
-	bar string  `json:"myField"
-		   ^ type `json` here, hit tab and type "myField". It will expand to `json:"myField"`
+    bar string  `json:"myField"
+           ^ type `json` here, hit tab and type "myField". It will expand to `json:"myField"`
 }
 ```
 
@@ -254,3 +256,4 @@ Give it a try. I hope you like it. Feel free to contribute to the project.
 * Go Authors for offical vim plugins
 * Gocode, Godef, Golint, Oracle, Goimports, Errcheck projects and authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode, vim-godef)
+

@@ -104,8 +104,14 @@ COMMANDS                                                          *go-commands*
                                                                      *:GoDoc*
 :GoDoc [word]
 
-    Open the relevant GoDoc for either the word[s] passed to the command or
-    the, by default, the word under the cursor.
+    Open the relevant GoDoc in split window for either the word[s] passed to
+    the command or the, by default, the word under the cursor.
+
+                                                              *:GoDocBrowser*
+:GoDocBrowser [word]
+
+    Open the relevant GoDoc in browser for either the word[s] passed to the
+    command or the, by default, the word under the cursor.
 
                                                                      *:GoFmt*
 :GoFmt
@@ -310,8 +316,9 @@ SETTINGS                                                        *go-settings*
                                                 *'g:go_play_browser_command'*
 
 Use this option to change the browser that is used to open the snippet url
-posted to play.golang.org with |:GoPlay|. By default it tries to find it
-automatically for the current OS. >
+posted to play.golang.org with |:GoPlay| or for the relevant documentation
+used with |:GoDocBrowser|. By default it tries to find it automatically for
+the current OS. >
 
   let g:play_browser_command = ''
 <
