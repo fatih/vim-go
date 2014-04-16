@@ -39,16 +39,19 @@ nnoremap <silent> <Plug>(go-doc-tab) :<C-u>call <SID>Godoc("tabnew")<CR>
 nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call <SID>Godoc("vnew")<CR>
 nnoremap <silent> <Plug>(go-doc-split) :<C-u>call <SID>Godoc("split")<CR>
 
-function! s:GodocBrowser(...)
+" returns the package and exported name. exported name might be empty.
+" ie: fmt and Println
+" ie: github.com/fatih/set and New
+function! s:GodocWord(args)
     if !executable('godoc')
         echohl WarningMsg
         echo "godoc command not found."
         echo "  install with: go get code.google.com/p/go.tools/cmd/godoc"
         echohl None
-        return -1
+        return []
     endif
 
-    if !len(a:000)
+    if !len(a:args)
         let oldiskeyword = &iskeyword
         setlocal iskeyword+=.
         let word = expand('<cword>')
@@ -56,59 +59,53 @@ function! s:GodocBrowser(...)
         let word = substitute(word, '[^a-zA-Z0-9\\/._~-]', '', 'g')
         let words = split(word, '\.\ze[^./]\+$')
     else
-        let words = a:000
+        let words = a:args
     endif
 
-    if !len(words)
-        return
+    if !len(words) 
+        return []
     endif
 
     let pkg = words[0]
+    if len(words) == 1
+        let exported_name = ""
+    else
+        let exported_name = words[1]
+    endif
+
     let packages = GoImports() 
 
     if has_key(packages, pkg)
         let pkg = packages[pkg]
     endif
 
-    let command = 'godoc ' . pkg
+    return [pkg, exported_name]
+endfunction
+
+function! s:GodocBrowser(...)
+    let pkgs = s:GodocWord(a:000)
+    if empty(pkgs)
+        return
+    endif
+
+    let pkg = pkgs[0]
+    let exported_name = pkgs[1]
 
     " example url: https://godoc.org/github.com/fatih/set#Set
-    let godoc_url = "https://godoc.org/" . pkg . "#" . words[1]
+    let godoc_url = "https://godoc.org/" . pkg . "#" . exported_name
     call GoOpenBrowser(godoc_url)
 endfunction
 
 function! s:Godoc(mode, ...)
-    if !executable('godoc')
-        echohl WarningMsg
-        echo "godoc command not found."
-        echo "  install with: go get code.google.com/p/go.tools/cmd/godoc"
-        echohl None
-        return -1
-    endif
-
-    if !len(a:000)
-        let oldiskeyword = &iskeyword
-        setlocal iskeyword+=.
-        let word = expand('<cword>')
-        let &iskeyword = oldiskeyword
-        let word = substitute(word, '[^a-zA-Z0-9\\/._~-]', '', 'g')
-        let words = split(word, '\.\ze[^./]\+$')
-    else
-        let words = a:000
-    endif
-
-    if !len(words)
+    let pkgs = s:GodocWord(a:000)
+    if empty(pkgs)
         return
     endif
 
-    let pkg = words[0]
-    let packages = GoImports() 
+    let pkg = pkgs[0]
+    let exported_name = pkgs[1]
 
-    if has_key(packages, pkg)
-        let command = 'godoc ' . packages[pkg]
-    else
-        let command = 'godoc ' . pkg
-    endif
+    let command = 'godoc ' . pkg
 
     silent! let content = system(command)
     if v:shell_error || !len(content)
@@ -118,21 +115,19 @@ function! s:Godoc(mode, ...)
 
     call s:GodocView(a:mode, content)
 
-    if len(words) < 2
-        return
-        echo 'No documentation found for "' . pkg . '".'
-    endif 
-
+    " jump to the specified name
     if search('^\%(const\|var\|type\|\s\+\) ' . pkg . '\s\+=\s')
         silent! normal zt
         return -1
     endif
 
-    if search('^func ' . words[1] . '(')
+    if search('^func ' . exported_name . '(')
         silent! normal zt
         return -1
     endif
 
+    " nothing found, jump to top
+    silent! normal gg
 endfunction
 
 function! s:GodocView(position, content)
