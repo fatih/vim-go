@@ -105,13 +105,13 @@ COMMANDS                                                          *go-commands*
 :GoDoc [word]
 
     Open the relevant GoDoc in split window for either the word[s] passed to
-    the command or the, by default, the word under the cursor.
+    the command or by default, the word under the cursor.
 
                                                               *:GoDocBrowser*
 :GoDocBrowser [word]
 
     Open the relevant GoDoc in browser for either the word[s] passed to the
-    command or the, by default, the word under the cursor.
+    command or by default, the word under the cursor.
 
                                                                      *:GoFmt*
 :GoFmt
