@@ -1,30 +1,30 @@
 function! go#tool#Files()
-	let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
-	let out = s:execute_in_current_dir(command)
+    let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
+    let out = s:execute_in_current_dir(command)
     return split(out, '\n')
 endfunction
 
 function! go#tool#Deps()
-	let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
-	let out = s:execute_in_current_dir(command)
+    let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
+    let out = s:execute_in_current_dir(command)
     return split(out, '\n')
 endfunction
 
 function! go#tool#Imports()
-	let imports = {}
-	let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
-	let out = s:execute_in_current_dir(command)
-	if v:shell_error
-		echo out
-		return imports
-	endif
+    let imports = {}
+    let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
+    let out = s:execute_in_current_dir(command)
+    if v:shell_error
+        echo out
+        return imports
+    endif
 
-	for package_path in split(out, '\n')
-		let package_name = fnamemodify(package_path, ":t")
-		let imports[package_name] = package_path
-	endfor
+    for package_path in split(out, '\n')
+        let package_name = fnamemodify(package_path, ":t")
+        let imports[package_name] = package_path
+    endfor
 
-	return imports
+    return imports
 endfunction
 
 function! go#tool#ShowErrors(out)
@@ -50,15 +50,15 @@ function! go#tool#ShowErrors(out)
 endfunction
 
 function! s:execute_in_current_dir(cmd) abort
-	let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-	let dir = getcwd()
-	try
-		execute cd.'`=expand("%:p:h")`'
-		let out = system(a:cmd)
-	finally
-		execute cd.'`=dir`'
-	endtry
-	return out
+    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    let dir = getcwd()
+    try
+        execute cd.'`=expand("%:p:h")`'
+        let out = system(a:cmd)
+    finally
+        execute cd.'`=dir`'
+    endtry
+    return out
 endfunction
 
 " vim:ts=4:sw=4:et
