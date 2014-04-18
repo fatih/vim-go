@@ -3,61 +3,10 @@ if exists("g:go_loaded_gotools")
 endif
 let g:go_loaded_gotools = 1
 
-function! GoFiles()
-    let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
-    let out = s:execute_in_current_dir(command)
-    return out
-endfunction
-
-function! s:GoDeps()
-    let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
-    let out = s:execute_in_current_dir(command)
-    return out
-endfunction
-
-function! GoImports()
-    let imports = {}
-    let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
-    let out = s:execute_in_current_dir(command)
-    if v:shell_error
-        echo out
-        return imports
-    endif
-
-    for package_path in split(out, '\n')
-        let package_name = fnamemodify(package_path, ":t")
-        let imports[package_name] = package_path
-    endfor
-
-    return imports
-endfunction
-
-function! g:GoCatchErrors(out)
-    let errors = []
-    for line in split(a:out, '\n')
-        let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
-        if !empty(tokens)
-            call add(errors, {"filename": @%,
-                        \"lnum":     tokens[2],
-                        \"text":     tokens[3]})
-        endif
-    endfor
-
-    if !empty(errors)
-        call setqflist(errors, 'r')
-        return
-    endif
-
-    if empty(errors)
-        " Couldn't detect error format, output errors
-        echo a:out
-    endif
-endfunction
-
 function! s:GoRun(bang, ...)
     let default_makeprg = &makeprg
     if !len(a:000)
-        let &makeprg = "go run " . join(split(GoFiles(), '\n'), ' ')
+        let &makeprg = "go run " . join(go#tool#Files(), ' ')
     else
         let &makeprg = "go run " . expand(a:1)
     endif
@@ -75,7 +24,7 @@ function! s:GoInstall(...)
     let command = 'go install '.pkgs
     let out = s:execute_in_current_dir(command)
     if v:shell_error
-        call g:GoCatchErrors(out)
+        call go#tool#ShowErrors(out)
         cwindow
         return
     endif
@@ -89,7 +38,7 @@ endfunction
 
 function! s:GoBuild(bang)
     let default_makeprg = &makeprg
-    let gofiles = join(split(GoFiles(), '\n'), ' ')
+    let gofiles = join(go#tool#Files(), ' ')
     if v:shell_error
         let &makeprg = "go build . errors"
     else
@@ -108,7 +57,7 @@ function! s:GoTest()
     let command = "go test ."
     let out = s:execute_in_current_dir(command)
     if v:shell_error
-        call g:GoCatchErrors(out)
+        call go#tool#ShowErrors(out)
     else
         call setqflist([])
     endif
@@ -168,11 +117,11 @@ if !hasmapto('<Plug>(go-vet)')
 endif
 
 if !hasmapto('<Plug>(go-files)')
-    nnoremap <silent> <Plug>(go-files) :<C-u>call <SID>GoFiles()<CR>
+    nnoremap <silent> <Plug>(go-files) :<C-u>call <SID>go#tool#Files()<CR>
 endif
 
 if !hasmapto('<Plug>(go-deps)')
-    nnoremap <silent> <Plug>(go-deps) :<C-u>call <SID>GoDeps()<CR>
+    nnoremap <silent> <Plug>(go-deps) :<C-u>call <SID>go#tool#Deps()<CR>
 endif
 
 " This needs to be here, it doesn't get sourced when put into a file under ftplugin/go
@@ -182,8 +131,8 @@ endif
 
 
 
-command! -nargs=0 GoFiles echo GoFiles()
-command! -nargs=0 GoDeps echo s:GoDeps()
+command! -nargs=0 GoFiles echo go#tool#Files()
+command! -nargs=0 GoDeps echo go#tool#Deps()
 
 command! -nargs=* -range -bang GoRun call s:GoRun(<bang>0,<f-args>)
 command! -nargs=? -range -bang GoBuild call s:GoBuild(<bang>0)

@@ -73,7 +73,7 @@ function! s:GodocWord(args)
         let exported_name = words[1]
     endif
 
-    let packages = GoImports() 
+    let packages = go#tool#Imports()
 
     if has_key(packages, pkg)
         let pkg = packages[pkg]
