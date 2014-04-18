@@ -17,7 +17,7 @@ endfunction
 function! go#command#Install(...)
     let pkgs = join(a:000, ' ')
     let command = 'go install '.pkgs
-    let out = s:execute_in_current_dir(command)
+    let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         call go#tool#ShowErrors(out)
         cwindow
@@ -50,7 +50,7 @@ endfunction
 
 function! go#command#Test()
     let command = "go test ."
-    let out = s:execute_in_current_dir(command)
+    let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         call go#tool#ShowErrors(out)
     else
@@ -60,7 +60,7 @@ function! go#command#Test()
 endfunction
 
 function! go#command#Vet()
-    let out = s:execute_in_current_dir('go vet')
+    let out = go#tool#ExecuteInDir('go vet')
     let errors = []
     for line in split(out, '\n')
         let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
@@ -74,18 +74,6 @@ function! go#command#Vet()
         call setqflist(errors, 'r')
     endif
     cwindow
-endfunction
-
-function! s:execute_in_current_dir(cmd) abort
-    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-    let dir = getcwd()
-    try
-        execute cd.'`=expand("%:p:h")`'
-        let out = system(a:cmd)
-    finally
-        execute cd.'`=dir`'
-    endtry
-    return out
 endfunction
 
 " vim:ts=4:sw=4:et

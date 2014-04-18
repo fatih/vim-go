@@ -1,19 +1,19 @@
 function! go#tool#Files()
     let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
-    let out = s:execute_in_current_dir(command)
+    let out = go#tool#ExecuteInDir(command)
     return split(out, '\n')
 endfunction
 
 function! go#tool#Deps()
     let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
-    let out = s:execute_in_current_dir(command)
+    let out = go#tool#ExecuteInDir(command)
     return split(out, '\n')
 endfunction
 
 function! go#tool#Imports()
     let imports = {}
     let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
-    let out = s:execute_in_current_dir(command)
+    let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         echo out
         return imports
@@ -49,7 +49,7 @@ function! go#tool#ShowErrors(out)
     endif
 endfunction
 
-function! s:execute_in_current_dir(cmd) abort
+function! go#tool#ExecuteInDir(cmd) abort
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     let dir = getcwd()
     try
