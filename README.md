@@ -263,6 +263,6 @@ Give it a try. I hope you like it. Feel free to contribute to the project.
 ## Credits
 
 * Go Authors for offical vim plugins
-* Gocode, Godef, Golint, Oracle, Goimports, Errcheck projects and authors of those projects.
+* Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode, vim-godef)
 
