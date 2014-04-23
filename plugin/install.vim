@@ -18,6 +18,7 @@ let s:packages = [
             \ "code.google.com/p/go.tools/cmd/oracle", 
             \ "github.com/golang/lint/golint", 
             \ "github.com/kisielk/errcheck",
+            \ "github.com/jstemmer/gotags",
             \ ]
 
 function! s:CheckAndSetBinaryPaths() 
