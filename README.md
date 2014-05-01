@@ -57,7 +57,7 @@ completion (completion by type) install:
 
 ## Usage
 
-All [features](#features) are enabled by default. There is no additional
+All [features](#features) are enabled by default. There are no additional
 settings needed.  Usage and commands are listed in `doc/vim-go.txt`. Just open
 the help page to see all commands:
 
@@ -206,7 +206,7 @@ used, however you can change it to neosnippet with:
 let g:go_snippet_engine = "neosnippet"
 ```
 
-Snippet feature is enabled only if the snippet plugin are installed.  Below are
+Snippet feature is enabled only if the snippet plugins are installed.  Below are
 some examples snippets and the correspondings trigger keywords, The `|`
 character defines the cursor. Ultisnips has suppport for multiple cursors
 
@@ -251,7 +251,7 @@ And many more! For the full list have a look at the
 
 ## Why another plugin?
 
-This plugin/package is born mainly by frustrating. I had to re-install my Vim
+This plugin/package is born mainly from frustration. I had to re-install my Vim
 plugins and especially for Go I had to install a lot of seperate different
 plugins, setup the necessary binaries to make them work together and hope not
 to lose them again. Lot's of the plugins out there lacks of proper settings.
