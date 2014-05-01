@@ -41,7 +41,6 @@ For Vundle add this line to your vimrc:
 
 ```vimrc
 Plugin 'fatih/vim-go'
-
 ```
 and execute `:PluginInstall`
 
