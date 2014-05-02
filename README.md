@@ -37,6 +37,14 @@ $ cd ~/.vim/bundle
 $ git clone https://github.com/fatih/vim-go.git
 ```
 
+For Vundle add this line to your vimrc:
+
+```vimrc
+Plugin 'fatih/vim-go'
+```
+and execute `:PluginInstall`
+
+
 For the first Vim start it will try to download and install all necessary go
 binaries. To disable this behaviour please check out
 [settings](#settings).
