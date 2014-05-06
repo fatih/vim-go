@@ -90,6 +90,7 @@ function! s:GoFormat()
         if s:got_fmt_error 
             let s:got_fmt_error = 0
             call setqflist([])
+            cwindow
         endif
     elseif g:go_fmt_fail_silently == 0 
         "otherwise get the errors and put them to quickfix window
