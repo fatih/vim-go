@@ -47,7 +47,13 @@ endsnippet
 
 # statements
 snippet for "For loop" b
-for ${1:condition}${1/(.+)/ /}{
+for i := 0; i < ${1:N}; i++ {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet forr "For range loop" b
+for ${2:name} := range ${1:collection} {
 	${0:${VISUAL}}
 }
 endsnippet
@@ -134,6 +140,11 @@ snippet json "JSON field"
 \`json:"${1:displayName}"\`
 endsnippet
 
+snippet er "Error clause " !b
+if err != nil {
+	${0}
+}
+endsnippet
 
 snippet errn "Error return " !b
 if err != nil {
