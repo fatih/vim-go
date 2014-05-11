@@ -44,7 +44,7 @@ endif
 
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
-command! -nargs=0 GoInfo go#complete#Info()
+command! -nargs=* GoInfo call go#complete#Info()
 
 command! -nargs=* -range -bang GoRun call go#command#Run(<bang>0,<f-args>)
 command! -nargs=? -range -bang GoBuild call go#command#Build(<bang>0)
