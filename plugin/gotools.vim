@@ -32,6 +32,10 @@ if !hasmapto('<Plug>(go-deps)')
     nnoremap <silent> <Plug>(go-deps) :<C-u>call go#tool#Deps()<CR>
 endif
 
+if !hasmapto('<Plug>(go-info)')
+    nnoremap <silent> <Plug>(go-info) :<C-u>call go#complete#Info()<CR>
+endif
+
 " This needs to be here, it doesn't get sourced when put into a file under ftplugin/go
 if !hasmapto('<Plug>(go-import)')
     nnoremap <silent> <Plug>(go-import) :<C-u>call GoSwitchImport(1, '', expand('<cword>'))<CR>
@@ -40,6 +44,7 @@ endif
 
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
+command! -nargs=0 GoInfo go#complete#Info()
 
 command! -nargs=* -range -bang GoRun call go#command#Run(<bang>0,<f-args>)
 command! -nargs=? -range -bang GoBuild call go#command#Build(<bang>0)

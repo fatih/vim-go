@@ -16,6 +16,7 @@ fu! s:gocodeCurrentBuffer()
   endif
   let file = tempname()
   call writefile(buf, file)
+
   return file
 endf
 
@@ -42,6 +43,7 @@ fu! s:gocodeCommand(cmd, preargs, args)
   for i in range(0, len(a:preargs) - 1)
     let a:preargs[i] = s:gocodeShellescape(a:preargs[i])
   endfor
+
   let result = s:system(printf('%s %s %s %s', g:go_gocode_bin, join(a:preargs), a:cmd, join(a:args)))
   if v:shell_error != 0
     return "[\"0\", []]"
@@ -75,6 +77,34 @@ fu! s:gocodeAutocomplete()
   call delete(filename)
   return result
 endf
+
+function! go#complete#Info()
+  let filename = s:gocodeCurrentBuffer()
+  let result = s:gocodeCommand('autocomplete',
+           \ [s:gocodeCurrentBufferOpt(filename), '-f=godit'],
+           \ [expand('%:p'), s:gocodeCursor()])
+  call delete(filename)
+
+	" first line is: Charcount,,NumberOfCandidates, i.e: 8,,1
+	" following lines are candiates, i.e:  func foo(name string),,foo(
+	let out = split(result, '\n')
+
+	" no candidates are found
+	if len(out) == 1
+		echo "Not found"
+		return
+	endif
+
+	" only one candiate is found
+	if len(out) == 2
+		echohl Function | echo split(out[1], ',,')[0] | echohl None
+		return
+	endif
+
+	" for now just say not found we are going to filter based on the word under
+	" the cursor later. 
+	echo "Not found"
+endfunction
 
 fu! go#complete#Complete(findstart, base)
   "findstart = 1 when we need to get the text length
