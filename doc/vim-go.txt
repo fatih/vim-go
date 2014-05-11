@@ -46,6 +46,7 @@ plugins.
   * Checking with `errcheck` for unchecked errors.
   * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
   * Share your current code to play.golang.org
+  * Type information about the underlying identifier 
 
 ===============================================================================
 INSTALL                                                           *go-install*
@@ -160,8 +161,15 @@ COMMANDS                                                          *go-commands*
 
     If [!] is not given the first error is jumped to.
 
+                                                                    *:GoInfo*
+:GoInfo
+    Show type information about the identifer under the cursor. For example
+    putting it above a function call is going to show the full function
+    signature. It uses gocode to get the type informations.
 
-:GoInstall                                                        *:GoInstall*
+
+                                                                 *:GoInstall*
+:GoInstall
 
   Install your package with `go install`.
 
@@ -244,6 +252,11 @@ Calls `go run` for the current file
                                                                 *(go-build)*
 
 Calls `go build` for the current package
+
+
+                                                                 *(go-info)*
+
+Shows type information for the word under the cursor
 
 
                                                               *(go-install)*
