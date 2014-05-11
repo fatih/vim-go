@@ -101,9 +101,22 @@ function! go#complete#Info()
 		return
 	endif
 
-	" for now just say not found we are going to filter based on the word under
-	" the cursor later. 
-	echo "Not found"
+	" to many candidates are available, pick one that maches the word under the
+	" cursor
+	let infos = []
+	for info in out[1:]
+		call add(infos, split(info, ',,')[0])
+	endfor
+
+	let wordMatch = '\<' . expand("<cword>") . '\>'
+	let filtered =  filter(infos, "v:val =~ '".wordMatch."'")
+
+	if len(filtered) == 1
+		echohl Function | echo filtered[0] | echohl None
+		return
+	else
+		echo "Not found, to many candidates"
+	endif
 endfunction
 
 fu! go#complete#Complete(findstart, base)
