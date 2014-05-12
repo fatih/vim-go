@@ -91,13 +91,12 @@ function! go#complete#Info()
 
 	" no candidates are found
 	if len(out) == 1
-		echo "Not found"
 		return
 	endif
 
 	" only one candiate is found
 	if len(out) == 2
-		echohl Function | echo split(out[1], ',,')[0] | echohl None
+		echon "vim-go: " | echohl Function | echon split(out[1], ',,')[0] | echohl None
 		return
 	endif
 
@@ -112,11 +111,10 @@ function! go#complete#Info()
 	let filtered =  filter(infos, "v:val =~ '".wordMatch."'")
 
 	if len(filtered) == 1
-		echohl Function | echo filtered[0] | echohl None
+		echon "vim-go: " | echohl Function | echon filtered[0] | echohl None
 		return
-	else
-		echo "Not found, to many candidates"
 	endif
+
 endfunction
 
 fu! go#complete#Complete(findstart, base)

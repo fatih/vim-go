@@ -19,6 +19,10 @@ let b:undo_ftplugin = "setl com< cms<"
 " Set gocode completion
 setlocal omnifunc=go#complete#Complete
 
+" GoInfo automatic update
+setlocal updatetime=500
+au! CursorHold *.go nested call go#complete#Info()
+
 compiler go
 
 " vim:ts=4:sw=4:et
