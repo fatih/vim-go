@@ -26,7 +26,7 @@ setlocal omnifunc=go#complete#Complete
 
 " GoInfo automatic update
 if g:go_auto_type_info != 0
-    setlocal updatetime=500
+    setlocal updatetime=300
     au! CursorHold *.go nested call go#complete#Info()
 endif
 
