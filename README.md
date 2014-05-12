@@ -100,12 +100,11 @@ Current commands:
 vim-go has several `<Plug>` mappings which can be used to create custom
 mappings. Below are some examples you might find useful:
 
-
-Import the package under your cursor with `<leader>i` (useful if you have
-disabled auto import via `GoDisableGoimport`)
+Show type info for the word under your cursor with `<leader>i` (useful if you
+have disabled auto showing type info via `g:go_auto_type_info`)
 
 ```vim
-au FileType go nmap <Leader>i <Plug>(go-import)
+au FileType go nmap <Leader>i <Plug>(go-info)
 ```
 
 Open the relevant Godoc for the word under the cursor with `<leader>gd` or open

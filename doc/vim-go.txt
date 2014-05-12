@@ -342,6 +342,14 @@ with |:GoPlay|. By default it's enabled. >
 
   let g:go_play_open_browser = 1
 <
+                                                      *'g:go_auto_type_info'*
+
+Use this option to show the type info (|:GoInfo|) for the word under the cursor
+automatically. Whenever the cursor changes the type info will be updated.
+By default it's enabled >
+
+  let g:go_auto_type_info = 1
+<
                                                         *'g:go_fmt_autosave'*
 
 Use this option to auto |:GoFmt| on save. By default it's enabled >
