@@ -91,6 +91,7 @@ function! go#complete#Info()
 
 	" no candidates are found
 	if len(out) == 1
+		echo ''
 		return
 	endif
 
@@ -115,6 +116,8 @@ function! go#complete#Info()
 		return
 	endif
 
+	" clean echo line
+	echo '' 
 endfunction
 
 fu! go#complete#Complete(findstart, base)
