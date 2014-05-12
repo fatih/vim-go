@@ -9,6 +9,11 @@ if exists("b:did_ftplugin")
 endif
 let b:did_ftplugin = 1
 
+if !exists("g:go_auto_type_info")
+    let g:go_auto_type_info = 1
+endif
+
+
 setlocal comments=s1:/*,mb:*,ex:*/,://
 setlocal commentstring=//\ %s
 
@@ -20,8 +25,10 @@ let b:undo_ftplugin = "setl com< cms<"
 setlocal omnifunc=go#complete#Complete
 
 " GoInfo automatic update
-setlocal updatetime=500
-au! CursorHold *.go nested call go#complete#Info()
+if g:go_auto_type_info != 0
+    setlocal updatetime=500
+    au! CursorHold *.go nested call go#complete#Info()
+endif
 
 compiler go
 
