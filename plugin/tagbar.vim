@@ -1,10 +1,10 @@
 " Check if tagbar is installed under plugins or is directly under rtp
 " this covers pathgen + Vundle/Bundle
-if globpath(&rtp, 'tagbar') == "" && globpath(&rtp, 'plugin/tagbar') == ""
-    return
+if globpath(&rtp, 'plugin/tagbar.vim') == ""
+    finish
 endif
-
 if !exists("g:tagbar_type_go")
+
     let g:tagbar_type_go = {
         \ 'ctagstype' : 'go',
         \ 'kinds'     : [
