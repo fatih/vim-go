@@ -174,7 +174,7 @@ By default binaries are installed to `$HOME/.vim-go/`. To change it:
 
 ```vim
 let g:go_bin_path = expand("~/.mypath")
-let g:go_bin_path = "/home/fatih/.mypath"      "or give relative path
+let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
 ```
 
 Change individual binary paths, if the binary doesn't exist vim-go will
