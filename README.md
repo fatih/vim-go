@@ -56,6 +56,9 @@ completion (completion by type) install:
 [YCM](https://github.com/Valloric/YouCompleteMe) or
 [neocomplete](https://github.com/Shougo/neocomplete.vim)
 
+To get displayed source code tag informations on a sidebar install
+[tagbar](https://github.com/majutsushi/tagbar).
+
 ## Usage
 
 All [features](#features) are enabled by default. There are no additional
