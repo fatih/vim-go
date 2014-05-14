@@ -10,7 +10,6 @@ elseif globpath(&rtp, 'plugin/tagbar.vim') == ""
 endif
 
 if !exists("g:tagbar_type_go")
-
     let g:tagbar_type_go = {
         \ 'ctagstype' : 'go',
         \ 'kinds'     : [
@@ -35,7 +34,7 @@ if !exists("g:tagbar_type_go")
             \ 'ctype' : 't',
             \ 'ntype' : 'n'
         \ },
-        \ 'ctagsbin'  : 'gotags',
+        \ 'ctagsbin'  : expand(g:go_gotags_bin),
         \ 'ctagsargs' : '-sort -silent'
     \ }
 endif
