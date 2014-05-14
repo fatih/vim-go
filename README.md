@@ -148,7 +148,7 @@ recommendations, you are free to create more advanced mappings or functions
 based on `:he go-commands`.
 
 ## Settings
-Below are some settings you might find useful. For the full list see `:he go-settings`:
+Below are some settings you might find useful. For the full list see `:he go-settings`.
 
 Disable opening browser after posting to your snippet to `play.golang.org`:
 
