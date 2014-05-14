@@ -26,7 +26,8 @@ plugins.
 * Checking with `errcheck` for unchecked errors.
 * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
 * Share your current code to [play.golang.org](http://play.golang.org)
-* Type information about the underlying identifier 
+* On-the-fly type information about the word under the cursor
+* Tagbar support to show tags of the source code in a sidebar with `gotags` 
 
 ## Install
 
