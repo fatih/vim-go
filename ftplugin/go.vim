@@ -19,10 +19,6 @@ setlocal commentstring=//\ %s
 
 setlocal noexpandtab
 
-
-" use old regexpengine 
-set re=1
-
 let b:undo_ftplugin = "setl com< cms<"
 
 " Set gocode completion
