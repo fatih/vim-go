@@ -9,6 +9,9 @@ plugins.
 
 ## Features
 
+![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
+
+
 * Improved Syntax highlighting, such as Functions, Operators, Methods..
 * Auto completion support via `gocode`
 * Better `gofmt` on save, keeps cursor position and doesn't break your undo
