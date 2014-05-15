@@ -225,8 +225,13 @@ snippet t
 # goroutine named function
 snippet g
 	go ${1:funcName}(${0})
-# goroutine anonymous function 
+# goroutine anonymous function
 snippet ga
 	go func(${1} ${2:type}) {
 		${3:/* code */}
 	}(${0})
+# test function
+snippet test
+	func Test${1:Function}(t *testing.T) {
+		${2}
+	}
