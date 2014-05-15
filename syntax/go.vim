@@ -247,21 +247,21 @@ hi def link     goOperator					Operator
 
 " Functions; 
 if go_highlight_functions != 0
-	syn match goFunction							/\(func\s\+\)\@<=\w\+\((\)\@=/
-	syn match goFunction							/\()\s\+\)\@<=\w\+\((\)\@=/
+	syn match goFunction							/\%#=1\(func\s\+\)\@<=\w\+\((\)\@=/
+	syn match goFunction							/\%#=1\()\s\+\)\@<=\w\+\((\)\@=/
 endif
 hi def link     goFunction					Function
 
 " Methods; 
 if go_highlight_methods != 0
-	syn match goMethod								/\(\.\)\@<=\w\+\((\)\@=/
+	syn match goMethod								/\%#=1\(\.\)\@<=\w\+\((\)\@=/
 endif
 hi def link     goMethod						Type
 
 " Structs; 
 if go_highlight_structs != 0
-	syn match goStruct								/\(.\)\@<=\w\+\({\)\@=/
-	syn match goStructDef							/\(type\s\+\)\@<=\w\+\(\s\+struct\s\+{\)\@=/
+	syn match goStruct								/\%#=1\(.\)\@<=\w\+\({\)\@=/
+	syn match goStructDef							/\%#=1\(type\s\+\)\@<=\w\+\(\s\+struct\s\+{\)\@=/
 endif
 hi def link     goStruct						Function
 hi def link     goStructDef         Function
