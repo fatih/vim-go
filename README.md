@@ -68,37 +68,6 @@ the help page to see all commands:
 
     :help vim-go
 
-Current commands:
-
-```vimrc
-:GoImport <path>
-:GoImportAs <localname> <path>
-:GoDrop <path>
-:GoDisableGoimports
-:GoEnableGoimports
-:GoLint
-:GoDoc <identifier>
-:GoDocBrowser <identifier>
-:GoFmt
-:GoVet
-:GoDef <identifier>
-:GoRun <expand>
-:GoBuild
-:GoInstall
-:GoPlay
-:GoInfo
-:GoTest
-:GoErrCheck
-:GoFiles
-:GoDeps
-:GoUpdateBinaries
-:GoOracleDescribe
-:GoOracleCallees
-:GoOracleCallers
-:GoOracleCallgraph
-:GoOracleImplements
-:GoOracleChannelPeers
-```
 
 ## Mappings
 
