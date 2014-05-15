@@ -10,7 +10,7 @@ endif
 let b:did_ftplugin = 1
 
 if !exists("g:go_auto_type_info")
-    let g:go_auto_type_info = 1
+    let g:go_auto_type_info = 0
 endif
 
 
