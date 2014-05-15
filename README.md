@@ -47,10 +47,12 @@ Plugin 'fatih/vim-go'
 ```
 and execute `:PluginInstall`
 
+
+For the first Vim start it will try to download and install all necessary go
+binaries. This can take some time. To disable this behaviour add `let g:go_disable_autoinstall = 1`
+
 ### Optional
 
-* For the first Vim start it will try to download and install all necessary go
-binaries. To disable this behaviour add `let g:go_disable_autoinstall = 1` 
 * Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
 completion (completion by type) install:
 [YCM](https://github.com/Valloric/YouCompleteMe) or
@@ -60,6 +62,7 @@ completion (completion by type) install:
 * For snippet feature install: 
 [ultisnips](https://github.com/SirVer/ultisnips) or
 [neosnippet](https://github.com/Shougo/neosnippet.vim). 
+* Screenshot colorscheme is a slightly modified molokai: [fatih/molokai](https://github.com/fatih/molokai)
 
 ## Usage
 
