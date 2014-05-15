@@ -3,14 +3,12 @@
 Full featured Go development environment support for Vim. vim-go installs
 automatically all necessary binaries if they are not found. It comes with
 pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, go toolchain commands, etc... Do not use it with other Go
-plugins.
-
-
-## Features
+snippet support, improved syntax highlighting, go toolchain commands, etc... 
+Do not use it with other Go plugins.
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
 
+## Features
 
 * Improved Syntax highlighting, such as Functions, Operators, Methods..
 * Auto completion support via `gocode`
