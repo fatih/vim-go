@@ -47,6 +47,7 @@ Plugin 'fatih/vim-go'
 ```
 and execute `:PluginInstall`
 
+### Optional
 
 * For the first Vim start it will try to download and install all necessary go
 binaries. To disable this behaviour add `let g:go_disable_autoinstall = 1` 
