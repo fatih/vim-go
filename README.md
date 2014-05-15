@@ -3,7 +3,7 @@
 Full featured Go development environment support for Vim. vim-go installs
 automatically all necessary binaries if they are not found. It comes with
 pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, improved syntax highlighting, go toolchain commands, etc... 
+snippet support, improved syntax highlighting, go toolchain commands, etc...
 Do not use it with other Go plugins.
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
@@ -28,7 +28,7 @@ Do not use it with other Go plugins.
 * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
 * Share your current code to [play.golang.org](http://play.golang.org)
 * On-the-fly type information about the word under the cursor
-* Tagbar support to show tags of the source code in a sidebar with `gotags` 
+* Tagbar support to show tags of the source code in a sidebar with `gotags`
 
 ## Install
 
@@ -56,13 +56,13 @@ binaries. This can take some time. To disable this behaviour add `let g:go_disab
 * Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
 completion (completion by type) install:
 [YCM](https://github.com/Valloric/YouCompleteMe) or
-[neocomplete](https://github.com/Shougo/neocomplete.vim)
+[neocomplete](https://github.com/Shougo/neocomplete.vim).
 * To get displayed source code tag informations on a sidebar install
 [tagbar](https://github.com/majutsushi/tagbar).
-* For snippet feature install: 
+* For snippet feature install:
 [ultisnips](https://github.com/SirVer/ultisnips) or
-[neosnippet](https://github.com/Shougo/neosnippet.vim). 
-* Screenshot colorscheme is a slightly modified molokai: [fatih/molokai](https://github.com/fatih/molokai)
+[neosnippet](https://github.com/Shougo/neosnippet.vim).
+* Screenshot color scheme is a slightly modified molokai: [fatih/molokai](https://github.com/fatih/molokai).
 
 ## Usage
 
@@ -183,7 +183,7 @@ let g:go_snippet_engine = "neosnippet"
 ```
 
 Snippet feature is enabled only if the snippet plugins are installed.  Below are
-some examples snippets and the correspondings trigger keywords, The `|`
+some examples snippets and the corresponding trigger keywords, The `|`
 character defines the cursor. Ultisnips has suppport for multiple cursors
 
 
@@ -241,4 +241,3 @@ Give it a try. I hope you like it. Feel free to contribute to the project.
 * Go Authors for offical vim plugins
 * Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode, vim-godef)
-
