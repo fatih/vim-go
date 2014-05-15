@@ -48,17 +48,17 @@ Plugin 'fatih/vim-go'
 and execute `:PluginInstall`
 
 
-For the first Vim start it will try to download and install all necessary go
-binaries. To disable this behaviour please check out
-[settings](#settings).
-
-Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
+* For the first Vim start it will try to download and install all necessary go
+binaries. To disable this behaviour add `let g:go_disable_autoinstall = 1` 
+* Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
 completion (completion by type) install:
 [YCM](https://github.com/Valloric/YouCompleteMe) or
 [neocomplete](https://github.com/Shougo/neocomplete.vim)
-
-To get displayed source code tag informations on a sidebar install
+* To get displayed source code tag informations on a sidebar install
 [tagbar](https://github.com/majutsushi/tagbar).
+* For snippet feature install: 
+[ultisnips](https://github.com/SirVer/ultisnips) or
+[neosnippet](https://github.com/Shougo/neosnippet.vim). 
 
 ## Usage
 
@@ -171,9 +171,7 @@ let g:go_disable_autoinstall = 1
 
 ## Snippets
 
-Snippets are useful and very powerful. Vim-go has a sensible integration with
-[ultisnips](https://github.com/SirVer/ultisnips) and
-[neosnippet](https://github.com/Shougo/neosnippet.vim). By default ultisnips is
+Snippets are useful and very powerful. By default ultisnips is
 used, however you can change it to neosnippet with:
 
 ```vim
