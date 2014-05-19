@@ -12,8 +12,9 @@ import (
 endsnippet
 
 snippet package "Package declaration" b
-// Package $1 provides ...
+// Package $1 provides ${2:...}
 package ${1:main}
+${0:${VISUAL}}
 endsnippet
 
 # Mostly converted from: https://github.com/AlanQuatermain/go-tmbundle
