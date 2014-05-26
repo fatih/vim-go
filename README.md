@@ -49,7 +49,8 @@ and execute `:PluginInstall`
 
 
 For the first Vim start it will try to download and install all necessary go
-binaries. This can take some time. To disable this behaviour add `let g:go_disable_autoinstall = 1`
+binaries. It requires `git` and `hg` for fetching the individual Go packages.
+This can take some time. To disable this behaviour add `let g:go_disable_autoinstall = 1`
 
 ### Optional
 
