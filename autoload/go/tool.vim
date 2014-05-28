@@ -32,7 +32,7 @@ function! go#tool#ShowErrors(out)
     for line in split(a:out, '\n')
         let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
         if !empty(tokens)
-            call add(errors, {"filename": @%,
+            call add(errors, {"filename" : expand("%:p:h:") . "/" . tokens[1],
                         \"lnum":     tokens[2],
                         \"text":     tokens[3]})
         endif
