@@ -346,9 +346,9 @@ with |:GoPlay|. By default it's enabled. >
 
 Use this option to show the type info (|:GoInfo|) for the word under the cursor
 automatically. Whenever the cursor changes the type info will be updated.
-By default it's enabled >
+By default it's disabled >
 
-  let g:go_auto_type_info = 1
+  let g:go_auto_type_info = 0
 <
                                                         *'g:go_fmt_autosave'*
 
