@@ -109,7 +109,7 @@ Replace `gd` (Goto Declaration) for the word under your cursor (replaces current
 au FileType go nmap gd <Plug>(go-def)
 ```
 
-Or open the defitinion/declaration in a new vertical, horizontal or tab for the
+Or open the definition/declaration in a new vertical, horizontal or tab for the
 word under your cursor:
 
 ```vim
@@ -185,7 +185,7 @@ let g:go_snippet_engine = "neosnippet"
 
 Snippet feature is enabled only if the snippet plugins are installed.  Below are
 some examples snippets and the corresponding trigger keywords, The `|`
-character defines the cursor. Ultisnips has suppport for multiple cursors
+character defines the cursor. Ultisnips has support for multiple cursors
 
 
 `ff` is useful for debugging:
@@ -229,7 +229,7 @@ And many more! For the full list have a look at the
 ## Why another plugin?
 
 This plugin/package is born mainly from frustration. I had to re-install my Vim
-plugins and especially for Go I had to install a lot of seperate different
+plugins and especially for Go I had to install a lot of separate different
 plugins, setup the necessary binaries to make them work together and hope not
 to lose them again. Lot's of the plugins out there lacks of proper settings.
 This plugin is improved and contains all my fixes/changes that I'm using for
@@ -239,6 +239,6 @@ Give it a try. I hope you like it. Feel free to contribute to the project.
 
 ## Credits
 
-* Go Authors for offical vim plugins
+* Go Authors for official vim plugins
 * Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode, vim-godef)
