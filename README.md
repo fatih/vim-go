@@ -185,7 +185,7 @@ let g:go_snippet_engine = "neosnippet"
 
 Snippet feature is enabled only if the snippet plugins are installed.  Below are
 some examples snippets and the corresponding trigger keywords, The `|`
-character defines the cursor. Ultisnips has suppport for multiple cursors
+character defines the cursor. Ultisnips has support for multiple cursors
 
 
 `ff` is useful for debugging:
