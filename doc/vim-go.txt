@@ -298,9 +298,15 @@ Show the relevant GoDoc for the word under the cursor in a split window.
 Show the relevant GoDoc for the word under the cursor in a vertical split
 window.
 
+
                                                               *(go-doc-tab)*
 
 Show the relevant GoDoc for the word under the cursor in a tab window.
+
+
+                                                          *(go-doc-browser)*
+
+Show the relevant GoDoc for the word under in browser
 
                                                                   *(go-def)*
 

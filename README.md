@@ -94,6 +94,12 @@ au FileType go nmap <Leader>gd <Plug>(go-doc)
 au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
 ```
 
+Or open the Godoc in browser
+
+```vim
+au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+```
+
 Run commands, such as  `go run` with `<leader>r` for the current file or `go build` and `go test` for
 the current package with `<leader>b` and `<leader>t`.
 

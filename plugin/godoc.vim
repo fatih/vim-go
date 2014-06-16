@@ -38,6 +38,7 @@ nnoremap <silent> <Plug>(go-doc) :<C-u>call <SID>Godoc("leftabove new")<CR>
 nnoremap <silent> <Plug>(go-doc-tab) :<C-u>call <SID>Godoc("tabnew")<CR>
 nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call <SID>Godoc("vnew")<CR>
 nnoremap <silent> <Plug>(go-doc-split) :<C-u>call <SID>Godoc("split")<CR>
+nnoremap <silent> <Plug>(go-doc-browser) :<C-u>call <SID>GodocBrowser()<CR>
 
 " returns the package and exported name. exported name might be empty.
 " ie: fmt and Println
