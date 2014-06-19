@@ -46,6 +46,10 @@ if !exists('g:go_fmt_fail_silently')
     let g:go_fmt_fail_silently = 0
 endif
 
+if !exists('g:go_fmt_quickfix')
+    let g:go_fmt_quickfix = 1
+endif
+
 if !exists('g:go_fmt_options')
     let g:go_fmt_options = ''
 endif
@@ -108,11 +112,13 @@ function! s:GoFormat()
             % | " Couldn't detect gofmt error format, output errors
         endif
         if !empty(errors)
-            call setqflist(errors, 'r')
+            if g:go_fmt_quickfix == 1
+                call setqflist(errors, 'r')
+                let s:got_fmt_error = 1
+                cwindow
+            endif
             echohl Error | echomsg "Gofmt returned error" | echohl None
         endif
-        let s:got_fmt_error = 1
-        cwindow
     endif
 
     call delete(l:tmpname)
