@@ -148,6 +148,20 @@ if err != nil {
 ${0}
 endsnippet
 
+snippet errn, "Error return with two return values" !b
+if err != nil {
+	return ${1:nil}, err
+}
+${0}
+endsnippet
+
+snippet errn,, "Error return with three return values" !b
+if err != nil {
+	return ${1:nil}, ${2:nil}, err
+}
+${0}
+endsnippet
+
 snippet ok "OK statement" !b
 if !ok {
 	${0:${VISUAL}}
