@@ -83,15 +83,15 @@ func! s:RunOracle(mode, selected) range abort
   endif
 endfun
 
-" Describe the expression at the current point.
+" Describe selected syntax: definition, methods, etc
 command! -range=% GoOracleDescribe
   \ call s:RunOracle('describe', <count>)
 
-" Show possible callees of the function call at the current point.
+" Show possible targets of selected function call
 command! -range=% GoOracleCallees
   \ call s:RunOracle('callees', <count>)
 
-" Show the set of callers of the function containing the current point.
+" Show possible callers of selected function
 command! -range=% GoOracleCallers
   \ call s:RunOracle('callers', <count>)
 
@@ -99,13 +99,22 @@ command! -range=% GoOracleCallers
 command! -range=% GoOracleCallgraph
   \ call s:RunOracle('callgraph', <count>)
 
-" Describe the 'implements' relation for types in the
-" package containing the current point.
+" Show path from callgraph root to selected function
+command! -range=% GoOracleCallstack
+  \ call s:RunOracle('callstack', <count>)
+
+" Show free variables of selection
+command! -range=% GoOracleFreevars
+  \ call s:RunOracle('freevars', <count>)
+
+" Show 'implements' relation for selected package
 command! -range=% GoOracleImplements
   \ call s:RunOracle('implements', <count>)
 
-" Enumerate the set of possible corresponding sends/receives for
-" this channel receive/send operation.
+" Show send/receive corresponding to selected channel op
 command! -range=% GoOracleChannelPeers
   \ call s:RunOracle('peers', <count>)
 
+" Show all refs to entity denoted by selected identifier
+command! -range=% GoOracleReferrers
+  \ call s:RunOracle('referrers', <count>)

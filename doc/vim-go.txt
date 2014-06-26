@@ -204,17 +204,22 @@ COMMANDS                                                          *go-commands*
                                                           *:GoOracleDescribe*
 :GoOracleDescribe
 
-    Describe the expression at the current point.
+    Describe selected syntax: definition, methods, etc
 
                                                            *:GoOracleCallees*
 :GoOracleCallees
 
-    Show possible callees of the function call at the current point.
+    Show possible targets of selected function call
 
                                                            *:GoOracleCallers*
 :GoOracleCallers
 
-    Show the set of callers of the function containing the current point.
+    Show possible callers of selected function
+
+                                                      *:GoOracleCallstack*
+:GoOracleCallstack
+
+    Show path from callgraph root to selected function
 
                                                          *:GoOracleCallgraph*
 :GoOracleCallgraph
@@ -224,14 +229,22 @@ COMMANDS                                                          *go-commands*
                                                         *:GoOracleImplements*
 :GoOracleImplements
 
-    Describe the 'implements' relation for types in the package containing the
-    current point.
+    Show 'implements' relation for selected package
 
                                                       *:GoOracleChannelPeers*
 :GoOracleChannelPeers
 
-    Enumerate the set of possible corresponding sends/receives for this
-    channel receive/send operation.
+    Show send/receive corresponding to selected channel op
+
+                                                      *:GoOracleFreevars*
+:GoOracleFreevars
+
+    Show free variables of selection
+
+                                                      *:GoOracleReferrers*
+:GoOracleReferrers
+
+    Show all refs to entity denoted by selected identifier
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
