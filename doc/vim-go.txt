@@ -174,10 +174,11 @@ COMMANDS                                                          *go-commands*
   Install your package with `go install`.
 
                                                                     *:GoTest*
-:GoTest
+:GoTest [expand]
 
     Test your _test.go files via in your current directory. Errors are
-    populated in quickfix window.
+    populated in quickfix window.  If an argument is passed, 'expand' is used
+    as file selector (useful for cases like `:GoTest ./...`).
 
                                                                 *:GoErrCheck*
 :GoErrCheck

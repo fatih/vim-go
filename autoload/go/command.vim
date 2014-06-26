@@ -56,8 +56,12 @@ function! go#command#Build(bang)
     let &makeprg = default_makeprg
 endfunction
 
-function! go#command#Test()
+function! go#command#Test(...)
     let command = "go test ."
+    if len(a:000)
+      let command = "go test " . expand(a:1)
+    endif
+
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         call go#tool#ShowErrors(out)
