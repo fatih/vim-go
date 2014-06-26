@@ -19,7 +19,7 @@ set cpo-=C
 CompilerSet makeprg=go\ build
 CompilerSet errorformat=
       \%-G#\ %.%#,
-      \%-Gpanic:\ %m,
+      \%-G%.%#panic:\ %m,
       \%A%f:%l:%c:\ %m,
       \%A%f:%l:\ %m,
       \%C%*\\s%m,
