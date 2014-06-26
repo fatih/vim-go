@@ -65,56 +65,89 @@ func! s:RunOracle(mode, selected) range abort
   if a:selected != -1
     let pos1 = s:getpos(line("'<"), col("'<"))
     let pos2 = s:getpos(line("'>"), col("'>"))
-    let cmd = printf('%s -pos=%s:#%d,#%d %s %s',
+    let cmd = printf('%s -format json -pos=%s:#%d,#%d %s %s',
       \  g:go_oracle_bin,
       \  shellescape(fname), pos1, pos2, a:mode, shellescape(sname))
   else
     let pos = s:getpos(line('.'), col('.'))
-    let cmd = printf('%s -pos=%s:#%d %s %s',
+    let cmd = printf('%s -format json -pos=%s:#%d %s %s',
       \  g:go_oracle_bin,
       \  shellescape(fname), pos, a:mode, shellescape(sname))
   endif
 
+	echo '# ' . cmd . ' #'
   let out = system(cmd)
   if v:shell_error
     echohl Error | echomsg out | echohl None
+		return -1
   else
-    call s:qflist(out)
+    let json_decoded = webapi#json#decode(out)
+		return json_decoded
   endif
 endfun
 
 " Describe selected syntax: definition, methods, etc
-command! -range=% GoOracleDescribe
-  \ call s:RunOracle('describe', <count>)
+function! s:OracleDescribe(selected)
+	let out = s:RunOracle('describe', a:selected)
+	echo out
+endfunction
+
+command! -range=% GoOracleDescribe call s:OracleDescribe(<count>)
 
 " Show possible targets of selected function call
-command! -range=% GoOracleCallees
-  \ call s:RunOracle('callees', <count>)
+function! s:OracleCallees(selected)
+	let out = s:RunOracle('callees', a:selected)
+	echo out
+endfunction
+
+command! -range=% GoOracleCallees  call s:OracleCallees(<count>)
 
 " Show possible callers of selected function
-command! -range=% GoOracleCallers
-  \ call s:RunOracle('callers', <count>)
+function! s:OracleCallers(selected)
+	let out = s:RunOracle('callers', a:selected)
+	echo out
+endfunction
+
+command! -range=% GoOracleCallers call s:OracleCallers(<count>)
 
 " Show the callgraph of the current program.
-command! -range=% GoOracleCallgraph
-  \ call s:RunOracle('callgraph', <count>)
+function! s:OracleCallgraph(selected)
+	let out = s:RunOracle('callgraph', a:selected)
+	echo out
+endfunction
+command! -range=% GoOracleCallgraph call s:OracleCallgraph(<count>)
 
 " Show path from callgraph root to selected function
-command! -range=% GoOracleCallstack
-  \ call s:RunOracle('callstack', <count>)
+function! s:OracleCallstack(selected)
+	let out = s:RunOracle('callstack', a:selected)
+	echo out
+endfunction
+command! -range=% GoOracleCallstack call s:OracleCallstack(<count>)
 
 " Show free variables of selection
-command! -range=% GoOracleFreevars
-  \ call s:RunOracle('freevars', <count>)
+function! s:OracleFreevars(selected)
+	let out = s:RunOracle('freevars', a:selected)
+	echo out
+endfunction
+command! -range=% GoOracleFreevars call s:OracleFreevars(<count>)
 
 " Show 'implements' relation for selected package
-command! -range=% GoOracleImplements
-  \ call s:RunOracle('implements', <count>)
+function! s:OracleImplements(selected)
+	let out = s:RunOracle('implements', a:selected)
+	echo out
+endfunction
+command! -range=% GoOracleImplements call s:OracleImplements(<count>)
 
 " Show send/receive corresponding to selected channel op
-command! -range=% GoOracleChannelPeers
-  \ call s:RunOracle('peers', <count>)
+function! s:OracleChannelPeers(selected)
+	let out = s:RunOracle('peers', a:selected)
+	echo out
+endfunction
+command! -range=% GoOracleChannelPeers call s:OracleChannelPeers(<count>)
 
 " Show all refs to entity denoted by selected identifier
-command! -range=% GoOracleReferrers
-  \ call s:RunOracle('referrers', <count>)
+function! s:OracleReferrers(selected)
+	let out = s:RunOracle('referrers', a:selected)
+	echo out
+endfunction
+command! -range=% GoOracleReferrers call s:RunOracleReferrers(<count>)
