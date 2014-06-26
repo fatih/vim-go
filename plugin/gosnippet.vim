@@ -19,10 +19,6 @@ function! s:GoNeosnippet()
 endfunction
 
 function! s:GoUltiSnips()
-	if globpath(&rtp, 'plugin/UltiSnips.vim') == ""
-		return
-	endif
-
 	if !exists("g:UltiSnipsSnippetDirectories")
 			let g:UltiSnipsSnippetDirectories = ["gosnippets/UltiSnips"]
 	else
