@@ -4,7 +4,7 @@ endif
 let g:go_loaded_oracle = 1
 
 if !hasmapto('<Plug>(go-oracle-describe)')
-    nnoremap <silent> <Plug>(go-oracle-describe) :<C-u>call go#oracle#Describe(expand('<cword>'))<cr>
+    nnoremap <silent> <Plug>(go-oracle-describe) :<C-u>call go#oracle#Describe(-1) <cr>
 endif
 
 command! -range=% GoOracleDescribe call go#oracle#Describe(<count>)
