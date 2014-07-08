@@ -91,8 +91,23 @@ endfun
 " Describe selected syntax: definition, methods, etc
 function! go#oracle#Describe(selected)
 	let out = s:RunOracle('describe', a:selected)
-	let content = out["describe"]["value"]
-	echo content
+	let detail = out["describe"]["detail"]
+	let desc = out["describe"]["desc"]
+
+    if detail == "package"
+        echo desc
+        return
+    endif
+
+    if detail == "value"
+        echo desc
+        echo out["describe"]["value"]
+        return
+    endif
+
+    " needs to be implemented
+    echo desc
+    echo detail
 endfunction
 
 " Show possible targets of selected function call
