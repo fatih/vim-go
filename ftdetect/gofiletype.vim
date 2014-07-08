@@ -10,6 +10,7 @@ function! s:gofiletype_pre()
   let s:current_fileencodings = &g:fileencodings
   set fileencodings=utf-8 fileformats=unix
   setlocal filetype=go
+  map K :GoDoc<CR>
 endfunction
 
 " restore fileencodings as others
