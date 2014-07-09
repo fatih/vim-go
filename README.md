@@ -239,7 +239,7 @@ And many more! For the full list have a look at the
 This plugin/package is born mainly from frustration. I had to re-install my Vim
 plugins and especially for Go I had to install a lot of separate different
 plugins, setup the necessary binaries to make them work together and hope not
-to lose them again. Lot's of the plugins out there lacks of proper settings.
+to lose them again. Lots of plugins out there lack proper settings.
 This plugin is improved and contains all my fixes/changes that I'm using for
 months under heavy go development environment.
 
