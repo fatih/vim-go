@@ -59,7 +59,7 @@ func! s:RunOracle(mode, selected) range abort
   elseif pkg != -1
      let sname = pkg
   else
-    let sname = fname
+    let sname = shellescape(fname)
   endif
 
   if a:selected != -1
@@ -67,12 +67,12 @@ func! s:RunOracle(mode, selected) range abort
     let pos2 = s:getpos(line("'>"), col("'>"))
     let cmd = printf('%s -pos=%s:#%d,#%d %s %s',
       \  g:go_oracle_bin,
-      \  shellescape(fname), pos1, pos2, a:mode, shellescape(sname))
+      \  shellescape(fname), pos1, pos2, a:mode, sname)
   else
     let pos = s:getpos(line('.'), col('.'))
     let cmd = printf('%s -pos=%s:#%d %s %s',
       \  g:go_oracle_bin,
-      \  shellescape(fname), pos, a:mode, shellescape(sname))
+      \  shellescape(fname), pos, a:mode, sname)
   endif
 
   let out = system(cmd)
