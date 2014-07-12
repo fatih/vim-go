@@ -35,6 +35,12 @@ function! go#tool#ShowErrors(out)
             call add(errors, {"filename" : expand("%:p:h:") . "/" . tokens[1],
                         \"lnum":     tokens[2],
                         \"text":     tokens[3]})
+        elseif !empty(errors)
+            " Preserve indented lines.
+            " This comes up especially with multi-line test output.
+            if match(line, '^\s') >= 0
+                call add(errors, {"text": line})
+            endif
         endif
     endfor
 

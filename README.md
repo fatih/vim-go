@@ -1,10 +1,12 @@
 # vim-go
 
-Full featured Go development environment support for Vim. vim-go installs
-automatically all necessary binaries if they are not found. It comes with
+Full featured Go (golang) support for Vim. vim-go installs automatically all
+necessary binaries for providing seamless Vim integration . It comes with
 pre-defined sensible settings (like auto gofmt on save), has autocomplete,
 snippet support, improved syntax highlighting, go toolchain commands, etc...
-Do not use it with other Go plugins.
+It's highly customizable and has settings for disabling/enabling features
+easily. Do not use it with other Go plugins.
+
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
 
@@ -237,7 +239,7 @@ And many more! For the full list have a look at the
 This plugin/package is born mainly from frustration. I had to re-install my Vim
 plugins and especially for Go I had to install a lot of separate different
 plugins, setup the necessary binaries to make them work together and hope not
-to lose them again. Lot's of the plugins out there lacks of proper settings.
+to lose them again. Lots of plugins out there lack proper settings.
 This plugin is improved and contains all my fixes/changes that I'm using for
 months under heavy go development environment.
 
