@@ -16,4 +16,3 @@ command! -range=% GoOracleFreevars call go#oracle#Freevars(<count>)
 command! -range=% GoOracleImplements call go#oracle#Implements(<count>)
 command! -range=% GoOraclePeers call go#oracle#Peers(<count>)
 command! -range=% GoOracleReferrers call go#oracle#Referrers(<count>)
-
