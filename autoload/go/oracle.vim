@@ -94,6 +94,8 @@ function! go#oracle#Describe(selected)
 	let detail = out["describe"]["detail"]
 	let desc = out["describe"]["desc"]
 
+    echo '# detail: '. detail
+    " package, constant, variable, type, function or statement labe
     if detail == "package"
         echo desc
         return
@@ -105,9 +107,8 @@ function! go#oracle#Describe(selected)
         return
     endif
 
-    " needs to be implemented
+    " the rest needs to be implemented
     echo desc
-    echo detail
 endfunction
 
 " Show possible targets of selected function call
