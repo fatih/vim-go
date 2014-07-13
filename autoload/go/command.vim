@@ -29,9 +29,9 @@ function! go#command#Install(...)
     endif
 
     if exists("$GOBIN")
-        echo "Installed to ".$GOBIN
+	    echon "vim-go: " | echohl Function | echon "installed to ".$GOBIN | echohl None
     else
-        echo "Installed to ".$GOPATH/bin
+	    echon "vim-go: " | echohl Function | echon "installed to ".$GOBIN/bin | echohl None
     endif
 endfunction
 
@@ -44,12 +44,15 @@ function! go#command#Build(bang)
         let &makeprg = "go build -o /dev/null " . gofiles
     endif
 
-    exe 'make!'
+	echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
+    silent! exe 'make!'
     if !a:bang
         cwindow
         let errors = getqflist()
         if !empty(errors)
             cc 1 "jump to first error if there is any
+        else 
+	        redraw | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
         endif
     endif
 
@@ -62,6 +65,7 @@ function! go#command#Test(...)
       let command = "go test " . expand(a:1)
     endif
 
+	echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         call go#tool#ShowErrors(out)
@@ -73,6 +77,8 @@ function! go#command#Test(...)
     let errors = getqflist()
     if !empty(errors)
         cc 1 "jump to first error if there is any
+    else
+        redraw | echon "vim-go: " | echohl Function | echon "[test] PASS" | echohl None
     endif
 endfunction
 
