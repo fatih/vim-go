@@ -76,6 +76,13 @@ function! GoSwitchImport(enabled, localname, path)
         return
     endif
 
+    if !isdirectory($GOROOT . "/src/pkg/" . path)
+        if !isdirectory($GOPATH . "/src/". path)
+            call s:Error("Can't find import: " . path)
+            return
+        endif
+    endif
+
     " Extract any site prefix (e.g. github.com/).
     " If other imports with the same prefix are grouped separately,
     " we will add this new import with them.
