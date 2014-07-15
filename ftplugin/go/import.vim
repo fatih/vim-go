@@ -76,6 +76,12 @@ function! GoSwitchImport(enabled, localname, path)
         return
     endif
 
+    let exists = go#tool#Exists(path)
+    if exists == -1
+        call s:Error("Can't find import: " . path)
+        return
+    endif
+
     " Extract any site prefix (e.g. github.com/).
     " If other imports with the same prefix are grouped separately,
     " we will add this new import with them.
