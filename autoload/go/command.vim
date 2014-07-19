@@ -46,13 +46,14 @@ function! go#command#Build(bang)
 
 	echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
     silent! exe 'make!'
+    redraw!
     if !a:bang
         cwindow
         let errors = getqflist()
         if !empty(errors)
             cc 1 "jump to first error if there is any
         else 
-	        redraw | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
+	        redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
         endif
     endif
 
