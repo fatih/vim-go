@@ -34,6 +34,10 @@ if !exists("g:go_fmt_commands")
     let g:go_fmt_commands = 1
 endif
 
+if !exists("g:go_goimports_bin")
+    finish
+endif
+
 if !exists("g:go_fmt_command")
     let g:go_fmt_command = g:go_goimports_bin
 endif
