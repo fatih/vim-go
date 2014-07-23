@@ -14,6 +14,11 @@
 " TODO(adonovan):
 " - reject buffers with no filename.
 " - hide all filenames in quickfix buffer.
+"
+if exists("g:go_loaded_oracle")
+  finish
+endif
+let g:go_loaded_oracle = 1
 
 func! s:qflist(output)
   let qflist = []
