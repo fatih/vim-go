@@ -72,7 +72,7 @@ function! s:GoInstallBinaries(updateBin)
         let binname = "go_" . basename . "_bin"
 
         if !executable(g:{binname}) || a:updateBin == 1
-            echo "Installing ".pkg
+            echo "vim-go: ". basename ." not found. Installing ". pkg . " to folder " . g:go_bin_path
             let out = system("go get -u -v ".shellescape(pkg))
             if v:shell_error
                 echo "Error installing ". pkg . ": " . out
