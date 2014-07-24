@@ -23,7 +23,7 @@ easily. Do not use it with other Go plugins.
 * `go run` quickly your current file/files
 * Run `go test` and see any errors in quickfix window
 * Lint your code with `golint`
-* Run your code trough `go vet` to catch static errors.
+* Run your code through `go vet` to catch static errors.
 * Advanced source analysis tool with `oracle`
 * List all source files and dependencies
 * Checking with `errcheck` for unchecked errors.
