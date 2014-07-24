@@ -78,7 +78,7 @@ fu! s:gocodeAutocomplete()
   return result
 endf
 
-function! go#complete#Info()
+function! go#complete#GetInfo()
   let filename = s:gocodeCurrentBuffer()
   let result = s:gocodeCommand('autocomplete',
            \ [s:gocodeCurrentBufferOpt(filename), '-f=godit'],
@@ -96,8 +96,7 @@ function! go#complete#Info()
 
 	" only one candiate is found
 	if len(out) == 2
-		echon "vim-go: " | echohl Function | echon split(out[1], ',,')[0] | echohl None
-		return
+		return split(out[1], ',,')[0]
 	endif
 
 	" to many candidates are available, pick one that maches the word under the
@@ -111,10 +110,16 @@ function! go#complete#Info()
 	let filtered =  filter(infos, "v:val =~ '".wordMatch."'")
 
 	if len(filtered) == 1
-		echon "vim-go: " | echohl Function | echon filtered[0] | echohl None
-		return
+		return filtered[0]
 	endif
 endfunction
+
+function! go#complete#Info()
+  let result = go#complete#GetInfo()
+  if len(result) > 0
+    echo "vim-go: " | echohl Function | echon result | echohl None
+  endif
+endfunction!
 
 fu! go#complete#Complete(findstart, base)
   "findstart = 1 when we need to get the text length
