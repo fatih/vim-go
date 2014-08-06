@@ -50,8 +50,54 @@ if !exists('g:go_fmt_options')
     let g:go_fmt_options = ''
 endif
 
+function! s:EqualPrg()
+    let default_equalprg = &equalprg
+
+    let &equalprg=g:go_fmt_command
+    let l:curw=winsaveview()
+    exe "normal gg=G"
+
+    if v:shell_error == 0
+        try | silent undojoin | catch | endtry
+        if s:got_fmt_error 
+            let s:got_fmt_error = 0
+            call setqflist([])
+            cwindow
+        endif
+        call winrestview(l:curw)
+    elseif g:go_fmt_fail_silently == 0 
+        "otherwise get the errors and put them to quickfix window
+        let out = join(getline(line("'["), line("']")), "\n") 
+        undo
+        call winrestview(l:curw)
+
+        let errors = []
+        for line in split(out, '\n')
+            let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
+            if !empty(tokens)
+                call add(errors, {"filename": @%,
+                                 \"lnum":     tokens[2],
+                                 \"col":      tokens[3],
+                                 \"text":     tokens[4]})
+            endif
+        endfor
+        if empty(errors)
+            % | " Couldn't detect gofmt error format, output errors
+        endif
+        if !empty(errors)
+            call setqflist(errors, 'r')
+            echohl Error | echomsg "Gofmt returned error" | echohl None
+        endif
+        let s:got_fmt_error = 1
+        cwindow
+    endif
+
+    let &equalprg = default_equalprg
+endfunction
+
 if g:go_fmt_autosave
-    autocmd BufWritePre <buffer> :GoFmt
+    " autocmd BufWritePre <buffer> :GoFmt
+    autocmd BufWritePre <buffer> call s:EqualPrg()
 endif
 
 if g:go_fmt_commands
