@@ -1,11 +1,12 @@
 # vim-go
 
-Full featured Go (golang) support for Vim. vim-go installs automatically all
-necessary binaries for providing seamless Vim integration . It comes with
-pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, improved syntax highlighting, go toolchain commands, etc...
-It's highly customizable and has settings for disabling/enabling features
-easily. Do not use it with other Go plugins.
+Full featured Go (golang) support for Vim. Contains official misc/vim files.
+vim-go installs automatically all necessary binaries for providing seamless Vim
+integration . It comes with pre-defined sensible settings (like auto gofmt on
+save), has autocomplete, snippet support, improved syntax highlighting, go
+toolchain commands, etc... It's highly customizable and has settings for
+disabling/enabling features  easily. 
+
 
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
@@ -47,12 +48,13 @@ For Vundle add this line to your vimrc:
 ```vimrc
 Plugin 'fatih/vim-go'
 ```
-and execute `:PluginInstall`
+and execute `:PluginInstall` (or `:BundleInstall` for older versions of Vundle)
 
 
 For the first Vim start it will try to download and install all necessary go
 binaries. It requires `git` and `hg` for fetching the individual Go packages.
-This can take some time. To disable this behaviour add `let g:go_disable_autoinstall = 1`
+This can take some time. To disable this behaviour add `let g:go_disable_autoinstall = 1`.
+Do not use it with other Go plugins.
 
 ### Optional
 
