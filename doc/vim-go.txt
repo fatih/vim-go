@@ -390,12 +390,24 @@ is empty. >
 
   let g:go_fmt_options = ''
 <
+
                                                    *'g:go_fmt_fail_silently'*
 
 Use this option to disable showing a quickfix window when |g:go_fmt_command|
 fails. By default it's disabled. >
 
   let g:go_fmt_fail_silently = 0
+<
+
+
+                                              *'g:go_doc_keywordprg_enabled'*
+
+Use this option to change the enable GoDoc to run on words under the cursor
+with the default K , keywordprg shortcut. This shortcut is by default set to
+use the program man. However in go using godoc is more idiomatic. Default is
+enabled. >
+
+  let g:go_doc_keywordprg_enabled = 1
 <
 
                                                       *'g:go_snippet_engine'*
