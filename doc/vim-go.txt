@@ -120,6 +120,7 @@ COMMANDS                                                          *go-commands*
     Filter the current Go buffer through gofmt.  It tries to preserve cursor
     position and avoids replacing the buffer with stderr output.
 
+
                                                                      *:GoPlay*
 :[range]GoPlay
 
@@ -179,6 +180,12 @@ COMMANDS                                                          *go-commands*
     Test your _test.go files via in your current directory. Errors are
     populated in quickfix window.  If an argument is passed, 'expand' is used
     as file selector (useful for cases like `:GoTest ./...`).
+
+                                                                *:GoCoverage*
+:GoCoverage
+
+    Create a coverage profile and open a browser to display the annotated
+    source code of the current package.
 
                                                                 *:GoErrCheck*
 :GoErrCheck
@@ -282,6 +289,9 @@ Calls `go install` for the current package
 
 Calls `go test` for the current package
 
+                                                             *(go-coverage)*
+
+Calls `go test -coverprofile-temp.out` for the current package
 
                                                                   *(go-vet)*
 

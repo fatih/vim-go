@@ -83,6 +83,31 @@ function! go#command#Test(...)
     endif
 endfunction
 
+function! go#command#Coverage(...)
+    let l:tmpname=tempname()
+
+    let command = "go test -coverprofile=".l:tmpname
+
+    let out = go#tool#ExecuteInDir(command)
+    if v:shell_error
+        call go#tool#ShowErrors(out)
+    else
+        " clear previous quick fix window
+        call setqflist([])
+
+        let openHTML = 'go tool cover -html='.l:tmpname
+        call go#tool#ExecuteInDir(openHTML)
+    endif
+    cwindow
+
+    let errors = getqflist()
+    if !empty(errors)
+        cc 1 "jump to first function
+    endif
+
+    call delete(l:tmpname)
+endfunction
+
 function! go#command#Vet()
     let out = go#tool#ExecuteInDir('go vet')
     let errors = []
@@ -102,3 +127,4 @@ function! go#command#Vet()
 endfunction
 
 " vim:ts=4:sw=4:et
+"

@@ -20,6 +20,10 @@ if !hasmapto('<Plug>(go-test)')
     nnoremap <silent> <Plug>(go-test) :<C-u>call go#command#Test('')<CR>
 endif
 
+if !hasmapto('<Plug>(go-coverage)')
+    nnoremap <silent> <Plug>(go-coverage) :<C-u>call go#command#Coverage('')<CR>
+endif
+
 if !hasmapto('<Plug>(go-vet)')
     nnoremap <silent> <Plug>(go-vet) :<C-u>call go#command#Vet()<CR>
 endif
@@ -51,6 +55,7 @@ command! -nargs=? -range -bang GoBuild call go#command#Build(<bang>0)
 
 command! -nargs=* GoInstall call go#command#Install(<f-args>)
 command! -nargs=* GoTest call go#command#Test(<f-args>)
+command! -nargs=* GoCoverage call go#command#Coverage(<f-args>)
 command! -nargs=0 GoVet call go#command#Vet()
 
 " vim:ts=4:sw=4:et

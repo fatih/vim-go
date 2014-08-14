@@ -23,6 +23,8 @@ disabling/enabling features  easily.
 * Compile and `go build` your package, install it with `go install`
 * `go run` quickly your current file/files
 * Run `go test` and see any errors in quickfix window
+* Create a coverage profile and display annotated source code in browser to see
+  which functions are covered.
 * Lint your code with `golint`
 * Run your code through `go vet` to catch static errors.
 * Advanced source analysis tool with `oracle`
@@ -104,13 +106,16 @@ Or open the Godoc in browser
 au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
 ```
 
-Run commands, such as  `go run` with `<leader>r` for the current file or `go build` and `go test` for
-the current package with `<leader>b` and `<leader>t`.
+Run commands, such as  `go run` with `<leader>r` for the current file or `go
+build` and `go test` for the current package with `<leader>b` and `<leader>t`.
+Display a beautiful annotated source code to see which functions are covered
+with `<leader>c`.
 
 ```vim
 au FileType go nmap <leader>r <Plug>(go-run)
 au FileType go nmap <leader>b <Plug>(go-build)
 au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>c <Plug>(go-coverage)
 ```
 
 Replace `gd` (Goto Declaration) for the word under your cursor (replaces current buffer):
