@@ -83,6 +83,11 @@ function! s:GoFormat()
     "if there is no error on the temp file, gofmt our original file
     if v:shell_error == 0
         try | silent undojoin | catch | endtry
+
+        " do not include stderr to the buffer
+        let default_srr = &srr
+        set srr=>%s 
+
         silent execute "%!" . command
 
         " only clear quickfix if it was previously set, this prevents closing
@@ -92,6 +97,9 @@ function! s:GoFormat()
             call setqflist([])
             cwindow
         endif
+
+        " put back the users srr setting
+        let &srr = default_srr
     elseif g:go_fmt_fail_silently == 0 
         "otherwise get the errors and put them to quickfix window
         let errors = []
