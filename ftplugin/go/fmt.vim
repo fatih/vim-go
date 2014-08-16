@@ -50,54 +50,8 @@ if !exists('g:go_fmt_options')
     let g:go_fmt_options = ''
 endif
 
-function! s:EqualPrg()
-    let default_equalprg = &equalprg
-
-    let &equalprg=g:go_fmt_command
-    let l:curw=winsaveview()
-    exe "normal gg=G"
-
-    if v:shell_error == 0
-        try | silent undojoin | catch | endtry
-        if s:got_fmt_error 
-            let s:got_fmt_error = 0
-            call setqflist([])
-            cwindow
-        endif
-        call winrestview(l:curw)
-    elseif g:go_fmt_fail_silently == 0 
-        "otherwise get the errors and put them to quickfix window
-        let out = join(getline(line("'["), line("']")), "\n") 
-        undo
-        call winrestview(l:curw)
-
-        let errors = []
-        for line in split(out, '\n')
-            let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
-            if !empty(tokens)
-                call add(errors, {"filename": @%,
-                                 \"lnum":     tokens[2],
-                                 \"col":      tokens[3],
-                                 \"text":     tokens[4]})
-            endif
-        endfor
-        if empty(errors)
-            % | " Couldn't detect gofmt error format, output errors
-        endif
-        if !empty(errors)
-            call setqflist(errors, 'r')
-            echohl Error | echomsg "Gofmt returned error" | echohl None
-        endif
-        let s:got_fmt_error = 1
-        cwindow
-    endif
-
-    let &equalprg = default_equalprg
-endfunction
-
 if g:go_fmt_autosave
-    " autocmd BufWritePre <buffer> :GoFmt
-    autocmd BufWritePre <buffer> call s:EqualPrg()
+    autocmd BufWritePre <buffer> :GoFmt
 endif
 
 if g:go_fmt_commands
@@ -116,28 +70,43 @@ endfunction
 
 let s:got_fmt_error = 0
 
-"  modified and improved version, doesn't undo changes and break undo history
-"  - fatih 2014
+"  we have those problems : 
+"  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
+"  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
+"
+"  The below function is an improved version that aims to fix all problems.
+"  modified and improved version, doesn't undo changes and break undo history.
+"  If you are here reading this and have VimL experience , please look at the
+"  function for improvements, patches are welcome :)
 function! s:GoFormat()
+    " save cursor position and many other things
     let l:curw=winsaveview()
+
+    " needed for testing if gofmt fails or not
     let l:tmpname=tempname()
     call writefile(getline(1,'$'), l:tmpname)
 
+    " save our undo file to be restored after we are done. This is needed to
+    " prevent an additional undp jump due to BufWritePre auto command.
+    let l:tmpundofile=tempname()
+    wundo! l:tmpundofile
+
+    " execute gofmt
     let command = g:go_fmt_command . ' ' . g:go_fmt_options
     let out = system(command . " " . l:tmpname)
 
-    "if there is no error on the temp file, gofmt our original file
+    "if there is no error on the temp file, gofmt again our original file
     if v:shell_error == 0
-        try | silent undojoin | catch | endtry
-
-        " do not include stderr to the buffer
+        " do not include stderr to the buffer, this is due to goimports/gofmt
+        " tha fails with a zero exit return value (sad yeah).
         let default_srr = &srr
         set srr=>%s 
 
+        " execufe gofmt on the current buffer and replace it
         silent execute "%!" . command
 
         " only clear quickfix if it was previously set, this prevents closing
-        " other quickfixs
+        " other quickfixes
         if s:got_fmt_error 
             let s:got_fmt_error = 0
             call setqflist([])
@@ -169,6 +138,11 @@ function! s:GoFormat()
         cwindow
     endif
 
+    " restore our undo history
+    silent! rundo l:tmpundofile
+    call delete(l:tmpundofile)
+
+    " restore our cursor/windows positions
     call delete(l:tmpname)
     call winrestview(l:curw)
 endfunction
