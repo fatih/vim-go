@@ -61,8 +61,9 @@ endf
 
 fu! s:gocodeCursor()
   if &encoding != 'utf-8'
+    let sep = &l:fileformat == 'dos' ? "\r\n" : "\n"
     let c = col('.')
-    let buf = line('.') == 1 ? "" : (join(getline(1, line('.')-1), "\n") . "\n")
+    let buf = line('.') == 1 ? "" : (join(getline(1, line('.')-1), sep) . sep)
     let buf .= c == 1 ? "" : getline('.')[:c-2]
     return printf('%d', len(iconv(buf, &encoding, "utf-8")))
   endif

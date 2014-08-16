@@ -1,11 +1,12 @@
 # vim-go
 
-Full featured Go (golang) support for Vim. vim-go installs automatically all
-necessary binaries for providing seamless Vim integration . It comes with
-pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, improved syntax highlighting, go toolchain commands, etc...
-It's highly customizable and has settings for disabling/enabling features
-easily. Do not use it with other Go plugins.
+Full featured Go (golang) support for Vim. Contains official misc/vim files.
+vim-go installs automatically all necessary binaries for providing seamless Vim
+integration . It comes with pre-defined sensible settings (like auto gofmt on
+save), has autocomplete, snippet support, improved syntax highlighting, go
+toolchain commands, etc... It's highly customizable and has settings for
+disabling/enabling features  easily. 
+
 
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
@@ -22,6 +23,8 @@ easily. Do not use it with other Go plugins.
 * Compile and `go build` your package, install it with `go install`
 * `go run` quickly your current file/files
 * Run `go test` and see any errors in quickfix window
+* Create a coverage profile and display annotated source code in browser to see
+  which functions are covered.
 * Lint your code with `golint`
 * Run your code through `go vet` to catch static errors.
 * Advanced source analysis tool with `oracle`
@@ -47,12 +50,13 @@ For Vundle add this line to your vimrc:
 ```vimrc
 Plugin 'fatih/vim-go'
 ```
-and execute `:PluginInstall`
+and execute `:PluginInstall` (or `:BundleInstall` for older versions of Vundle)
 
 
 For the first Vim start it will try to download and install all necessary go
 binaries. It requires `git` and `hg` for fetching the individual Go packages.
-This can take some time. To disable this behaviour add `let g:go_disable_autoinstall = 1`
+This can take some time. To disable this behaviour add `let g:go_disable_autoinstall = 1`.
+Do not use it with other Go plugins.
 
 ### Optional
 
@@ -102,13 +106,16 @@ Or open the Godoc in browser
 au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
 ```
 
-Run commands, such as  `go run` with `<leader>r` for the current file or `go build` and `go test` for
-the current package with `<leader>b` and `<leader>t`.
+Run commands, such as  `go run` with `<leader>r` for the current file or `go
+build` and `go test` for the current package with `<leader>b` and `<leader>t`.
+Display a beautiful annotated source code to see which functions are covered
+with `<leader>c`.
 
 ```vim
 au FileType go nmap <leader>r <Plug>(go-run)
 au FileType go nmap <leader>b <Plug>(go-build)
 au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>c <Plug>(go-coverage)
 ```
 
 Replace `gd` (Goto Declaration) for the word under your cursor (replaces current buffer):
