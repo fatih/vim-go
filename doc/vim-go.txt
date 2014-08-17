@@ -19,16 +19,18 @@ CONTENTS                                                          *go-contents*
 	3. Commands.....................................|go-commands|
 	4. Settings.....................................|go-settings|
 	5. Mappings.....................................|go-mappings|
-	6. Credits......................................|go-credits|
+	6. Troubleshooting..............................|go-troubleshooting|
+	7. Credits......................................|go-credits|
 
 ===============================================================================
 INTRO                                                                *go-intro*
 
-Full featured Go development environment support for Vim. vim-go installs
-automatically all necessary binaries if they are not found. It comes with
-pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, go toolchain commands, etc... Do not use it with other Go
-plugins.
+Go (golang) support for Vim. Contains official misc/vim files. vim-go installs
+automatically all necessary binaries for providing seamless Vim integration.
+It comes with pre-defined sensible settings (like auto gofmt on save), has
+autocomplete, snippet support, improved syntax highlighting, go toolchain
+commands, etc... It's highly customizable and each individual feature can be
+disabled/enabled easily.
 
   * Improved Syntax highlighting, such as Functions, Operators, Methods..
   * Auto completion support via `gocode`
@@ -47,6 +49,7 @@ plugins.
   * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
   * Share your current code to play.golang.org
   * Type information about the underlying identifier 
+  * Tagbar support to show tags of the source code in a sidebar with `gotags`
 
 ===============================================================================
 INSTALL                                                           *go-install*
@@ -504,6 +507,46 @@ Highlights struct names. By default it's enabled. >
 
 	let g:go_highlight_structs = 1
 <
+===============================================================================
+TROUBLESHOOTING                                         *go-troubleshooting*
+
+I'm using Fish shell but have some problems using Vim-go~
+
+First environment variables in Fish are applied differently, it should be like:
+>
+	set -x GOPATH /your/own/gopath
+<
+Second, Vim needs a POSIX compatible shell (more info here:
+https://github.com/dag/vim-fish#teach-a-vim-to-fish). If you use Fish to open
+vim, it will make certainx shell based commands fail (means vim-go will fail
+too). To overcome this problem change the default shell by adding the
+following into your .vimrc (on the top of the file):
+>
+	if $SHELL =~ 'fish'
+	  set shell='/bin/sh'
+	endif
+<
+or
+>
+	set shell='/bin/sh'
+>
+
+I'm seeing weirds errors during the startup~
+
+If you see errors like this:
+>
+  Error installing code.google.com/p/go.tools/cmd/goimports:
+	Error installing code.google.com/p/rog-go/exp/cmd/godef:
+<
+that means your local Go setup is broken or the remote website is down.  For
+example sometimes code.google.com times out. To test, just execute a simple go
+get:
+
+>
+	go get code.google.com/p/go.tools/cmd/goimports
+<
+You'll see a more detailed error. If this works, vim-go will work too.
+
 ===============================================================================
 CREDITS                                                         *go-credits*
 
