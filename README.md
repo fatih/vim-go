@@ -1,13 +1,11 @@
 # vim-go
 
-Full featured Go (golang) support for Vim. Contains official misc/vim files.
-vim-go installs automatically all necessary binaries for providing seamless Vim
-integration . It comes with pre-defined sensible settings (like auto gofmt on
-save), has autocomplete, snippet support, improved syntax highlighting, go
-toolchain commands, etc... It's highly customizable and has settings for
-disabling/enabling features  easily. 
-
-
+Go (golang) support for Vim. Contains official misc/vim files. vim-go installs
+automatically all necessary binaries for providing seamless Vim integration.
+It comes with pre-defined sensible settings (like auto gofmt on save), has
+autocomplete, snippet support, improved syntax highlighting, go toolchain
+commands, etc... It's highly customizable and each individual feature can be
+disabled/enabled easily.
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
 
@@ -239,6 +237,44 @@ type foo struct {
 And many more! For the full list have a look at the
 [included snippets](https://github.com/fatih/vim-go/blob/master/gosnippets/):
 
+## Troubleshooting
+
+### I'm using Fish shell but have some problems using Vim-go
+
+First environment variables in Fish are applied differently, it should be like:
+
+	set -x GOPATH /your/own/gopath
+
+Second, Vim needs a POSIX compatible shell (more info here:
+https://github.com/dag/vim-fish#teach-a-vim-to-fish). If you use Fish to open
+vim, it will make certainx shell based commands fail (means vim-go will fail
+too). To overcome this problem change the default shell by adding the following
+into your .vimrc (on the top of the file):
+
+	if $SHELL =~ 'fish'
+	  set shell='/bin/sh'
+	endif
+
+or
+
+	set shell='/bin/sh'
+
+
+
+### I'm seeing weirds errors during the startup
+
+If you see errors like this:
+
+	Installing code.google.com/p/go.tools/cmd/goimports Error installing code.google.com/p/go.tools/cmd/goimports:
+	Installing code.google.com/p/rog-go/exp/cmd/godef Error installing code.google.com/p/rog-go/exp/cmd/godef:
+
+that means your local Go setup is broken or the remote website is down.  For
+example sometimes code.google.com times out. To test, just execute a simple go
+get:
+
+	go get code.google.com/p/go.tools/cmd/goimports
+
+You'll see a more detailed error. If this works, vim-go will work too.
 
 
 ## Why another plugin?
