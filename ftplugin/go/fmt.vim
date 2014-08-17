@@ -88,8 +88,8 @@ function! s:GoFormat()
 
     " save our undo file to be restored after we are done. This is needed to
     " prevent an additional undp jump due to BufWritePre auto command.
-    let l:tmpundofile=tempname()
-    wundo! l:tmpundofile
+    let tmpundofile=tempname()
+    exe 'wundo! ' . tmpundofile
 
     " execute gofmt
     let command = g:go_fmt_command . ' ' . g:go_fmt_options
@@ -139,8 +139,8 @@ function! s:GoFormat()
     endif
 
     " restore our undo history
-    silent! rundo l:tmpundofile
-    call delete(l:tmpundofile)
+    silent! exe 'rundo ' . tmpundofile
+    call delete(tmpundofile)
 
     " restore our cursor/windows positions
     call delete(l:tmpname)
