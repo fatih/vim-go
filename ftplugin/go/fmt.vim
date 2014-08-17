@@ -97,6 +97,9 @@ function! s:GoFormat()
 
     "if there is no error on the temp file, gofmt again our original file
     if v:shell_error == 0
+        " remove undo point caused via BufWritePre
+        try | silent undojoin | catch | endtry
+
         " do not include stderr to the buffer, this is due to goimports/gofmt
         " tha fails with a zero exit return value (sad yeah).
         let default_srr = &srr
