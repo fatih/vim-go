@@ -75,9 +75,9 @@ let s:got_fmt_error = 0
 "  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
 "
 "  The below function is an improved version that aims to fix all problems.
-"  modified and improved version, doesn't undo changes and break undo history.
-"  If you are here reading this and have VimL experience , please look at the
-"  function for improvements, patches are welcome :)
+"  it doesn't undo changes and break undo history.  If you are here reading
+"  this and have VimL experience, please look at the function for
+"  improvements, patches are welcome :)
 function! s:GoFormat()
     " save cursor position and many other things
     let l:curw=winsaveview()
@@ -87,7 +87,9 @@ function! s:GoFormat()
     call writefile(getline(1,'$'), l:tmpname)
 
     " save our undo file to be restored after we are done. This is needed to
-    " prevent an additional undp jump due to BufWritePre auto command.
+    " prevent an additional undo jump due to BufWritePre auto command and also
+    " restore 'redo' history because it's getting being destroyed every
+    " BufWritePre
     let tmpundofile=tempname()
     exe 'wundo! ' . tmpundofile
 
