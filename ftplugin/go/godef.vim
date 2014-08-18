@@ -35,21 +35,9 @@ function! Godef(...)
     let &errorformat = old_errorformat
 endfunction
 
-if !hasmapto('<Plug>(go-def)')
-  nnoremap <silent> <Plug>(go-def) :<C-u>call Godef()<CR>
-endif
-
-if !hasmapto('<Plug>(go-def-vertical)')
-  nnoremap <silent> <Plug>(go-def-vertical) :vsp <CR>:<C-u>call Godef()<CR>
-endif
-
-if !hasmapto('<Plug>(go-def-split)')
-  nnoremap <silent> <Plug>(go-def-split) :sp <CR>:<C-u>call Godef()<CR>
-endif
-
-if !hasmapto('<Plug>(go-def-tab)')
-  nnoremap <silent> <Plug>(go-def-tab) :tab split <CR>:<C-u>call Godef()<CR>
-endif
-
+nnoremap <silent> <Plug>(go-def) :<C-u>call Godef()<CR>
+nnoremap <silent> <Plug>(go-def-vertical) :vsp <CR>:<C-u>call Godef()<CR>
+nnoremap <silent> <Plug>(go-def-split) :sp <CR>:<C-u>call Godef()<CR>
+nnoremap <silent> <Plug>(go-def-tab) :tab split <CR>:<C-u>call Godef()<CR>
 
 command! -range -nargs=* GoDef :call Godef(<f-args>)
