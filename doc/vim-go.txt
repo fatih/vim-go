@@ -485,27 +485,27 @@ Highlights trailing white space. >
                                                   *'g:go_highlight_operators'*
 
 Highlights operators such as `:=` , `==`, `-=`, etc ...By default it's
-enabled. >
+disabled. >
 
-	let g:go_highlight_operators = 1
+	let g:go_highlight_operators = 0
 <
                                                 *'g:go_highlight_functions'*
 
-Highlights function names. By default it's enabled. >
+Highlights function names. By default it's disabled. >
 
-	let g:go_highlight_functions = 1
+	let g:go_highlight_functions = 0
 <
                                                   *'g:go_highlight_methods'*
 
-Highlights method names. By default it's enabled. >
+Highlights method names. By default it's disabled. >
 
-	let g:go_highlight_methods = 1
+	let g:go_highlight_methods = 0
 <
                                                   *'g:go_highlight_structs'*
 
-Highlights struct names. By default it's enabled. >
+Highlights struct names. By default it's disabled. >
 
-	let g:go_highlight_structs = 1
+	let g:go_highlight_structs = 0
 <
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
