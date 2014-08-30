@@ -1,3 +1,7 @@
+if !exists("g:go_jump_to_error")
+    let g:go_jump_to_error = 1
+endif
+
 function! go#command#Run(bang, ...)
     let default_makeprg = &makeprg
     if !len(a:000)
@@ -11,7 +15,9 @@ function! go#command#Run(bang, ...)
         cwindow
         let errors = getqflist()
         if !empty(errors)
-            cc 1 "jump to first error if there is any
+            if g:go_jump_to_error
+                cc 1 "jump to first error if there is any
+            endif
         endif
     endif
 
@@ -51,7 +57,9 @@ function! go#command#Build(bang)
         cwindow
         let errors = getqflist()
         if !empty(errors)
-            cc 1 "jump to first error if there is any
+            if g:go_jump_to_error
+                cc 1 "jump to first error if there is any
+            endif
         else 
 	        redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
         endif
@@ -77,7 +85,9 @@ function! go#command#Test(...)
 
     let errors = getqflist()
     if !empty(errors)
-        cc 1 "jump to first error if there is any
+        if g:go_jump_to_error
+            cc 1 "jump to first error if there is any
+        endif
     else
         redraw | echon "vim-go: " | echohl Function | echon "[test] PASS" | echohl None
     endif
@@ -102,7 +112,9 @@ function! go#command#Coverage(...)
 
     let errors = getqflist()
     if !empty(errors)
-        cc 1 "jump to first function
+        if g:go_jump_to_error
+            cc 1 "jump to first error if there is any
+        endif
     endif
 
     call delete(l:tmpname)
