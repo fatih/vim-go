@@ -24,7 +24,7 @@ function! Godef(...)
 endfunction
 
 
-function! GodefTab()
+function! GodefMode(mode)
 	let arg = s:getOffset()
 
 	let command = g:go_godef_bin . " -f=" . expand("%:p") . " -i " . shellescape(arg)
@@ -32,7 +32,7 @@ function! GodefTab()
 	" get output of godef
 	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), "\n"))
 
-	call GodefJump(out, "tab")
+	call GodefJump(out, a:mode)
 endfunction
 
 
@@ -68,6 +68,8 @@ function! GodefJump(out, mode)
 		" it
 		lgetexpr a:out
 
+		" needed for restoring back user setting this is because there are two
+		" modes of switchbuf whic we need based on the split mode
 		let old_switchbuf = &switchbuf
 
 		if a:mode == "tab"
@@ -75,6 +77,17 @@ function! GodefJump(out, mode)
 
 			if bufloaded(fileName) == 0
 				tab split 
+			endif
+
+		else
+			let &switchbuf = "useopen"
+
+			if bufloaded(fileName) == 0
+				if a:mode  == "split"
+					split
+				elseif a:mode == "vsplit"
+					vsplit
+				endif
 			endif
 
 		endif
@@ -88,8 +101,8 @@ function! GodefJump(out, mode)
 endfunction
 
 nnoremap <silent> <Plug>(go-def) :<C-u>call Godef()<CR>
-nnoremap <silent> <Plug>(go-def-vertical) :vsp <CR>:<C-u>call Godef()<CR>
-nnoremap <silent> <Plug>(go-def-split) :sp <CR>:<C-u>call Godef()<CR>
-nnoremap <silent> <Plug>(go-def-tab) :<CR>:<C-u>call GodefTab()<CR>
+nnoremap <silent> <Plug>(go-def-vertical) :<C-u>call GodefMode("vsplit")<CR>
+nnoremap <silent> <Plug>(go-def-split) :<C-u>call GodefMode("split")<CR>
+nnoremap <silent> <Plug>(go-def-tab) :<C-u>call GodefMode("tab")<CR>
 
 command! -range -nargs=* GoDef :call Godef(<f-args>)
