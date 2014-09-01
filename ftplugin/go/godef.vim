@@ -70,7 +70,7 @@ function! GodefJump(out, mode)
 
 		if a:mode == "tab"
 			" means it doesn't exist
-			if buflisted(fileName) == 0
+			if bufloaded(fileName) == 0
 				tab split 
 			endif
 		endif
