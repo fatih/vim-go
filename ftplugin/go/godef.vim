@@ -68,15 +68,21 @@ function! GodefJump(out, mode)
 		" it
 		lgetexpr a:out
 
+		let old_switchbuf = &switchbuf
+
 		if a:mode == "tab"
-			" means it doesn't exist
+			let &switchbuf = "usetab"
+
 			if bufloaded(fileName) == 0
 				tab split 
 			endif
+
 		endif
 
 		" jump to file now
 		ll 1
+
+		let &switchbuf = old_switchbuf
 	end
 	let &errorformat = old_errorformat
 endfunction
