@@ -70,28 +70,48 @@ endfunction
 
 let s:got_fmt_error = 0
 
-"  modified and improved version, doesn't undo changes and break undo history
-"  - fatih 2014
+"  we have those problems : 
+"  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
+"  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
+"
+"  The below function is an improved version that aims to fix all problems.
+"  it doesn't undo changes and break undo history.  If you are here reading
+"  this and have VimL experience, please look at the function for
+"  improvements, patches are welcome :)
 function! s:GoFormat()
+    " save cursor position and many other things
     let l:curw=winsaveview()
+
+    " needed for testing if gofmt fails or not
     let l:tmpname=tempname()
     call writefile(getline(1,'$'), l:tmpname)
 
+    " save our undo file to be restored after we are done. This is needed to
+    " prevent an additional undo jump due to BufWritePre auto command and also
+    " restore 'redo' history because it's getting being destroyed every
+    " BufWritePre
+    let tmpundofile=tempname()
+    exe 'wundo! ' . tmpundofile
+
+    " execute gofmt
     let command = g:go_fmt_command . ' ' . g:go_fmt_options
     let out = system(command . " " . l:tmpname)
 
-    "if there is no error on the temp file, gofmt our original file
+    "if there is no error on the temp file, gofmt again our original file
     if v:shell_error == 0
+        " remove undo point caused via BufWritePre
         try | silent undojoin | catch | endtry
 
-        " do not include stderr to the buffer
+        " do not include stderr to the buffer, this is due to goimports/gofmt
+        " tha fails with a zero exit return value (sad yeah).
         let default_srr = &srr
         set srr=>%s 
 
+        " execufe gofmt on the current buffer and replace it
         silent execute "%!" . command
 
         " only clear quickfix if it was previously set, this prevents closing
-        " other quickfixs
+        " other quickfixes
         if s:got_fmt_error 
             let s:got_fmt_error = 0
             call setqflist([])
@@ -123,6 +143,11 @@ function! s:GoFormat()
         cwindow
     endif
 
+    " restore our undo history
+    silent! exe 'rundo ' . tmpundofile
+    call delete(tmpundofile)
+
+    " restore our cursor/windows positions
     call delete(l:tmpname)
     call winrestview(l:curw)
 endfunction
