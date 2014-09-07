@@ -35,7 +35,7 @@ if !exists("g:go_fmt_commands")
 endif
 
 if !exists("g:go_fmt_command")
-    let g:go_fmt_command = g:go_goimports_bin
+    let g:go_fmt_command = "gofmt"
 endif
 
 if !exists('g:go_fmt_autosave')
@@ -55,29 +55,24 @@ if g:go_fmt_autosave
 endif
 
 if g:go_fmt_commands
-    command! -buffer GoFmt call s:GoFormat()
-    command! -buffer GoDisableGoimports call s:GoDisableGoimports()
-    command! -buffer GoEnableGoimports call s:GoEnableGoimports()
+    command! -buffer GoFmt call s:GoFormat(-1)
+    command! -buffer GoImports call s:GoFormat(1)
 endif
-
-function! s:GoDisableGoimports()
-    let g:go_fmt_command = "gofmt"
-endfunction
-
-function! s:GoEnableGoimports()
-    let g:go_fmt_command = g:go_goimports_bin
-endfunction
 
 let s:got_fmt_error = 0
 
 "  modified and improved version, doesn't undo changes and break undo history
 "  - fatih 2014
-function! s:GoFormat()
+function! s:GoFormat(withGoimport)
     let l:curw=winsaveview()
     let l:tmpname=tempname()
     call writefile(getline(1,'$'), l:tmpname)
 
     let command = g:go_fmt_command . ' ' . g:go_fmt_options
+    if a:withGoimport  == 1 
+        let command = g:go_goimports_bin . ' ' . g:go_fmt_options
+    endif
+
     let out = system(command . " " . l:tmpname)
 
     "if there is no error on the temp file, gofmt our original file
