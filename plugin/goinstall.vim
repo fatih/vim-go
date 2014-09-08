@@ -4,6 +4,26 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
+" GetBinPath returns the binary path of installed go tools
+function! s:GetBinPath()
+    let bin_path = ""
+
+    " check if our global custom path is set, if not check if $GOBIN is set so
+    " we can use it, otherwise use $GOPATH + '/bin'
+    if exists("g:go_bin_path")
+        let bin_path = g:go_bin_path
+    elseif $GOBIN != ""
+        let bin_path = $GOBIN
+    else
+        let bin_path = $GOPATH . '/bin/'
+    endif
+
+    " add trailing slash if there is no one
+    if bin_path[-1:-1] != '/' | let bin_path .= '/' | endif
+
+    return bin_path
+endfunction
+
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries
 let s:packages = [
@@ -27,14 +47,7 @@ function! s:CheckAndSetBinaryPaths()
         return
     endif
 
-    if $GOBIN == ""
-        let go_bin_path = $GOPATH . '/bin/'
-    else
-        let go_bin_path = $GOBIN
-    endif
-
-    " add trailing slash if there is no one
-    if go_bin_path[-1:-1] != '/' | let go_bin_path .= '/' | endif
+    let go_bin_path = s:GetBinPath()
 
     for pkg in s:packages
         let basename = fnamemodify(pkg, ":t")
@@ -42,6 +55,9 @@ function! s:CheckAndSetBinaryPaths()
 
         if !exists("g:{binname}")
             let g:{binname} = go_bin_path . basename
+
+            " debug...
+            " echo g:{binname}
         endif
     endfor
 endfunction
@@ -83,17 +99,10 @@ function! s:GoInstallBinaries(updateBinaries)
         return
     endif
 
-    if $GOBIN == ""
-        let go_bin_path = $GOPATH . '/bin/'
-        let $GOBIN = go_bin_path
+    let go_bin_path = s:GetBinPath()
 
-        echohl WarningMsg
-        echomsg "vim.go: $GOBIN is not set. Using: ". go_bin_path
-        echohl None
-    else
-        let go_bin_path = $GOBIN
-    endif
-
+    " change $GOBIN so go get can automatically install to it
+    let $GOBIN = go_bin_path
 
     for pkg in s:packages
         let basename = fnamemodify(pkg, ":t")

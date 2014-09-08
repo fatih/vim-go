@@ -162,6 +162,13 @@ Disable auto fmt on save:
 let g:go_fmt_autosave = 0
 ```
 
+By default binaries are installed to `$GOBIN` or `$GOPATH/bin`. To change it:
+
+```vim
+let g:go_bin_path = expand("~/.gotools")
+let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
+```
+
 ## Snippets
 
 Snippets are useful and very powerful. By default ultisnips is
