@@ -25,12 +25,12 @@ CONTENTS                                                          *go-contents*
 ===============================================================================
 INTRO                                                                *go-intro*
 
-Go (golang) support for Vim. Contains official misc/vim files. vim-go installs
-automatically all necessary binaries for providing seamless Vim integration.
-It comes with pre-defined sensible settings (like auto gofmt on save), has
-autocomplete, snippet support, improved syntax highlighting, go toolchain
-commands, etc... It's highly customizable and each individual feature can be
-disabled/enabled easily.
+Go (golang) support for Vim. vim-go installs automatically all necessary
+binaries for providing seamless Vim integration.  It comes with pre-defined
+sensible settings (like auto gofmt on save), has autocomplete, snippet
+support, improved syntax highlighting, go toolchain commands, etc... It's
+highly customizable and each individual feature can be disabled/enabled
+easily.
 
   * Improved Syntax highlighting, such as Functions, Operators, Methods..
   * Auto completion support via `gocode`

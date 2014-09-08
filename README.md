@@ -1,11 +1,11 @@
 # vim-go
 
-Go (golang) support for Vim. Contains official misc/vim files. It comes with
-pre-defined sensible settings (like auto gofmt on save), has autocomplete,
-snippet support, improved syntax highlighting, go toolchain commands, etc...
-If needed vim-go installs all necessary binaries for providing seamless Vim
-integration with current commands.  It's highly customizable and each
-individual feature can be disabled/enabled easily.
+Go (golang) support for Vim. It comes with pre-defined sensible settings (like
+auto gofmt on save), has autocomplete, snippet support, improved syntax
+highlighting, go toolchain commands, etc...  If needed vim-go installs all
+necessary binaries for providing seamless Vim integration with current
+commands. It's highly customizable and each individual feature can be
+disabled/enabled easily.
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
 
@@ -35,9 +35,8 @@ individual feature can be disabled/enabled easily.
 
 ## Install
 
-First of all, do not use it with other Go plugins. It already contains the
-official misc/vim. If you use pathogen, just clone it into your bundle
-directory:
+First of all, do not use it with other Go plugins. If you use pathogen, just
+clone it into your bundle directory:
 
 ```bash
 $ cd ~/.vim/bundle
