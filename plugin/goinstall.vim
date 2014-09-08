@@ -15,7 +15,16 @@ function! s:GetBinPath()
     elseif $GOBIN != ""
         let bin_path = $GOBIN
     else
-        let bin_path = $GOPATH . '/bin/'
+        " take care of multi element GOPATH's
+        let go_paths = split($GOPATH, ":")
+
+        if len(go_paths) == 1 
+            " one single PATH
+            let bin_path = $GOPATH . '/bin/'
+        else
+            " multiple paths, use the first one
+            let bin_path = go_paths[0]. '/bin/'
+        endif
     endif
 
     " add trailing slash if there is no one
