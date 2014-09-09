@@ -120,6 +120,17 @@ function! go#command#Coverage(...)
     call delete(l:tmpname)
 endfunction
 
+function! go#command#Bench(...)
+    let command = "go test -bench ."
+    if len(a:000)
+      let command = "go test -bench " . expand(a:1)
+    endif
+
+    echon "vim-go: " | echohl Identifier | echon "benchmarking ..." | echohl None
+    let out = go#tool#ExecuteInDir(command)
+    echo out
+endfunction
+
 function! go#command#Vet()
     let out = go#tool#ExecuteInDir('go vet')
     let errors = []
