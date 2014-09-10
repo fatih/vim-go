@@ -50,8 +50,8 @@ Plugin 'fatih/vim-go'
 ```
 and execute `:PluginInstall` (or `:BundleInstall` for older versions of Vundle)
 
-Please be sure all necessary binares are installed (such as `gocode`, `godef`,
-`goimportes`, etc..). You can easily install them with the included
+Please be sure all necessary binaries are installed (such as `gocode`, `godef`,
+`goimports`, etc..). You can easily install them with the included
 `:GoInstallBinaries`. Those binaries will be automatically downloaded and
 installed to your `$GOBIN` environment (if not set it will use `$GOPATH/bin`).
 It requires `git` and `hg` for fetching the individual Go packages.
@@ -229,7 +229,7 @@ First environment variables in Fish are applied differently, it should be like:
 
 Second, Vim needs a POSIX compatible shell (more info here:
 https://github.com/dag/vim-fish#teach-a-vim-to-fish). If you use Fish to open
-vim, it will make certainx shell based commands fail (means vim-go will fail
+vim, it will make certain shell based commands fail (means vim-go will fail
 too). To overcome this problem change the default shell by adding the following
 into your .vimrc (on the top of the file):
 
