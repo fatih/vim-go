@@ -77,9 +77,10 @@ func! s:RunOracle(mode, selected) range abort
     endif
 
     " echo '# ' . cmd . ' #'
+    echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
     let out = system(cmd)
     if v:shell_error
-        echohl WarningMsg | echo out | echohl None
+        " echohl WarningMsg | echo out | echohl None
         " echoerr out
         return {}
     else
@@ -94,24 +95,34 @@ let s:buf_nr = -1
 function! go#oracle#Implements(selected)
     let out = s:RunOracle('implements', a:selected)
     if empty(out)
+        redraw | echon "vim-go: could not run static analyser."
         return
     endif
 
     " be sure they exists before we retrieve them from the map
-    if !has_key(out, "implements") && !has_key(out.implements, "from")
+    if !has_key(out, "implements")
         return
     endif
 
-    " get the list of interfaces
-    let interfaces = out.implements.from
+    if has_key(out.implements, "from")
+        let interfaces = out.implements.from
+    elseif has_key(out.implements, "fromptr")
+        let interfaces = out.implements.fromptr
+    else
+        redraw | echon "vim-go: " | echon "does not satisfy any interface"| echohl None
+        return
+    endif
+
+    " " get the list of interfaces
+    " let interfaces = out.implements.from
 
     let result  = ["Implements:", ""]
 
     for interface in interfaces
         " don't add runtime interfaces
         if interface.name !~ '^runtime'
-          let line = interface.name . "\t" . interface.pos
-          call add(result, line)
+            let line = interface.name . "\t" . interface.pos
+            call add(result, line)
         endif
     endfor
 
@@ -128,13 +139,13 @@ function! go#oracle#Implements(selected)
     endif
 
 
-    " Keep minimum height to 10, if there ise more just increase it that it
+    " Keep minimum height to 10, if there is more just increase it that it
     " occupies all results
     let implements_height = 10
     if len(result) < implements_height
-      exe 'resize ' . implements_height
+        exe 'resize ' . implements_height
     else
-      exe 'resize ' . len(result)
+        exe 'resize ' . len(result)
     endif
 
     setlocal filetype=vimgo
