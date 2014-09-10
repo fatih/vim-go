@@ -127,12 +127,22 @@ function! go#oracle#Implements(selected)
         execute bufwinnr(s:buf_nr) . 'wincmd w'
     endif
 
-    " Open a new split and set it up.
+
+    " Keep minimum height to 10, if there ise more just increase it that it
+    " occupies all results
+    let implements_height = 10
+    if len(result) < implements_height
+      exe 'resize ' . implements_height
+    else
+      exe 'resize ' . len(result)
+    endif
+
     setlocal filetype=vimgo
     setlocal bufhidden=delete
     setlocal buftype=nofile
     setlocal noswapfile
     setlocal nobuflisted
+    setlocal winfixheight
 
 
     " we need this to purge the buffer content
