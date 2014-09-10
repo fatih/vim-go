@@ -154,7 +154,7 @@ function! go#oracle#Implements(selected)
     setlocal noswapfile
     setlocal nobuflisted
     setlocal winfixheight
-
+    setlocal cursorline " make it easy to distinguish
 
     " we need this to purge the buffer content
     setlocal modifiable
@@ -170,6 +170,35 @@ function! go#oracle#Implements(selected)
 
     " set it back to non modifiable
     setlocal nomodifiable
+
+    nnoremap <buffer> <CR> :call <SID>OpenDefinition()<CR>
+endfunction
+
+function! s:OpenDefinition()
+    let curline = getline('.')
+
+    " don't touch our first line and any blank line
+    if curline =~ "^Implements:" || curline =~ "^$"
+        return
+    endif
+
+    " format: 'interface file:lnum:coln'
+	let mx = '^\(^\S*\)\s*\(.\{-}\):\(\d\+\):\(\d\+\)'
+
+    " parse it now into the list
+    let tokens = matchlist(curline, mx)
+
+    " convert to: 'file:lnum:coln'
+    let expr = tokens[2] . ":" . tokens[3] . ":" .  tokens[4]
+
+    " jump to it in a new tab, we use explicit lgetexpr so we can later change
+    " the behaviour via settings (like opening in vsplit instead of tab)
+	lgetexpr expr
+    tab split
+	ll 1
+  
+    " center the word 
+    norm! zz 
 endfunction
 
 
