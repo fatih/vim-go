@@ -3,9 +3,7 @@ if exists("g:go_loaded_oracle")
 endif
 let g:go_loaded_oracle = 1
 
-if !hasmapto('<Plug>(go-oracle-describe)')
-    nnoremap <silent> <Plug>(go-oracle-describe) :<C-u>call go#oracle#Describe(-1) <cr>
-endif
+nnoremap <silent> <Plug>(go-implements) :<C-u>call go#oracle#Implements(-1)<CR>
 
 command! -range=% GoOracleDescribe call go#oracle#Describe(<count>)
 command! -range=% GoOracleCallees  call go#oracle#Callees(<count>)
