@@ -178,12 +178,14 @@ function! s:OpenDefinition()
     let curline = getline('.')
 
     " don't touch our first line and any blank line
-    if curline =~ "^Implements:" || curline =~ "^$"
+    if curline =~ "^Implements" || curline =~ "^$"
+        " supress information about calling this function
+        echo "" 
         return
     endif
 
     " format: 'interface file:lnum:coln'
-	let mx = '^\(^\S*\)\s*\(.\{-}\):\(\d\+\):\(\d\+\)'
+    let mx = '^\(^\S*\)\s*\(.\{-}\):\(\d\+\):\(\d\+\)'
 
     " parse it now into the list
     let tokens = matchlist(curline, mx)
@@ -193,10 +195,10 @@ function! s:OpenDefinition()
 
     " jump to it in a new tab, we use explicit lgetexpr so we can later change
     " the behaviour via settings (like opening in vsplit instead of tab)
-	lgetexpr expr
+    lgetexpr expr
     tab split
-	ll 1
-  
+    ll 1
+
     " center the word 
     norm! zz 
 endfunction
