@@ -35,7 +35,7 @@ if !exists("g:go_fmt_commands")
 endif
 
 if !exists("g:go_fmt_command")
-    let g:go_fmt_command = g:go_goimports_bin
+    let g:go_fmt_command = "gofmt"
 endif
 
 if !exists('g:go_fmt_autosave')
@@ -55,18 +55,9 @@ if g:go_fmt_autosave
 endif
 
 if g:go_fmt_commands
-    command! -buffer GoFmt call s:GoFormat()
-    command! -buffer GoDisableGoimports call s:GoDisableGoimports()
-    command! -buffer GoEnableGoimports call s:GoEnableGoimports()
+    command! -buffer GoFmt call s:GoFormat(-1)
+    command! -buffer GoImports call s:GoFormat(1)
 endif
-
-function! s:GoDisableGoimports()
-    let g:go_fmt_command = "gofmt"
-endfunction
-
-function! s:GoEnableGoimports()
-    let g:go_fmt_command = g:go_goimports_bin
-endfunction
 
 let s:got_fmt_error = 0
 
@@ -78,7 +69,7 @@ let s:got_fmt_error = 0
 "  it doesn't undo changes and break undo history.  If you are here reading
 "  this and have VimL experience, please look at the function for
 "  improvements, patches are welcome :)
-function! s:GoFormat()
+function! s:GoFormat(withGoimport)
     " save cursor position and many other things
     let l:curw=winsaveview()
 
@@ -95,6 +86,10 @@ function! s:GoFormat()
 
     " execute gofmt
     let command = g:go_fmt_command . ' ' . g:go_fmt_options
+    if a:withGoimport  == 1 
+        let command = g:go_goimports_bin . ' ' . g:go_fmt_options
+    endif
+
     let out = system(command . " " . l:tmpname)
 
     "if there is no error on the temp file, gofmt again our original file
