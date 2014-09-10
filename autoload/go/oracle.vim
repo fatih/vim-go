@@ -102,16 +102,18 @@ function! go#oracle#Implements(selected)
         return
     endif
 
+    " get the list of interfaces
     let interfaces = out.implements.from
 
-    let result  = ["Implements:", "\n"]
-    for interface in interfaces
-        " format : 'filename:lnum.col: text' 
-        let line = interface.pos .': ' . interface.name
-        call add(result, line )
-    endfor
+    let result  = ["Implements:", ""]
 
-    let lines = join(result , "\n")
+    for interface in interfaces
+        " don't add runtime interfaces
+        if interface.name !~ '^runtime'
+          let line = interface.name . "\t" . interface.pos
+          call add(result, line)
+        endif
+    endfor
 
     " reuse existing buffer window if it exists otherwise create a new one
     if !bufexists(s:buf_nr)
@@ -131,13 +133,21 @@ function! go#oracle#Implements(selected)
     setlocal buftype=nofile
     setlocal noswapfile
     setlocal nobuflisted
-    setlocal nocursorline
-    setlocal nocursorcolumn
 
+
+    " we need this to purge the buffer content
     setlocal modifiable
-    %delete _ 
-    call append(0, split(lines, '\v\n'))
-    $delete _ 
+
+    "delete everything first from the buffer
+    %delete _  
+
+    " now add the content
+    call append(0, result)
+
+    " delete last line that comes from the append call
+    $delete _  
+
+    " set it back to non modifiable
     setlocal nomodifiable
 endfunction
 
