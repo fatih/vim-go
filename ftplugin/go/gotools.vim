@@ -9,6 +9,7 @@ nnoremap <silent> <Plug>(go-run) :<C-u>call go#command#Run(expand('%'))<CR>
 nnoremap <silent> <Plug>(go-build) :<C-u>call go#command#Build('')<CR>
 nnoremap <silent> <Plug>(go-install) :<C-u>call go#command#Install()<CR>
 nnoremap <silent> <Plug>(go-test) :<C-u>call go#command#Test('')<CR>
+nnoremap <silent> <Plug>(go-bench) :<C-u>call go#command#Bench('')<CR>
 nnoremap <silent> <Plug>(go-coverage) :<C-u>call go#command#Coverage('')<CR>
 nnoremap <silent> <Plug>(go-vet) :<C-u>call go#command#Vet()<CR>
 nnoremap <silent> <Plug>(go-files) :<C-u>call go#tool#Files()<CR>
@@ -26,6 +27,7 @@ command! -nargs=? -range -bang GoBuild call go#command#Build(<bang>0)
 
 command! -nargs=* GoInstall call go#command#Install(<f-args>)
 command! -nargs=* GoTest call go#command#Test(<f-args>)
+command! -nargs=* GoBench call go#command#Bench(<f-args>)
 command! -nargs=* GoCoverage call go#command#Coverage(<f-args>)
 command! -nargs=0 GoVet call go#command#Vet()
 
