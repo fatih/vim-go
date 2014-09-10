@@ -4,8 +4,8 @@ endif
 
 let b:current_syntax = "vimgo"
 
-syn match goInterface /^\S*/
-syn keyword goImplements Implements
+syn match   goInterface /^\S*/
+syn region  goTitle start="\%1l" end=":"
 
 hi def link goInterface Type
-hi def link goImplements Label
+hi def link goTitle Label

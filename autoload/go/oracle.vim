@@ -113,10 +113,14 @@ function! go#oracle#Implements(selected)
         return
     endif
 
-    " " get the list of interfaces
-    " let interfaces = out.implements.from
+    " get the type name and kind from the type under the cursor
+    let typeName = out.implements.type.name
 
-    let result  = ["Implements:", ""]
+    " prepare the title
+    let title = typeName . " implements:"
+
+    " start to populate our buffer content
+    let result  = [title, ""]
 
     for interface in interfaces
         " don't add runtime interfaces
@@ -178,7 +182,7 @@ function! s:OpenDefinition()
     let curline = getline('.')
 
     " don't touch our first line and any blank line
-    if curline =~ "^Implements" || curline =~ "^$"
+    if curline =~ "implements" || curline =~ "^$"
         " supress information about calling this function
         echo "" 
         return
