@@ -152,6 +152,12 @@ snippet fum
 		${5}
 	}
 	${0}
+# Fmt Printf debug
+snippet ff
+	fmt.Printf("${1} %+v\n", ${0})
+# Fmt Println debug
+snippet fn
+	fmt.Println("${1}")
 # log printf
 snippet lf
 	log.Printf("%${1:s}", ${2:var})

@@ -16,6 +16,10 @@ if exists("b:did_ftplugin_go_lint")
     finish
 endif
 
+if !exists("g:go_golint_bin")
+    finish
+endif
+
 command! -buffer GoLint call s:GoLint()
 
 function! s:GoLint() abort

@@ -116,7 +116,7 @@ endfunction
 
 function! go#package#Complete(ArgLead, CmdLine, CursorPos)
     let words = split(a:CmdLine, '\s\+', 1)
-    if len(words) > 2
+    if len(words) > 2 && words[0] != "GoImportAs"
         " Complete package members
         return go#package#CompleteMembers(words[1], words[2])
     endif

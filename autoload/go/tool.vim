@@ -1,18 +1,30 @@
 function! go#tool#Files()
-    let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
+    if has ("win32")
+        let command = 'go list -f "{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}{{printf \"\n\"}}{{end}}"'
+    else
+        let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
+    endif
     let out = go#tool#ExecuteInDir(command)
     return split(out, '\n')
 endfunction
 
 function! go#tool#Deps()
-    let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
+    if has ("win32")
+        let command = 'go list -f "{{range $f := .Deps}}{{$f}}{{printf \"\n\"}}{{end}}"'
+    else
+        let command = "go list -f $'{{range $f := .Deps}}{{$f}}\n{{end}}'"
+    endif
     let out = go#tool#ExecuteInDir(command)
     return split(out, '\n')
 endfunction
 
 function! go#tool#Imports()
     let imports = {}
-    let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
+    if has ("win32")
+        let command = 'go list -f "{{range $f := .Imports}}{{$f}}{{printf \"\n\"}}{{end}}"'
+    else
+        let command = "go list -f $'{{range $f := .Imports}}{{$f}}\n{{end}}'"
+    endif
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         echo out
@@ -65,6 +77,19 @@ function! go#tool#ExecuteInDir(cmd) abort
         execute cd.'`=dir`'
     endtry
     return out
+endfunction
+
+" Exists checks whether the given importpath exists or not. It returns 0 if
+" the importpath exists under GOPATH.
+function! go#tool#Exists(importpath)
+    let command = "go list ". a:importpath
+    let out = go#tool#ExecuteInDir(command)
+
+    if v:shell_error
+        return -1
+    endif
+
+    return 0
 endfunction
 
 " vim:ts=4:sw=4:et
