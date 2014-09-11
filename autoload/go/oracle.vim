@@ -1,19 +1,9 @@
 " -*- text -*-
 "  oracle.vim -- Vim integration for the Go oracle.
 "
-"  Load with (e.g.)  :source oracle.vim
-"  Call with (e.g.)  :GoOracleDescribe
-"  while cursor or selection is over syntax of interest.
-"  Run :copen to show the quick-fix file.
-"
-" This is an absolutely rudimentary integration of the Go Oracle into
-" Vim's quickfix mechanism and it needs a number of usability
-" improvements before it can be practically useful to Vim users.
-" Voluntary contributions welcomed!
-"
-" TODO(adonovan):
-" - reject buffers with no filename.
-" - hide all filenames in quickfix buffer.
+"  Part of this plugin was taken directly from the oracle repo, however it's
+"  massively changed for a better integration into vim-go. Thanks Alan Donovan
+"  for the first iteration based on quickfix!  - fatih arslan
 "
 "
 func! s:qflist(output)
@@ -120,7 +110,7 @@ function! go#oracle#Implements(selected)
         return
     endif
 
-    " get the type name and kind from the type under the cursor
+    " get the type name from the type under the cursor
     let typeName = out.implements.type.name
 
     " prepare the title
@@ -140,9 +130,10 @@ function! go#oracle#Implements(selected)
     " open a window and put the result
     call go#ui#OpenWindow(result)
 
+    " define some buffer related mappings:
+    "
     " go to definition when hit enter
     nnoremap <buffer> <CR> :<C-u>call go#ui#OpenDefinition()<CR>
-
     " close the window when hit ctrl-c
     nnoremap <buffer> <c-c> :<C-u>call go#ui#CloseWindow()<CR>
 endfunction
