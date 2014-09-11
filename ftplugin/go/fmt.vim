@@ -90,6 +90,8 @@ function! s:GoFormat(withGoimport)
         let command = g:go_goimports_bin . ' ' . g:go_fmt_options
     endif
 
+    if go#tool#BinExists(command) == -1 | return | endif
+
     let out = system(command . " " . l:tmpname)
 
     "if there is no error on the temp file, gofmt again our original file
