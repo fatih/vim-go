@@ -98,7 +98,6 @@ func! s:RunOracle(mode, selected) range abort
     endif
 endfun
 
-let s:buf_nr = -1
 
 " Show 'implements' relation for selected package
 function! go#oracle#Implements(selected)
@@ -138,58 +137,15 @@ function! go#oracle#Implements(selected)
         endif
     endfor
 
-    " reuse existing buffer window if it exists otherwise create a new one
-    if !bufexists(s:buf_nr)
-        execute 'botright new'
-        file `="[Implements]"`
-        let s:buf_nr = bufnr('%')
-    elseif bufwinnr(s:buf_nr) == -1
-        execute 'botright new'
-        execute s:buf_nr . 'buffer'
-    elseif bufwinnr(s:buf_nr) != bufwinnr('%')
-        execute bufwinnr(s:buf_nr) . 'wincmd w'
-    endif
+    " open a window and put the result
+    call go#ui#OpenWindow(result)
 
-
-    " Keep minimum height to 10, if there is more just increase it that it
-    " occupies all results
-    let implements_height = 10
-    if len(result) < implements_height
-        exe 'resize ' . implements_height
-    else
-        exe 'resize ' . len(result)
-    endif
-
-    setlocal filetype=vimgo
-    setlocal bufhidden=delete
-    setlocal buftype=nofile
-    setlocal noswapfile
-    setlocal nobuflisted
-    setlocal winfixheight
-    setlocal cursorline " make it easy to distinguish
-
-    " we need this to purge the buffer content
-    setlocal modifiable
-
-    "delete everything first from the buffer
-    %delete _  
-
-    " add the content
-    call append(0, result)
-
-    " delete last line that comes from the append call
-    $delete _  
-
-    " set it back to non modifiable
-    setlocal nomodifiable
-
-    " nnoremap <buffer> <CR> :<C-u>call <SID>OpenDefinition()<CR>
+    " go to definition when hit enter
     nnoremap <buffer> <CR> :<C-u>call go#ui#OpenDefinition()<CR>
+
+    " close the window when hit ctrl-c
     nnoremap <buffer> <c-c> :<C-u>call go#ui#CloseWindow()<CR>
 endfunction
-
-
-
 
 " Describe selected syntax: definition, methods, etc
 function! go#oracle#Describe(selected)
