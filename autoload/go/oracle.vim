@@ -90,7 +90,7 @@ func! s:RunOracle(mode, selected) range abort
         " package which doesn't build. 
         " echo out
         " redraw | echon 'vim-go: could not run static analyser (does it build?)'
-        redraw | echon "vim-go: " | echohl SpecialComment | echon out | echohl None
+        redraw | echon "vim-go: " | echohl Statement | echon out | echohl None
         return {}
     else
         let json_decoded = webapi#json#decode(out)

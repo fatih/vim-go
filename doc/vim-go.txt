@@ -231,6 +231,13 @@ COMMANDS                                                          *go-commands*
     `goimports`, `gocode`, etc.. under `g:go_bin_path`. This can be used to
     update the necessary Go binaries.
 
+                                                        *:GoImplements*
+:GoImplements
+
+    Show 'implements' relation for a selected package. A list of interfaces
+    for the type under the cursor (or selected package) is shown in a custom
+    window. Hit `<enter>` to jump in a new tab or close it via `<c-c>`.
+
                                                           *:GoOracleDescribe*
 :GoOracleDescribe
 
@@ -256,10 +263,6 @@ COMMANDS                                                          *go-commands*
 
     Show the callgraph of the current program.
 
-                                                        *:GoOracleImplements*
-:GoOracleImplements
-
-    Show 'implements' relation for selected package
 
                                                       *:GoOracleChannelPeers*
 :GoOracleChannelPeers
@@ -373,6 +376,10 @@ Goto declaration/definition. Results are shown in a vertical split window.
                                                               *(go-def-tab)*
 
 Goto declaration/definition. Results are shown in a tab window.
+
+                                                          *(go-implements)*
+
+Show the interfaces that the type under the cursor implements.
 
 
 
