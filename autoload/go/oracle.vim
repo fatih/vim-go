@@ -81,7 +81,6 @@ func! s:RunOracle(mode, selected) range abort
                     \  shellescape(fname), pos, a:mode, sname)
     endif
 
-    " echo '# ' . cmd . ' #'
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
     let out = system(cmd)
@@ -173,7 +172,6 @@ function! go#oracle#Implements(selected)
     "delete everything first from the buffer
     %delete _  
 
-    " now add the content
     call append(0, result)
 
     " delete last line that comes from the append call
@@ -183,6 +181,12 @@ function! go#oracle#Implements(selected)
     setlocal nomodifiable
 
     nnoremap <buffer> <CR> :call <SID>OpenDefinition()<CR>
+    nnoremap <buffer> <c-c> :call <SID>CloseWindow()<CR>
+endfunction
+
+function! s:CloseWindow()
+    close
+    echo ""
 endfunction
 
 function! s:OpenDefinition()
