@@ -174,6 +174,7 @@ function! go#oracle#Implements(selected)
     "delete everything first from the buffer
     %delete _  
 
+    " add the content
     call append(0, result)
 
     " delete last line that comes from the append call
@@ -182,43 +183,12 @@ function! go#oracle#Implements(selected)
     " set it back to non modifiable
     setlocal nomodifiable
 
-    nnoremap <buffer> <CR> :<C-u>call <SID>OpenDefinition()<CR>
-    nnoremap <buffer> <c-c> :<C-u>call <SID>CloseWindow()<CR>
+    " nnoremap <buffer> <CR> :<C-u>call <SID>OpenDefinition()<CR>
+    nnoremap <buffer> <CR> :<C-u>call go#ui#OpenDefinition()<CR>
+    nnoremap <buffer> <c-c> :<C-u>call go#ui#CloseWindow()<CR>
 endfunction
 
-function! s:CloseWindow()
-    close
-    echo ""
-endfunction
 
-function! s:OpenDefinition()
-    let curline = getline('.')
-
-    " don't touch our first line and any blank line
-    if curline =~ "implements" || curline =~ "^$"
-        " supress information about calling this function
-        echo "" 
-        return
-    endif
-
-    " format: 'interface file:lnum:coln'
-    let mx = '^\(^\S*\)\s*\(.\{-}\):\(\d\+\):\(\d\+\)'
-
-    " parse it now into the list
-    let tokens = matchlist(curline, mx)
-
-    " convert to: 'file:lnum:coln'
-    let expr = tokens[2] . ":" . tokens[3] . ":" .  tokens[4]
-
-    " jump to it in a new tab, we use explicit lgetexpr so we can later change
-    " the behaviour via settings (like opening in vsplit instead of tab)
-    lgetexpr expr
-    tab split
-    ll 1
-
-    " center the word 
-    norm! zz 
-endfunction
 
 
 " Describe selected syntax: definition, methods, etc
