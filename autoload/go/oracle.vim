@@ -55,12 +55,17 @@ func! s:RunOracle(mode, selected) range abort
     let fname = expand('%:p')
     let dname = expand('%:p:h')
     let pkg = go#package#ImportPath(dname)
+
     if exists('g:go_oracle_scope_file')
-        let sname = get(g:, 'go_oracle_scope_file')
-    elseif pkg != -1
-        let sname = pkg
+        " let the user defines the scope
+        let sname = shellescape(get(g:, 'go_oracle_scope_file'))
+    elseif exists('g:go_oracle_include_tests') && pkg != -1
+        " give import path so it includes all _test.go files too
+        let sname = shellescape(pkg)
     else
-        let sname = fname
+        " best usable way, only pass the package itself, without the test
+        " files
+        let sname = join(go#tool#Files(), ' ')
     endif
 
     if a:selected != -1
@@ -68,20 +73,23 @@ func! s:RunOracle(mode, selected) range abort
         let pos2 = s:getpos(line("'>"), col("'>"))
         let cmd = printf('%s -format json -pos=%s:#%d,#%d %s %s',
                     \  g:go_oracle_bin,
-                    \  shellescape(fname), pos1, pos2, a:mode, shellescape(sname))
+                    \  shellescape(fname), pos1, pos2, a:mode, sname)
     else
         let pos = s:getpos(line('.'), col('.'))
         let cmd = printf('%s -format json -pos=%s:#%d %s %s',
                     \  g:go_oracle_bin,
-                    \  shellescape(fname), pos, a:mode, shellescape(sname))
+                    \  shellescape(fname), pos, a:mode, sname)
     endif
 
     " echo '# ' . cmd . ' #'
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
+
     let out = system(cmd)
     if v:shell_error
-        " echohl WarningMsg | echo out | echohl None
-        " echoerr out
+        " unfortunaly oracle outputs a very long stack trace that is not
+        " parsable to show the real error. But the main issue is usually the
+        " package which doesn't build. 
+        redraw | echon 'vim-go: could not run static analyser (does it build?)'
         return {}
     else
         let json_decoded = webapi#json#decode(out)
@@ -95,7 +103,6 @@ let s:buf_nr = -1
 function! go#oracle#Implements(selected)
     let out = s:RunOracle('implements', a:selected)
     if empty(out)
-        redraw | echon "vim-go: could not run static analyser."
         return
     endif
 
