@@ -249,23 +249,6 @@ or
 	set shell='/bin/sh'
 
 
-
-### I'm seeing weirds errors during the startup
-
-If you see errors like this:
-
-	Installing code.google.com/p/go.tools/cmd/goimports Error installing code.google.com/p/go.tools/cmd/goimports:
-	Installing code.google.com/p/rog-go/exp/cmd/godef Error installing code.google.com/p/rog-go/exp/cmd/godef:
-
-that means your local Go setup is broken or the remote website is down.  For
-example sometimes code.google.com times out. To test, just execute a simple go
-get:
-
-	go get code.google.com/p/go.tools/cmd/goimports
-
-You'll see a more detailed error. If this works, vim-go will work too.
-
-
 ## Why another plugin?
 
 This plugin/package is born mainly from frustration. I had to re-install my Vim
