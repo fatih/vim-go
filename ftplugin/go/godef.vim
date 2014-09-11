@@ -14,6 +14,9 @@ function! Godef(...)
 		let arg = a:1
 	endif
 
+	"return with a warning if the bin doesn't exist
+	if go#tool#BinExists(g:go_godef_bin) == -1 | return | endif
+
 	let command = g:go_godef_bin . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
 	" get output of godef
@@ -26,6 +29,8 @@ endfunction
 
 function! GodefMode(mode)
 	let arg = s:getOffset()
+
+	if go#tool#BinExists(g:go_godef_bin) == -1 | return | endif
 
 	let command = g:go_godef_bin . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
