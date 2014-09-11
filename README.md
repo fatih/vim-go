@@ -83,6 +83,13 @@ the help page to see all commands:
 vim-go has several `<Plug>` mappings which can be used to create custom
 mappings. Below are some examples you might find useful:
 
+Show a list of interfaces which is implemented by the type under your cursor
+with `<leader>s` 
+
+```vim
+au FileType go nmap <Leader>s <Plug>(go-implements)
+```
+
 Show type info for the word under your cursor with `<leader>i` (useful if you
 have disabled auto showing type info via `g:go_auto_type_info`)
 

@@ -140,11 +140,11 @@ function! go#oracle#Implements(selected)
 
     " reuse existing buffer window if it exists otherwise create a new one
     if !bufexists(s:buf_nr)
-        execute 'rightbelow new'
+        execute 'botright new'
         file `="[Implements]"`
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
-        execute 'rightbelow new'
+        execute 'botright new'
         execute s:buf_nr . 'buffer'
     elseif bufwinnr(s:buf_nr) != bufwinnr('%')
         execute bufwinnr(s:buf_nr) . 'wincmd w'
@@ -182,8 +182,8 @@ function! go#oracle#Implements(selected)
     " set it back to non modifiable
     setlocal nomodifiable
 
-    nnoremap <buffer> <CR> :call <SID>OpenDefinition()<CR>
-    nnoremap <buffer> <c-c> :call <SID>CloseWindow()<CR>
+    nnoremap <buffer> <CR> :<C-u>call <SID>OpenDefinition()<CR>
+    nnoremap <buffer> <c-c> :<C-u>call <SID>CloseWindow()<CR>
 endfunction
 
 function! s:CloseWindow()
