@@ -88,7 +88,9 @@ func! s:RunOracle(mode, selected) range abort
         " unfortunaly oracle outputs a very long stack trace that is not
         " parsable to show the real error. But the main issue is usually the
         " package which doesn't build. 
-        redraw | echon 'vim-go: could not run static analyser (does it build?)'
+        " echo out
+        " redraw | echon 'vim-go: could not run static analyser (does it build?)'
+        redraw | echon "vim-go: " | echohl SpecialComment | echon out | echohl None
         return {}
     else
         let json_decoded = webapi#json#decode(out)
