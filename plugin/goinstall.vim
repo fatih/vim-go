@@ -113,6 +113,12 @@ function! s:GoInstallBinaries(updateBinaries)
     " change $GOBIN so go get can automatically install to it
     let $GOBIN = go_bin_path
 
+    " old_path is used to restore users own path
+    let old_path = $PATH
+
+    " vim's executable path is looking in PATH so add our go_bin path to it
+    let $PATH = $PATH . ":" .go_bin_path
+
     for pkg in s:packages
         let basename = fnamemodify(pkg, ":t")
         let binname = "go_" . basename . "_bin"
@@ -130,6 +136,9 @@ function! s:GoInstallBinaries(updateBinaries)
             endif
         endif
     endfor
+
+    " restore back!
+    let $PATH = old_path
 endfunction
 
 call s:CheckAndSetBinaryPaths()
