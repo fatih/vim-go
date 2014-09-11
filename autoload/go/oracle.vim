@@ -58,6 +58,9 @@ func! s:RunOracle(mode, selected) range abort
         let sname = join(go#tool#Files(), ' ')
     endif
 
+    "return with a warning if the bin doesn't exist
+    if go#tool#BinExists(g:go_oracle_bin) == -1 | return | endif
+
     if a:selected != -1
         let pos1 = s:getpos(line("'<"), col("'<"))
         let pos2 = s:getpos(line("'>"), col("'>"))
@@ -141,6 +144,13 @@ endfunction
 " Describe selected syntax: definition, methods, etc
 function! go#oracle#Describe(selected)
     let out = s:RunOracle('describe', a:selected)
+    if empty(out)
+        return
+    endif
+
+    echo out
+    return
+
     let detail = out["describe"]["detail"]
     let desc = out["describe"]["desc"]
 

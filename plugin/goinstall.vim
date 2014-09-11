@@ -5,7 +5,7 @@ endif
 let g:go_loaded_install = 1
 
 " GetBinPath returns the binary path of installed go tools
-function! s:GetBinPath()
+function! GetBinPath()
     let bin_path = ""
 
     " check if our global custom path is set, if not check if $GOBIN is set so
@@ -56,7 +56,7 @@ function! s:CheckAndSetBinaryPaths()
         return
     endif
 
-    let go_bin_path = s:GetBinPath()
+    let go_bin_path = GetBinPath()
 
     for pkg in s:packages
         let basename = fnamemodify(pkg, ":t")
@@ -108,7 +108,7 @@ function! s:GoInstallBinaries(updateBinaries)
         return
     endif
 
-    let go_bin_path = s:GetBinPath()
+    let go_bin_path = GetBinPath()
 
     " change $GOBIN so go get can automatically install to it
     let $GOBIN = go_bin_path

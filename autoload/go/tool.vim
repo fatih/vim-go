@@ -92,4 +92,20 @@ function! go#tool#Exists(importpath)
     return 0
 endfunction
 
+" BinExists checks whether the given binary exists or not. It returns 0 if the
+" binary exists under GOBIN path.
+function! go#tool#BinExists(binpath)
+    let go_bin_path = GetBinPath()
+    let $PATH = $PATH . ":" .go_bin_path
+
+    let basename = fnamemodify(a:binpath, ":t")
+
+    if !executable(a:binpath) 
+        echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
+        return -1
+    endif
+
+    return 0
+endfunction
+
 " vim:ts=4:sw=4:et
