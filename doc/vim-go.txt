@@ -231,50 +231,12 @@ COMMANDS                                                          *go-commands*
     `goimports`, `gocode`, etc.. under `g:go_bin_path`. This can be used to
     update the necessary Go binaries.
 
-                                                          *:GoOracleDescribe*
-:GoOracleDescribe
+                                                        *:GoImplements*
+:GoImplements
 
-    Describe selected syntax: definition, methods, etc
-
-                                                           *:GoOracleCallees*
-:GoOracleCallees
-
-    Show possible targets of selected function call
-
-                                                           *:GoOracleCallers*
-:GoOracleCallers
-
-    Show possible callers of selected function
-
-                                                      *:GoOracleCallstack*
-:GoOracleCallstack
-
-    Show path from callgraph root to selected function
-
-                                                         *:GoOracleCallgraph*
-:GoOracleCallgraph
-
-    Show the callgraph of the current program.
-
-                                                        *:GoOracleImplements*
-:GoOracleImplements
-
-    Show 'implements' relation for selected package
-
-                                                      *:GoOracleChannelPeers*
-:GoOracleChannelPeers
-
-    Show send/receive corresponding to selected channel op
-
-                                                      *:GoOracleFreevars*
-:GoOracleFreevars
-
-    Show free variables of selection
-
-                                                      *:GoOracleReferrers*
-:GoOracleReferrers
-
-    Show all refs to entity denoted by selected identifier
+    Show 'implements' relation for a selected package. A list of interfaces
+    for the type under the cursor (or selected package) is shown in a custom
+    window. Hit `<enter>` to jump in a new tab or close it via `<c-c>`.
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -373,6 +335,10 @@ Goto declaration/definition. Results are shown in a vertical split window.
                                                               *(go-def-tab)*
 
 Goto declaration/definition. Results are shown in a tab window.
+
+                                                          *(go-implements)*
+
+Show the interfaces that the type under the cursor implements.
 
 
 

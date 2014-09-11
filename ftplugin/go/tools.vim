@@ -16,6 +16,9 @@ nnoremap <silent> <Plug>(go-deps) :<C-u>call go#tool#Deps()<CR>
 nnoremap <silent> <Plug>(go-info) :<C-u>call go#complete#Info()<CR>
 nnoremap <silent> <Plug>(go-import) :<C-u>call GoSwitchImport(1, '', expand('<cword>'))<CR>
 
+nnoremap <silent> <Plug>(go-implements) :<C-u>call go#oracle#Implements(-1)<CR>
+
+command! -range=% GoImplements call go#oracle#Implements(<count>)
 
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
@@ -29,4 +32,18 @@ command! -nargs=* GoTest call go#command#Test(<f-args>)
 command! -nargs=* GoCoverage call go#command#Coverage(<f-args>)
 command! -nargs=0 GoVet call go#command#Vet()
 
+
+" Disable all commands until they are fully integrated.
+"
+" command! -range=% GoOracleDescribe call go#oracle#Describe(<count>)
+" command! -range=% GoOracleCallees  call go#oracle#Callees(<count>)
+" command! -range=% GoOracleCallers call go#oracle#Callers(<count>)
+" command! -range=% GoOracleCallgraph call go#oracle#Callgraph(<count>)
+" command! -range=% GoOracleCallstack call go#oracle#Callstack(<count>)
+" command! -range=% GoOracleFreevars call go#oracle#Freevars(<count>)
+" command! -range=% GoOraclePeers call go#oracle#Peers(<count>)
+" command! -range=% GoOracleReferrers call go#oracle#Referrers(<count>)
+
 " vim:ts=4:sw=4:et
+"
+

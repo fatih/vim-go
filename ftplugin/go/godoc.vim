@@ -132,7 +132,7 @@ function! s:Godoc(mode, ...)
 endfunction
 
 function! s:GodocView(position, content)
-    " reuse existing buffer window if it exists othwersie create a new one
+    " reuse existing buffer window if it exists otherwise create a new one
     if !bufexists(s:buf_nr)
         execute a:position
         file `="[Godoc]"`
