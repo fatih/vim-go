@@ -23,6 +23,7 @@ endif
 command! -buffer GoLint call s:GoLint()
 
 function! s:GoLint() abort
+    if go#tool#BinExists(g:go_golint_bin) == -1 | return | endif
     silent cexpr system(g:go_golint_bin . " " . shellescape(expand('%')))
     cwindow
 endfunction
