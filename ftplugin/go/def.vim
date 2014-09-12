@@ -4,6 +4,11 @@ endif
 let g:go_loaded_godef = 1
 
 
+if !exists("g:go_godef_bin")
+	let g:go_godef_bin = "godef"
+endif
+
+
 " modified and improved version of vim-godef
 function! Godef(...)
 	if !len(a:000)
@@ -13,6 +18,7 @@ function! Godef(...)
 	else
 		let arg = a:1
 	endif
+
 
 	"return with a warning if the bin doesn't exist
 	if go#tool#BinExists(g:go_godef_bin) == -1 | return | endif

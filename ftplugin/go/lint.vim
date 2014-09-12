@@ -17,13 +17,14 @@ if exists("b:did_ftplugin_go_lint")
 endif
 
 if !exists("g:go_golint_bin")
-    finish
+    let g:go_golint_bin = "golint"
 endif
 
 command! -buffer GoLint call s:GoLint()
 
 function! s:GoLint() abort
     if go#tool#BinExists(g:go_golint_bin) == -1 | return | endif
+
     silent cexpr system(g:go_golint_bin . " " . shellescape(expand('%')))
     cwindow
 endfunction

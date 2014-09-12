@@ -6,6 +6,11 @@
 "  for the first iteration based on quickfix!  - fatih arslan
 "
 "
+
+if !exists("g:go_oracle_bin")
+    let g:go_oracle_bin = "oracle"
+endif
+
 func! s:qflist(output)
     let qflist = []
     " Parse GNU-style 'file:line.col-line.col: message' format.

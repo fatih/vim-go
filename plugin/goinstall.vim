@@ -4,35 +4,6 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
-" GetBinPath returns the binary path of installed go tools
-function! GetBinPath()
-    let bin_path = ""
-
-    " check if our global custom path is set, if not check if $GOBIN is set so
-    " we can use it, otherwise use $GOPATH + '/bin'
-    if exists("g:go_bin_path")
-        let bin_path = g:go_bin_path
-    elseif $GOBIN != ""
-        let bin_path = $GOBIN
-    else
-        " take care of multi element GOPATH's
-        let go_paths = split($GOPATH, ":")
-
-        if len(go_paths) == 1 
-            " one single PATH
-            let bin_path = $GOPATH . '/bin/'
-        else
-            " multiple paths, use the first one
-            let bin_path = go_paths[0]. '/bin/'
-        endif
-    endif
-
-    " add trailing slash if there is no one
-    if bin_path[-1:-1] != '/' | let bin_path .= '/' | endif
-
-    return bin_path
-endfunction
-
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries
 let s:packages = [
@@ -45,50 +16,37 @@ let s:packages = [
             \ "github.com/jstemmer/gotags",
             \ ]
 
-" CheckAndSetBinaryPaths is used to check whether the given binary in the
-" packages list is set as global variable such as g:go_godef_bin. Vim-go uses
-" this global variable in system calls.
-function! s:CheckAndSetBinaryPaths() 
-    if $GOPATH == ""
-        echohl Error 
-        echomsg "vim.go: $GOPATH is not set"
-        echohl None
-        return
-    endif
 
-    let go_bin_path = GetBinPath()
+" GetBinPath returns the binary path of installed go tools
+function! GetBinPath()
+    let bin_path = ""
 
-    for pkg in s:packages
-        let basename = fnamemodify(pkg, ":t")
-        let binname = "go_" . basename . "_bin"
+    " check if our global custom path is set, if not check if $GOBIN is set so
+    " we can use it, otherwise use $GOPATH + '/bin'
+    if exists("g:go_bin_path")
+        let bin_path = g:go_bin_path
+    elseif $GOBIN != ""
+        let bin_path = $GOBIN
+    elseif $GOPATH != ""
+        " take care of multi element GOPATH's
+        let go_paths = split($GOPATH, ":")
 
-        if !exists("g:{binname}")
-            let g:{binname} = go_bin_path . basename
+        if len(go_paths) == 1 
+            " one single PATH
+            let bin_path = $GOPATH . '/bin/'
         else
-          " remove whitespaces if user applied something like 'goimports   '
-          let g:{binname} = substitute(g:{binname}, '^\s*\(.\{-}\)\s*$', '\1', '')
+            " multiple paths, use the first one
+            let bin_path = go_paths[0]. '/bin/'
         endif
-    endfor
-endfunction
-
-
-" CheckBinarires checks if the necessary binaries to install the Go tool
-" commands are available.
-function! s:CheckBinaries()
-    if !executable('go')
-        echohl Error | echomsg "vim-go: go executable not found." | echohl None
-        return -1
+    else
+        " couldn not find anything
+        return 0
     endif
 
-    if !executable('git')
-        echohl Error | echomsg "vim-go: git executable not found." | echohl None
-        return -1
-    endif
+    " add trailing slash if there is no one
+    if bin_path[-1:-1] != '/' | let bin_path .= '/' | endif
 
-    if !executable('hg')
-        echohl Error | echomsg "vim.go: hg (mercurial) executable not found." | echohl None
-        return -1
-    endif
+    return bin_path
 endfunction
 
 " GoInstallBinaries downloads and install all necessary binaries stated in the
@@ -123,7 +81,12 @@ function! s:GoInstallBinaries(updateBinaries)
         let basename = fnamemodify(pkg, ":t")
         let binname = "go_" . basename . "_bin"
 
-        if !executable(g:{binname}) || a:updateBinaries == 1
+        let bin = basename
+        if exists("g:{binname}")
+            let bin = g:{binname}
+        endif
+
+        if !executable(bin) || a:updateBinaries == 1
             if a:updateBinaries == 1 
                 echo "vim-go: Updating ". basename .". Reinstalling ". pkg . " to folder " . go_bin_path
             else
@@ -141,9 +104,28 @@ function! s:GoInstallBinaries(updateBinaries)
     let $PATH = old_path
 endfunction
 
-call s:CheckAndSetBinaryPaths()
+" CheckBinaries checks if the necessary binaries to install the Go tool
+" commands are available.
+function! s:CheckBinaries()
+    if !executable('go')
+        echohl Error | echomsg "vim-go: go executable not found." | echohl None
+        return -1
+    endif
+
+    if !executable('git')
+        echohl Error | echomsg "vim-go: git executable not found." | echohl None
+        return -1
+    endif
+
+    if !executable('hg')
+        echohl Error | echomsg "vim.go: hg (mercurial) executable not found." | echohl None
+        return -1
+    endif
+endfunction
+
 
 command! GoInstallBinaries call s:GoInstallBinaries(-1)
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
 
 " vim:ts=4:sw=4:et
+"

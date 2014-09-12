@@ -3,6 +3,10 @@ if exists('g:loaded_gocode')
 endif
 let g:loaded_gocode = 1
 
+if !exists("g:go_gocode_bin")
+    let g:go_gocode_bin = "gocode"
+endif
+
 
 fu! s:gocodeCurrentBuffer()
     let buf = getline(1, '$')
