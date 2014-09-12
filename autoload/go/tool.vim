@@ -101,7 +101,7 @@ function! go#tool#BinExists(binpath)
 
     let basename = fnamemodify(a:binpath, ":t")
 
-    if !executable(a:binpath) 
+    if !executable(substitute(substitute(a:binpath, '\s\+$', '', 'g'), '^\s\+', '', 'g'))
         echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
         return -1
     endif
