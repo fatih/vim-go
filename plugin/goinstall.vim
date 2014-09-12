@@ -64,9 +64,9 @@ function! s:CheckAndSetBinaryPaths()
 
         if !exists("g:{binname}")
             let g:{binname} = go_bin_path . basename
-
-            " debug...
-            " echo g:{binname}
+        else
+          " remove whitespaces if user applied something like 'goimports   '
+          let g:{binname} = substitute(g:{binname}, '^\s*\(.\{-}\)\s*$', '\1', '')
         endif
     endfor
 endfunction
