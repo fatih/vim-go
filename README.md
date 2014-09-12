@@ -241,12 +241,12 @@ too). To overcome this problem change the default shell by adding the following
 into your .vimrc (on the top of the file):
 
 	if $SHELL =~ 'fish'
-	  set shell='/bin/sh'
+	  set shell='/bin/bash'
 	endif
 
 or
 
-	set shell='/bin/sh'
+	set shell='/bin/bash'
 
 
 ## Why another plugin?
