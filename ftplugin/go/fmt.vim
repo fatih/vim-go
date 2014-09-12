@@ -84,14 +84,18 @@ function! s:GoFormat(withGoimport)
     let tmpundofile=tempname()
     exe 'wundo! ' . tmpundofile
 
-    " execute gofmt
-    let command = g:go_fmt_command . ' ' . g:go_fmt_options
+    " get the command first so we can test it
+    let fmt_command = g:go_fmt_command
     if a:withGoimport  == 1 
-        let command = g:go_goimports_bin . ' ' . g:go_fmt_options
+        let fmt_command = g:go_goimports_bin 
     endif
 
-    if go#tool#BinExists(command) == -1 | return | endif
+    if go#tool#BinExists(fmt_command) == -1 | return | endif
 
+    " populate the final command with user based fmt options
+    let command = fmt_command . ' ' . g:go_fmt_options
+
+    " execute our command...
     let out = system(command . " " . l:tmpname)
 
     "if there is no error on the temp file, gofmt again our original file
@@ -124,9 +128,9 @@ function! s:GoFormat(withGoimport)
             let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
             if !empty(tokens)
                 call add(errors, {"filename": @%,
-                                 \"lnum":     tokens[2],
-                                 \"col":      tokens[3],
-                                 \"text":     tokens[4]})
+                            \"lnum":     tokens[2],
+                            \"col":      tokens[3],
+                            \"text":     tokens[4]})
             endif
         endfor
         if empty(errors)

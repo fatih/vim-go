@@ -96,6 +96,7 @@ endfunction
 " binary exists under GOBIN path.
 function! go#tool#BinExists(binpath)
     let go_bin_path = GetBinPath()
+    let old_path = $PATH
     let $PATH = $PATH . ":" .go_bin_path
 
     let basename = fnamemodify(a:binpath, ":t")
@@ -104,6 +105,9 @@ function! go#tool#BinExists(binpath)
         echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
         return -1
     endif
+
+    " restore back!
+    let $PATH = old_path
 
     return 0
 endfunction
