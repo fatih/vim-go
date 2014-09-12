@@ -88,9 +88,10 @@ function! s:GoFormat(withGoimport)
     let fmt_command = g:go_fmt_command
     if a:withGoimport  == 1 
         let fmt_command = g:go_goimports_bin 
-    endif
 
-    if go#tool#BinExists(fmt_command) == -1 | return | endif
+        " check if the user has installed goimports
+        if go#tool#BinExists(fmt_command) == -1 | return | endif
+    endif
 
     " populate the final command with user based fmt options
     let command = fmt_command . ' ' . g:go_fmt_options
