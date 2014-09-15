@@ -7,9 +7,7 @@ if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif
 
-command! GoErrCheck call s:ErrCheck()
-
-function! s:ErrCheck() abort
+function! go#errcheck#Run() abort
     if go#tool#BinExists(g:go_errcheck_bin) == -1 | return | endif
     let out = system(g:go_errcheck_bin . ' ' . shellescape(expand('%:p:h')))
     if v:shell_error
@@ -37,6 +35,3 @@ function! s:ErrCheck() abort
     endif
     cwindow
 endfunction
-
-
-" vim:ts=4:sw=4:et
