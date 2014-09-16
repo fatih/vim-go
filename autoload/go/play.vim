@@ -7,7 +7,8 @@ if !exists("g:go_play_open_browser")
     let g:go_play_open_browser = 1
 endif
 
-function! s:GoPlay(count, line1, line2)
+
+function! go#play#Share(count, line1, line2)
     if !executable('curl')
         echohl ErrorMsg | echomsg "vim-go: require 'curl' command" | echohl None
         return
@@ -39,13 +40,12 @@ function! s:GoPlay(count, line1, line2)
     endif
 
     if g:go_play_open_browser != 0
-        call GoOpenBrowser(url)
+        call s:goOpenBrowser(url)
     endif
 
-    echo "Snippet uploaded: ".url
+    echo "vim-go: snippet uploaded: ".url
 endfunction
 
-command! -nargs=0 -range=% GoPlay call s:GoPlay(<count>, <line1>, <line2>)
 
 function! s:get_visual_content()
     let save_regcont = @"
@@ -95,7 +95,7 @@ function! s:get_browser_command()
     return go_play_browser_command
 endfunction
 
-function! GoOpenBrowser(url)
+function! s:goOpenBrowser(url)
     let cmd = s:get_browser_command()
     if len(cmd) == 0
         redraw

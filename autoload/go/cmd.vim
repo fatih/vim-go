@@ -2,7 +2,7 @@ if !exists("g:go_jump_to_error")
     let g:go_jump_to_error = 1
 endif
 
-function! go#command#Run(bang, ...)
+function! go#cmd#Run(bang, ...)
     let default_makeprg = &makeprg
     if !len(a:000)
         let &makeprg = "go run " . join(go#tool#Files(), ' ')
@@ -24,7 +24,7 @@ function! go#command#Run(bang, ...)
     let &makeprg = default_makeprg
 endfunction
 
-function! go#command#Install(...)
+function! go#cmd#Install(...)
     let pkgs = join(a:000, ' ')
     let command = 'go install '.pkgs
     let out = go#tool#ExecuteInDir(command)
@@ -41,7 +41,7 @@ function! go#command#Install(...)
     endif
 endfunction
 
-function! go#command#Build(bang)
+function! go#cmd#Build(bang)
     let default_makeprg = &makeprg
     let gofiles = join(go#tool#Files(), ' ')
     if v:shell_error
@@ -68,7 +68,7 @@ function! go#command#Build(bang)
     let &makeprg = default_makeprg
 endfunction
 
-function! go#command#Test(...)
+function! go#cmd#Test(...)
     let command = "go test ."
     if len(a:000)
       let command = "go test " . expand(a:1)
@@ -93,7 +93,7 @@ function! go#command#Test(...)
     endif
 endfunction
 
-function! go#command#Coverage(...)
+function! go#cmd#Coverage(...)
     let l:tmpname=tempname()
 
     let command = "go test -coverprofile=".l:tmpname
@@ -120,7 +120,7 @@ function! go#command#Coverage(...)
     call delete(l:tmpname)
 endfunction
 
-function! go#command#Vet()
+function! go#cmd#Vet()
     let out = go#tool#ExecuteInDir('go vet')
     let errors = []
     for line in split(out, '\n')
