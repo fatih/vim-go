@@ -14,8 +14,8 @@ function! s:GoNeosnippet()
 		return
 	endif
 
-	let g:neosnippet#snippets_directory = globpath(&rtp, 'gosnippets/snippets')
 	let g:neosnippet#enable_snipmate_compatibility = 1
+	execute 'NeoSnippetSource' globpath(&rtp, 'gosnippets/snippets/go.snip')
 endfunction
 
 function! s:GoUltiSnips()
