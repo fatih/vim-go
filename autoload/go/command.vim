@@ -35,9 +35,9 @@ function! go#command#Install(...)
     endif
 
     if exists("$GOBIN")
-	    echon "vim-go: " | echohl Function | echon "installed to ".$GOBIN | echohl None
+        echon "vim-go: " | echohl Function | echon "installed to ". $GOBIN | echohl None
     else
-	    echon "vim-go: " | echohl Function | echon "installed to ".$GOBIN/bin | echohl None
+        echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH . "/bin" | echohl None
     endif
 endfunction
 
@@ -50,7 +50,7 @@ function! go#command#Build(bang)
         let &makeprg = "go build -o /dev/null " . gofiles
     endif
 
-	echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
+    echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
     silent! exe 'make!'
     redraw!
     if !a:bang
@@ -61,7 +61,7 @@ function! go#command#Build(bang)
                 cc 1 "jump to first error if there is any
             endif
         else 
-	        redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
+            redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
         endif
     endif
 
@@ -71,10 +71,10 @@ endfunction
 function! go#command#Test(...)
     let command = "go test ."
     if len(a:000)
-      let command = "go test " . expand(a:1)
+        let command = "go test " . expand(a:1)
     endif
 
-	echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
+    echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         call go#tool#ShowErrors(out)
