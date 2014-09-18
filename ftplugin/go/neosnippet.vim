@@ -1,5 +1,3 @@
-let g:go_loaded_gosnippets = 1
-
 function! s:GoNeosnippet()
 	if globpath(&rtp, 'plugin/neosnippet.vim') == ""
 		return
