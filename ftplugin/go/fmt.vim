@@ -39,7 +39,7 @@ if !exists("g:go_fmt_command")
 endif
 
 if !exists("g:go_goimports_bin")
-	let g:go_goimports_bin = "goimports"
+    let g:go_goimports_bin = "goimports"
 endif
 
 if !exists('g:go_fmt_autosave')
@@ -91,10 +91,13 @@ function! s:GoFormat(withGoimport)
     " get the command first so we can test it
     let fmt_command = g:go_fmt_command
     if a:withGoimport  == 1 
-        let fmt_command = g:go_goimports_bin
-
         " check if the user has installed goimports
-        if go#tool#BinExists(fmt_command) == -1 | return | endif
+        let bin_path = go#tool#BinPath(g:go_goimports_bin) 
+        if empty(bin_path) 
+            return 
+        endif
+
+        let fmt_command = bin_path
     endif
 
     " populate the final command with user based fmt options

@@ -39,8 +39,8 @@ function! GetBinPath()
             let bin_path = go_paths[0]. '/bin/'
         endif
     else
-        " couldn not find anything
-        return 0
+        " could not find anything
+        return ""
     endif
 
     " add trailing slash if there is no one
