@@ -49,8 +49,11 @@ command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
 command! -range -nargs=* GoDef :call go#def#Jump(<f-args>)
 
 command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call go#doc#Open('leftabove new', <f-args>)
-
 command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser :call go#doc#OpenBrowser(<f-args>)
+
+
+command! -buffer GoFmt call go#fmt#Format(-1)
+command! -buffer GoImports call go#fmt#Format(1)
 
 
 " Disable all commands until they are fully integrated.
