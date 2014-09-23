@@ -40,7 +40,7 @@ function! go#play#Share(count, line1, line2)
     endif
 
     if g:go_play_open_browser != 0
-        call s:goOpenBrowser(url)
+        call go#tool#OpenBrowser(url)
     endif
 
     echo "vim-go: snippet uploaded: ".url
@@ -93,28 +93,6 @@ function! s:get_browser_command()
         endif
     endif
     return go_play_browser_command
-endfunction
-
-function! s:goOpenBrowser(url)
-    let cmd = s:get_browser_command()
-    if len(cmd) == 0
-        redraw
-        echohl WarningMsg
-        echo "It seems that you don't have general web browser. Open URL below."
-        echohl None
-        echo a:url
-        return
-    endif
-    if cmd =~ '^!'
-        let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
-        silent! exec cmd
-    elseif cmd =~ '^:[A-Z]'
-        let cmd = substitute(cmd, '%URL%', '\=a:url', 'g')
-        exec cmd
-    else
-        let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
-        call system(cmd)
-    endif
 endfunction
 
 
