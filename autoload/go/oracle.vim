@@ -64,18 +64,21 @@ func! s:RunOracle(mode, selected) range abort
     endif
 
     "return with a warning if the bin doesn't exist
-    if go#tool#BinExists(g:go_oracle_bin) == -1 | return | endif
+    let bin_path = go#tool#BinPath(g:go_oracle_bin) 
+    if empty(bin_path) 
+        return 
+    endif
 
     if a:selected != -1
         let pos1 = s:getpos(line("'<"), col("'<"))
         let pos2 = s:getpos(line("'>"), col("'>"))
         let cmd = printf('%s -format json -pos=%s:#%d,#%d %s %s',
-                    \  g:go_oracle_bin,
+                    \  bin_path,
                     \  shellescape(fname), pos1, pos2, a:mode, sname)
     else
         let pos = s:getpos(line('.'), col('.'))
         let cmd = printf('%s -format json -pos=%s:#%d %s %s',
-                    \  g:go_oracle_bin,
+                    \  bin_path,
                     \  shellescape(fname), pos, a:mode, sname)
     endif
 

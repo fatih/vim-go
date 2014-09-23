@@ -48,7 +48,12 @@ fu! s:gocodeCommand(cmd, preargs, args)
         let a:preargs[i] = s:gocodeShellescape(a:preargs[i])
     endfor
 
-    let result = s:system(printf('%s %s %s %s', g:go_gocode_bin, join(a:preargs), a:cmd, join(a:args)))
+    let bin_path = go#tool#BinPath(g:go_gocode_bin) 
+    if empty(bin_path) 
+        return 
+    endif
+
+    let result = s:system(printf('%s %s %s %s', bin_path, join(a:preargs), a:cmd, join(a:args)))
     if v:shell_error != 0
         return "[\"0\", []]"
     else
@@ -120,9 +125,6 @@ function! go#complete#GetInfo()
 endfunction
 
 function! go#complete#Info()
-    " return early if the command doesn't exist
-    if go#tool#BinExists(g:go_gocode_bin) == -1 | return | endif
-
     let result = go#complete#GetInfo()
     if len(result) > 0
         echo "vim-go: " | echohl Function | echon result | echohl None
