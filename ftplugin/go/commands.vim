@@ -1,7 +1,7 @@
-if exists("g:go_loaded_gotools")
+if exists("g:go_loaded_commands")
     finish
 endif
-let g:go_loaded_gotools = 1
+let g:go_loaded_commands = 1
 
 
 " Some handy plug mappings
@@ -30,37 +30,46 @@ nnoremap <silent> <Plug>(go-doc-split) :<C-u>call go#doc#Open("split")<CR>
 nnoremap <silent> <Plug>(go-doc-browser) :<C-u>call go#doc#OpenBrowser()<CR>
 
 
+" oracle
 command! -range=% GoImplements call go#oracle#Implements(<count>)
 
+" tool
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
 command! -nargs=* GoInfo call go#complete#Info()
 
-command! -nargs=* -range -bang GoRun call go#cmd#Run(<bang>0,<f-args>)
-command! -nargs=? -range -bang GoBuild call go#cmd#Build(<bang>0)
-
+" cmd
+command! -nargs=* -bang GoRun call go#cmd#Run(<bang>0,<f-args>)
+command! -nargs=? -bang GoBuild call go#cmd#Build(<bang>0)
 command! -nargs=* GoInstall call go#cmd#Install(<f-args>)
 command! -nargs=* GoTest call go#cmd#Test(<f-args>)
 command! -nargs=* GoCoverage call go#cmd#Coverage(<f-args>)
 command! -nargs=0 GoVet call go#cmd#Vet()
 
+" -- play
 command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
 
-command! -range -nargs=* GoDef :call go#def#Jump(<f-args>)
+" -- def
+command! -nargs=* -range GoDef :call go#def#Jump(<f-args>)
 
-command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call go#doc#Open('leftabove new', <f-args>)
-command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser :call go#doc#OpenBrowser(<f-args>)
+" -- doc
+command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc call go#doc#Open('leftabove new', <f-args>)
+command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser call go#doc#OpenBrowser(<f-args>)
 
+" -- fmt
+command! -nargs=0 GoFmt call go#fmt#Format(-1)
+command! -nargs=0 GoImports call go#fmt#Format(1)
 
-command! GoFmt call go#fmt#Format(-1)
-command! GoImports call go#fmt#Format(1)
-
+" -- import
 command! -nargs=? -complete=customlist,go#package#Complete GoDrop call go#import#SwitchImport(0, '', <f-args>)
 command! -nargs=1 -complete=customlist,go#package#Complete GoImport call go#import#SwitchImport(1, '', <f-args>)
 command! -nargs=* -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>)
 
+" -- lint
 command! GoLint call go#lint#Run()
 
+" -- errcheck
+command! GoErrCheck call go#errcheck#Run()
 
 " Disable all commands until they are fully integrated.
 "
