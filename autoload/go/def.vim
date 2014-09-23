@@ -10,7 +10,7 @@ endif
 
 
 " modified and improved version of vim-godef
-function! Godef(...)
+function! go#def#Jump(...)
 	if !len(a:000)
 		" gives us the offset of the word, basicall the position of the word under
 		" he cursor
@@ -30,11 +30,11 @@ function! Godef(...)
 	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), "\n"))
 
 	" jump to it
-	call GodefJump(out, "")
+	call s:godefJump(out, "")
 endfunction
 
 
-function! GodefMode(mode)
+function! go#def#JumpMode(mode)
 	let arg = s:getOffset()
 
 	let bin_path = go#tool#BinPath(g:go_godef_bin) 
@@ -47,7 +47,7 @@ function! GodefMode(mode)
 	" get output of godef
 	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), "\n"))
 
-	call GodefJump(out, a:mode)
+	call s:godefJump(out, a:mode)
 endfunction
 
 
@@ -67,7 +67,7 @@ function! s:getOffset()
 endfunction
 
 
-function! GodefJump(out, mode)
+function! s:godefJump(out, mode)
 	let old_errorformat = &errorformat
 	let &errorformat = "%f:%l:%c"
 
@@ -115,9 +115,3 @@ function! GodefJump(out, mode)
 	let &errorformat = old_errorformat
 endfunction
 
-nnoremap <silent> <Plug>(go-def) :<C-u>call Godef()<CR>
-nnoremap <silent> <Plug>(go-def-vertical) :<C-u>call GodefMode("vsplit")<CR>
-nnoremap <silent> <Plug>(go-def-split) :<C-u>call GodefMode("split")<CR>
-nnoremap <silent> <Plug>(go-def-tab) :<C-u>call GodefMode("tab")<CR>
-
-command! -range -nargs=* GoDef :call Godef(<f-args>)
