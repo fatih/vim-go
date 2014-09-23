@@ -14,7 +14,7 @@ nnoremap <silent> <Plug>(go-vet) :<C-u>call go#cmd#Vet()<CR>
 nnoremap <silent> <Plug>(go-files) :<C-u>call go#tool#Files()<CR>
 nnoremap <silent> <Plug>(go-deps) :<C-u>call go#tool#Deps()<CR>
 nnoremap <silent> <Plug>(go-info) :<C-u>call go#complete#Info()<CR>
-nnoremap <silent> <Plug>(go-import) :<C-u>call GoSwitchImport(1, '', expand('<cword>'))<CR>
+nnoremap <silent> <Plug>(go-import) :<C-u>call go#import#SwitchImport(1, '', expand('<cword>'))<CR>
 
 nnoremap <silent> <Plug>(go-implements) :<C-u>call go#oracle#Implements(-1)<CR>
 
@@ -54,6 +54,10 @@ command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser :
 
 command! -buffer GoFmt call go#fmt#Format(-1)
 command! -buffer GoImports call go#fmt#Format(1)
+
+command! -buffer -nargs=? -complete=customlist,go#package#Complete GoDrop call go#import#SwitchImport(0, '', <f-args>)
+command! -buffer -nargs=1 -complete=customlist,go#package#Complete GoImport call go#import#SwitchImport(1, '', <f-args>)
+command! -buffer -nargs=* -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>)
 
 
 " Disable all commands until they are fully integrated.

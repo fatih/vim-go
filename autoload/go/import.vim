@@ -39,28 +39,14 @@
 " The backslash '\' is the default maplocalleader, so it is possible that
 " your vim is set to use a different character (:help maplocalleader).
 "
-" Options:
-"
-"   g:go_import_commands [default=1]
-"
-"       Flag to indicate whether to enable the commands listed above.
-"
 if exists("b:did_ftplugin_go_import")
     finish
 endif
 
-if !exists("g:go_import_commands")
-    let g:go_import_commands = 1
-endif
-
-if g:go_import_commands
-    command! -buffer -nargs=? -complete=customlist,go#package#Complete GoDrop call GoSwitchImport(0, '', <f-args>)
-    command! -buffer -nargs=1 -complete=customlist,go#package#Complete GoImport call GoSwitchImport(1, '', <f-args>)
-    command! -buffer -nargs=* -complete=customlist,go#package#Complete GoImportAs call GoSwitchImport(1, <f-args>)
-endif
+let b:did_ftplugin_go_import = 1
 
 
-function! GoSwitchImport(enabled, localname, path)
+function! go#import#SwitchImport(enabled, localname, path)
     let view = winsaveview()
     let path = a:path
 
@@ -253,6 +239,5 @@ function! s:Error(s)
     echohl Error | echo a:s | echohl None
 endfunction
 
-let b:did_ftplugin_go_import = 1
 
 " vim:ts=4:sw=4:et
