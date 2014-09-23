@@ -52,12 +52,14 @@ command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc :call go
 command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser :call go#doc#OpenBrowser(<f-args>)
 
 
-command! -buffer GoFmt call go#fmt#Format(-1)
-command! -buffer GoImports call go#fmt#Format(1)
+command! GoFmt call go#fmt#Format(-1)
+command! GoImports call go#fmt#Format(1)
 
-command! -buffer -nargs=? -complete=customlist,go#package#Complete GoDrop call go#import#SwitchImport(0, '', <f-args>)
-command! -buffer -nargs=1 -complete=customlist,go#package#Complete GoImport call go#import#SwitchImport(1, '', <f-args>)
-command! -buffer -nargs=* -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>)
+command! -nargs=? -complete=customlist,go#package#Complete GoDrop call go#import#SwitchImport(0, '', <f-args>)
+command! -nargs=1 -complete=customlist,go#package#Complete GoImport call go#import#SwitchImport(1, '', <f-args>)
+command! -nargs=* -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>)
+
+command! GoLint call go#lint#Run()
 
 
 " Disable all commands until they are fully integrated.
