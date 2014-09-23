@@ -95,24 +95,36 @@ function! go#tool#Exists(importpath)
     return 0
 endfunction
 
-" BinExists checks whether the given binary exists or not. It returns 0 if the
-" binary exists under GOBIN path.
-function! go#tool#BinExists(binpath)
+" BinPath checks whether the given binary exists or not and returns the path
+" of the binary. It returns an empty string doesn't exists.
+function! go#tool#BinPath(binpath)
     " remove whitespaces if user applied something like 'goimports   '
     let binpath = substitute(a:binpath, '^\s*\(.\{-}\)\s*$', '\1', '')
 
-    let go_bin_path = GetBinPath()
-
-    if go_bin_path
-      let old_path = $PATH
-      let $PATH = $PATH . ":" .go_bin_path
+    " if it's in PATH just return it
+    if executable(binpath) 
+        return binpath
     endif
 
+
+    " just get the basename
     let basename = fnamemodify(binpath, ":t")
+
+    " check if we have an appropriate bin_path
+    let go_bin_path = GetBinPath()
+    if empty(go_bin_path)
+        echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
+        return ""
+    endif
+
+    " append our GOBIN and GOPATH paths and be sure they can be found there...
+    " let us search in our GOBIN and GOPATH paths
+    let old_path = $PATH
+    let $PATH = $PATH . ":" .go_bin_path
 
     if !executable(binpath) 
         echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
-        return -1
+        return ""
     endif
 
     " restore back!
@@ -120,7 +132,7 @@ function! go#tool#BinExists(binpath)
         let $PATH = old_path
     endif
 
-    return 0
+    return go_bin_path . '/' . basename
 endfunction
 
 " vim:ts=4:sw=4:et

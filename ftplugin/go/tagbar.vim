@@ -10,11 +10,16 @@ elseif globpath(&rtp, 'plugin/tagbar.vim') == ""
 endif
 
 if !exists("g:go_gotags_bin")
-    let g:go_gotags_bin = "gotags"
+	let g:go_gotags_bin = "gotags"
 endif
 
 
 function! s:SetTagbar()
+	let bin_path = go#tool#BinPath(g:go_gotags_bin) 
+	if empty(bin_path) 
+		return 
+	endif
+
 	if !exists("g:tagbar_type_go")
 		let g:tagbar_type_go = {
 					\ 'ctagstype' : 'go',
@@ -40,7 +45,7 @@ function! s:SetTagbar()
 					\ 'ctype' : 't',
 					\ 'ntype' : 'n'
 					\ },
-					\ 'ctagsbin'  : expand(g:go_gotags_bin),
+					\ 'ctagsbin'  : expand(bin_path),
 					\ 'ctagsargs' : '-sort -silent'
 					\ }
 	endif

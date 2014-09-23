@@ -8,8 +8,12 @@ if !exists("g:go_errcheck_bin")
 endif
 
 function! go#errcheck#Run() abort
-    if go#tool#BinExists(g:go_errcheck_bin) == -1 | return | endif
-    let out = system(g:go_errcheck_bin . ' ' . shellescape(expand('%:p:h')))
+    let bin_path = go#tool#BinPath(g:go_errcheck_bin) 
+    if empty(bin_path) 
+        return 
+    endif
+
+    let out = system(bin_path . ' ' . shellescape(expand('%:p:h')))
     if v:shell_error
         let errors = []
         let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
