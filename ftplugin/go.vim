@@ -20,6 +20,7 @@ setlocal commentstring=//\ %s
 
 setlocal noexpandtab
 
+compiler go
 
 if !exists("g:go_doc_keywordprg_enabled")
     let g:go_doc_keywordprg_enabled = 1
@@ -43,6 +44,15 @@ if g:go_auto_type_info != 0
     au! CursorHold *.go nested call go#complete#Info()
 endif
 
-compiler go
+
+" autoload settings
+
+if !exists('g:go_fmt_autosave')
+    let g:go_fmt_autosave = 1
+endif
+
+if g:go_fmt_autosave
+    autocmd BufWritePre <buffer> call go#fmt#Format(-1)
+endif
 
 " vim:ts=4:sw=4:et

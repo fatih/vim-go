@@ -37,10 +37,6 @@ if !exists("g:go_goimports_bin")
     let g:go_goimports_bin = "goimports"
 endif
 
-if !exists('g:go_fmt_autosave')
-    let g:go_fmt_autosave = 1
-endif
-
 if !exists('g:go_fmt_fail_silently')
     let g:go_fmt_fail_silently = 0
 endif
@@ -48,11 +44,6 @@ endif
 if !exists('g:go_fmt_options')
     let g:go_fmt_options = ''
 endif
-
-if g:go_fmt_autosave
-    autocmd BufWritePre <buffer> :GoFmt
-endif
-
 
 let s:got_fmt_error = 0
 
