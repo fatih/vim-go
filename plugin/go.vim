@@ -16,6 +16,12 @@ let s:packages = [
             \ "github.com/jstemmer/gotags",
             \ ]
 
+" Commands
+command! GoErrCheck call go#errcheck#Run()
+
+command! GoInstallBinaries call s:GoInstallBinaries(-1)
+command! GoUpdateBinaries call s:GoInstallBinaries(1)
+
 
 " GetBinPath returns the binary path of installed go tools
 function! GetBinPath()
@@ -123,9 +129,6 @@ function! s:CheckBinaries()
     endif
 endfunction
 
-
-command! GoInstallBinaries call s:GoInstallBinaries(-1)
-command! GoUpdateBinaries call s:GoInstallBinaries(1)
 
 " vim:ts=4:sw=4:et
 "

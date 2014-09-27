@@ -2,7 +2,10 @@ function! go#tool#Files()
     if has ("win32")
         let command = 'go list -f "{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}{{printf \"\n\"}}{{end}}"'
     else
-        let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
+        " let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
+
+        let command = "go list -f '{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}{{printf \"\\n\"}}{{end}}'"
+
     endif
     let out = go#tool#ExecuteInDir(command)
     return split(out, '\n')
@@ -131,5 +134,51 @@ function! go#tool#BinPath(binpath)
 
     return go_bin_path . '/' . basename
 endfunction
+
+" following two functions are from: https://github.com/mattn/gist-vim 
+" thanks  @mattn
+function! s:get_browser_command()
+    let go_play_browser_command = get(g:, 'go_play_browser_command', '')
+    if go_play_browser_command == ''
+        if has('win32') || has('win64')
+            let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
+        elseif has('mac') || has('macunix') || has('gui_macvim') || system('uname') =~? '^darwin'
+            let go_play_browser_command = 'open %URL%'
+        elseif executable('xdg-open')
+            let go_play_browser_command = 'xdg-open %URL%'
+        elseif executable('firefox')
+            let go_play_browser_command = 'firefox %URL% &'
+        else
+            let go_play_browser_command = ''
+        endif
+    endif
+    return go_play_browser_command
+endfunction
+
+
+" vim:ts=4:sw=4:et
+
+function! go#tool#OpenBrowser(url)
+    let cmd = s:get_browser_command()
+    if len(cmd) == 0
+        redraw
+        echohl WarningMsg
+        echo "It seems that you don't have general web browser. Open URL below."
+        echohl None
+        echo a:url
+        return
+    endif
+    if cmd =~ '^!'
+        let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
+        silent! exec cmd
+    elseif cmd =~ '^:[A-Z]'
+        let cmd = substitute(cmd, '%URL%', '\=a:url', 'g')
+        exec cmd
+    else
+        let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
+        call system(cmd)
+    endif
+endfunction
+
 
 " vim:ts=4:sw=4:et

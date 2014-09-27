@@ -164,7 +164,7 @@ COMMANDS                                                          *go-commands*
 
     Build and run your current main package. By default all main files for the
     current file is used. If an argument is passed, 'expand' is used as file
-    selector. For example use `:GoRun %` to select only the current file only.  
+    selector. For example use `:GoRun %` to select the current file only.  
 
     If [!] is not given the first error is jumped to.
 

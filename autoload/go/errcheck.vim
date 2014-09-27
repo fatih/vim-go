@@ -7,9 +7,7 @@ if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif
 
-command! GoErrCheck call s:ErrCheck()
-
-function! s:ErrCheck() abort
+function! go#errcheck#Run() abort
     let bin_path = go#tool#BinPath(g:go_errcheck_bin) 
     if empty(bin_path) 
         return 
@@ -41,6 +39,3 @@ function! s:ErrCheck() abort
     endif
     cwindow
 endfunction
-
-
-" vim:ts=4:sw=4:et
