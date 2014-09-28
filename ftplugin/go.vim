@@ -46,7 +46,6 @@ endif
 
 
 " autoload settings
-
 if !exists('g:go_fmt_autosave')
     let g:go_fmt_autosave = 1
 endif
