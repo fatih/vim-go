@@ -121,21 +121,23 @@ function! go#cmd#Coverage(...)
 endfunction
 
 function! go#cmd#Vet()
+    echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
     let out = go#tool#ExecuteInDir('go vet')
-    let errors = []
-    for line in split(out, '\n')
-        let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
-        if !empty(tokens)
-            call add(errors, {"filename": @%,
-                        \"lnum":     tokens[2],
-                        \"text":     tokens[3]})
-        endif
-    endfor
-    if !empty(errors)
-        call setqflist(errors, 'r')
+    if v:shell_error
+        call go#tool#ShowErrors(out)
+    else
+        call setqflist([])
     endif
-
     cwindow
+
+    let errors = getqflist()
+    if !empty(errors)
+        if g:go_jump_to_error
+            cc 1 "jump to first error if there is any
+        endif
+    else
+        redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
+    endif
 endfunction
 
 " vim:ts=4:sw=4:et
