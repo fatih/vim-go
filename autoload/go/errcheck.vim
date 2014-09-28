@@ -1,8 +1,3 @@
-if exists("g:go_loaded_errcheck") 
-    finish
-endif
-let g:go_loaded_errcheck = 1
-
 if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif

@@ -1,9 +1,3 @@
-if exists("g:go_loaded_godef")
-	finish
-endif
-let g:go_loaded_godef = 1
-
-
 if !exists("g:go_godef_bin")
 	let g:go_godef_bin = "godef"
 endif

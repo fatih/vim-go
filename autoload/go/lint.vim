@@ -12,16 +12,9 @@
 "
 "       Run golint for the current Go file.
 "
-if exists("b:did_ftplugin_go_lint")
-    finish
-endif
-
-let b:did_ftplugin_go_lint = 1
-
 if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
 endif
-
 
 function! go#lint#Run() abort
 	let bin_path = go#tool#BinPath(g:go_golint_bin) 

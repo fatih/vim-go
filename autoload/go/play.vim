@@ -1,8 +1,3 @@
-if exists("g:go_loaded_goplay")
-    finish
-endif
-let g:go_loaded_goplay = 1
-
 if !exists("g:go_play_open_browser")
     let g:go_play_open_browser = 1
 endif

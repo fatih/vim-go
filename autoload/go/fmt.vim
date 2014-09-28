@@ -22,12 +22,6 @@
 "
 "       Flag to auto call :Fmt when saved file
 "
-if exists("b:did_ftplugin_go_fmt")
-    finish
-endif
-
-let b:did_ftplugin_go_fmt = 1
-
 
 if !exists("g:go_fmt_command")
     let g:go_fmt_command = "gofmt"

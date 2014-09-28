@@ -1,8 +1,3 @@
-if exists('g:go_loaded_goui')
-  finish
-endif
-let g:go_loaded_goui = 1
-
 let s:buf_nr = -1
 
 "OpenWindow opens a new scratch window and put's the content into the window
