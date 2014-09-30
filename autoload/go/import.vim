@@ -39,13 +39,6 @@
 " The backslash '\' is the default maplocalleader, so it is possible that
 " your vim is set to use a different character (:help maplocalleader).
 "
-if exists("b:did_ftplugin_go_import")
-    finish
-endif
-
-let b:did_ftplugin_go_import = 1
-
-
 function! go#import#SwitchImport(enabled, localname, path)
     let view = winsaveview()
     let path = a:path
