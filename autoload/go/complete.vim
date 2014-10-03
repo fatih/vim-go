@@ -112,6 +112,8 @@ function! go#complete#GetInfo()
     endfor
 
     let wordMatch = '\<' . expand("<cword>") . '\>'
+    " escape single quotes in wordMatch before passing it to filter
+    let wordMatch = substitute(wordMatch, "'", "''", "g")
     let filtered =  filter(infos, "v:val =~ '".wordMatch."'")
 
     if len(filtered) == 1
