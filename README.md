@@ -52,7 +52,7 @@ and execute `:PluginInstall` (or `:BundleInstall` for older versions of Vundle)
 
 Please be sure all necessary binaries are installed (such as `gocode`, `godef`,
 `goimports`, etc..). You can easily install them with the included
-`:GoInstallBinaries`. Those binaries will be automatically downloaded and
+`:GoUpdateBinaries`. Those binaries will be automatically downloaded and
 installed to your `$GOBIN` environment (if not set it will use `$GOPATH/bin`).
 It requires `git` and `hg` for fetching the individual Go packages.
 
