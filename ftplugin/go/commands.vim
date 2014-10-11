@@ -18,6 +18,8 @@ nnoremap <silent> <Plug>(go-import) :<C-u>call go#import#SwitchImport(1, '', exp
 
 nnoremap <silent> <Plug>(go-implements) :<C-u>call go#oracle#Implements(-1)<CR>
 
+nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename()<CR>
+
 nnoremap <silent> <Plug>(go-def) :<C-u>call go#def#Jump()<CR>
 nnoremap <silent> <Plug>(go-def-vertical) :<C-u>call go#def#JumpMode("vsplit")<CR>
 nnoremap <silent> <Plug>(go-def-split) :<C-u>call go#def#JumpMode("split")<CR>

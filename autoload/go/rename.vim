@@ -25,7 +25,7 @@ function! go#rename#Rename(...)
 	if v:shell_error
 		redraw! | echon "vim-go: " | echohl Statement | echon out | echohl None
 	else
-		redraws! | echon "vim-go: " | echohl Function | echon out | echohl None
+		redraw! | echon "vim-go: " | echohl Function | echon out | echohl None
 	endif
 
 	" refresh the buffer so we can see the new content
