@@ -30,6 +30,9 @@ nnoremap <silent> <Plug>(go-doc-split) :<C-u>call go#doc#Open("split")<CR>
 nnoremap <silent> <Plug>(go-doc-browser) :<C-u>call go#doc#OpenBrowser()<CR>
 
 
+" gorename
+command! -nargs=1 GoRename call go#rename#Rename(<f-args>)
+
 " oracle
 command! -range=% GoImplements call go#oracle#Implements(<count>)
 
