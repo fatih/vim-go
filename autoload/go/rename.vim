@@ -22,10 +22,15 @@ function! go#rename#Rename(...)
 	let cmd = printf('%s -offset %s:#%d -to %s',  bin_path, shellescape(fname), pos, to)
 
 	let out = system(cmd)
+
+	" strip out newline on the end that gorename puts. If now it will trigger
+	" the 'Hit ENTER to continue' prompt
+	let clean = split(out, '\n')
+
 	if v:shell_error
-		redraw! | echon "vim-go: " | echohl Statement | echon out | echohl None
+		redraw | echon "vim-go: " | echohl Statement | echon clean[0] | echohl None
 	else
-		redraw! | echon "vim-go: " | echohl Function | echon out | echohl None
+		redraw | echon "vim-go: " | echohl Function | echon clean[0] | echohl None
 	endif
 
 	" refresh the buffer so we can see the new content
