@@ -155,9 +155,6 @@ function! s:get_browser_command()
     return go_play_browser_command
 endfunction
 
-
-" vim:ts=4:sw=4:et
-
 function! go#tool#OpenBrowser(url)
     let cmd = s:get_browser_command()
     if len(cmd) == 0

@@ -26,6 +26,7 @@ disabled/enabled easily.
 * Lint your code with `golint`
 * Run your code through `go vet` to catch static errors.
 * Advanced source analysis tool with `oracle`
+* Precise type-safe renaming of identifiers with `gorename`
 * List all source files and dependencies
 * Checking with `errcheck` for unchecked errors.
 * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
@@ -136,6 +137,11 @@ word under your cursor:
 au FileType go nmap <Leader>ds <Plug>(go-def-split)
 au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+```
+Rename the identifier under the cursor to a new name
+
+```vim
+au FileType go nmap <Leader>e <Plug>(go-rename)
 ```
 
 More `<Plug>` mappings can be seen with `:he go-mappings`. Also these are just

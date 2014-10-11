@@ -18,6 +18,8 @@ nnoremap <silent> <Plug>(go-import) :<C-u>call go#import#SwitchImport(1, '', exp
 
 nnoremap <silent> <Plug>(go-implements) :<C-u>call go#oracle#Implements(-1)<CR>
 
+nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename()<CR>
+
 nnoremap <silent> <Plug>(go-def) :<C-u>call go#def#Jump()<CR>
 nnoremap <silent> <Plug>(go-def-vertical) :<C-u>call go#def#JumpMode("vsplit")<CR>
 nnoremap <silent> <Plug>(go-def-split) :<C-u>call go#def#JumpMode("split")<CR>
@@ -29,6 +31,9 @@ nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call go#doc#Open("vnew")<CR>
 nnoremap <silent> <Plug>(go-doc-split) :<C-u>call go#doc#Open("split")<CR>
 nnoremap <silent> <Plug>(go-doc-browser) :<C-u>call go#doc#OpenBrowser()<CR>
 
+
+" gorename
+command! -nargs=? GoRename call go#rename#Rename(<f-args>)
 
 " oracle
 command! -range=% GoImplements call go#oracle#Implements(<count>)
