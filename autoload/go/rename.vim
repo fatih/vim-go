@@ -23,8 +23,8 @@ function! go#rename#Rename(...)
 
 	let out = system(cmd)
 
-	" strip out newline on the end that gorename puts. If now it will trigger
-	" the 'Hit ENTER to continue' prompt
+	" strip out newline on the end that gorename puts. If we don't remove, it
+	" will trigger the 'Hit ENTER to continue' prompt
 	let clean = split(out, '\n')
 
 	if v:shell_error
@@ -45,3 +45,6 @@ func! s:getpos(l, c)
 	endif
 	return line2byte(a:l) + (a:c-2)
 endfun
+
+" vim:ts=4:sw=4:et
+"
