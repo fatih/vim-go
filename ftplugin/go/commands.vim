@@ -31,7 +31,7 @@ nnoremap <silent> <Plug>(go-doc-browser) :<C-u>call go#doc#OpenBrowser()<CR>
 
 
 " gorename
-command! -nargs=1 GoRename call go#rename#Rename(<f-args>)
+command! -nargs=? GoRename call go#rename#Rename(<f-args>)
 
 " oracle
 command! -range=% GoImplements call go#oracle#Implements(<count>)

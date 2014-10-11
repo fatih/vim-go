@@ -78,7 +78,7 @@ function! s:godefJump(out, mode)
 		lgetexpr a:out
 
 		" needed for restoring back user setting this is because there are two
-		" modes of switchbuf whic we need based on the split mode
+		" modes of switchbuf which we need based on the split mode
 		let old_switchbuf = &switchbuf
 
 		if a:mode == "tab"

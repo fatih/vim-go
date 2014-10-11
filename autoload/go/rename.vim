@@ -2,8 +2,14 @@ if !exists("g:go_gorename_bin")
 	let g:go_gorename_bin = "gorename"
 endif
 
-function! go#rename#Rename(to)
-	let fname = expand('%:p:t')
+function! go#rename#Rename(...)
+	let to = ""
+	if a:0 == 0
+		let ask = printf("vim-go: rename '%s' to: ",  expand("<cword>"))
+		let to = input(ask)
+	else
+		let to = a:1
+	endif
 
 	"return with a warning if the bin doesn't exist
 	let bin_path = go#tool#BinPath(g:go_gorename_bin) 
@@ -11,14 +17,15 @@ function! go#rename#Rename(to)
 		return 
 	endif
 
+	let fname = expand('%:p:t')
 	let pos = s:getpos(line('.'), col('.'))
-	let cmd = printf('%s -offset %s:#%d -to %s',  bin_path, shellescape(fname), pos, a:to)
+	let cmd = printf('%s -offset %s:#%d -to %s',  bin_path, shellescape(fname), pos, to)
 
 	let out = system(cmd)
 	if v:shell_error
 		redraw! | echon "vim-go: " | echohl Statement | echon out | echohl None
 	else
-    redraws! | echon "vim-go: " | echohl Function | echon out | echohl None
+		redraws! | echon "vim-go: " | echohl Function | echon out | echohl None
 	endif
 
 	" refresh the buffer so we can see the new content
