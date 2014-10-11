@@ -44,6 +44,7 @@ easily.
   * Lint your code with `golint`
   * Run your code trough `go vet` to catch static errors.
   * Advanced source analysis tool with `oracle`
+  * Precise type-safe renaming of identifiers with `gorename`
   * List all source files and dependencies
   * Checking with `errcheck` for unchecked errors.
   * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
@@ -231,12 +232,18 @@ COMMANDS                                                          *go-commands*
     `goimports`, `gocode`, etc.. under `g:go_bin_path`. This can be used to
     update the necessary Go binaries.
 
-                                                        *:GoImplements*
+                                                              *:GoImplements*
 :GoImplements
 
     Show 'implements' relation for a selected package. A list of interfaces
     for the type under the cursor (or selected package) is shown in a custom
     window. Hit `<enter>` to jump in a new tab or close it via `<c-c>`.
+
+                                                                *:GoRename*
+:GoRename [to]
+
+    Rename the identifier under the cursor to the desired new name. If no
+    argument is given a prompt will ask for the desired identifier.
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -339,6 +346,10 @@ Goto declaration/definition. Results are shown in a tab window.
                                                           *(go-implements)*
 
 Show the interfaces that the type under the cursor implements.
+
+                                                              *(go-rename)*
+
+Rename the identifier under the cursor to the desired new name
 
 
 
