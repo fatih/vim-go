@@ -23,7 +23,7 @@ function! go#rename#Rename(...)
     let pos = s:getpos(line('.'), col('.'))
     let cmd = printf('%s -offset %s:#%d -to %s',  bin_path, shellescape(fname), pos, to)
 
-    let out = system(cmd)
+    let out = go#tool#ExecuteInDir(cmd)
 
     " strip out newline on the end that gorename puts. If we don't remove, it
     " will trigger the 'Hit ENTER to continue' prompt
