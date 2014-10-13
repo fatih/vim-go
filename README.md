@@ -12,23 +12,23 @@ disabled/enabled easily.
 ## Features
 
 * Improved Syntax highlighting, such as Functions, Operators, Methods..
-* Auto completion support via `gocode`
+* Auto completion support via [gocode](https://github.com/nsf/gocode)
 * Better `gofmt` on save, keeps cursor position and doesn't break your undo
   history
-* Go to symbol/declaration with `godef`
+* Go to symbol/declaration with [godef](http://code.google.com/p/rog-go/exp/cmd/godef)
 * Look up documentation with `godoc` inside Vim or open it in browser.
-* Automatically import packages via `goimports`
+* Automatically import packages via [goimports](https://github.com/bradfitz/goimports)
 * Compile and `go build` your package, install it with `go install`
 * `go run` quickly your current file/files
 * Run `go test` and see any errors in quickfix window
 * Create a coverage profile and display annotated source code in browser to see
   which functions are covered.
-* Lint your code with `golint`
+* Lint your code with [golint](https://github.com/golang/lint)
 * Run your code through `go vet` to catch static errors.
-* Advanced source analysis tool with `oracle`
+* Advanced source analysis tool with [oracle](http://code.google.com/p/go.tools/oracle)
 * Precise type-safe renaming of identifiers with `gorename`
 * List all source files and dependencies
-* Checking with `errcheck` for unchecked errors.
+* Checking with [errcheck](https://github.com/kisielk/errcheck) for unchecked errors.
 * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
 * Share your current code to [play.golang.org](http://play.golang.org)
 * On-the-fly type information about the word under the cursor
