@@ -416,6 +416,20 @@ use the program man. However in go using godoc is more idiomatic. Default is
 enabled. >
 
   let g:go_doc_keywordprg_enabled = 1
+<
+                                                         *'g:go_doc_command'*
+
+Use this option to define which tool is used to godoc. By default `godoc` is
+used >
+
+  let g:go_doc_command = "godoc"
+<
+                                                         *'g:go_doc_options'*
+
+Use this option to add additional options to the |g:go_doc_command|. Default
+is empty. >
+
+  let g:go_doc_options = ''
 
 <                                                            *'g:go_bin_path'*
 
