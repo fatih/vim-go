@@ -7,7 +7,7 @@ necessary binaries for providing seamless Vim integration with current
 commands. It's highly customizable and each individual feature can be
 disabled/enabled easily.
 
-![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go.png)
+![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go-2.png)
 
 ## Features
 
