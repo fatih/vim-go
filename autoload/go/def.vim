@@ -87,22 +87,18 @@ function! s:godefJump(out, mode)
 			if bufloaded(fileName) == 0
 				tab split 
 			endif
-
 		else
-			let &switchbuf = "useopen"
-
-			if bufloaded(fileName) == 0
-				if a:mode  == "split"
-					split
-				elseif a:mode == "vsplit"
-					vsplit
-				endif
+			if a:mode  == "split"
+				split
+			elseif a:mode == "vsplit"
+				vsplit
 			endif
 
 		endif
 
 		" jump to file now
 		ll 1
+		normal zz
 
 		let &switchbuf = old_switchbuf
 	end
