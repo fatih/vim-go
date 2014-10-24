@@ -158,7 +158,9 @@ COMMANDS                                                          *go-commands*
 :GoDef [identifier]
 
     Goto declaration/definition for the given [identifier]. If no argument is
-    given, it will jump to the declaration under the cursor.
+    given, it will jump to the declaration under the cursor. By default the
+    mapping `gd` is enabled to invoke GoDef for the identifier under the cursor. 
+    See |g:go_def_mapping_enabled| to disable it.
 
                                                                      *:GoRun*
 :GoRun[!] [expand]
@@ -416,6 +418,14 @@ use the program man. However in go using godoc is more idiomatic. Default is
 enabled. >
 
   let g:go_doc_keywordprg_enabled = 1
+<
+                                                 *'g:go_def_mapping_enabled'*
+
+Use this option to enabled/ disable the default mapping (`gd`) for GoDef
+enabled. Disabling it allows you to map something else to the mapping `gd`.
+Default is enabled. >
+
+  let g:go_def_mapping_enabled = 1
 <
                                                          *'g:go_doc_command'*
 

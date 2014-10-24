@@ -93,7 +93,6 @@ function! s:godefJump(out, mode)
 			elseif a:mode == "vsplit"
 				vsplit
 			endif
-
 		endif
 
 		" jump to file now

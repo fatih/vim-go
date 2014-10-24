@@ -124,20 +124,16 @@ au FileType go nmap <leader>t <Plug>(go-test)
 au FileType go nmap <leader>c <Plug>(go-coverage)
 ```
 
-Replace `gd` (Goto Declaration) for the word under your cursor (replaces current buffer):
-
-```vim
-au FileType go nmap gd <Plug>(go-def)
-```
-
-Or open the definition/declaration in a new vertical, horizontal or tab for the
-word under your cursor:
+By default the mapping `gd` is enabled which opens the target identifier in
+current buffer. You can also open the definition/declaration in a new vertical,
+horizontal or tab for the word under your cursor:
 
 ```vim
 au FileType go nmap <Leader>ds <Plug>(go-def-split)
 au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 ```
+
 Rename the identifier under the cursor to a new name
 
 ```vim
