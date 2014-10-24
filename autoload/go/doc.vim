@@ -1,4 +1,3 @@
-" Copyright 2011 The Go Authors. All rights reserved.
 " Use of this source code is governed by a BSD-style
 " license that can be found in the LICENSE file.
 "
@@ -17,11 +16,6 @@
 "   g:go_godoc_commands [default=1]
 "
 "       Flag to indicate whether to enable the commands listed above.
-
-if exists("g:loaded_godoc")
-    finish
-endif
-let g:loaded_godoc = 1
 
 let s:buf_nr = -1
 
