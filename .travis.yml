@@ -1,0 +1,23 @@
+language: go
+go:
+  - 1.0
+  - 1.1
+  - 1.2
+  - tip
+before_install:
+  - echo "set nocompatible" > ~/.vimrc
+  - echo "filetype off" >> ~/.vimrc
+  - echo "set rtp+=~/.vim/bundle/Vundle.vim" >> ~/.vimrc
+  - echo "call vundle#begin()" >> ~/.vimrc
+  - echo "Plugin 'fatih/vim-go'" >> ~/.vimrc
+  - echo "call vundle#end()" >> ~/.vimrc
+  - echo "filetype plugin indent on" >> ~/.vimrc
+  - echo "let g:go_disable_autoinstall = 1"
+install:
+  - sudo apt-get install vim mercurial git -qq
+  - mkdir -p ~/.vim/bundle/
+  - git clone git://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  - touch error-tree
+script:
+  - yes '' | vim +PluginInstall +qall 2>&1 | tee -a error-file
+  - cat error-tree | grep -q 'Error installing'; test "1" = $?
