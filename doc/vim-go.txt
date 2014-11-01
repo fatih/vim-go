@@ -49,7 +49,7 @@ easily.
   * Checking with `errcheck` for unchecked errors.
   * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
   * Share your current code to play.golang.org
-  * Type information about the underlying identifier 
+  * Type information about the underlying identifier
   * Tagbar support to show tags of the source code in a sidebar with `gotags`
 
 ===============================================================================
@@ -134,7 +134,7 @@ COMMANDS                                                          *go-commands*
 
     Filter the current Go buffer through goimports (needs to be installed).
     `goimports` automatically discards/add import path based on the code. Like
-    |GoFmt|, It tries to preserve cursor position and avoids replacing the 
+    |GoFmt|, It tries to preserve cursor position and avoids replacing the
     buffer with stderr output.
 
                                                                      *:GoPlay*
@@ -159,7 +159,7 @@ COMMANDS                                                          *go-commands*
 
     Goto declaration/definition for the given [identifier]. If no argument is
     given, it will jump to the declaration under the cursor. By default the
-    mapping `gd` is enabled to invoke GoDef for the identifier under the cursor. 
+    mapping `gd` is enabled to invoke GoDef for the identifier under the cursor.
     See |g:go_def_mapping_enabled| to disable it.
 
                                                                      *:GoRun*
@@ -167,7 +167,7 @@ COMMANDS                                                          *go-commands*
 
     Build and run your current main package. By default all main files for the
     current file is used. If an argument is passed, 'expand' is used as file
-    selector. For example use `:GoRun %` to select the current file only.  
+    selector. For example use `:GoRun %` to select the current file only.
 
     If [!] is not given the first error is jumped to.
 
@@ -176,7 +176,7 @@ COMMANDS                                                          *go-commands*
 
     Build your package with `go build`. It automatically builds only the files
     that depends on the current file. GoBuild doesn't produce a result file.
-    Use 'make' to create a result file. 
+    Use 'make' to create a result file.
 
     If [!] is not given the first error is jumped to.
 
@@ -443,7 +443,7 @@ is empty. >
 
 <                                                            *'g:go_bin_path'*
 
-Use this option to change default path for vim-go tools when using 
+Use this option to change default path for vim-go tools when using
 |GoInstallBinaries| and |GoUpdateBinaries|. If not set `$GOBIN` or
 `$GOPATH/bin` is used. >
 
