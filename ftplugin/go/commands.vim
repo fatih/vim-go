@@ -74,7 +74,7 @@ command! -nargs=* -complete=customlist,go#package#Complete GoImportAs call go#im
 command! GoLint call go#lint#Run()
 
 " -- errcheck
-command! GoErrCheck call go#errcheck#Run()
+command! -nargs=? -complete=customlist,go#package#Complete GoErrCheck call go#errcheck#Run(<f-args>)
 
 " Disable all commands until they are fully integrated.
 "

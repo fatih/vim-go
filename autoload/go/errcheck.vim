@@ -2,13 +2,19 @@ if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif
 
-function! go#errcheck#Run() abort
+function! go#errcheck#Run(...) abort
+    if a:0 == 0
+        let package = go#package#ImportPath(expand('%:p:h'))
+    else
+        let package = a:1
+    end
+
     let bin_path = go#tool#BinPath(g:go_errcheck_bin) 
     if empty(bin_path) 
         return 
     endif
 
-    let out = system(bin_path . ' ' . go#package#ImportPath(expand('%:p:h')))
+    let out = system(bin_path . ' ' . package)
     if v:shell_error
         let errors = []
         let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
