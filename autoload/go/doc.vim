@@ -35,7 +35,7 @@ function! s:godocWord(args)
     if !executable('godoc')
         echohl WarningMsg
         echo "godoc command not found."
-        echo "  install with: go get code.google.com/p/go.tools/cmd/godoc"
+        echo "  install with: go get golang.org/x/tools/cmd/godoc"
         echohl None
         return []
     endif
