@@ -8,7 +8,7 @@ function! go#errcheck#Run() abort
         return 
     endif
 
-    let out = system(bin_path . ' ' . shellescape(expand('%:p:h')))
+    let out = system(bin_path . ' ' . go#package#ImportPath(expand('%:p:h')))
     if v:shell_error
         let errors = []
         let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
