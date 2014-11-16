@@ -78,7 +78,6 @@ the help page to see all commands:
 
     :help vim-go
 
-
 ## Mappings
 
 vim-go has several `<Plug>` mappings which can be used to create custom
@@ -176,6 +175,14 @@ By default binaries are installed to `$GOBIN` or `$GOPATH/bin`. To change it:
 ```vim
 let g:go_bin_path = expand("~/.gotools")
 let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
+```
+
+By default syntax-highlighting for Functions, Methods and Structs is disabled.
+To change it:
+```vim
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
 ```
 
 ## Snippets
