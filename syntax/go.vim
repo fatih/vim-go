@@ -11,8 +11,8 @@
 "   in your ~/.vimrc file to disable particular options. You can also write:
 "     let OPTION_NAME = 1
 "   to enable particular options. 
-"   At present, all options default to on, except highlight of: funcions,
-"   methods and structs.
+"   At present, all options default to on, except highlight of:
+"   functions, methods and structs.
 "
 "   - go_highlight_array_whitespace_error
 "     Highlights white space after "[]".
