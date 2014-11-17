@@ -8,10 +8,10 @@ let g:go_loaded_install = 1
 " needed by the user with GoInstallBinaries
 let s:packages = [
             \ "github.com/nsf/gocode", 
-            \ "code.google.com/p/go.tools/cmd/goimports", 
+            \ "golang.org/x/tools/cmd/goimports",
             \ "code.google.com/p/rog-go/exp/cmd/godef", 
-            \ "code.google.com/p/go.tools/cmd/oracle", 
-            \ "code.google.com/p/go.tools/cmd/gorename",
+            \ "golang.org/x/tools/cmd/oracle",
+            \ "golang.org/x/tools/cmd/gorename",
             \ "github.com/golang/lint/golint", 
             \ "github.com/kisielk/errcheck",
             \ "github.com/jstemmer/gotags",
