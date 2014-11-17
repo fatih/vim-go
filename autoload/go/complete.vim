@@ -96,7 +96,7 @@ function! go#complete#GetInfo()
 
     " no candidates are found
     if len(out) == 1
-        return
+        return ""
     endif
 
     " only one candiate is found
@@ -119,6 +119,8 @@ function! go#complete#GetInfo()
     if len(filtered) == 1
         return filtered[0]
     endif
+
+    return ""
 endfunction
 
 function! go#complete#Info()
