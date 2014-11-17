@@ -43,9 +43,9 @@ fu! s:gocodeCommand(cmd, preargs, args)
         let a:preargs[i] = s:gocodeShellescape(a:preargs[i])
     endfor
 
-    let bin_path = go#tool#BinPath(g:go_gocode_bin) 
-    if empty(bin_path) 
-        return 
+    let bin_path = go#tool#BinPath(g:go_gocode_bin)
+    if empty(bin_path)
+        return
     endif
 
     let result = s:system(printf('%s %s %s %s', bin_path, join(a:preargs), a:cmd, join(a:args)))
