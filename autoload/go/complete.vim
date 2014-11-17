@@ -125,7 +125,7 @@ endfunction
 
 function! go#complete#Info()
     let result = go#complete#GetInfo()
-    if len(result) > 0
+    if !empty(result)
         echo "vim-go: " | echohl Function | echon result | echohl None
     endif
 endfunction!
