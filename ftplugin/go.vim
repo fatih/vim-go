@@ -32,15 +32,20 @@ if get(g:, "go_def_mapping_enabled", 1)
    nnoremap <buffer> <silent> gd :GoDef<cr>
 endif
 
-" GoInfo automatic update
-if get(g:, "go_auto_type_info", 0)
-    setlocal updatetime=300
-    au! CursorHold *.go nested call go#complete#Info()
-endif
+augroup vim-go
+    autocmd!
 
-" autoload settings
-if get(g:, "go_fmt_autosave", 1)
-    autocmd BufWritePre <buffer> call go#fmt#Format(-1)
-endif
+    " GoInfo automatic update
+    if get(g:, "go_auto_type_info", 0)
+        setlocal updatetime=300
+        autocmd CursorHold *.go nested call go#complete#Info()
+    endif
+
+    " code formatting on save
+    if get(g:, "go_fmt_autosave", 1)
+        autocmd BufWritePre <buffer> call go#fmt#Format(-1)
+    endif
+
+augroup END
 
 " vim:ts=4:sw=4:et
