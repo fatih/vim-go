@@ -13,9 +13,9 @@ function! go#def#Jump(...)
 		let arg = a:1
 	endif
 
-	let bin_path = go#tool#BinPath(g:go_godef_bin) 
-	if empty(bin_path) 
-		return 
+	let bin_path = go#tool#BinPath(g:go_godef_bin)
+	if empty(bin_path)
+		return
 	endif
 
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
@@ -31,9 +31,9 @@ endfunction
 function! go#def#JumpMode(mode)
 	let arg = s:getOffset()
 
-	let bin_path = go#tool#BinPath(g:go_godef_bin) 
-	if empty(bin_path) 
-		return 
+	let bin_path = go#tool#BinPath(g:go_godef_bin)
+	if empty(bin_path)
+		return
 	endif
 
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
@@ -85,7 +85,7 @@ function! s:godefJump(out, mode)
 			let &switchbuf = "usetab"
 
 			if bufloaded(fileName) == 0
-				tab split 
+				tab split
 			endif
 		else
 			if a:mode  == "split"
