@@ -51,7 +51,7 @@ function! s:godocWord(args)
         let words = a:args
     endif
 
-    if !len(words) 
+    if !len(words)
         return []
     endif
 
@@ -149,9 +149,9 @@ function! s:GodocView(position, content)
     setlocal iskeyword-=-
 
     setlocal modifiable
-    %delete _ 
+    %delete _
     call append(0, split(a:content, "\n"))
-    $delete _ 
+    $delete _
     setlocal nomodifiable
 endfunction
 
