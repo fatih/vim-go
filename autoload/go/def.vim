@@ -96,7 +96,7 @@ function! s:godefJump(out, mode)
 		endif
 
 		" jump to file now
-		ll 1
+		sil ll 1
 		normal zz
 
 		let &switchbuf = old_switchbuf
