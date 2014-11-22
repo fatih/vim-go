@@ -129,7 +129,7 @@ function! s:GodocView(position, content)
     " reuse existing buffer window if it exists otherwise create a new one
     if !bufexists(s:buf_nr)
         execute a:position
-        file `="[Godoc]"`
+        sil file `="[Godoc]"`
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
         execute a:position
@@ -151,7 +151,7 @@ function! s:GodocView(position, content)
     setlocal modifiable
     %delete _
     call append(0, split(a:content, "\n"))
-    $delete _
+    sil $delete _
     setlocal nomodifiable
 endfunction
 
