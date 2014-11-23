@@ -41,13 +41,13 @@ function! go#cmd#Install(...)
     endif
 endfunction
 
-function! go#cmd#Build(bang)
+function! go#cmd#Build(bang, ...)
     let default_makeprg = &makeprg
     let gofiles = join(go#tool#Files(), ' ')
     if v:shell_error
         let &makeprg = "go build . errors"
     else
-        let &makeprg = "go build -o /dev/null " . gofiles
+        let &makeprg = "go build -o /dev/null " . join(a:000, ' ') . " " . gofiles
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
@@ -60,7 +60,7 @@ function! go#cmd#Build(bang)
             if g:go_jump_to_error
                 cc 1 "jump to first error if there is any
             endif
-        else 
+        else
             redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
         endif
     endif

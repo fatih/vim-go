@@ -45,7 +45,7 @@ command! -nargs=* GoInfo call go#complete#Info()
 
 " cmd
 command! -nargs=* -bang GoRun call go#cmd#Run(<bang>0,<f-args>)
-command! -nargs=? -bang GoBuild call go#cmd#Build(<bang>0)
+command! -nargs=* -bang GoBuild call go#cmd#Build(<bang>0,<f-args>)
 command! -nargs=* GoInstall call go#cmd#Install(<f-args>)
 command! -nargs=* GoTest call go#cmd#Test(<f-args>)
 command! -nargs=* GoCoverage call go#cmd#Coverage(<f-args>)
