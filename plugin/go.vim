@@ -25,14 +25,35 @@ command! GoUpdateBinaries call s:GoInstallBinaries(1)
 
 " IsWin returns 1 if current OS is Windows or 0 otherwise
 function! IsWin()
-        let win = ['win16', 'win32', 'win32unix', 'win64', 'win95']
-        for w in win
-            if (has(w))
-                return 1
-            endif
-        endfor
+    let win = ['win16', 'win32', 'win32unix', 'win64', 'win95']
+    for w in win
+        if (has(w))
+            return 1
+        endif
+    endfor
 
-        return 0
+    return 0
+endfunction
+
+" PathSep returns the appropriate path separator based on OS.
+function! PathSep()
+    if IsWin()
+        return ";"
+    endif
+
+    return ":"
+endfunction
+
+" DefaultGoPath returns the default GOPATH.
+" If there is only one GOPATH it returns that, otherwise it returns the first one.
+function! DefaultGoPath()
+    let go_paths = split($GOPATH, PathSep())
+
+    if len(go_paths) == 1
+        return $GOPATH
+    endif
+
+    return go_paths[0]
 endfunction
 
 " GetBinPath returns the binary path of installed go tools
@@ -46,28 +67,10 @@ function! GetBinPath()
     elseif $GOBIN != ""
         let bin_path = $GOBIN
     elseif $GOPATH != ""
-        let sep = ":"
-        if IsWin()
-            let sep = ";"
-        endif
-
-        " take care of multi element GOPATH's
-        let go_paths = split($GOPATH, sep)
-
-        if len(go_paths) == 1
-            " one single PATH
-            let bin_path = expand('$GOPATH/bin')
-        else
-            " multiple paths, use the first one
-            let bin_path = expand(go_paths[0] . '/bin')
-        endif
+        let bin_path = expand(DefaultGoPath() . "/bin/")
     else
         " could not find anything
-        return ""
     endif
-
-    " add trailing slash if there is no one
-    if bin_path[-1:-1] != '/' | let bin_path .= '/' | endif
 
     return bin_path
 endfunction
