@@ -5,7 +5,7 @@ endif
 function! go#cmd#Run(bang, ...)
     let default_makeprg = &makeprg
     if !len(a:000)
-        let &makeprg = "go run " . join(go#tool#Files(), ' ')
+        let &makeprg = 'go run "' . join(go#tool#Files(), '" "') . '"'
     else
         let &makeprg = "go run " . expand(a:1)
     endif
@@ -25,8 +25,8 @@ function! go#cmd#Run(bang, ...)
 endfunction
 
 function! go#cmd#Install(...)
-    let pkgs = join(a:000, ' ')
-    let command = 'go install '.pkgs
+    let pkgs = join(a:000, '" "')
+    let command = 'go install "' . pkgs . '"'
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         call go#tool#ShowErrors(out)
