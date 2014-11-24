@@ -3,9 +3,22 @@ if !exists("g:go_jump_to_error")
 endif
 
 function! go#cmd#Run(bang, ...)
+    let goFiles = '"' . join(go#tool#Files(), '" "') . '"'
+
+    if IsWin()
+        exec '!go run ' . goFiles
+        if v:shell_error
+            redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
+        else
+            redraws! | echon "vim-go: [run] " | echohl Function | echon "SUCCESS"| echohl None
+        endif
+
+        return
+    endif
+
     let default_makeprg = &makeprg
     if !len(a:000)
-        let &makeprg = 'go run "' . join(go#tool#Files(), '" "') . '"'
+        let &makeprg = 'go run ' . goFiles
     else
         let &makeprg = "go run " . expand(a:1)
     endif
