@@ -43,11 +43,11 @@ endfunction
 
 function! go#cmd#Build(bang, ...)
     let default_makeprg = &makeprg
-    let gofiles = join(go#tool#Files(), ' ')
+    let gofiles = join(go#tool#Files(), '" "')
     if v:shell_error
         let &makeprg = "go build . errors"
     else
-        let &makeprg = "go build -o /dev/null " . join(a:000, ' ') . " " . gofiles
+        let &makeprg = "go build -o /dev/null " . join(a:000, ' ') . ' "' . gofiles . '"'
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
