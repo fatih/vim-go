@@ -109,10 +109,10 @@ syn match       goDeclaration       /\<func\>/
 " Predefined functions and values
 syn keyword     goBuiltins          append cap close complex copy delete imag len
 syn keyword     goBuiltins          make new panic print println real recover
-syn keyword     goConstants         iota true false nil
+syn keyword     goBoolean           iota true false nil
 
 hi def link     goBuiltins          Keyword
-hi def link     goConstants         Keyword
+hi def link     goBoolean           Boolean
 
 " Comments; their contents
 syn keyword     goTodo              contained TODO FIXME XXX BUG
@@ -267,6 +267,12 @@ if g:go_highlight_structs != 0
 endif
 hi def link     goStruct						Function
 hi def link     goStructDef         Function
+
+syntax region goString start=/\v"/ skip=/\v\\./ end=/\v"/
+highlight link goString String
+
+syn match newFormat /%[#0\-\ \+\*]*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
+hi def link newFormat Boolean
 
 " Search backwards for a global declaration to start processing the syntax.
 "syn sync match goSync grouphere NONE /^\(const\|var\|type\|func\)\>/
