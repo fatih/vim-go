@@ -143,9 +143,11 @@ hi def link     goEscapeError       Error
 syn cluster     goStringGroup       contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU,goEscapeError
 syn region      goString            start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup
 syn region      goRawString         start=+`+ end=+`+
+syn match       goFormatSpecifier   /%[#0\-\ \+\*]*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
 
 hi def link     goString            String
 hi def link     goRawString         String
+hi def link 	goFormatSpecifier   goSpecialString
 
 " Characters; their contents
 syn cluster     goCharacterGroup    contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU
@@ -267,12 +269,6 @@ if g:go_highlight_structs != 0
 endif
 hi def link     goStruct						Function
 hi def link     goStructDef         Function
-
-syntax region goString start=/\v"/ skip=/\v\\./ end=/\v"/
-highlight link goString String
-
-syn match newFormat /%[#0\-\ \+\*]*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
-hi def link newFormat Boolean
 
 " Search backwards for a global declaration to start processing the syntax.
 "syn sync match goSync grouphere NONE /^\(const\|var\|type\|func\)\>/
