@@ -58,10 +58,10 @@ function! go#coverlay#Coverlay(...)
             silent! call matchadd(color, pat1 . '\_^\s\+' . pat2 . pat3)
         endfor
     endif
-    cwindow
 
     let errors = getqflist()
     if !empty(errors)
+        cwindow
         if g:go_jump_to_error
             cc 1 "jump to first error if there is any
         endif
