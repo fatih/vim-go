@@ -50,11 +50,12 @@ function! go#coverlay#Coverlay(...)
             "let pat2 = '\%<' . endline . 'l\%' . endcol . 'c'
             let pat1 = '\%>' . startline . 'l'
             let pat2 = '\%<' . endline . 'l'
+            let pat3 = '\|\%' . startline . 'l\_^\s\+\|\%' . endline . 'l\_^\s\+'
             let color = 'covered'
             if cnt == 0
                 let color = 'uncover'
             endif
-            silent! call matchadd(color, pat1 . '\_^\s\+' . pat2)
+            silent! call matchadd(color, pat1 . '\_^\s\+' . pat2 . pat3)
         endfor
     endif
     cwindow
