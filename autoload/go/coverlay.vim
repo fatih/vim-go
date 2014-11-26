@@ -13,8 +13,7 @@ function! go#coverlay#Coverlay(...)
         highlight covered term=bold ctermbg=green guibg=green
         highlight uncover term=bold ctermbg=red guibg=red
 
-        let lines = readfile(l:tmpname,100)
-        let openHTML = 'go tool cover -html='.l:tmpname
+        let lines = readfile(l:tmpname)
         let mode = lines[0]
         for line in lines[1:]
             " file:startline.col,endline.col numstmt count
