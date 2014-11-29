@@ -1,3 +1,5 @@
+" vim-go-coverlay - Go (golang) code coverage overlays support
+"
 if exists("g:loaded_vim_go_coverlay")
 	finish
 endif
