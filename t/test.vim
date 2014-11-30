@@ -1,3 +1,34 @@
+describe 'go#coverlay#Coverlay'
+    before
+        new
+	let g:curdir = expand('<sfile>:p:h') . '/'
+	let g:srcpath = 't/fixtures/src/'
+	let g:sample = 'pkg1/sample.go'
+	let g:sampleabs = g:curdir . g:srcpath . 'pkg1/sample.go'
+	let g:samplecover = g:curdir . g:srcpath . 'pkg1/sample.out'
+	let g:go_gopath = g:curdir . 't/fixtures'
+	execute "badd " . g:srcpath . g:sample
+	execute "buffer " . bufnr("$")
+    end
+    after
+	execute "bprev"
+	execute "bdelete " . g:srcpath . g:sample
+        close!
+    end
+
+    it 'puts match to the list'
+        call go#coverlay#Coverlay()
+        Expect len(go#coverlay#matches()) == 3
+        call go#coverlay#Clearlay()
+        Expect len(go#coverlay#matches()) == 0
+
+        call go#coverlay#Coverlay()
+        Expect len(go#coverlay#matches()) == 3
+        call go#coverlay#Clearlay()
+        Expect len(go#coverlay#matches()) == 0
+    end
+end
+
 describe 'go#coverlay#isopenedon'
     before
         new
@@ -14,8 +45,8 @@ describe 'go#coverlay#isopenedon'
     end
 
     it 'returns 1 if FILE is opened at BUFNR'
-        Expect go#coverlay#isopenedon('_' . g:sampleabs, bufnr("$")) == 1
-        Expect go#coverlay#isopenedon(g:sample, bufnr("$")) == 1
+        Expect go#coverlay#isopenedon('_' . g:sampleabs, bufnr(g:sampleabs)) == 1
+        Expect go#coverlay#isopenedon(g:sample, bufnr(g:sampleabs)) == 1
     end
 
     it 'returns 0 if FILE is not opened at BUFNR'
@@ -24,8 +55,8 @@ describe 'go#coverlay#isopenedon'
     end
 
     it 'returns 0 if FILE is not exists'
-        Expect go#coverlay#isopenedon('_' . g:curdir . g:srcpath . 'pkg1/NOTEXISTS', bufnr("$")) == 0
-        Expect go#coverlay#isopenedon('pkg1/NOTEXISTS.go', bufnr("$")) == 0
+        Expect go#coverlay#isopenedon('_' . g:curdir . g:srcpath . 'pkg1/NOTEXISTS', bufnr(g:sampleabs)) == 0
+        Expect go#coverlay#isopenedon('pkg1/NOTEXISTS.go', bufnr(g:sampleabs)) == 0
     end
 end
 

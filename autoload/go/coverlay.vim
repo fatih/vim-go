@@ -46,6 +46,27 @@ function! go#coverlay#genmatch(cov)
     return {'group': color, 'pattern': pat1 . '\_^\s\+' . pat2 . pat3}
 endfunction
 
+function! go#coverlay#overlay(file)
+    if !exists("b:go_coverlay_matches")
+        let b:go_coverlay_matches = []
+    endif
+
+    highlight covered term=bold ctermbg=green guibg=green
+    highlight uncover term=bold ctermbg=red guibg=red
+
+    let lines = readfile(a:file)
+    let mode = lines[0]
+    for line in lines[1:]
+        let c = go#coverlay#parsegocoverline(line)
+        if !go#coverlay#isopenedon(c.file, bufnr("%"))
+            continue
+        endif
+        let m = go#coverlay#genmatch(c)
+        let id = matchadd(m.group, m.pattern)
+        call add(b:go_coverlay_matches, id)
+   endfor
+endfunction
+
 function! go#coverlay#Coverlay(...)
     let l:tmpname=tempname()
 
@@ -57,20 +78,7 @@ function! go#coverlay#Coverlay(...)
     else
         " clear previous quick fix window
         call setqflist([])
-
-        highlight covered term=bold ctermbg=green guibg=green
-        highlight uncover term=bold ctermbg=red guibg=red
-
-        let lines = readfile(l:tmpname)
-        let mode = lines[0]
-        for line in lines[1:]
-            let c = go#coverlay#parsegocoverline(line)
-            if !go#coverlay#isopenedon(c.file, bufnr("%"))
-                continue
-            endif
-            let m = go#coverlay#genmatch(c)
-            silent! call matchadd(m.group, m.pattern)
-       endfor
+        call go#coverlay#overlay(l:tmpname)
     endif
 
     let errors = getqflist()
@@ -85,8 +93,17 @@ function! go#coverlay#Coverlay(...)
 endfunction
 
 function! go#coverlay#Clearlay(...)
-    "TODO: clear locally
-    call clearmatches()
+    if !exists("b:go_coverlay_matches")
+        return
+    endif
+    for id in b:go_coverlay_matches
+        call matchdelete(id)
+    endfor
+    let b:go_coverlay_matches = []
+endfunction
+
+function! go#coverlay#matches()
+    return b:go_coverlay_matches
 endfunction
 
 " vim:ts=4:sw=4:et
