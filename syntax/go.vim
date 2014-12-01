@@ -109,10 +109,10 @@ syn match       goDeclaration       /\<func\>/
 " Predefined functions and values
 syn keyword     goBuiltins          append cap close complex copy delete imag len
 syn keyword     goBuiltins          make new panic print println real recover
-syn keyword     goConstants         iota true false nil
+syn keyword     goBoolean           iota true false nil
 
 hi def link     goBuiltins          Keyword
-hi def link     goConstants         Keyword
+hi def link     goBoolean           Boolean
 
 " Comments; their contents
 syn keyword     goTodo              contained TODO FIXME XXX BUG
@@ -143,9 +143,11 @@ hi def link     goEscapeError       Error
 syn cluster     goStringGroup       contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU,goEscapeError
 syn region      goString            start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup
 syn region      goRawString         start=+`+ end=+`+
+syn match       goFormatSpecifier   /%[#0\-\ \+\*]*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
 
 hi def link     goString            String
 hi def link     goRawString         String
+hi def link 	goFormatSpecifier   goSpecialString
 
 " Characters; their contents
 syn cluster     goCharacterGroup    contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU
