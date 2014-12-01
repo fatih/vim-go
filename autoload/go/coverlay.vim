@@ -40,10 +40,12 @@ function! go#coverlay#genmatch(cov)
     let pat2 = '\%<' . a:cov.endline . 'l'
     let pat3 = '\|\%' . a:cov.startline . 'l\_^\s\+\|\%' . a:cov.endline . 'l\_^\s\+'
     let color = 'covered'
+    let prio = 11
     if a:cov.cnt == 0
         let color = 'uncover'
+        let prio = 10
     endif
-    return {'group': color, 'pattern': pat1 . '\_^\s\+' . pat2 . pat3}
+    return {'group': color, 'pattern': pat1 . '\_^\s\+' . pat2 . pat3, 'priority': prio}
 endfunction
 
 function! go#coverlay#overlay(file)
@@ -62,7 +64,7 @@ function! go#coverlay#overlay(file)
             continue
         endif
         let m = go#coverlay#genmatch(c)
-        let id = matchadd(m.group, m.pattern)
+        let id = matchadd(m.group, m.pattern, m.priority)
         call add(b:go_coverlay_matches, id)
    endfor
 endfunction

@@ -18,12 +18,12 @@ describe 'go#coverlay#Coverlay'
 
     it 'puts match to the list'
         call go#coverlay#Coverlay()
-        Expect len(go#coverlay#matches()) == 3
+        Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
 
         call go#coverlay#Coverlay()
-        Expect len(go#coverlay#matches()) == 3
+        Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
     end
@@ -71,6 +71,8 @@ end
 describe 'go#coverlay#genmatch'
     it 'generate mark pattern from cover data'
         let d = {'file': 'f',"startline": "1", "startcol": "2", "endline": "3", "endcol": "4", "numstmt": "5", "cnt": "6"}
-        Expect go#coverlay#genmatch(d) == {'group': 'covered', "pattern": '\%>1l\_^\s\+\%<3l\|\%1l\_^\s\+\|\%3l\_^\s\+'}
+        Expect go#coverlay#genmatch(d) == {'group': 'covered', "pattern": '\%>1l\_^\s\+\%<3l\|\%1l\_^\s\+\|\%3l\_^\s\+', "priority": 11}
+        let d = {'file': 'f',"startline": "1", "startcol": "2", "endline": "3", "endcol": "4", "numstmt": "5", "cnt": "0"}
+        Expect go#coverlay#genmatch(d) == {'group': 'uncover', "pattern": '\%>1l\_^\s\+\%<3l\|\%1l\_^\s\+\|\%3l\_^\s\+', "priority": 10}
     end
 end
