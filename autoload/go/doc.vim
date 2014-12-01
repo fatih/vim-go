@@ -104,8 +104,12 @@ function! go#doc#Open(mode, ...)
 
     call s:GodocView(a:mode, content)
 
-    " jump to the specified name
+    if exported_name == ''
+        silent! normal gg
+        return -1
+    endif
 
+    " jump to the specified name
     if search('^func ' . exported_name . '(')
         silent! normal zt
         return -1
