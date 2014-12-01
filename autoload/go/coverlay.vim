@@ -33,17 +33,14 @@ function! go#coverlay#parsegocoverline(line)
 endfunction
 
 function! go#coverlay#genmatch(cov)
-    "TODO: handle colovs
-    "let pat1 = '\%>' . startline . 'l\%' . startcol . 'c'
-    "let pat2 = '\%<' . endline . 'l\%' . endcol . 'c'
     let pat1 = '\%>' . a:cov.startline . 'l'
     let pat2 = '\%<' . a:cov.endline . 'l'
-    let pat3 = '\|\%' . a:cov.startline . 'l\_^\s\+\|\%' . a:cov.endline . 'l\_^\s\+'
+    let pat3 = '\|\%' . a:cov.startline . 'l\_^\s\+\|\%' . a:cov.endline . 'l\_^\s\+\(\}$\)\@!'
     let color = 'covered'
-    let prio = 11
+    let prio = 6
     if a:cov.cnt == 0
         let color = 'uncover'
-        let prio = 10
+        let prio = 5
     endif
     return {'group': color, 'pattern': pat1 . '\_^\s\+' . pat2 . pat3, 'priority': prio}
 endfunction

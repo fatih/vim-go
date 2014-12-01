@@ -71,8 +71,8 @@ end
 describe 'go#coverlay#genmatch'
     it 'generate mark pattern from cover data'
         let d = {'file': 'f',"startline": "1", "startcol": "2", "endline": "3", "endcol": "4", "numstmt": "5", "cnt": "6"}
-        Expect go#coverlay#genmatch(d) == {'group': 'covered', "pattern": '\%>1l\_^\s\+\%<3l\|\%1l\_^\s\+\|\%3l\_^\s\+', "priority": 11}
+        Expect go#coverlay#genmatch(d) == {'group': 'covered', "pattern": '\%>1l\_^\s\+\%<3l\|\%1l\_^\s\+\|\%3l\_^\s\+\(\}$\)\@!', "priority": 6}
         let d = {'file': 'f',"startline": "1", "startcol": "2", "endline": "3", "endcol": "4", "numstmt": "5", "cnt": "0"}
-        Expect go#coverlay#genmatch(d) == {'group': 'uncover', "pattern": '\%>1l\_^\s\+\%<3l\|\%1l\_^\s\+\|\%3l\_^\s\+', "priority": 10}
+        Expect go#coverlay#genmatch(d) == {'group': 'uncover', "pattern": '\%>1l\_^\s\+\%<3l\|\%1l\_^\s\+\|\%3l\_^\s\+\(\}$\)\@!', "priority": 5}
     end
 end
