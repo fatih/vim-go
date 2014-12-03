@@ -33,7 +33,7 @@ if get(g:, "go_def_mapping_enabled", 1)
 endif
 
 if get(g:, "go_auto_type_info", 0)
-    setlocal updatetime=300
+    setlocal updatetime=800
 endif
 
 " vim:ts=4:sw=4:et
