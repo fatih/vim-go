@@ -23,6 +23,17 @@ command! GoErrCheck call go#errcheck#Run()
 command! GoInstallBinaries call s:GoInstallBinaries(-1)
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
 
+" LineEnding returns the correct line ending, based on the current fileformat
+function! LineEnding()
+    if &fileformat == 'dos'
+        return "\r\n"
+    elseif &fileformat == 'mac'
+        return "\r"
+    endif
+
+    return "\n"
+endfunction
+
 " IsWin returns 1 if current OS is Windows or 0 otherwise
 function! IsWin()
     let win = ['win16', 'win32', 'win32unix', 'win64', 'win95']

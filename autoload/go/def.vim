@@ -21,7 +21,7 @@ function! go#def#Jump(...)
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
 	" get output of godef
-	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), "\n"))
+	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
 
 	" jump to it
 	call s:godefJump(out, "")
@@ -39,7 +39,7 @@ function! go#def#JumpMode(mode)
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
 	" get output of godef
-	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), "\n"))
+	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
 
 	call s:godefJump(out, a:mode)
 endfunction
@@ -51,7 +51,7 @@ function! s:getOffset()
 		let offs = line2byte(pos[0]) + pos[1] - 2
 	else
 		let c = pos[1]
-		let buf = line('.') == 1 ? "" : (join(getline(1, pos[0] - 1), "\n") . "\n")
+		let buf = line('.') == 1 ? "" : (join(getline(1, pos[0] - 1), LineEnding()) . LineEnding())
 		let buf .= c == 1 ? "" : getline(pos[0])[:c-2]
 		let offs = len(iconv(buf, &encoding, "utf-8"))
 	endif
@@ -66,7 +66,7 @@ function! s:godefJump(out, mode)
 	let &errorformat = "%f:%l:%c"
 
 	if a:out =~ 'godef: '
-		let out=substitute(a:out, '\n$', '', '')
+		let out=substitute(a:out, LineEnding() . '$', '', '')
 		echom out
 	else
 		let parts = split(a:out, ':')
@@ -103,4 +103,3 @@ function! s:godefJump(out, mode)
 	end
 	let &errorformat = old_errorformat
 endfunction
-
