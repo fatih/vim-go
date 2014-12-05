@@ -1,6 +1,8 @@
 # vim-go-coverlay
 Go (golang) code coverage overlays support for Vim.
 
+![ss-vim-go-coverlay](https://cloud.githubusercontent.com/assets/3804806/5319001/81a3b89a-7ce8-11e4-9fbd-2f0fd00ce1c7.gif)
+
 ## Install
 For Vundle add these lines to your vimrc:
 
