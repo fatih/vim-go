@@ -112,7 +112,7 @@ function! s:GoInstallBinaries(updateBinaries)
     let old_path = $PATH
 
     " vim's executable path is looking in PATH so add our go_bin path to it
-    let $PATH = $PATH . ":" .go_bin_path
+    let $PATH = $PATH . PathSep() .go_bin_path
 
     for pkg in s:packages
         let basename = fnamemodify(pkg, ":t")
