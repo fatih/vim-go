@@ -413,6 +413,16 @@ fails. By default it's disabled. >
 
   let g:go_fmt_fail_silently = 0
 <
+
+                                                   *'g:go_fmt_experimental'*
+
+Use this option to enable fmt's experimental mode. This experimental mode is
+superior to the current mode as it fully saves the undo history, so undo/redo
+doesn't break. However it's causing problems on some Vim versions. By default
+it's disabled. >
+
+  let g:go_fmt_experimental = 1
+<
                                               *'g:go_doc_keywordprg_enabled'*
 
 Use this option to change the enable GoDoc to run on words under the cursor
