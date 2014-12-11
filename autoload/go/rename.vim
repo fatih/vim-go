@@ -19,7 +19,7 @@ function! go#rename#Rename(...)
         return 
     endif
 
-    let fname = expand('%:p:t')
+    let fname = resolve(expand('%:p:t'))
     let pos = s:getpos(line('.'), col('.'))
     let cmd = printf('%s -offset %s:#%d -to %s',  bin_path, shellescape(fname), pos, to)
 
