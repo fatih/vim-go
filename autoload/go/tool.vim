@@ -2,7 +2,6 @@ function! go#tool#Files()
     if IsWin()
         let command = 'go list -f "{{range $f := .GoFiles}}{{$.Dir}}\{{$f}}{{printf \"\n\"}}{{end}}{{range $f := .CgoFiles}}{{$.Dir}}\{{$f}}{{printf \"\n\"}}{{end}}"'
     else
-        " let command = "go list -f $'{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}\n{{end}}'"
         let command = "go list -f '{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}{{printf \"\\n\"}}{{end}}{{range $f := .CgoFiles}}{{$.Dir}}/{{$f}}{{printf \"\\n\"}}{{end}}'"
     endif
     let out = go#tool#ExecuteInDir(command)
@@ -118,7 +117,7 @@ function! go#tool#BinPath(binpath)
     " append our GOBIN and GOPATH paths and be sure they can be found there...
     " let us search in our GOBIN and GOPATH paths
     let old_path = $PATH
-    let $PATH = $PATH . ":" .go_bin_path
+    let $PATH = $PATH . PathSep() .go_bin_path
 
     if !executable(binpath) 
         echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
