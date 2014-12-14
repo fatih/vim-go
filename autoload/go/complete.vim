@@ -128,7 +128,7 @@ function! go#complete#Info()
     if !empty(result)
         echo "vim-go: " | echohl Function | echon result | echohl None
     endif
-endfunction!
+endfunction
 
 fu! go#complete#Complete(findstart, base)
     "findstart = 1 when we need to get the text length
