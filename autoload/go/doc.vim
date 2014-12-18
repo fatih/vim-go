@@ -85,7 +85,7 @@ function! go#doc#OpenBrowser(...)
     call go#tool#OpenBrowser(godoc_url)
 endfunction
 
-function! go#doc#Open(mode, ...)
+function! go#doc#Open(newmode, mode, ...)
     let pkgs = s:godocWord(a:000)
     if empty(pkgs)
         return
@@ -102,7 +102,7 @@ function! go#doc#Open(mode, ...)
         return -1
     endif
 
-    call s:GodocView(a:mode, content)
+    call s:GodocView(a:newmode, a:mode, content)
 
     if exported_name == ''
         silent! normal gg
@@ -129,10 +129,10 @@ function! go#doc#Open(mode, ...)
     silent! normal gg
 endfunction
 
-function! s:GodocView(position, content)
+function! s:GodocView(newposition, position, content)
     " reuse existing buffer window if it exists otherwise create a new one
     if !bufexists(s:buf_nr)
-        execute a:position
+        execute a:newposition
         sil file `="[Godoc]"`
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
