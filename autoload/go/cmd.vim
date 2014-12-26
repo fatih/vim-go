@@ -102,6 +102,7 @@ function! go#cmd#Test(...)
         echon "vim-go: " | echohl ErrorMsg | echon "[test] FAIL" | echohl None
     else
         call setqflist([])
+        cwindow
         echon "vim-go: " | echohl Function | echon "[test] PASS" | echohl None
     endif
 endfunction
