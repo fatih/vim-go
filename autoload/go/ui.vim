@@ -17,9 +17,9 @@ function! go#ui#OpenWindow(title, content)
 
     " Keep minimum height to 10, if there is more just increase it that it
     " occupies all results
-    let implements_height = 10
-    if len(a:content) < implements_height
-        exe 'resize ' . implements_height
+    let buffer_height = 10
+    if len(a:content) < buffer_height
+        exe 'resize ' . buffer_height
     else
         exe 'resize ' . len(a:content)
     endif

@@ -3,8 +3,7 @@
 "
 "  Part of this plugin was taken directly from the oracle repo, however it's
 "  massively changed for a better integration into vim-go. Thanks Alan Donovan
-"  for the first iteration based on quickfix!  - fatih arslan
-"
+"  for the first iteration based on quickfix!  - Fatih Arslan
 "
 
 if !exists("g:go_oracle_bin")
@@ -89,8 +88,6 @@ func! s:RunOracle(mode, selected) range abort
         " unfortunaly oracle outputs a very long stack trace that is not
         " parsable to show the real error. But the main issue is usually the
         " package which doesn't build. 
-        " echo out
-        " redraw | echon 'vim-go: could not run static analyser (does it build?)'
         redraw | echon "vim-go: " | echohl Statement | echon out | echohl None
         return {}
     else
@@ -200,7 +197,7 @@ function! go#oracle#Callees(selected)
         return
     endif
 
-    let title = "call targets:"
+    let title = "Call targets:"
 
     " start to populate our buffer content
     let result  = [title, ""]
