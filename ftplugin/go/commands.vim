@@ -17,6 +17,7 @@ nnoremap <silent> <Plug>(go-info) :<C-u>call go#complete#Info()<CR>
 nnoremap <silent> <Plug>(go-import) :<C-u>call go#import#SwitchImport(1, '', expand('<cword>'))<CR>
 
 nnoremap <silent> <Plug>(go-implements) :<C-u>call go#oracle#Implements(-1)<CR>
+nnoremap <silent> <Plug>(go-callees) :<C-u>call go#oracle#Callees(-1)<CR>
 
 nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename()<CR>
 
@@ -37,6 +38,7 @@ command! -nargs=? GoRename call go#rename#Rename(<f-args>)
 
 " oracle
 command! -range=% GoImplements call go#oracle#Implements(<count>)
+command! -range=% GoCallees call go#oracle#Callees(<count>)
 
 " tool
 command! -nargs=0 GoFiles echo go#tool#Files()
@@ -79,7 +81,6 @@ command! -nargs=? -complete=customlist,go#package#Complete GoErrCheck call go#er
 " Disable all commands until they are fully integrated.
 "
 " command! -range=% GoOracleDescribe call go#oracle#Describe(<count>)
-" command! -range=% GoOracleCallees  call go#oracle#Callees(<count>)
 " command! -range=% GoOracleCallers call go#oracle#Callers(<count>)
 " command! -range=% GoOracleCallgraph call go#oracle#Callgraph(<count>)
 " command! -range=% GoOracleCallstack call go#oracle#Callstack(<count>)
