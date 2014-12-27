@@ -88,21 +88,22 @@ function! go#cmd#Test(...)
     endif
 
     echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
+    redraw
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         call go#tool#ShowErrors(out)
+        cwindow
+        let errors = getqflist()
+        if !empty(errors)
+            if g:go_jump_to_error
+                cc 1 "jump to first error if there is any
+            endif
+        endif
+        echon "vim-go: " | echohl ErrorMsg | echon "[test] FAIL" | echohl None
     else
         call setqflist([])
-    endif
-    cwindow
-
-    let errors = getqflist()
-    if !empty(errors)
-        if g:go_jump_to_error
-            cc 1 "jump to first error if there is any
-        endif
-    else
-        redraw | echon "vim-go: " | echohl Function | echon "[test] PASS" | echohl None
+        cwindow
+        echon "vim-go: " | echohl Function | echon "[test] PASS" | echohl None
     endif
 endfunction
 
