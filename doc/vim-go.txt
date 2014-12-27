@@ -241,14 +241,25 @@ COMMANDS                                                          *go-commands*
 :GoImplements
 
     Show 'implements' relation for a selected package. A list of interfaces
-    for the type under the cursor (or selected package) is shown in a custom
-    window. Hit `<enter>` to jump in a new tab or close it via `<c-c>`.
+    for the type that implements an interface under the cursor (or selected
+    package) is shown in a custom window. Hit `<enter>` to jump in a new tab
+    or close it via `<c-c>`.
 
                                                                 *:GoRename*
 :GoRename [to]
 
     Rename the identifier under the cursor to the desired new name. If no
     argument is given a prompt will ask for the desired identifier.
+
+                                                              *:GoCallees*
+:GoCallees
+
+    Show 'callees' relation for a selected package. A list of call targets
+    for the type under the cursor (or selected package) is shown in a custom
+    window. Hit `<enter>` to jump in a new tab or close it via `<c-c>`. For
+    example if called for a interface method call, it will show all call targets
+    that has implemented the method.
+
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -356,6 +367,9 @@ Show the interfaces that the type under the cursor implements.
 
 Rename the identifier under the cursor to the desired new name
 
+                                                              *(go-callees)*
+
+Show the call targets for the type under the cursor
 
 
 ===============================================================================
