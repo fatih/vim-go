@@ -17,11 +17,11 @@ CONTENTS                                                          *go-contents*
 	1. Intro........................................|go-intro|
 	2. Install......................................|go-install|
 	3. Commands.....................................|go-commands|
-	4. Settings.....................................|go-settings|
-	5. Mappings.....................................|go-mappings|
+	4. Mappings.....................................|go-mappings|
 	5. Text Objects.................................|go-text-objects|
-	6. Troubleshooting..............................|go-troubleshooting|
-	7. Credits......................................|go-credits|
+	6. Settings.....................................|go-settings|
+	7. Troubleshooting..............................|go-troubleshooting|
+	8. Credits......................................|go-credits|
 
 ===============================================================================
 INTRO                                                                *go-intro*
@@ -384,7 +384,7 @@ am			      "a function", select contents from a function definition to the
 
                                                *go-v_im* *go-im*
 im			      "inside a function", select contents of a function,
-			        excluding the fuction definition and the closing bracket.
+			        excluding the function definition and the closing bracket.
 
 
 ===============================================================================
