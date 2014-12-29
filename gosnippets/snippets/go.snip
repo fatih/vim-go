@@ -115,17 +115,21 @@ snippet else
 		${0}
 	}
 # error snippet
-snippet er
+snippet errn
 abbr if err != nil { ... }
 	if err != nil {
-		${0}
+		return err
 	}
-snippet errn
+
+# error snippet with two return values
+snippet errn,
 abbr if err != nil { return [...], err }
-	if ${1:err} != nil {
-		return ${2}$1
+	if err != nil {
+		return ${2}$1, err
 	}
 	${0}
+
+# json snippet
 snippet json
 abbr \`json:key\`
 	\`json:"${1:keyName}"\`
@@ -190,7 +194,7 @@ options head
 		${0}
 	}
 # method
-snippet method
+snippet meth
 abbr func (self Type) Method(...) [error] { ... }
 regexp /^meth/
 	func (${1:self} ${2:Type}) ${3:Do}(${4}) ${5:error }{
@@ -226,7 +230,7 @@ abbr select { case a := <-chan: ... }
 		${0}
 	}
 # struct
-snippet struct
+snippet st
 abbr type T struct { ... }
 	type ${1:Type} struct {
 		${0}

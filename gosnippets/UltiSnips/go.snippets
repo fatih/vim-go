@@ -72,6 +72,8 @@ endsnippet
 snippet df "defer someFunction()"
 defer ${1:func}(${2})
 ${0}
+endsnippet
+
 snippet def "defer func() { ... }"
 defer func() {
 	${0}
@@ -90,22 +92,21 @@ endsnippet
 # gpl
 snippet gpl
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * Copyright (C) ${1:Author}, `strftime("%Y")`
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, see <http://www.gnu.org/licenses/>.
+*
+* Copyright (C) ${1:Author}, `strftime("%Y")`
+*/
 ${0}
 endsnippet
 
@@ -131,7 +132,6 @@ if ${1:condition} {
 endsnippet
 
 # else snippet
-abbr else { ... }
 snippet else
 else {
 	${0}
@@ -139,15 +139,20 @@ else {
 endsnippet
 
 # error snippet
-snippet er "if err != nil { ... }"
+snippet errn "Error return " !b
 if err != nil {
-	${0}
-}
-snippet errn "if err != nil { return [...], err }"
-if ${1:err} != nil {
-	return ${2}$1
+	return err
 }
 ${0}
+endsnippet
+
+snippet errn, "Error return with two return values" !b
+if err != nil {
+	return ${1:nil}, err
+}
+${0}
+endsnippet
+
 snippet json "\`json:key\`"
 \`json:"${1:keyName}"\`
 endsnippet
@@ -177,31 +182,6 @@ for ${2:k}, ${3:v} := range ${1} {
 	${0}
 }
 endsnippet
-
-global !p
-
-import re
-
-# Automatically wrap return types with parentheses
-
-def return_values(s):
-	# remove everything wrapped in parentheses
-	s = re.sub("\(.*?\)|\([^)]*$", "", s)
-	return len(s.split(","))
-
-def opening_par(snip, pos):
-	if return_values(t[pos]) > 1 and not t[pos].startswith("("):
-		snip.rv = "("
-	else:
-		snip.rv = ""
-
-def closing_par(snip, pos):
-	if return_values(t[pos]) > 1:
-		snip.rv = ")"
-	else:
-		snip.rv = ""
-
-endglobal
 
 # function
 snippet func "func Function(...) [error] { ... }"
@@ -250,8 +230,7 @@ func main() {
 endsnippet
 
 # method
-snippet method "func (self Type) Method(...) [error] { ... }"
-regexp /^meth/
+snippet meth "func (self Type) Method(...) [error] { ... }"
 func (${1:receiver} ${2:type}) ${3:name}(${4:params})${5/(.+)/ /}`!p opening_par(snip, 5)`$5`!p closing_par(snip, 5)` {
 	${0:${VISUAL}}
 }
@@ -260,7 +239,7 @@ endsnippet
 # ok
 snippet ok "if !ok { ... }"
 if !ok {
-${0}
+	${0}
 }
 endsnippet
 
@@ -272,16 +251,12 @@ ${0}
 endsnippet
 
 # panic
-snippet panic
-alias pn
-abbr panic("...")
-panic("${0}")
+snippet pn "panic()"
+panic("${0:msg}")
 endsnippet
 
 # return
-snippet return
-alias rt
-abbr return ...
+snippet rt "return"
 return ${0}
 endsnippet
 
@@ -294,7 +269,7 @@ case ${1:v1} := <-${2:chan1}
 endsnippet
 
 # struct
-snippet struct "type T struct { ... }"
+snippet st "type T struct { ... }"
 type ${1:Type} struct {
 ${0}
 }
@@ -319,10 +294,10 @@ go ${1:funcName}(${0})
 endsnippet
 
 # goroutine anonymous function
-snippet gof "go func(...) { ... }(...)"
-go func(${1}) {
-${3:/* TODO */}
-}(${2})
+snippet gof "go func() { ... }()"
+go func() {
+	${1}
+}()
 endsnippet
 
 # test function
@@ -344,4 +319,31 @@ ${1:x} ${2:Type}${3: = ${0:value\}}
 )
 endsnippet
 
+global !p
+
+import re
+
+# Automatically wrap return types with parentheses
+
+def return_values(s):
+	# remove everything wrapped in parentheses
+	s = re.sub("\(.*?\)|\([^)]*$", "", s)
+	return len(s.split(","))
+
+def opening_par(snip, pos):
+	if return_values(t[pos]) > 1 and not t[pos].startswith("("):
+		snip.rv = "("
+	else:
+		snip.rv = ""
+
+def closing_par(snip, pos):
+	if return_values(t[pos]) > 1:
+		snip.rv = ")"
+	else:
+		snip.rv = ""
+
+endglobal
+
+
 # vim:ft=snippets:
+
