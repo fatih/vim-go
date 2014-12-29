@@ -114,6 +114,16 @@ function! s:GoInstallBinaries(updateBinaries)
     " vim's executable path is looking in PATH so add our go_bin path to it
     let $PATH = $PATH . PathSep() .go_bin_path
 
+    " when shellslash is set on MS-* systems, shellescape puts single quotes
+    " around the output string. cmd on Windows does not handle single quotes
+    " correctly. Unsetting shellslash forces shellescape to use double quotes
+    " instead.
+    let resetshellslash = 0
+    if has('win32') && &shellslash
+        let resetshellslash = 1
+        set noshellslash
+    endif
+
     for pkg in s:packages
         let basename = fnamemodify(pkg, ":t")
         let binname = "go_" . basename . "_bin"
@@ -139,6 +149,9 @@ function! s:GoInstallBinaries(updateBinaries)
 
     " restore back!
     let $PATH = old_path
+    if resetshellslash
+        set shellslash
+    endif
 endfunction
 
 " CheckBinaries checks if the necessary binaries to install the Go tool
