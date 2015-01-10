@@ -32,7 +32,7 @@ function! go#tool#Imports()
     endif
 
     for package_path in split(out, '\n')
-        let package_name = fnamemodify(package_path, ":t")
+        let package_name = fnamemodify(package_path, ":t:r")
         let imports[package_name] = package_path
     endfor
 
