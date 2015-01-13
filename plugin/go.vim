@@ -186,7 +186,7 @@ augroup vim-go
 
     " code formatting on save
     if get(g:, "go_fmt_autosave", 1)
-        autocmd BufWritePre *.go call go#fmt#Format(-1)
+        autocmd BufWritePre *.go call go#fmt#Format(1)
     endif
 
 augroup END
