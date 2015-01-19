@@ -17,12 +17,16 @@ if !exists("g:go_golint_bin")
 endif
 
 function! go#lint#Run() abort
-	let bin_path = go#tool#BinPath(g:go_golint_bin) 
-	if empty(bin_path) 
-		return 
+	let bin_path = go#tool#BinPath(g:go_golint_bin)
+	if empty(bin_path)
+		return
 	endif
 
-    silent cexpr system(bin_path . " " . shellescape(expand('%')))
+    if go#has_vimproc()
+        silent cexpr vimproc#system2(bin_path . " " . shellescape(expand('%')))
+    else
+        silent cexpr system(bin_path . " " . shellescape(expand('%')))
+    endif
     cwindow
 endfunction
 

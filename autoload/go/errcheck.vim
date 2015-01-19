@@ -14,7 +14,12 @@ function! go#errcheck#Run(...) abort
         return
     endif
 
-    let out = system(bin_path . ' ' . package)
+    if go#has_vimproc()
+      let out = vimproc#system2(bin_path . ' ' . package)
+    else
+      let out = system(bin_path . ' ' . package)
+    endif
+
     if v:shell_error
         let errors = []
         let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'

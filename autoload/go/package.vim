@@ -32,7 +32,12 @@ function! go#package#Paths()
     let dirs = []
 
     if executable('go')
-        let goroot = substitute(system('go env GOROOT'), '\n', '', 'g')
+        if go#has_vimproc()
+            let goroot = substitute(vimproc#system2('go env GOROOT'), '\n', '', 'g')
+        else
+            let goroot = substitute(system('go env GOROOT'), '\n', '', 'g')
+        endif
+
         if v:shell_error
             echomsg '''go env GOROOT'' failed'
         endif
@@ -96,7 +101,11 @@ function! go#package#FromPath(arg)
 endfunction
 
 function! go#package#CompleteMembers(package, member)
-    silent! let content = system('godoc ' . a:package)
+    if go#has_vimproc()
+        silent! let content = vimproc#system2('godoc ' . a:package)
+    else
+        silent! let content = system('godoc ' . a:package)
+    endif
     if v:shell_error || !len(content)
         return []
     endif

@@ -76,7 +76,12 @@ function! go#tool#ExecuteInDir(cmd) abort
     let dir = getcwd()
     try
         execute cd.'`=expand("%:p:h")`'
-        let out = system(a:cmd)
+
+        if go#has_vimproc()
+            let out = vimproc#system2(a:cmd)
+        else
+            let out = system(a:cmd)
+        endif
     finally
         execute cd.'`=dir`'
     endtry
@@ -174,7 +179,11 @@ function! go#tool#OpenBrowser(url)
         exec cmd
     else
         let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
-        call system(cmd)
+        if go#has_vimproc()
+            call system(cmd)
+        else
+            call system(cmd)
+        endif
     endif
 endfunction
 

@@ -20,8 +20,12 @@ function! go#def#Jump(...)
 
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
-	" get output of godef
-	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
+  " get output of godef
+  if go#has_vimproc()
+    let out=vimproc#system2(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
+  else
+    let out=system(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
+  endif
 
 	" jump to it
 	call s:godefJump(out, "")
@@ -39,7 +43,11 @@ function! go#def#JumpMode(mode)
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
 	" get output of godef
-	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
+  if go#has_vimproc()
+    let out=vimproc#system2(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
+  else
+    let out=system(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
+  endif
 
 	call s:godefJump(out, a:mode)
 endfunction

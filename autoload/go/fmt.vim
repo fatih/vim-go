@@ -87,7 +87,11 @@ function! go#fmt#Format(withGoimport)
     let command = fmt_command . ' ' . g:go_fmt_options
 
     " execute our command...
-    let out = system(command . " " . l:tmpname)
+    if go#has_vimproc()
+        let out = vimproc#system2(command . " " . l:tmpname)
+    else
+        let out = system(command . " " . l:tmpname)
+    endif
 
     "if there is no error on the temp file, gofmt again our original file
     if v:shell_error == 0
