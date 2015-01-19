@@ -561,9 +561,9 @@ Highlights struct names. By default it's disabled. >
 <
                                         *'g:go_highlight_build_constraints'*
 
-Highlights build constraints. By default it's enabled. >
+Highlights build constraints. By default it's disabled. >
 
-	let g:go_highlight_build_constraints = 1
+	let g:go_highlight_build_constraints = 0
 <
                                                   *'g:go_textobj_enabled'*
 
