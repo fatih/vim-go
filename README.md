@@ -189,6 +189,22 @@ let g:go_highlight_structs = 1
 
 ## Troubleshooting
 
+### Command not found
+
+If trying to use `:GoDef`,  `:Goinfo` and get a `command not found`, check that you have the binaries installed by using: `:GoInstallBinaries`
+
+Before opening vim, check your current `$PATH`:
+
+	echo $PATH
+	
+after opening vim, run `:echo $PATH`, the output must be your current `$PATH` + `$PATH/bin` (the location where `:GoInstallBinaries` installed the binaries
+
+If problem persists and you are using maybe 'csh' or other shell, try adding this to your .vimrc:
+
+    set shell=/bin/sh
+   
+
+
 ### I'm using Fish shell but have some problems using Vim-go
 
 First environment variables in Fish are applied differently, it should be like:
@@ -202,12 +218,12 @@ too). To overcome this problem change the default shell by adding the following
 into your .vimrc (on the top of the file):
 
 	if $SHELL =~ 'fish'
-	  set shell='/bin/bash'
+	  set shell='/bin/sh'
 	endif
 
 or
 
-	set shell='/bin/bash'
+	set shell='/bin/sh'
 
 
 ## Why another plugin?
