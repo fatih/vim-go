@@ -96,7 +96,11 @@ function! go#doc#Open(newmode, mode, ...)
 
     let command = g:go_doc_command . ' ' . g:go_doc_options . ' ' . pkg
 
-    silent! let content = system(command)
+    if go#has_vimproc()
+        silent! let content = vimproc#system2(command)
+    else
+        silent! let content = system(command)
+    endif
     if v:shell_error || !len(content)
         echo 'No documentation found for "' . pkg . '".'
         return -1

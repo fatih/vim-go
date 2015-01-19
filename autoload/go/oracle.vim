@@ -83,7 +83,11 @@ func! s:RunOracle(mode, selected) range abort
 
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
-    let out = system(cmd)
+    if go#has_vimproc()
+        let out = vimproc#system2(cmd)
+    else
+        let out = system(cmd)
+    endif
     if v:shell_error
         " unfortunaly oracle outputs a very long stack trace that is not
         " parsable to show the real error. But the main issue is usually the

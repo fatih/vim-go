@@ -14,7 +14,11 @@ function! go#play#Share(count, line1, line2)
     call writefile(split(content, "\n"), share_file, "b")
 
     let command = "curl -s -X POST http://play.golang.org/share --data-binary '@".share_file."'"
-    let snippet_id = system(command)
+    if go#has_vimproc()
+        let snippet_id = vimproc#system2(command)
+    else
+        let snippet_id = system(command)
+    endif
 
     " we can remove the temp file because it's now posted.
     call delete(share_file)
