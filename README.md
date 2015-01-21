@@ -225,7 +225,6 @@ or
 
 	set shell='/bin/sh'
 
-
 ## Why another plugin?
 
 This plugin/package is born mainly from frustration. I had to re-install my Vim
@@ -236,6 +235,12 @@ This plugin is improved and contains all my fixes/changes that I'm using for
 months under heavy go development environment.
 
 Give it a try. I hope you like it. Feel free to contribute to the project.
+
+## Donations
+
+Vim-go is an open source project and I'm working on it on my free times. I'm spending a lot of time and thoughts to make it stable, fixing bugs, adding new features, etc... If you like vim-go and find it helpful, you might give me a gift from some of the books (kindle) I have in my wish list: 
+
+[Amazon.com Fatih's Wish List](http://amzn.com/w/3RUTKZC0U30P6). Thanks!
 
 ## Credits
 
