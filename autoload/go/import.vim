@@ -56,6 +56,56 @@ function! go#import#SwitchImport(enabled, localname, path)
     endif
 
     let exists = go#tool#Exists(path)
+    
+    " try to infer import_path from package_name but only if python is
+    " installed and given path doesn't not reflect actual package
+    if has('python')
+    
+py <<EOF
+import subprocess, collections, vim
+def find_import_path(package_name):
+    """find real import path for given package name
+    warning: takes time
+    """
+
+    # prepare mapping between "package name" and "import path" (possbile many)
+    mapping = collections.defaultdict(list)
+
+    # ignore errors and create mapping between name and import path
+    output = subprocess.check_output("go list -e -f {{.Name}};{{.ImportPath}} all".split(' '))
+    for l in output.split("\n"):
+        l = l.strip()
+        if not l:
+            continue
+        name, import_path = l.split(';')
+        mapping[name].append(import_path)
+
+    results = mapping.get(package_name, [])
+    if len(results) == 1:
+        return results[0]
+    elif len(results) > 1:
+        # TODO: select from existings candidates
+        print 'Error: multiple candidates found: %s'%(' ,'.join(results))
+        return None
+    else:
+        return None
+
+
+def fix_path_by_package_name():
+    """integrate find_import_path with vim-go/go#too#Exists(path)"""
+    package_name = vim.eval("path")
+    path = find_import_path(package_name)
+    if path:
+        vim.command("let exists=1")
+        vim.command('let path="%s"'%path)
+
+EOF
+        if exists == -1
+            python fix_path_by_package_name()
+        endif
+    endif
+
+    
     if exists == -1
         call s:Error("Can't find import: " . path)
         return
