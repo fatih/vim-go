@@ -191,7 +191,7 @@ let g:go_highlight_structs = 1
 
 ### Command not found
 
-If trying to use `:GoDef`,  `:Goinfo` and get a `command not found`, check that you have the binaries installed by using: `:GoInstallBinaries`
+If trying to use `:GoDef`,  `:GoInfo` and get a `command not found`, check that you have the binaries installed by using: `:GoInstallBinaries`
 
 Before opening vim, check your current `$PATH`:
 
