@@ -86,7 +86,7 @@ command! -nargs=? -complete=customlist,go#package#Complete GoErrCheck call go#er
 " command! -range=% GoOracleCallstack call go#oracle#Callstack(<count>)
 " command! -range=% GoOracleFreevars call go#oracle#Freevars(<count>)
 " command! -range=% GoOraclePeers call go#oracle#Peers(<count>)
-" command! -range=% GoOracleReferrers call go#oracle#Referrers(<count>)
+command! -range=% GoOracleReferrers call go#oracle#Referrers(<count>)
 
 " vim:ts=4:sw=4:et
 "

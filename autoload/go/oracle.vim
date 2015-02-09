@@ -251,7 +251,55 @@ endfunction
 " Show all refs to entity denoted by selected identifier
 function! go#oracle#Referrers(selected)
     let out = s:RunOracle('referrers', a:selected)
-    echo out
+    if empty(out)
+        return
+    endif
+
+    " be sure they exists before we retrieve them from the map
+    if !has_key(out, "referrers")
+        return
+    endif
+
+    " get the referrers list
+    if has_key(out.referrers, "refs")
+        let referrers = out.referrers.refs
+    else
+        redraw | echon "vim-go: " | echon "no referrers available"| echohl None
+        return
+    endif
+
+    let result = []
+    for ref in referrers
+        " strip column number, add dummy "..." for correct quicklist format
+        " TODO: would be awesome if the contents of the line could be shown
+        " here...
+        let line = join(split(ref, ":")[0:-2] + ["..."], ":")
+        call add(result, line)
+    endfor
+
+"    cgetexpr referrers
+    cgetexpr result
+    copen
+"    let title = "Referrers:"
+"    "
+"    " start to populate our buffer content
+"    let result  = [title, ""]
+"
+"    for ref in refs
+"        let line = "\t" . ref
+"        call add(result, line)
+"    endfor
+"
+"    " open a window and put the result
+"    call go#ui#OpenWindow("Referrers", result)
+"
+"    " define some buffer related mappings:
+"    "
+"    " go to definition when hit enter
+"    nnoremap <buffer> <CR> :<C-u>call go#ui#OpenDefinition("referrers")<CR>
+"    " close the window when hit ctrl-c
+"    nnoremap <buffer> <c-c> :<C-u>call go#ui#CloseWindow()<CR>
+"    echo out
 endfunction
 
 " vim:ts=4:sw=4:et
