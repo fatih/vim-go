@@ -272,12 +272,12 @@ function! go#oracle#Referrers(selected)
     let objpos = out.referrers.objpos
 
     let referrers = [objpos . ":" . desc, "Referrers:"]
-    "let referrers = ["Referrers for: " . desc]
     for ref in refs_buf
-        " add dummy "..." for correct quicklist format
-        " TODO: would be awesome if the contents of the line could be shown
-        " here...
-        let line = ref . ":..."
+        " Note: we count -3 from end, to support additional comma in
+        " Windows-style C:\... paths
+        let filename = join(split(ref, ":")[0:-3], ":")
+        let linenum = split(ref, ":")[-2]
+        let line = ref . ":" . readfile(filename, "", linenum)[linenum-1]
         call add(referrers, line)
     endfor
 
