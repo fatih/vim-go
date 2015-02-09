@@ -271,13 +271,13 @@ function! go#oracle#Referrers(selected)
     let desc = out.referrers.desc
     let objpos = out.referrers.objpos
 
-    let referrers = [join(split(objpos, ":")[0:2] + [desc], ":"), "Referrers:"]
+    let referrers = [objpos . ":" . desc, "Referrers:"]
     "let referrers = ["Referrers for: " . desc]
     for ref in refs_buf
-        " strip column number, add dummy "..." for correct quicklist format
+        " add dummy "..." for correct quicklist format
         " TODO: would be awesome if the contents of the line could be shown
         " here...
-        let line = join(split(ref, ":")[0:2] + ["..."], ":")
+        let line = ref . ":..."
         call add(referrers, line)
     endfor
 
