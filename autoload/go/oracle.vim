@@ -251,7 +251,38 @@ endfunction
 " Show all refs to entity denoted by selected identifier
 function! go#oracle#Referrers(selected)
     let out = s:RunOracle('referrers', a:selected)
-    echo out
+    if empty(out)
+        return
+    endif
+
+    " be sure they exists before we retrieve them from the map
+    if !has_key(out, "referrers")
+        return
+    endif
+
+    " get the referrers list
+    if has_key(out.referrers, "refs")
+        let refs_buf = out.referrers.refs
+    else
+        redraw | echon "vim-go: " | echon "no referrers available"| echohl None
+        return
+    endif
+
+    let desc = out.referrers.desc
+    let objpos = out.referrers.objpos
+
+    let referrers = [objpos . ":" . desc, "Referrers:"]
+    for ref in refs_buf
+        " Note: we count -3 from end, to support additional comma in
+        " Windows-style C:\... paths
+        let filename = join(split(ref, ":")[0:-3], ":")
+        let linenum = split(ref, ":")[-2]
+        let line = ref . ":" . readfile(filename, "", linenum)[linenum-1]
+        call add(referrers, line)
+    endfor
+
+    cgetexpr referrers
+    copen
 endfunction
 
 " vim:ts=4:sw=4:et
