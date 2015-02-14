@@ -39,6 +39,13 @@ command! -nargs=? GoRename call go#rename#Rename(<f-args>)
 " oracle
 command! -range=% GoImplements call go#oracle#Implements(<count>)
 command! -range=% GoCallees call go#oracle#Callees(<count>)
+command! -range=% GoDescribe call go#oracle#Describe(<count>)
+command! -range=% GoCallers call go#oracle#Callers(<count>)
+command! -range=% GoCallgraph call go#oracle#Callgraph(<count>)
+command! -range=% GoCallstack call go#oracle#Callstack(<count>)
+command! -range=% GoFreevars call go#oracle#Freevars(<count>)
+command! -range=% GoPeers call go#oracle#Peers(<count>)
+command! -range=% GoReferrers call go#oracle#Referrers(<count>)
 
 " tool
 command! -nargs=0 GoFiles echo go#tool#Files()
@@ -80,13 +87,6 @@ command! -nargs=? -complete=customlist,go#package#Complete GoErrCheck call go#er
 
 " Disable all commands until they are fully integrated.
 "
-" command! -range=% GoOracleDescribe call go#oracle#Describe(<count>)
-" command! -range=% GoOracleCallers call go#oracle#Callers(<count>)
-" command! -range=% GoOracleCallgraph call go#oracle#Callgraph(<count>)
-" command! -range=% GoOracleCallstack call go#oracle#Callstack(<count>)
-" command! -range=% GoOracleFreevars call go#oracle#Freevars(<count>)
-" command! -range=% GoOraclePeers call go#oracle#Peers(<count>)
-" command! -range=% GoOracleReferrers call go#oracle#Referrers(<count>)
 
 " vim:ts=4:sw=4:et
 "
