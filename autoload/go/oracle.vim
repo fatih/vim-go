@@ -128,71 +128,54 @@ endfun
 " Show 'implements' relation for selected package
 function! go#oracle#Implements(selected)
     let out = s:RunOracle('implements', a:selected)
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
 function! go#oracle#Describe(selected)
     let out = s:RunOracle('describe', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Show possible targets of selected function call
 function! go#oracle#Callees(selected)
     let out = s:RunOracle('callees', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Show possible callers of selected function
 function! go#oracle#Callers(selected)
     let out = s:RunOracle('callers', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Show the callgraph of the current program.
 function! go#oracle#Callgraph(selected)
     let out = s:RunOracle('callgraph', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Show path from callgraph root to selected function
 function! go#oracle#Callstack(selected)
     let out = s:RunOracle('callstack', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Show free variables of selection
 function! go#oracle#Freevars(selected)
     let out = s:RunOracle('freevars', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Show send/receive corresponding to selected channel op
 function! go#oracle#Peers(selected)
     let out = s:RunOracle('peers', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
 function! go#oracle#Referrers(selected)
     let out = s:RunOracle('referrers', a:selected)
-
-    echo out
     call s:qflistSecond(out)
 endfunction
 
