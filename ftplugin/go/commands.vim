@@ -92,9 +92,4 @@ command! GoLint call go#lint#Run()
 " -- errcheck
 command! -nargs=? -complete=customlist,go#package#Complete GoErrCheck call go#errcheck#Run(<f-args>)
 
-" Disable all commands until they are fully integrated.
-"
-
 " vim:ts=4:sw=4:et
-"
-
