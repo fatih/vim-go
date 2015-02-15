@@ -256,10 +256,25 @@ COMMANDS                                                          *go-commands*
 :GoCallees
 
     Show 'callees' relation for a selected package. A list of call targets
-    for the type under the cursor (or selected package) is shown in a custom
-    window. Hit `<enter>` to jump in a new tab or close it via `<c-c>`. For
-    example if called for a interface method call, it will show all call targets
-    that has implemented the method.
+    for the type under the cursor (or selected package) is shown in a
+    quickfix list
+
+                                                              *:GoCallers*
+:GoCallers
+
+    Show 'callers' relation for a selected function. A list of possible
+    callers for the selected function under the cursor is shown in a quickfix
+    list.
+
+                                                              *:GoDescribe*
+:GoDescribe
+
+    Show 'describe' information for a selected definition, method, etc... 
+
+                                                              *:GoCallgraph*
+:GoCallgraph
+
+    Shows the 'callgraph' for the current program
 
 
 ===============================================================================
