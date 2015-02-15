@@ -18,6 +18,13 @@ nnoremap <silent> <Plug>(go-import) :<C-u>call go#import#SwitchImport(1, '', exp
 
 nnoremap <silent> <Plug>(go-implements) :<C-u>call go#oracle#Implements(-1)<CR>
 nnoremap <silent> <Plug>(go-callees) :<C-u>call go#oracle#Callees(-1)<CR>
+nnoremap <silent> <Plug>(go-callers) :<C-u>call go#oracle#Callers(-1)<CR>
+nnoremap <silent> <Plug>(go-describe) :<C-u>call go#oracle#Describe(-1)<CR>
+nnoremap <silent> <Plug>(go-callgraph) :<C-u>call go#oracle#Callgraph(-1)<CR>
+nnoremap <silent> <Plug>(go-callstack) :<C-u>call go#oracle#Callstack(-1)<CR>
+nnoremap <silent> <Plug>(go-freevars) :<C-u>call go#oracle#Freevars(-1)<CR>
+nnoremap <silent> <Plug>(go-peers) :<C-u>call go#oracle#Peers(-1)<CR>
+nnoremap <silent> <Plug>(go-referrers) :<C-u>call go#oracle#Referrers(-1)<CR>
 
 nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename()<CR>
 
