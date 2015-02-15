@@ -243,9 +243,7 @@ COMMANDS                                                          *go-commands*
 
     Show 'implements' relation for a selected package. A list of interfaces
     for the type that implements an interface under the cursor (or selected
-    package) is shown in a custom window. Hit `<enter>` to jump in a new tab
-    or close it via `<c-c>`.
-
+    package) is shown quickfix list. 
                                                                 *:GoRename*
 :GoRename [to]
 
@@ -289,6 +287,39 @@ COMMANDS                                                          *go-commands*
     from the root of the callgrap to the selected function is showed in a
     quickfix list. This may be useful to understand how the function is
     reached in a given program. 
+
+                                                              *:GoFreevars*
+:GoFreevars
+
+    Enumerates the free variables of the selection. “Free variables” is a
+    technical term meaning the set of variables that are referenced but not
+    defined within the selection, or loosely speaking, its inputs. 
+
+    This information is useful if you’re considering whether to refactor the
+    selection into a function of its own, as the free variables would be the
+    necessary parameters of that function.  It’s also useful when you want to
+    understand what the inputs are to a complex block of code even if you
+    don’t plan to change it.
+
+                                                              *:GoPeers*
+:GoPeers
+
+    Shows the set of possible sends/receives on the channel operand of the
+    selected send or receive operation; the selection must be a <- token. 
+
+    For example, visually select a channel operand in the form of: 
+
+      "done <- true" 
+
+    and call |GoPeers| on it. It will show where it was allocated, and
+    the sending and receiving endings.
+
+                                                              *:GoReferrers*
+:GoReferrers
+
+    The referrers query shows the set of identifiers that refer to the same
+    object as does the selected identifier, within any package in the analysis
+    scope.
 
 
 ===============================================================================
