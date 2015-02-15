@@ -255,9 +255,9 @@ COMMANDS                                                          *go-commands*
                                                               *:GoCallees*
 :GoCallees
 
-    Show 'callees' relation for a selected package. A list of call targets
-    for the type under the cursor (or selected package) is shown in a
-    quickfix list
+    Show 'callees' relation for a selected package. A list of possible call
+    targets for the type under the cursor (or selected package) is shown in a
+    quickfix list.
 
                                                               *:GoCallers*
 :GoCallers
@@ -269,12 +269,26 @@ COMMANDS                                                          *go-commands*
                                                               *:GoDescribe*
 :GoDescribe
 
-    Show 'describe' information for a selected definition, method, etc... 
+    Shows various properties of the selected syntax: its syntactic kind, its
+    type (for an expression), its value (for a constant expression), its size,
+    alignment, method set and interfaces (for a type), its declaration (for an
+    identifier), etc. Almost any piece of syntax may be described, and the
+    oracle will try to print all the useful information it can.
 
                                                               *:GoCallgraph*
 :GoCallgraph
 
-    Shows the 'callgraph' for the current program
+    Shows the 'callgraph' for the entire program. For more info about the
+    indentation checkout the Oracle User Manual:
+    golang.org/s/oracle-user-manual 
+
+                                                              *:GoCallstack*
+:GoCallstack
+
+    Shows 'callstack' relation for the selected function. An arbitrary path
+    from the root of the callgrap to the selected function is showed in a
+    quickfix list. This may be useful to understand how the function is
+    reached in a given program. 
 
 
 ===============================================================================

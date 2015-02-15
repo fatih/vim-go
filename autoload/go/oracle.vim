@@ -10,16 +10,20 @@ if !exists("g:go_oracle_bin")
     let g:go_oracle_bin = "oracle"
 endif
 
+" Parses (via regex) Oracle's 'plain' format output and puts them into a
+" quickfix list.
 func! s:qflist(output)
     let qflist = []
     " Parse GNU-style 'file:line.col-line.col: message' format.
     let mx = '^\(\a:[\\/][^:]\+\|[^:]\+\):\(\d\+\):\(\d\+\):\(.*\)$'
     for line in split(a:output, "\n")
         let ml = matchlist(line, mx)
+
         " Ignore non-match lines or warnings
         if ml == [] || ml[4] =~ '^ warning:'
             continue
         endif
+
         let item = {
                     \  'filename': ml[1],
                     \  'text': ml[4],
@@ -34,6 +38,31 @@ func! s:qflist(output)
     endfor
     call setqflist(qflist)
     cwindow
+endfun
+
+" This uses Vim's errorformat to parse the output from Oracle's 'plain output
+" and put it into quickfix list. I believe using errorformat is much more
+" easier to use. If we need more power we can always switch back to parse it
+" via regex.
+func! s:qflistSecond(output)
+    " backup users errorformat, will be restored once we are finished
+	let old_errorformat = &errorformat
+
+    " match two possible styles of errorformats:
+    "
+    "   'file:line.col-line2.col2: message'
+    "   'file:line:col: message'
+    "
+    " We discard line2 and col2 for the first errorformat, because it's not
+    " useful and quickfix only has the ability to show one line and column
+    " number
+	let &errorformat = "%f:%l.%c-%.%#:\ %m,%f:%l:%c:\ %m"
+
+    " create the quickfix list and open it
+    cgetexpr split(a:output, "\n")
+    cwindow
+
+	let &errorformat = old_errorformat
 endfun
 
 func! s:getpos(l, c)
@@ -99,55 +128,72 @@ endfun
 " Show 'implements' relation for selected package
 function! go#oracle#Implements(selected)
     let out = s:RunOracle('implements', a:selected)
-    call s:qflist(out)
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
 function! go#oracle#Describe(selected)
     let out = s:RunOracle('describe', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Show possible targets of selected function call
 function! go#oracle#Callees(selected)
     let out = s:RunOracle('callees', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Show possible callers of selected function
 function! go#oracle#Callers(selected)
     let out = s:RunOracle('callers', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Show the callgraph of the current program.
 function! go#oracle#Callgraph(selected)
     let out = s:RunOracle('callgraph', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Show path from callgraph root to selected function
 function! go#oracle#Callstack(selected)
     let out = s:RunOracle('callstack', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Show free variables of selection
 function! go#oracle#Freevars(selected)
     let out = s:RunOracle('freevars', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Show send/receive corresponding to selected channel op
 function! go#oracle#Peers(selected)
     let out = s:RunOracle('peers', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
 function! go#oracle#Referrers(selected)
     let out = s:RunOracle('referrers', a:selected)
-    call s:qflist(out)
+
+    echo out
+    call s:qflistSecond(out)
 endfunction
 
 " vim:ts=4:sw=4:et
