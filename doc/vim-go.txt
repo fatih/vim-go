@@ -301,8 +301,8 @@ COMMANDS                                                          *go-commands*
     understand what the inputs are to a complex block of code even if you
     don’t plan to change it.
 
-                                                              *:GoPeers*
-:GoPeers
+                                                            *:GoChannelPeers*
+:GoChannelPeers
 
     Shows the set of possible sends/receives on the channel operand of the
     selected send or receive operation; the selection must be a <- token. 
@@ -311,7 +311,7 @@ COMMANDS                                                          *go-commands*
 
       "done <- true" 
 
-    and call |GoPeers| on it. It will show where it was allocated, and
+    and call |GoChannelPeers| on it. It will show where it was allocated, and
     the sending and receiving endings.
 
                                                               *:GoReferrers*
@@ -454,7 +454,7 @@ Show path from callgraph root to selected function
 
 Show free variables of selection
 
-                                                                *(go-peers)*
+                                                          *(go-channelpeers)*
 
 Show send/receive corresponding to selected channel op
 

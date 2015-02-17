@@ -168,7 +168,7 @@ function! go#oracle#Freevars(selected)
 endfunction
 
 " Show send/receive corresponding to selected channel op
-function! go#oracle#Peers(selected)
+function! go#oracle#ChannelPeers(selected)
     let out = s:RunOracle('peers', a:selected)
     call s:qflistSecond(out)
 endfunction
