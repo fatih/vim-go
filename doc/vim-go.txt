@@ -478,35 +478,6 @@ if			      "inside a function", select contents of a function,
 			        excluding the function definition and the closing bracket.
 
 
-===============================================================================
-SETTINGS                                                        *go-settings*
-
-                                                *'g:go_play_browser_command'*
-
-Use this option to change the browser that is used to open the snippet url
-posted to play.golang.org with |:GoPlay| or for the relevant documentation
-used with |:GoDocBrowser|. By default it tries to find it automatically for
-the current OS. >
-
-  let g:play_browser_command = ''
-<
-                                                   *'g:go_play_open_browser'*
-
-
-===============================================================================
-TEXT OBJECTS                                                 *go-text-objects*
-
-vim-go comes with several custom |text-objects| that can be used to operate
-upon regions of text. vim-go currently defines the following text objects:
-
-                                               *go-v_af* *go-af*
-af			      "a function", select contents from a function definition to the
-               closing bracket.
-
-                                               *go-v_if* *go-if*
-if			      "inside a function", select contents of a function,
-			        excluding the function definition and the closing bracket.
-
 
 ===============================================================================
 SETTINGS                                                        *go-settings*
