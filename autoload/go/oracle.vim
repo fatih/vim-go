@@ -79,16 +79,17 @@ func! s:RunOracle(mode, selected) range abort
     let dname = expand('%:p:h')
     let pkg = go#package#ImportPath(dname)
 
-    if exists('g:go_oracle_scope_file')
-        " let the user defines the scope
-        let sname = shellescape(get(g:, 'go_oracle_scope_file'))
+    if exists('g:go_oracle_scope')
+        " let the user defines the scope, must be a space separated string,
+        " example: 'fmt math net/http'
+        let scopes = split(shellescape(get(g:, 'go_oracle_scope')), '\W\+')
     elseif exists('g:go_oracle_include_tests') && pkg != -1
         " give import path so it includes all _test.go files too
-        let sname = shellescape(pkg)
+        let scopes = [shellescape(pkg)]
     else
         " best usable way, only pass the package itself, without the test
         " files
-        let sname = join(go#tool#Files(), ' ')
+        let scopes = go#tool#Files()
     endif
 
     "return with a warning if the bin doesn't exist
@@ -100,15 +101,23 @@ func! s:RunOracle(mode, selected) range abort
     if a:selected != -1
         let pos1 = s:getpos(line("'<"), col("'<"))
         let pos2 = s:getpos(line("'>"), col("'>"))
-        let cmd = printf('%s -format plain -pos=%s:#%d,#%d %s %s',
+        let cmd = printf('%s -format plain -pos=%s:#%d,#%d %s',
                     \  bin_path,
-                    \  shellescape(fname), pos1, pos2, a:mode, sname)
+                    \  shellescape(fname), pos1, pos2, a:mode)
     else
         let pos = s:getpos(line('.'), col('.'))
-        let cmd = printf('%s -format plain -pos=%s:#%d %s %s',
+        let cmd = printf('%s -format plain -pos=%s:#%d %s',
                     \  bin_path,
-                    \  shellescape(fname), pos, a:mode, sname)
+                    \  shellescape(fname), pos, a:mode)
     endif
+
+    " now append each scope to the end as Oracle's scope parameter. It can be
+    " a packages or go files, dependent on the User's own choice. For more
+    " info check Oracle's User Manual section about scopes:
+    " https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
+    for scope in scopes
+      let cmd .= ' ' . scope
+    endfor
 
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 

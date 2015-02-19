@@ -591,6 +591,18 @@ is used. Use "neosnippet" for neosnippet.vim: >
   let g:go_snippet_engine = "ultisnips"
 <
 
+                                                      *'g:go_oracle_scope'*
+
+Use this option to define the scope of the analysis to be passed for Oracle
+related commands, such as |GoImplements|, |GoCallers|, etc..  By default it's
+not set, so only the current packages go files are passed as scope. For more
+info please have look at Oracle's User Manual:
+https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
+>
+
+  let g:go_oracle_scope = ''
+<
+
                                       *'g:go_highlight_array_whitespace_error'*
 
 Highlights white space after "[]". >
