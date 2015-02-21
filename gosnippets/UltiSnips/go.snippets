@@ -152,6 +152,14 @@ if err != nil {
 ${0}
 endsnippet
 
+# error snippet
+snippet errt "Error test fatal " !b
+if err != nil {
+	t.Fatal(err)
+}
+${0}
+endsnippet
+
 snippet errn, "Error return with two return values" !b
 if err != nil {
 	return ${1:nil}, err
