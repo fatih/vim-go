@@ -82,7 +82,11 @@ func! s:RunOracle(mode, selected) range abort
     if exists('g:go_oracle_scope')
         " let the user defines the scope, must be a space separated string,
         " example: 'fmt math net/http'
-        let scopes = split(shellescape(get(g:, 'go_oracle_scope')), '\W\+')
+        let unescaped_scopes = split(get(g:, 'go_oracle_scope'))
+        let scopes = []
+        for unescaped_scope in unescaped_scopes
+          call add(scopes, shellescape(unescaped_scope))
+        endfor
     elseif exists('g:go_oracle_include_tests') && pkg != -1
         " give import path so it includes all _test.go files too
         let scopes = [shellescape(pkg)]
