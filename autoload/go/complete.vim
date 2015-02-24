@@ -147,7 +147,7 @@ fu! go#complete#Complete(findstart, base)
         return col('.') - g:gocomplete_completions[0] - 1
         "findstart = 0 when we need to return the list of completions
     else
-        let s = getline(".")[col('.') - g:gocomplete_completions[0] - 1]
+        let s = getline(".")[col('.') - 1]
         if s =~ '[(){}\{\}]'
             return map(copy(g:gocomplete_completions[1]), 's:trim_bracket(v:val)')
         endif
