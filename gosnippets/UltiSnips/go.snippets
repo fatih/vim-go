@@ -346,15 +346,16 @@ endsnippet
 
 # variable declaration
 snippet var "var x Type [= ...]"
-var ${1:x} ${2:Type}${3: = ${0:value\}}
+var ${1:x} ${2:Type}${3: = ${0:value}}
 endsnippet
 
 # variables declaration
 snippet vars "var ( ... )"
 var (
-${1:x} ${2:Type}${3: = ${0:value\}}
+	${1:x} ${2:Type}${3: = ${0:value}}
 )
 endsnippet
+
 
 global !p
 
