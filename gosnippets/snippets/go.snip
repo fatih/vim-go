@@ -139,6 +139,16 @@ abbr if err != nil { return [...], err }
 	}
 	${0}
 
+
+# error snippet handle and return
+snippet errh
+abbr if err != nil { return }
+	if err != nil {
+		${1}
+		return
+	}
+	${0}
+
 # json snippet
 snippet json
 abbr \`json:key\`

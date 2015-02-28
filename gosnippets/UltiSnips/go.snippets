@@ -167,6 +167,14 @@ if err != nil {
 ${0}
 endsnippet
 
+snippet errh "Error handle and return" !b
+if err != nil {
+	${1}
+	return
+}
+${0}
+endsnippet
+
 snippet json "\`json:key\`"
 \`json:"${1:keyName}"\`
 endsnippet
