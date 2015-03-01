@@ -199,9 +199,18 @@ COMMANDS                                                          *go-commands*
                                                                     *:GoTest*
 :GoTest [expand]
 
-    Test your _test.go files via in your current directory. Errors are
+    Run the tests on your _test.go files via in your current directory. Errors
+    are populated in quickfix window.  If an argument is passed, 'expand' is
+    used as file selector (useful for cases like `:GoTest ./...`).
+
+                                                              *:GoTestCompile*
+:GoTestCompile [expand]
+
+    Compile your _test.go files via in your current directory. Errors are
     populated in quickfix window.  If an argument is passed, 'expand' is used
-    as file selector (useful for cases like `:GoTest ./...`).
+    as file selector (useful for cases like `:GoTest ./...`). Useful to not
+    run the tests and capture/fix errors before running the tests or to
+    create test binary.
 
                                                                 *:GoCoverage*
 :GoCoverage
@@ -358,6 +367,10 @@ Calls `go install` for the current package
                                                                  *(go-test)*
 
 Calls `go test` for the current package
+
+                                                          *(go-test-compile)*
+
+Calls `go test -c` for the current package
 
                                                              *(go-coverage)*
 
