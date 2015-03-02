@@ -124,17 +124,14 @@ function! go#tool#BinPath(binpath)
     let old_path = $PATH
     let $PATH = $PATH . PathSep() .go_bin_path
 
-    if !executable(binpath) 
+    if !executable(basename)
         echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
+        " restore back!
+        let $PATH = old_path
         return ""
     endif
 
-    " restore back!
-    if go_bin_path
-        let $PATH = old_path
-    endif
-
-    return go_bin_path . '/' . basename
+    return basename
 endfunction
 
 " following two functions are from: https://github.com/mattn/gist-vim 
