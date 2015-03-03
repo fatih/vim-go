@@ -131,7 +131,14 @@ function! go#tool#BinPath(binpath)
         return ""
     endif
 
-    return basename
+    let $PATH = old_path
+
+    let sep = '/'
+    if IsWin()
+        let sep = '\'
+    endif
+
+    return go_bin_path . sep . basename
 endfunction
 
 " following two functions are from: https://github.com/mattn/gist-vim 
