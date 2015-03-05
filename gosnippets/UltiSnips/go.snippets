@@ -38,7 +38,7 @@ endsnippet
 # case
 snippet case "case ...:"
 case ${1:value}:
-	${0}
+	${0:${VISUAL}}
 endsnippet
 
 # constant
@@ -70,8 +70,7 @@ endsnippet
 # default case
 snippet default "default: ..."
 default:
-	${0}
-
+	${0:${VISUAL}}
 endsnippet
 
 # defer
@@ -82,7 +81,7 @@ endsnippet
 
 snippet def "defer func() { ... }"
 defer func() {
-	${0}
+	${0:${VISUAL}}
 }()
 endsnippet
 
@@ -90,7 +89,7 @@ endsnippet
 snippet defr
 defer func() {
 	if err := recover(); err != nil {
-		${0}
+		${0:${VISUAL}}
 	}
 }()
 endsnippet
@@ -133,14 +132,14 @@ endsnippet
 # if condition
 snippet if "if ... { ... }"
 if ${1:condition} {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
 # else snippet
 snippet else
 else {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
@@ -187,21 +186,21 @@ endsnippet
 # for loop
 snippet for "for ... { ... }"
 for ${1} {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
 # for integer loop
 snippet fori "for 0..N-1 { ... }"
 for ${1:i} := 0; $1 < ${2:N}; $1++ {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
 # for range loop
 snippet forr "for k, v := range items { ... }"
 for ${2:k}, ${3:v} := range ${1} {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
@@ -219,17 +218,17 @@ endsnippet
 
 # Fmt Println debug
 snippet fn "fmt.Println(...)"
-fmt.Println("${1}")
+fmt.Println("${1:${VISUAL}}")
 endsnippet
 
 # log printf
 snippet lf "log.Printf(...)"
-log.Printf("${1} = %+v\n", $1)
+log.Printf("${1:${VISUAL}} = %+v\n", $1)
 endsnippet
 
 # log println
 snippet ln "log.Println(...)"
-log.Println("${1}")
+log.Println("${1:${VISUAL}}")
 endsnippet
 
 # make
@@ -245,7 +244,7 @@ endsnippet
 # main()
 snippet main "func main() { ... }"
 func main() {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
@@ -259,7 +258,7 @@ endsnippet
 # ok
 snippet ok "if !ok { ... }"
 if !ok {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
@@ -277,7 +276,7 @@ endsnippet
 
 # return
 snippet rt "return"
-return ${0}
+return ${0:${VISUAL}}
 endsnippet
 
 # select
@@ -324,7 +323,7 @@ endsnippet
 # test function
 snippet test "func TestXYZ(t *testing.T) { ... }"
 func Test${1:Function}(t *testing.T) {
-	${0}
+	${0:${VISUAL}}
 }
 endsnippet
 
