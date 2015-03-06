@@ -200,8 +200,8 @@ If trying to use `:GoDef`,  `:GoInfo` and get a `command not found`, check that 
 Before opening vim, check your current `$PATH`:
 
 	echo $PATH
-	
-after opening vim, run `:echo $PATH`, the output must be your current `$PATH` + `$PATH/bin` (the location where `:GoInstallBinaries` installed the binaries
+
+after opening vim, run `:echo $PATH`, the output must be your current `$PATH` + `$GOPATH/bin` (the location where `:GoInstallBinaries` installed the binaries
 
 If problem persists and you are using maybe 'csh' or other shell, try adding this to your .vimrc:
 
