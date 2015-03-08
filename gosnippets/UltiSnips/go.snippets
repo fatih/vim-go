@@ -211,6 +211,13 @@ func ${1:name}(${2:params})${3/(.+)/ /}`!p opening_par(snip, 3)`$3`!p closing_pa
 }
 endsnippet
 
+# HTTP handler
+snippet http "HTTP handler" b
+func ${1:handler}(${2:w} http.ResponseWriter, ${3:r} *http.Request) {
+	${0:${VISUAL}}
+}
+endsnippet
+
 # Fmt Printf debug
 snippet ff "fmt.Printf(...)"
 fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
