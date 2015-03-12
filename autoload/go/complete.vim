@@ -31,6 +31,9 @@ fu! s:system(str, ...)
 endf
 
 fu! s:gocodeShellescape(arg)
+    if go#vimproc#has_vimproc()
+        return vimproc#shellescape(a:arg)
+    endif
     try
         let ssl_save = &shellslash
         set noshellslash
@@ -53,7 +56,7 @@ fu! s:gocodeCommand(cmd, preargs, args)
         return
     endif
 
-    let result = s:system(printf('%s %s %s %s', bin_path, join(a:preargs), a:cmd, join(a:args)))
+    let result = s:system(printf('%s %s %s %s', s:gocodeShellescape(bin_path), join(a:preargs), s:gocodeShellescape(a:cmd), join(a:args)))
     if v:shell_error != 0
         return "[\"0\", []]"
     else
