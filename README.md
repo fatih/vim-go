@@ -15,23 +15,23 @@ disabled/enabled easily.
 * Auto completion support via `gocode`
 * Better `gofmt` on save, keeps cursor position and doesn't break your undo
   history
-* Go to symbol/declaration with `godef`
-* Look up documentation with `godoc` inside Vim or open it in browser.
-* Automatically import packages via `goimports`
-* Compile and `go build` your package, install it with `go install`
-* `go run` quickly your current file/files
-* Run `go test` and see any errors in quickfix window
+* Go to symbol/declaration with `:GoDef`
+* Look up documentation with `:GoDoc` inside Vim or open it in browser.
+* Automatically import packages via `:GoImport` or plug it into autosave
+* Compile your package with `:GoBuild` , install it with `:GoInstall`
+* `:GoRun` quickly your current file/files
+* Run `:GoTest` and see any errors in quickfix window
 * Create a coverage profile and display annotated source code in browser to see
-  which functions are covered.
-* Lint your code with `golint`
-* Run your code through `go vet` to catch static errors.
-* Advanced source analysis tool with `oracle`
-* Precise type-safe renaming of identifiers with `gorename`
+  which functions are covered with `:GoCoverage`
+* Lint your code with `:GoLint`
+* Run your code through `:GoVet` to catch static errors.
+* Advanced source analysis tool with oracle, such as `:GoImplements`, `:GoCallees`, `:GoReferrers`
+* Precise type-safe renaming of identifiers with `:GoRename`
 * List all source files and dependencies
-* Checking with `errcheck` for unchecked errors.
+* Checking with `:GoErrCheck` for unchecked errors.
 * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
-* Share your current code to [play.golang.org](http://play.golang.org)
-* On-the-fly type information about the word under the cursor
+* Share your current code to [play.golang.org](http://play.golang.org) with `:GoPlay`
+* On-the-fly type information about the word under the cursor. Plug it into your custom vim function.
 * Tagbar support to show tags of the source code in a sidebar with `gotags`
 * Custom vim text objects, such a `a function` or `inner function`
 
