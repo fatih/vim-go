@@ -50,9 +50,6 @@ add the appropriate lines and execute the plugin's install command.
   * `NeoBundle 'fatih/vim-go'`
 *  [Vundle](https://github.com/gmarik/vundle)
   * `Plugin 'fatih/vim-go'`
-*  Manual
-  *  Copy all of the files into your `~/.vim` directory
-
 
 Please be sure all necessary binaries are installed (such as `gocode`, `godef`,
 `goimports`, etc..). You can easily install them with the included
