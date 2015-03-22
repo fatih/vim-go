@@ -94,6 +94,10 @@ function! go#cmd#Test(compile, ...)
         let command .= expand(a:1)
     endif
 
+    if len(a:000) == 2
+        let command .= a:2
+    endif
+
     if a:compile
         echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
     else
@@ -122,6 +126,23 @@ function! go#cmd#Test(compile, ...)
             echon "vim-go: " | echohl Function | echon "[test] PASS" | echohl None
         endif
     endif
+endfunction
+
+function! go#cmd#TestFocused(...)
+    let test = search("func Test", "bcs")
+    let line = getline(test)
+    let name = split(split(line, " ")[1], "(")[0]
+    let flag = "-run '" . name . "$'"
+
+    let a1 = ""
+    if len(a:000)
+        let a1 = a:1
+
+        " add extra space
+        let flag = " " . flag 
+    endif
+
+    call go#cmd#Test(0, a1, flag)
 endfunction
 
 function! go#cmd#Coverage(...)
