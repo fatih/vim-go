@@ -129,10 +129,10 @@ function! go#cmd#Test(compile, ...)
 endfunction
 
 function! go#cmd#TestFocused(...)
-    let test = search("func Test", "bcs")
     let line = getline(test)
     let name = split(split(line, " ")[1], "(")[0]
     let flag = "-run '" . name . "$'"
+    let test = search("func Test", "bcsW")
 
     let a1 = ""
     if len(a:000)
