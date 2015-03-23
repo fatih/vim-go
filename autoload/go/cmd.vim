@@ -129,20 +129,25 @@ function! go#cmd#Test(compile, ...)
 endfunction
 
 function! go#cmd#TestFocused(...)
-    let line = getline(test)
-    let name = split(split(line, " ")[1], "(")[0]
-    let flag = "-run '" . name . "$'"
     let test = search("func Test", "bcsW")
 
-    let a1 = ""
-    if len(a:000)
-        let a1 = a:1
+    if test == 0
+        echo "vim-go: [test] no test found immediate to cursor"
+    else
+        let line = getline(test)
+        let name = split(split(line, " ")[1], "(")[0]
+        let flag = "-run '" . name . "$'"
 
-        " add extra space
-        let flag = " " . flag 
-    endif
+        let a1 = ""
+        if len(a:000)
+            let a1 = a:1
 
-    call go#cmd#Test(0, a1, flag)
+            " add extra space
+            let flag = " " . flag 
+        endif
+
+        call go#cmd#Test(0, a1, flag)
+    end
 endfunction
 
 function! go#cmd#Coverage(...)
