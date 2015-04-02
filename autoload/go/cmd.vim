@@ -129,7 +129,15 @@ function! go#cmd#Test(compile, ...)
 endfunction
 
 function! go#cmd#TestFunc(...)
-    let test = search("func Test", "bcsW")
+    " search flags legend (used only)
+    " 'b' search backward instead of forward
+    " 'c' accept a match at the cursor position
+    " 'n' do Not move the cursor
+    " 'W' don't wrap around the end of the file
+    "
+    " for the full list
+    " :help search
+    let test = search("func Test", "bcnW")
 
     if test == 0
         echo "vim-go: [test] no test found immediate to cursor"
