@@ -128,7 +128,7 @@ function! go#cmd#Test(compile, ...)
     endif
 endfunction
 
-function! go#cmd#TestFocused(...)
+function! go#cmd#TestFunc(...)
     let test = search("func Test", "bcsW")
 
     if test == 0
