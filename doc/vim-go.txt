@@ -225,6 +225,17 @@ COMMANDS                                                          *go-commands*
     are populated in quickfix window.  If an argument is passed, 'expand' is
     used as file selector (useful for cases like `:GoTest ./...`).
 
+                                                              *:GoTestFunc*
+
+:GoTestFunc [expand]
+
+    Runs :GoTest, but only on the single test function immediate to your
+    cursor using 'go test's '-run' flag.
+
+    Lookup is done starting at the cursor (including that line) moving up till 
+    a matching `func Test` pattern is found or top of file is reached. Search 
+    will not wrap around when at the top of the file.
+
                                                               *:GoTestCompile*
 :GoTestCompile [expand]
 
@@ -389,6 +400,10 @@ Calls `go install` for the current package
                                                                  *(go-test)*
 
 Calls `go test` for the current package
+
+                                                          *(go-test-func)*
+
+Calls `go test -run '...'` for the test function immediate to cursor
 
                                                           *(go-test-compile)*
 
