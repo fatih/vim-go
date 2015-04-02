@@ -133,21 +133,22 @@ function! go#cmd#TestFunc(...)
 
     if test == 0
         echo "vim-go: [test] no test found immediate to cursor"
-    else
-        let line = getline(test)
-        let name = split(split(line, " ")[1], "(")[0]
-        let flag = "-run '" . name . "$'"
-
-        let a1 = ""
-        if len(a:000)
-            let a1 = a:1
-
-            " add extra space
-            let flag = " " . flag 
-        endif
-
-        call go#cmd#Test(0, a1, flag)
+        return
     end
+
+    let line = getline(test)
+    let name = split(split(line, " ")[1], "(")[0]
+    let flag = "-run '" . name . "$'"
+
+    let a1 = ""
+    if len(a:000)
+        let a1 = a:1
+
+        " add extra space
+        let flag = " " . flag 
+    endif
+
+    call go#cmd#Test(0, a1, flag)
 endfunction
 
 function! go#cmd#Coverage(...)
