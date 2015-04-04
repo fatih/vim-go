@@ -162,12 +162,6 @@ function! go#oracle#Callers(selected)
     call s:qflistSecond(out)
 endfunction
 
-" Show the callgraph of the current program.
-function! go#oracle#Callgraph(selected)
-    let out = s:RunOracle('callgraph', a:selected)
-    call s:qflistSecond(out)
-endfunction
-
 " Show path from callgraph root to selected function
 function! go#oracle#Callstack(selected)
     let out = s:RunOracle('callstack', a:selected)
