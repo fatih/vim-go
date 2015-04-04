@@ -183,27 +183,6 @@ endfunction
 " Show all refs to entity denoted by selected identifier
 function! go#oracle#Referrers(selected)
     let out = s:RunOracle('referrers', a:selected)
-
-    " append line contents from Go source file for some messages:
-    " '...: referenced here'
-    " '...: reference to NAME'
-    let lines = split(out, "\n")
-    let extlines = []
-    for line in lines
-        if line =~# '\v: referenced here$|: reference to [^ :]*$'
-            let parts = split(line, ':')
-            " Note: we count -3 from end, to support additional comma in
-            " Windows-style C:\... paths
-            let filename = join(parts[0:-3], ':')
-            let linenum = parts[-2]
-            let extline = line . ': ' . readfile(filename, '', linenum)[linenum-1]
-            call add(extlines, extline)
-        else
-            call add(extlines, line)
-        endif
-    endfor
-    let out = join(extlines, "\n")
-
     call s:qflistSecond(out)
 endfunction
 
