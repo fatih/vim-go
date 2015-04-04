@@ -90,8 +90,12 @@ function! go#fmt#Format(withGoimport)
         let fmt_command = bin_path
     endif
 
-    " populate the final command with user based fmt options
-    let command = fmt_command . ' ' . g:go_fmt_options
+    if a:withGoimport == 1
+        let command = fmt_command
+    else
+        " populate the final command with user based fmt options
+        let command = fmt_command . ' ' . g:go_fmt_options
+    endif
 
     " execute our command...
     let out = system(command . " " . l:tmpname)
