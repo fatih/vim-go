@@ -315,18 +315,11 @@ COMMANDS                                                          *go-commands*
     identifier), etc. Almost any piece of syntax may be described, and the
     oracle will try to print all the useful information it can.
 
-                                                              *:GoCallgraph*
-:GoCallgraph
-
-    Shows the 'callgraph' for the entire program. For more info about the
-    indentation checkout the Oracle User Manual:
-    golang.org/s/oracle-user-manual 
-
                                                               *:GoCallstack*
 :GoCallstack
 
     Shows 'callstack' relation for the selected function. An arbitrary path
-    from the root of the callgrap to the selected function is showed in a
+    from the root of the callgraph to the selected function is showed in a
     quickfix list. This may be useful to understand how the function is
     reached in a given program. 
 
@@ -491,10 +484,6 @@ Show possible callers of selected function
 
 Describe selected syntax: definition, methods, etc
 
-
-                                                            *(go-callgraph)*
-
-Show the callgraph of the current program.
 
                                                             *(go-callstack)*
 
