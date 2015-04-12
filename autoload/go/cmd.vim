@@ -146,7 +146,7 @@ function! go#cmd#TestFunc(...)
 
     let line = getline(test)
     let name = split(split(line, " ")[1], "(")[0]
-    let flag = "-run '" . name . "$'"
+    let flag = "-run \"" . name . "$\""
 
     let a1 = ""
     if len(a:000)
