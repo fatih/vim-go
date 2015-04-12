@@ -236,20 +236,20 @@ hi def link     goTodo              Todo
 
 " Operators; 
 if g:go_highlight_operators != 0
-	syn match goOperator /:=/
-	syn match goOperator />=/
-	syn match goOperator /<=/
-	syn match goOperator /==/
-	syn match goOperator /!=/
-	syn match goOperator /+=/
-	syn match goOperator /-=/
-	syn match goOperator /\s>\s/
-	syn match goOperator /\s<\s/
-	syn match goOperator /\s+\s/
-	syn match goOperator /\s-\s/
-	syn match goOperator /\s\*\s/
-	syn match goOperator /\s\/\s/
-	syn match goOperator /\s%\s/
+	" match single-char operators:          - + % < > ! & | ^ =
+	" and corresponding two-char operators: -= += %= <= >= != &= |= ^= ==
+	syn match goOperator /[-+%<>!&|\^=]=\?/
+	" match * and *=
+	syn match goOperator /[^\/]\zs\*=\?/
+	" match / and /=
+	syn match goOperator /\/\%(=\|\ze[^\/\*]\)/
+	" match two-char operators:               << >> &^
+	" and corresponding three-char operators: <<= >>= &^=
+	syn match goOperator /\%(<<\|>>\|&^\)=\?/
+	" match remaining two-char operators: := && || <- ++ --
+	syn match goOperator /:=\|||\|<-\|++\|--/
+	" match ...
+	syn match goOperator /\.\.\./
 endif
 hi def link     goOperator					Operator
 
