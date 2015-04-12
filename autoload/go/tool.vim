@@ -76,10 +76,10 @@ function! go#tool#ExecuteInDir(cmd) abort
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     let dir = getcwd()
     try
-        execute cd.'`=expand("%:p:h")`'
+        execute cd . fnameescape(expand("%:p:h"))
         let out = system(a:cmd)
     finally
-        execute cd.'`=dir`'
+        execute cd . fnameescape(dir)
     endtry
     return out
 endfunction
