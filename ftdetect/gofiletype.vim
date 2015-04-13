@@ -21,3 +21,6 @@ endfunction
 au BufNewFile *.go setlocal filetype=go fileencoding=utf-8 fileformat=unix
 au BufRead *.go call s:gofiletype_pre()
 au BufReadPost *.go call s:gofiletype_post()
+
+au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
+
