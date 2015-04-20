@@ -226,7 +226,6 @@ COMMANDS                                                          *go-commands*
     used as file selector (useful for cases like `:GoTest ./...`).
 
                                                               *:GoTestFunc*
-
 :GoTestFunc [expand]
 
     Runs :GoTest, but only on the single test function immediate to your
