@@ -23,7 +23,11 @@ function! go#cmd#Run(bang, ...)
         let &makeprg = "go run " . expand(a:1)
     endif
 
-    exe 'make!'
+    if exists(':Make') == 2
+        silent! exe 'Make'
+    else
+        exe 'make!'
+    endif
     if !a:bang
         cwindow
         let errors = getqflist()
@@ -64,7 +68,11 @@ function! go#cmd#Build(bang, ...)
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
-    silent! exe 'make!'
+    if exists(':Make')
+        silent! exe 'Make!'
+    else
+        silent! exe 'make!'
+    endif
     redraw!
     if !a:bang
         cwindow
@@ -153,7 +161,7 @@ function! go#cmd#TestFunc(...)
         let a1 = a:1
 
         " add extra space
-        let flag = " " . flag 
+        let flag = " " . flag
     endif
 
     call go#cmd#Test(0, a1, flag)
