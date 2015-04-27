@@ -81,4 +81,3 @@ hi def link gotplAction PreProc
 hi def link goTplComment Comment
 
 let b:current_syntax = "gotexttmpl"
-
