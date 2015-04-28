@@ -2,6 +2,14 @@ if !exists("g:go_jump_to_error")
     let g:go_jump_to_error = 1
 endif
 
+function! s:runMake(...)
+    if g:go_dispatch_enabled && exists(':Make') == 2
+        silent exe 'Make'
+    else
+        silent exe 'make!'
+    endif
+endfunction
+
 function! go#cmd#Run(bang, ...)
     let goFiles = '"' . join(go#tool#Files(), '" "') . '"'
 
@@ -23,11 +31,7 @@ function! go#cmd#Run(bang, ...)
         let &makeprg = "go run " . expand(a:1)
     endif
 
-    if exists(':Make') == 2
-        silent! exe 'Make'
-    else
-        exe 'make!'
-    endif
+    call s:runMake()
     if !a:bang
         cwindow
         let errors = getqflist()
@@ -68,11 +72,7 @@ function! go#cmd#Build(bang, ...)
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
-    if exists(':Make')
-        silent! exe 'Make!'
-    else
-        silent! exe 'make!'
-    endif
+    call s:runMake()
     redraw!
     if !a:bang
         cwindow
