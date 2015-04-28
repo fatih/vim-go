@@ -2,6 +2,13 @@ if !exists("g:go_jump_to_error")
     let g:go_jump_to_error = 1
 endif
 
+if !exists("g:go_dispatch_enabled")
+    let g:go_dispatch_enabled = 0
+endif
+
+" Run either `make` or `Make` depending on the user's configuration
+" `Make` required the vim-dispatch plugin by Tim Pope.
+" https://github.com/tpope/vim-dispatch
 function! s:runMake(...)
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent exe 'Make'
