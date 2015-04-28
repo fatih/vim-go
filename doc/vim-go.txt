@@ -71,12 +71,12 @@ add the appropriate lines and execute the plugin's install command.
 <
 
 *  https://github.com/junegunn/vim-plug >
-  
+
     Plug 'fatih/vim-go'
 
 <
 *  https://github.com/Shougo/neobundle.vim >
-  
+
     NeoBundle 'fatih/vim-go'
 <
 
@@ -86,7 +86,7 @@ add the appropriate lines and execute the plugin's install command.
 
 <
 *  Manual >
-  
+
     Copy all of the files into your `~/.vim` directory
 <
 
@@ -231,8 +231,8 @@ COMMANDS                                                          *go-commands*
     Runs :GoTest, but only on the single test function immediate to your
     cursor using 'go test's '-run' flag.
 
-    Lookup is done starting at the cursor (including that line) moving up till 
-    a matching `func Test` pattern is found or top of file is reached. Search 
+    Lookup is done starting at the cursor (including that line) moving up till
+    a matching `func Test` pattern is found or top of file is reached. Search
     will not wrap around when at the top of the file.
 
                                                               *:GoTestCompile*
@@ -284,7 +284,7 @@ COMMANDS                                                          *go-commands*
 
     Show 'implements' relation for a selected package. A list of interfaces
     for the type that implements an interface under the cursor (or selected
-    package) is shown quickfix list. 
+    package) is shown quickfix list.
                                                                 *:GoRename*
 :GoRename [to]
 
@@ -320,14 +320,14 @@ COMMANDS                                                          *go-commands*
     Shows 'callstack' relation for the selected function. An arbitrary path
     from the root of the callgraph to the selected function is showed in a
     quickfix list. This may be useful to understand how the function is
-    reached in a given program. 
+    reached in a given program.
 
                                                               *:GoFreevars*
 :GoFreevars
 
     Enumerates the free variables of the selection. “Free variables” is a
     technical term meaning the set of variables that are referenced but not
-    defined within the selection, or loosely speaking, its inputs. 
+    defined within the selection, or loosely speaking, its inputs.
 
     This information is useful if you’re considering whether to refactor the
     selection into a function of its own, as the free variables would be the
@@ -339,11 +339,11 @@ COMMANDS                                                          *go-commands*
 :GoChannelPeers
 
     Shows the set of possible sends/receives on the channel operand of the
-    selected send or receive operation; the selection must be a <- token. 
+    selected send or receive operation; the selection must be a <- token.
 
-    For example, visually select a channel operand in the form of: 
+    For example, visually select a channel operand in the form of:
 
-      "done <- true" 
+      "done <- true"
 
     and call |GoChannelPeers| on it. It will show where it was allocated, and
     the sending and receiving endings.
@@ -598,6 +598,14 @@ enabled. Disabling it allows you to map something else to the mapping `gd`.
 Default is enabled. >
 
   let g:go_def_mapping_enabled = 1
+<
+                                                    *'g:go_dispatch_enabled'*
+
+Use this option to enable/disable the use of Dispatch to execute the
+`:GoGun` and `:GoBuild` commands.  More information about Dispatch is
+available at https://github.com/tpope/vim-dispatch. Default is disabled. >
+
+  let g:go_dispatch_enabled = 0
 <
                                                          *'g:go_doc_command'*
 
