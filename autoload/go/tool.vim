@@ -49,7 +49,9 @@ function! go#tool#ShowErrors(out)
         if !empty(fatalerrors)
             call add(errors, {"text": fatalerrors[1]})
         elseif !empty(tokens)
-            call add(errors, {"filename" : fnamemodify(tokens[1], ':p'),
+            let filename = fnamemodify(tokens[1], ':t')
+            let filedir =  expand('%:p:h')
+            call add(errors, {"filename" : filedir . '/' . filename,
                         \"lnum":     tokens[2],
                         \"text":     tokens[3]})
         elseif !empty(errors)
