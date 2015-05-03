@@ -52,6 +52,12 @@ function! go#cmd#Install(...)
     if v:shell_error
         call go#tool#ShowErrors(out)
         cwindow
+        let errors = getqflist()
+        if !empty(errors)
+            if g:go_jump_to_error
+                cc 1 "jump to first error if there is any
+            endif
+        endif
         return
     endif
 
