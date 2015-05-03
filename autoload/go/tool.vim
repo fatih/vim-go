@@ -41,7 +41,17 @@ function! go#tool#Imports()
 endfunction
 
 function! go#tool#ShowErrors(out)
+    " cd into the current files directory. This is important so fnamemodify
+    " does create a full path for outputs when the token is only a single file
+    " name (such as for a go test output, i.e.: 'demo_test.go'). For other
+    " outputs, such as 'go install' we already get an absolute path (i.e.:
+    " '../foo/foo.go') and fnamemodify successfuly creates the full path.
+    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    let current_dir = getcwd()
+    execute cd . fnameescape(expand("%:p:h"))
+
     let errors = []
+
     for line in split(a:out, '\n')
         let fatalerrors = matchlist(line, '^\(fatal error:.*\)$')
         let tokens = matchlist(line, '^\s*\(.\{-}\):\(\d\+\):\s*\(.*\)')
@@ -49,9 +59,7 @@ function! go#tool#ShowErrors(out)
         if !empty(fatalerrors)
             call add(errors, {"text": fatalerrors[1]})
         elseif !empty(tokens)
-            let filename = fnamemodify(tokens[1], ':t')
-            let filedir =  expand('%:p:h')
-            call add(errors, {"filename" : filedir . '/' . filename,
+            call add(errors, {"filename" : fnamemodify(tokens[1], ':p'),
                         \"lnum":     tokens[2],
                         \"text":     tokens[3]})
         elseif !empty(errors)
@@ -62,6 +70,9 @@ function! go#tool#ShowErrors(out)
             endif
         endif
     endfor
+
+    " return back to old dir once we are finished with populating the errors
+    execute cd . fnameescape(current_dir)
 
     if !empty(errors)
         call setqflist(errors, 'r')
