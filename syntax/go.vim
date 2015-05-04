@@ -52,7 +52,7 @@ if !exists("g:go_highlight_trailing_whitespace_error")
 endif
 
 if !exists("g:go_highlight_operators")
-	let g:go_highlight_operators = 1
+	let g:go_highlight_operators = 0
 endif
 
 if !exists("g:go_highlight_functions")
