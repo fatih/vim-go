@@ -36,6 +36,9 @@ function! go#gb#Build(...)
         return
     endif
 
+    " clear previous build errors
+    call setqflist([])
+    cwindow
     redraws! | echon "vim-go: " | echohl Function | echon "[gb build] SUCCESS"| echohl None
 endfunction
 
