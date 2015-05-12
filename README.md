@@ -75,7 +75,9 @@ completion (completion by type) install:
 
 Many of the [features](#features) are enabled by default. There are no
 additional settings needed. All usages and commands are listed in
-`doc/vim-go.txt`. Just open the help page to see all commands:
+`doc/vim-go.txt`. Note that help tags needs to be populated. Check your 
+pluging manager settings to generate the documentation (some do it automatically). 
+After that just open the help page to see all commands:
 
     :help vim-go
 
