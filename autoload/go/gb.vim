@@ -32,4 +32,17 @@ function! go#gb#BuildAll()
     return go#gb#Build("all")
 endfunction
 
+" findProjectRoot returns the project root by searching the src/ folder
+" recursively until it's been found till `/`
+function! s:findProjectRoot()
+    let current_dir = fnameescape(expand('%:p:h'))
+    let root_path = finddir("src/", current_dir .";")
+    if empty(root_path)
+      return ''
+    endif
+
+    return fnamemodify(root_path, ':p:h')
+endfunction
+
+
 " vim:ts=4:sw=4:et
