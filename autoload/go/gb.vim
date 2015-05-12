@@ -11,11 +11,13 @@ function! go#gb#Build(...)
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
+    redraw
+
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         let root_path = s:findProjectRoot()
         if empty(root_path)
-              redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "[gb build] PROJECT root not found"| echohl None
+              echon "vim-go: [run] " | echohl ErrorMsg | echon "[gb build] PROJECT root not found"| echohl None
             return
         endif
 
@@ -39,7 +41,7 @@ function! go#gb#Build(...)
     " clear previous build errors
     call setqflist([])
     cwindow
-    redraws! | echon "vim-go: " | echohl Function | echon "[gb build] SUCCESS"| echohl None
+    echon "vim-go: " | echohl Function | echon "[gb build] SUCCESS"| echohl None
 endfunction
 
 " BuildAll builds the project with 'gb build all'
