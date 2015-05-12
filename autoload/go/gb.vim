@@ -13,7 +13,17 @@ function! go#gb#Build(...)
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        let root_path = s:findProjectRoot()
+        if empty(root_path)
+              redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "[gb build] PROJECT root not found"| echohl None
+            return
+        endif
+
+        let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+        let current_dir = getcwd()
+        execute cd . fnameescape(root_path)
+
+        call go#tool#ShowErrors(out, 0)
         cwindow
         let errors = getqflist()
         if !empty(errors)
@@ -21,6 +31,8 @@ function! go#gb#Build(...)
                 cc 1 "jump to first error if there is any
             endif
         endif
+
+        execute cd . fnameescape(current_dir)
         return
     endif
 
@@ -41,7 +53,7 @@ function! s:findProjectRoot()
       return ''
     endif
 
-    return fnamemodify(root_path, ':p:h')
+    return fnamemodify(root_path, ':p:h:h')
 endfunction
 
 

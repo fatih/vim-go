@@ -50,7 +50,7 @@ function! go#cmd#Install(...)
     let command = 'go install "' . pkgs . '"'
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
         cwindow
         let errors = getqflist()
         if !empty(errors)
@@ -125,7 +125,7 @@ function! go#cmd#Test(compile, ...)
     redraw
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
         cwindow
         let errors = getqflist()
         if !empty(errors)
@@ -184,7 +184,7 @@ function! go#cmd#Coverage(...)
 
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
     else
         " clear previous quick fix window
         call setqflist([])
@@ -208,7 +208,7 @@ function! go#cmd#Vet()
     echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
     let out = go#tool#ExecuteInDir('go vet')
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
     else
         call setqflist([])
     endif
