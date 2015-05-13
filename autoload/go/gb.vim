@@ -52,6 +52,12 @@ endfunction
 " findProjectRoot returns the project root by searching the src/ folder
 " recursively until it's been found till `/`
 function! s:findProjectRoot()
+    " if set just return it
+    if $GB_PROJECT_DIR != ""
+        return $GB_PROJECT_DIR
+    endif
+
+    " otherwise go and search for the project diretory root path
     let current_dir = fnameescape(expand('%:p:h'))
     let root_path = finddir("src/", current_dir .";")
     if empty(root_path)
@@ -60,6 +66,5 @@ function! s:findProjectRoot()
 
     return fnamemodify(root_path, ':p:h:h')
 endfunction
-
 
 " vim:ts=4:sw=4:et
