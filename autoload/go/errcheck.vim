@@ -44,6 +44,7 @@ function! go#errcheck#Run(...) abort
             call setqflist(errors, 'r')
         endif
     else
+        redraw | echo
         call setqflist([])
     endif
 

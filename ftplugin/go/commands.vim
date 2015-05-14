@@ -68,6 +68,7 @@ command! -nargs=* GoTestFunc call go#cmd#TestFunc(<f-args>)
 command! -nargs=* GoTestCompile call go#cmd#Test(1, <f-args>)
 command! -nargs=* GoCoverage call go#cmd#Coverage(<f-args>)
 command! -nargs=0 GoVet call go#cmd#Vet()
+command! -nargs=0 GoErrCheck call go#errcheck#Run(<f-args>)
 
 " -- play
 command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
