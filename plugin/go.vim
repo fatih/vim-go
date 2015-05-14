@@ -17,9 +17,7 @@ let s:packages = [
             \ "github.com/jstemmer/gotags",
             \ ]
 
-" Commands
-command! GoErrCheck call go#errcheck#Run()
-
+" These commands are available on any filetypes
 command! GoInstallBinaries call s:GoInstallBinaries(-1)
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
 
