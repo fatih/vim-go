@@ -95,8 +95,12 @@ function! go#fmt#Format(withGoimport)
 
     " execute our command...
     let out = system(command . " " . l:tmpname)
+    let splitted = split(out, '\n')
 
-    "if there is no error on the temp file, gofmt again our original file
+
+    "if there is no error on the temp file replace the output with the current
+    "file (if this fails, we can always check the outputs first line with:
+    "splitted =~ 'package \w\+')
     if v:shell_error == 0
         " remove undo point caused via BufWritePre
         try | silent undojoin | catch | endtry
@@ -106,8 +110,14 @@ function! go#fmt#Format(withGoimport)
         let default_srr = &srr
         set srr=>%s 
 
-        " execufe gofmt on the current buffer and replace it
-        silent execute "%!" . command
+        "delete everything first from the buffer
+        %delete _  
+
+        " replace with gofmted content
+        call append(0, splitted)
+
+        " delete last line that comes from the append call
+        $delete _  
 
         " only clear quickfix if it was previously set, this prevents closing
         " other quickfixes
@@ -122,7 +132,7 @@ function! go#fmt#Format(withGoimport)
     elseif g:go_fmt_fail_silently == 0 
         "otherwise get the errors and put them to quickfix window
         let errors = []
-        for line in split(out, '\n')
+        for line in splitted
             let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
             if !empty(tokens)
                 call add(errors, {"filename": @%,
