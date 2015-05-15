@@ -18,6 +18,9 @@ function! go#def#Jump(...)
 		return
 	endif
 
+	let old_gopath = $GOPATH
+	let $GOPATH = DetectGoPath()
+
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
 	" get output of godef
@@ -25,6 +28,7 @@ function! go#def#Jump(...)
 
 	" jump to it
 	call s:godefJump(out, "")
+	let $GOPATH = old_gopath
 endfunction
 
 
@@ -36,12 +40,16 @@ function! go#def#JumpMode(mode)
 		return
 	endif
 
+	let old_gopath = $GOPATH
+	let $GOPATH = DetectGoPath()
+
 	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
 
 	" get output of godef
 	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), LineEnding()))
 
 	call s:godefJump(out, a:mode)
+	let $GOPATH = old_gopath
 endfunction
 
 

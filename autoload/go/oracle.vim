@@ -125,7 +125,13 @@ func! s:RunOracle(mode, selected) range abort
 
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
+    let old_gopath = $GOPATH
+    let $GOPATH = DetectGoPath()
+
     let out = system(cmd)
+
+    let $GOPATH = old_gopath
+
     if v:shell_error
         " unfortunaly oracle outputs a very long stack trace that is not
         " parsable to show the real error. But the main issue is usually the

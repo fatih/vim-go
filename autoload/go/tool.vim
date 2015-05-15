@@ -86,6 +86,9 @@ function! go#tool#ShowErrors(out)
 endfunction
 
 function! go#tool#ExecuteInDir(cmd) abort
+    let old_gopath = $GOPATH
+    let $GOPATH = DetectGoPath()
+
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     let dir = getcwd()
     try
@@ -94,6 +97,8 @@ function! go#tool#ExecuteInDir(cmd) abort
     finally
         execute cd . fnameescape(dir)
     endtry
+
+    let $GOPATH = old_gopath
     return out
 endfunction
 
@@ -135,7 +140,7 @@ function! go#tool#BinPath(binpath)
     " append our GOBIN and GOPATH paths and be sure they can be found there...
     " let us search in our GOBIN and GOPATH paths
     let old_path = $PATH
-    let $PATH = $PATH . PathSep() .go_bin_path
+    let $PATH = $PATH . PathListSep() .go_bin_path
 
     if !executable(basename)
         echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."

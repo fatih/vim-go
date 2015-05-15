@@ -56,7 +56,15 @@ fu! s:gocodeCommand(cmd, preargs, args)
         return
     endif
 
+    " we might hit cache problems, as gocode doesn't handle well different
+    " GOPATHS: https://github.com/nsf/gocode/issues/239
+    let old_gopath = $GOPATH
+    let $GOPATH = DetectGoPath()
+
     let result = s:system(printf('%s %s %s %s', s:gocodeShellescape(bin_path), join(a:preargs), s:gocodeShellescape(a:cmd), join(a:args)))
+
+    let $GOPATH = old_gopath
+
     if v:shell_error != 0
         return "[\"0\", []]"
     else

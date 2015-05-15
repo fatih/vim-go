@@ -110,6 +110,12 @@ https://github.com/Shougo/neosnippet.vim.
 ===============================================================================
 COMMANDS                                                          *go-commands*
 
+                                                                  *:GoPath*
+:GoPath [path]
+
+    GoPath sets and ovverides GOPATH with the given {path}. If no {path} is
+    given it shows the current GOPATH.
+
                                                                   *:GoImport*
 :GoImport [path]
 
