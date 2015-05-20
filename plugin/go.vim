@@ -150,13 +150,17 @@ function! DetectGoPath()
         return gopath
     endif
 
-    " don't lookup for godeps if autodetect is disabled
-    if !get(g:, "go_autodetect_gopath", 0)
+    " don't lookup for godeps if autodetect is disabled.
+    if !get(g:, "go_autodetect_gopath", 1)
         return gopath
     endif
 
     let current_dir = fnameescape(expand('%:p:h'))
 
+    " TODO(arslan): this should be changed so folders or files should be
+    " fetched from a customizable list. The user should define any new package
+    " management tool by it's own.
+    "
     " Godeps
     let godeps_root = finddir("Godeps", current_dir .";")
     if !empty(godeps_root)

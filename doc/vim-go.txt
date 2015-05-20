@@ -728,11 +728,24 @@ Highlights build constraints. By default it's disabled. >
 
 	let g:go_highlight_build_constraints = 0
 <
+
+                                                *'g:go_autodetect_gopath'*
+
+Automatically modifies GOPATH for certain directory structures, such as for
+the tool godep which has his own dependencies via the `Godeps` folder. What
+this means is that all tools are now working with the newly modified GOPATH.
+So |GoDef| for example jumps to the source inside the `Godeps` (vendored)
+source. Currently only `godep` is supported, in the near future more tool
+supports will be added. By default it's enabled. >
+
+	let g:go_autodetect_gopath = 1
+<
                                                   *'g:go_textobj_enabled'*
 
 Adds custom text objects. By default it's enabled. >
 
 	let g:go_textobj_enabled = 1
+
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
