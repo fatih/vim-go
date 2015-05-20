@@ -21,7 +21,7 @@ function! go#cmd#Build(bang, ...)
     let gofiles = join(go#tool#Files(), '" "')
 
     let old_gopath = $GOPATH
-    let $GOPATH = DetectGoPath()
+    let $GOPATH = go#path#Detect()
 
     if v:shell_error
         let &makeprg = "go build . errors"
@@ -60,9 +60,9 @@ function! go#cmd#Run(bang, ...)
     let goFiles = '"' . join(go#tool#Files(), '" "') . '"'
 
     let old_gopath = $GOPATH
-    let $GOPATH = DetectGoPath()
+    let $GOPATH = go#path#Detect()
 
-    if IsWin()
+    if go#util#IsWin()
         exec '!go run ' . goFiles
         if v:shell_error
             redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None

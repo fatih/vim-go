@@ -1,5 +1,5 @@
 " Check if tagbar is installed under plugins or is directly under rtp
-" this covers pathgen + Vundle/Bundle
+" this covers pathogen + Vundle/Bundle
 "
 " Also make sure the ctags command exists
 "
@@ -15,7 +15,7 @@ endif
 
 
 function! s:SetTagbar()
-	let bin_path = go#tool#BinPath(g:go_gotags_bin) 
+	let bin_path = go#path#CheckBinPath(g:go_gotags_bin) 
 	if empty(bin_path) 
 		return 
 	endif

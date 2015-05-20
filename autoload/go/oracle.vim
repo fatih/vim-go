@@ -97,7 +97,7 @@ func! s:RunOracle(mode, selected) range abort
     endif
 
     "return with a warning if the bin doesn't exist
-    let bin_path = go#tool#BinPath(g:go_oracle_bin) 
+    let bin_path = go#path#CheckBinPath(g:go_oracle_bin) 
     if empty(bin_path) 
         return 
     endif
@@ -126,7 +126,7 @@ func! s:RunOracle(mode, selected) range abort
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
     let old_gopath = $GOPATH
-    let $GOPATH = DetectGoPath()
+    let $GOPATH = go#path#Detect()
 
     let out = system(cmd)
 
