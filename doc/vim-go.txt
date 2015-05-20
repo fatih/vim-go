@@ -116,6 +116,13 @@ COMMANDS                                                          *go-commands*
     GoPath sets and ovverides GOPATH with the given {path}. If no {path} is
     given it shows the current GOPATH.
 
+                                                              *:GoPathClear*
+:GoPathClear
+
+    GoPathClear clears the current `GOPATH` which was set with |GoPath| and
+    restores `GOPATH` back to the inital value which was sourced when Vim was
+    started.
+
                                                                   *:GoImport*
 :GoImport [path]
 
