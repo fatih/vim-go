@@ -147,7 +147,7 @@ function! DetectGoPath()
     " if gopath is set manually, always return it, because this is something
     " the user explicitly wants
     if !empty(s:initial_go_path)
-        return gopath
+        return s:initial_go_path
     endif
 
     " don't lookup for godeps if autodetect is disabled.
