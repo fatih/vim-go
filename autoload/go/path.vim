@@ -16,8 +16,6 @@ function! go#path#GoPath(...)
 		return
 	endif
 
-	echo "gopath " .s:initial_go_path
-
 	echo go#path#Detect()
 endfunction
 
