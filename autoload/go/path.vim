@@ -4,6 +4,36 @@
 " :GoPath is used
 let s:initial_go_path = ""
 
+" GoPath sets or returns the current GOPATH. If no arguments are passed it
+" echoes the current GOPATH, if an argument is passed it replaces the current
+" GOPATH with it.
+function! go#path#GoPath(...)
+    " we have an argument, replace GOPATH
+    if len(a:000)
+        echon "vim-go: " | echohl Function | echon "GOPATH changed to ". a:1 | echohl None
+        let s:initial_go_path = $GOPATH
+        let $GOPATH = a:1
+        return
+    endif
+
+			  echo "gopath " .s:initial_go_path
+
+    echo go#path#Detect()
+endfunction
+
+" GoPathClear clears the current manually set GOPATH and restores it to the
+" initial GOPATH, which was set when Vim was started.
+function! go#path#GoPathClear()
+    if !empty(s:initial_go_path)
+        let $GOPATH = s:initial_go_path
+        let s:initial_go_path = ""
+    endif
+
+    echon "vim-go: " | echohl Function | echon "GOPATH restored to ". $GOPATH | echohl None
+endfunction
+
+
+
 " Default returns the default GOPATH. If there is a single GOPATH it returns
 " it. For multiple GOPATHS separated with a the OS specific separator, only
 " the first one is returned
@@ -22,12 +52,6 @@ endfunction
 " GOPATH so those directories take precedence over the current GOPATH.
 function! go#path#Detect()
     let gopath = $GOPATH
-
-    " if gopath is set manually, set it as GOPATH, because this is something
-    " the user explicitly wants
-    if !empty(s:initial_go_path)
-        let gopath = s:initial_go_path
-    endif
 
     " don't lookup for godeps if autodetect is disabled.
     if !get(g:, "go_autodetect_gopath", 1)
@@ -108,31 +132,4 @@ function! go#path#CheckBinPath(binpath)
 
     return go_bin_path . go#util#PathSep() . basename
 endfunction
-
-" GoPath sets or returns the current GOPATH. If no arguments are passed it
-" echoes the current GOPATH, if an argument is passed it replaces the current
-" GOPATH with it.
-function! go#path#GoPath(...)
-    " we have an argument, replace GOPATH
-    if len(a:000)
-        echon "vim-go: " | echohl Function | echon "GOPATH changed to ". a:1 | echohl None
-        let s:initial_go_path = $GOPATH
-        let $GOPATH = a:1
-        return
-    endif
-
-    echo go#path#Detect()
-endfunction
-
-" GoPathClear clears the current manually set GOPATH and restores it to the
-" initial GOPATH, which was set when Vim was started.
-function! go#path#GoPathClear()
-    if !empty(s:initial_go_path)
-        let $GOPATH = s:initial_go_path
-        let s:initial_go_path = ""
-    endif
-
-    echon "vim-go: " | echohl Function | echon "GOPATH restored to ". $GOPATH | echohl None
-endfunction
-
 
