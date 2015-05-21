@@ -140,7 +140,7 @@ function! s:GoInstallBinaries(updateBinaries)
                 echo "vim-go: ". basename ." not found. Installing ". pkg . " to folder " . go_bin_path
             endif
 
-            let out = system("go get -u -v ".shellescape(pkg))
+            let out = system("go get -u -v -f ".shellescape(pkg))
             if v:shell_error
                 echo "Error installing ". pkg . ": " . out
             endif
