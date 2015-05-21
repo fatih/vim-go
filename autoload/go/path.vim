@@ -23,10 +23,10 @@ endfunction
 function! go#path#Detect()
     let gopath = $GOPATH
 
-    " if gopath is set manually, always return it, because this is something
+    " if gopath is set manually, set it as GOPATH, because this is something
     " the user explicitly wants
     if !empty(s:initial_go_path)
-        return s:initial_go_path
+        let gopath = s:initial_go_path
     endif
 
     " don't lookup for godeps if autodetect is disabled.
