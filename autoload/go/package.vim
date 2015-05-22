@@ -44,11 +44,7 @@ function! go#package#Paths()
         let dirs += [goroot]
     endif
 
-    let pathsep = ':'
-    if s:goos == 'windows'
-        let pathsep = ';'
-    endif
-    let workspaces = split($GOPATH, pathsep)
+    let workspaces = split($GOPATH, go#util#PathListSep())
     if workspaces != []
         let dirs += workspaces
     endif

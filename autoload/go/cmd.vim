@@ -12,72 +12,17 @@ function! go#cmd#autowrite()
     endif
 endfunction
 
-function! go#cmd#Run(bang, ...)
-    let goFiles = '"' . join(go#tool#Files(), '" "') . '"'
-
-    if IsWin()
-        exec '!go run ' . goFiles
-        if v:shell_error
-            redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
-        else
-            redraws! | echon "vim-go: [run] " | echohl Function | echon "SUCCESS"| echohl None
-        endif
-
-        return
-    endif
-
-    let default_makeprg = &makeprg
-    if !len(a:000)
-        let &makeprg = 'go run ' . goFiles
-    else
-        let &makeprg = "go run " . expand(a:1)
-    endif
-
-    if g:go_dispatch_enabled && exists(':Make') == 2
-        silent! exe 'Make!'
-    else
-        exe 'make!'
-    endif
-    if !a:bang
-        cwindow
-        let errors = getqflist()
-        if !empty(errors)
-            if g:go_jump_to_error
-                cc 1 "jump to first error if there is any
-            endif
-        endif
-    endif
-
-    let &makeprg = default_makeprg
-endfunction
-
-function! go#cmd#Install(...)
-    let pkgs = join(a:000, '" "')
-    let command = 'go install "' . pkgs . '"'
-    call go#cmd#autowrite()
-    let out = go#tool#ExecuteInDir(command)
-    if v:shell_error
-        call go#tool#ShowErrors(out)
-        cwindow
-        let errors = getqflist()
-        if !empty(errors)
-            if g:go_jump_to_error
-                cc 1 "jump to first error if there is any
-            endif
-        endif
-        return
-    endif
-
-    if exists("$GOBIN")
-        echon "vim-go: " | echohl Function | echon "installed to ". $GOBIN | echohl None
-    else
-        echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH . "/bin" | echohl None
-    endif
-endfunction
-
+" Build buils the source code without producting any output binary. We live in
+" an editor so the best is to build it to catch errors and fix them. By
+" default it tries to call simply 'go build', but it first tries to get all
+" dependent files for the current folder and passes it to go build.
 function! go#cmd#Build(bang, ...)
     let default_makeprg = &makeprg
     let gofiles = join(go#tool#Files(), '" "')
+
+    let old_gopath = $GOPATH
+    let $GOPATH = go#path#Detect()
+
     if v:shell_error
         let &makeprg = "go build . errors"
     else
@@ -104,8 +49,83 @@ function! go#cmd#Build(bang, ...)
     endif
 
     let &makeprg = default_makeprg
+    let $GOPATH = old_gopath
 endfunction
 
+" Run runs the current file (and their dependencies if any) and outputs it.
+" This is intented to test small programs and play with them. It's not
+" suitable for long running apps, because vim is blocking by default and
+" calling long running apps will block the whole UI.
+function! go#cmd#Run(bang, ...)
+    let goFiles = '"' . join(go#tool#Files(), '" "') . '"'
+
+    let old_gopath = $GOPATH
+    let $GOPATH = go#path#Detect()
+
+    if go#util#IsWin()
+        exec '!go run ' . goFiles
+        if v:shell_error
+            redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
+        else
+            redraws! | echon "vim-go: [run] " | echohl Function | echon "SUCCESS"| echohl None
+        endif
+
+        let $GOPATH = old_gopath
+        return
+    endif
+
+    let default_makeprg = &makeprg
+    if !len(a:000)
+        let &makeprg = 'go run ' . goFiles
+    else
+        let &makeprg = "go run " . expand(a:1)
+    endif
+
+    if g:go_dispatch_enabled && exists(':Make') == 2
+        silent! exe 'Make!'
+    else
+        exe 'make!'
+    endif
+    if !a:bang
+        cwindow
+        let errors = getqflist()
+        if !empty(errors)
+            if g:go_jump_to_error
+                cc 1 "jump to first error if there is any
+            endif
+        endif
+    endif
+
+    let $GOPATH = old_gopath
+    let &makeprg = default_makeprg
+endfunction
+
+" Install installs the package by simple calling 'go install'. If any argument
+" is given(which are passed directly to 'go insta'') it tries to install those
+" packages. Errors are populated in the quickfix window.
+function! go#cmd#Install(...)
+    let pkgs = join(a:000, '" "')
+    let command = 'go install "' . pkgs . '"'
+    call go#cmd#autowrite()
+    let out = go#tool#ExecuteInDir(command)
+    if v:shell_error
+        call go#tool#ShowErrors(out)
+        cwindow
+        let errors = getqflist()
+        if !empty(errors)
+            if g:go_jump_to_error
+                cc 1 "jump to first error if there is any
+            endif
+        endif
+        return
+    endif
+
+    echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH | echohl None
+endfunction
+
+" Test runs `go test` in the current directory. If compile is true, it'll
+" compile the tests instead of running them (useful to catch errors in the
+" test files). Any other argument is appendend to the final `go test` command
 function! go#cmd#Test(compile, ...)
     let command = "go test "
 
@@ -154,6 +174,8 @@ function! go#cmd#Test(compile, ...)
     endif
 endfunction
 
+" Testfunc runs a single test that surrounds the current cursor position.
+" Arguments are passed to the `go test` command.
 function! go#cmd#TestFunc(...)
     " search flags legend (used only)
     " 'b' search backward instead of forward
@@ -185,6 +207,8 @@ function! go#cmd#TestFunc(...)
     call go#cmd#Test(0, a1, flag)
 endfunction
 
+" Coverage creates a new cover profile with 'go test -coverprofile' and opens
+" a new HTML coverage page from that profile.
 function! go#cmd#Coverage(...)
     let l:tmpname=tempname()
 
@@ -213,6 +237,8 @@ function! go#cmd#Coverage(...)
     call delete(l:tmpname)
 endfunction
 
+" Vet calls "go vet' on the current directory. Any warnings are populated in
+" the quickfix window
 function! go#cmd#Vet()
     call go#cmd#autowrite()
     echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None

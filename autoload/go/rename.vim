@@ -15,7 +15,7 @@ function! go#rename#Rename(...)
 
 
     "return with a warning if the bin doesn't exist
-    let bin_path = go#tool#BinPath(g:go_gorename_bin) 
+    let bin_path = go#path#CheckBinPath(g:go_gorename_bin) 
     if empty(bin_path) 
         return 
     endif
