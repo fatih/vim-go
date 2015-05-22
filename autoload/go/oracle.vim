@@ -143,6 +143,25 @@ func! s:RunOracle(mode, selected) range abort
     return out
 endfun
 
+function! go#oracle#Scope(...)
+	if len(a:000)
+        if len(a:000) == 1 && a:1 == '""'
+            let g:go_oracle_scope = ""
+		    echon "vim-go: " | echohl Function | echon "oracle scope is cleared"| echohl None
+        else
+            let g:go_oracle_scope = join(a:000, ' ')
+		    echon "vim-go: " | echohl Function | echon "oracle scope changed to: '". g:go_oracle_scope ."'" | echohl None
+        endif
+
+        return
+	endif
+
+    if !exists(g:go_oracle_scope)
+	    echon "vim-go: " | echohl Function | echon "oracle scope is not set"| echohl None
+    else
+	    echon "vim-go: " | echohl Function | echon "current oracle scope: '". g:go_oracle_scope ."'" | echohl None
+    endif
+endfunction
 
 " Show 'implements' relation for selected package
 function! go#oracle#Implements(selected)
