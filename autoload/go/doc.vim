@@ -76,7 +76,7 @@ function! s:godocNotFound(content)
         return 1
     endif
 
-    return a:content =~# '^.*: no such file or directory\n'
+    return a:content =~# '^.*: no such file or directory\n$'
 endfunction
 
 function! go#doc#OpenBrowser(...)
