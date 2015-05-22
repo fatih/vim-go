@@ -304,6 +304,15 @@ COMMANDS                                                          *go-commands*
     Rename the identifier under the cursor to the desired new name. If no
     argument is given a prompt will ask for the desired identifier.
 
+
+                                                            *:GoOracleScope*
+:GoOracleScope [path1] [path2] ...
+
+    Changes the custom |g:go_oracle_scope| setting and overrides it with the
+    given import paths. The custom scope is cleared (unset) if `""` is given
+    as the only path. If no arguments is given it prints the current custom
+    scope.
+
                                                               *:GoCallees*
 :GoCallees
 
@@ -654,7 +663,8 @@ is used. Use "neosnippet" for neosnippet.vim: >
 
 Use this option to define the scope of the analysis to be passed for Oracle
 related commands, such as |GoImplements|, |GoCallers|, etc..  By default it's
-not set, so only the current packages go files are passed as scope. For more
+not set, so only the current packages go files are passed as scope. You can
+change it on-the-fly with |GoOracleScope|. For more
 info please have look at Oracle's User Manual:
 https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
 >
