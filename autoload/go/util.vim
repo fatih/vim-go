@@ -36,3 +36,14 @@ function! go#util#IsWin()
 
     return 0
 endfunction
+
+" StripPath strips the path's last character if it's a path separator.
+" example: '/foo/bar/'  -> '/foo/bar'
+function! go#util#StripPathSep(path)
+	let last_char = strlen(a:path) - 1
+	if a:path[last_char] == go#util#PathSep()
+		return strpart(a:path, 0, last_char)
+	endif
+
+	return a:path
+endfunction

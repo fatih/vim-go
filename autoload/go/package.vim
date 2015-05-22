@@ -142,6 +142,11 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos)
                 endif
                 let i = substitute(substitute(i[len(r)+1:], '[\\]', '/', 'g'),
                                   \ '\.a$', '', 'g')
+
+                " without this the result can have duplicates in form of
+                " 'encoding/json' and '/encoding/json/'
+                let i = go#util#StripPathSep(i)
+
                 let ret[i] = i
             endfor
         endfor
