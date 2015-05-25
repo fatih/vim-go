@@ -3,16 +3,26 @@ if exists("g:go_loaded_commands")
 endif
 let g:go_loaded_commands = 1
 
+" go_jump_to_error defines whether we should pass the bang attribute to the
+" command or not. This is only used for mappings, because the user can't pass
+" the bang attribute to the plug mappings below. So instead of hardcoding it
+" as 0 (no '!' attribute) or 1 (with '!' attribute) we pass the user setting,
+" which by default is enabled. For commands the user has the ability to pass
+" the '!', such as :GoBuild or :GoBuild!
+if !exists("g:go_jump_to_error")
+    let g:go_jump_to_error = 1
+endif
+
 
 " Some handy plug mappings
-nnoremap <silent> <Plug>(go-run) :<C-u>call go#cmd#Run(0,expand('%'))<CR>
-nnoremap <silent> <Plug>(go-build) :<C-u>call go#cmd#Build(0,'')<CR>
-nnoremap <silent> <Plug>(go-install) :<C-u>call go#cmd#Install(0)<CR>
-nnoremap <silent> <Plug>(go-test) :<C-u>call go#cmd#Test(0, 0, '')<CR>
-nnoremap <silent> <Plug>(go-test-func) :<C-u>call go#cmd#TestFunc(0, '')<CR>
-nnoremap <silent> <Plug>(go-test-compile) :<C-u>call go#cmd#Test(0, 1, '')<CR>
-nnoremap <silent> <Plug>(go-coverage) :<C-u>call go#cmd#Coverage(0, '')<CR>
-nnoremap <silent> <Plug>(go-vet) :<C-u>call go#cmd#Vet(0)<CR>
+nnoremap <silent> <Plug>(go-run) :<C-u>call go#cmd#Run(!g:go_jump_to_error,expand('%'))<CR>
+nnoremap <silent> <Plug>(go-build) :<C-u>call go#cmd#Build(!g:go_jump_to_error,'')<CR>
+nnoremap <silent> <Plug>(go-install) :<C-u>call go#cmd#Install(!g:go_jump_to_error)<CR>
+nnoremap <silent> <Plug>(go-test) :<C-u>call go#cmd#Test(!g:go_jump_to_error, 0, '')<CR>
+nnoremap <silent> <Plug>(go-test-func) :<C-u>call go#cmd#TestFunc(!g:go_jump_to_error, '')<CR>
+nnoremap <silent> <Plug>(go-test-compile) :<C-u>call go#cmd#Test(!g:go_jump_to_error, 1, '')<CR>
+nnoremap <silent> <Plug>(go-coverage) :<C-u>call go#cmd#Coverage(!g:go_jump_to_error, '')<CR>
+nnoremap <silent> <Plug>(go-vet) :<C-u>call go#cmd#Vet(!g:go_jump_to_error)<CR>
 
 nnoremap <silent> <Plug>(go-files) :<C-u>call go#tool#Files()<CR>
 nnoremap <silent> <Plug>(go-deps) :<C-u>call go#tool#Deps()<CR>
