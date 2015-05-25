@@ -35,8 +35,10 @@ function! go#cmd#Build(bang, ...)
 
     cwindow
     let errors = getqflist()
-    if !empty(errors) && !a:bang
-        cc 1 "jump to first error if there is any
+    if !empty(errors) 
+        if !a:bang
+            cc 1 "jump to first error if there is any
+        endif
     else
         redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
     endif
@@ -232,8 +234,10 @@ function! go#cmd#Vet(bang)
     endif
 
     let errors = getqflist()
-    if !empty(errors) && !a:bang
-        cc 1 "jump to first error if there is any
+    if !empty(errors) 
+        if !a:bang
+            cc 1 "jump to first error if there is any
+        endif
     else
         redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
     endif
