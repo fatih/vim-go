@@ -197,6 +197,14 @@ let g:go_highlight_build_constraints = 1
 
 ## Troubleshooting
 
+### Not an editor command
+
+This happens if vim-go is not installed properly. Be sure you have added this line into your `.vimrc`:
+
+```vim
+filetype plugin indent on
+```
+
 ### Command not found
 
 If trying to use `:GoDef`,  `:GoInfo` and get a `command not found`, check that you have the binaries installed by using: `:GoInstallBinaries`
@@ -210,6 +218,8 @@ after opening vim, run `:echo $PATH`, the output must be your current `$PATH` + 
 If problem persists and you are using maybe 'csh' or other shell, try adding this to your .vimrc:
 
     set shell=/bin/sh
+    
+
 
 
 
