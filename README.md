@@ -23,8 +23,7 @@ disabled/enabled easily.
 * Run `:GoTest` and see any errors in quickfix window
 * Automatic `GOPATH` detection based on the directory structure (i.e: `godep`
   vendored projects)
-* Change `GOPATH` with `:GoPath`, restore back to original at any time with
-  `:GoPathClear`
+* Change or display `GOPATH` with `:GoPath`
 * Create a coverage profile and display annotated source code in browser to see
   which functions are covered with `:GoCoverage`
 * Lint your code with `:GoLint`
