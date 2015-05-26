@@ -22,7 +22,6 @@ let s:packages = [
 command! GoInstallBinaries call s:GoInstallBinaries(-1)
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
 command! -nargs=? -complete=dir GoPath call go#path#GoPath(<f-args>)
-command! GoPathClear call go#path#GoPathClear()
 
 " GoInstallBinaries downloads and install all necessary binaries stated in the
 " packages variable. It uses by default $GOBIN or $GOPATH/bin as the binary
