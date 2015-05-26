@@ -182,13 +182,15 @@ COMMANDS                                                          *go-commands*
      'xterm-clipboard' otherwise it's get yanked into the `""` register.
 
                                                                      *:GoVet*
-:GoVet
+:GoVet[!]
 
     Run `go vet` for the directory under your current file. Vet examines Go
     source code and reports suspicious constructs, such as Printf calls whose
     arguments do not align with the format string. Vet uses heuristics that do not
     guarantee all reports are genuine problems, but it can find errors not caught
     by the compilers.
+
+    If [!] is not given the first error is jumped to.
 
                                                                      *:GoDef*
 :GoDef [identifier]
@@ -227,19 +229,23 @@ COMMANDS                                                          *go-commands*
 
 
                                                                  *:GoInstall*
-:GoInstall
+:GoInstall[!]
 
   Install your package with `go install`.
 
+    If [!] is not given the first error is jumped to.
+
                                                                     *:GoTest*
-:GoTest [expand]
+:GoTest[!] [expand]
 
     Run the tests on your _test.go files via in your current directory. Errors
     are populated in quickfix window.  If an argument is passed, 'expand' is
     used as file selector (useful for cases like `:GoTest ./...`).
 
+    If [!] is not given the first error is jumped to.
+
                                                               *:GoTestFunc*
-:GoTestFunc [expand]
+:GoTestFunc[!] [expand]
 
     Runs :GoTest, but only on the single test function immediate to your
     cursor using 'go test's '-run' flag.
@@ -248,8 +254,10 @@ COMMANDS                                                          *go-commands*
     a matching `func Test` pattern is found or top of file is reached. Search
     will not wrap around when at the top of the file.
 
+    If [!] is not given the first error is jumped to.
+
                                                               *:GoTestCompile*
-:GoTestCompile [expand]
+:GoTestCompile[!] [expand]
 
     Compile your _test.go files via in your current directory. Errors are
     populated in quickfix window.  If an argument is passed, 'expand' is used
@@ -257,11 +265,15 @@ COMMANDS                                                          *go-commands*
     run the tests and capture/fix errors before running the tests or to
     create test binary.
 
+    If [!] is not given the first error is jumped to.
+
                                                                 *:GoCoverage*
-:GoCoverage
+:GoCoverage[!]
 
     Create a coverage profile and open a browser to display the annotated
     source code of the current package.
+
+    If [!] is not given the first error is jumped to.
 
                                                                 *:GoErrCheck*
 :GoErrCheck
@@ -566,6 +578,18 @@ By default it's disabled >
 
   let g:go_auto_type_info = 0
 <
+
+                                                      *'g:go_jump_to_error'*
+
+Use this option to enable/disable passing the bang attribute to the mappings
+|(go-build)|, |(go-run)|, etc..  When enabled it will jump to the first error
+automatically (means it will NOT pass the bang attribute to the appropriate
+command, i.e: (go-run) -> :GoRun ). Note, that calling this doesn't have any
+affect on calling the commands manually. This setting is only useful for
+changing the behaviour of our custom static mappings. By default it's enabled.
+>
+  let g:go_jump_to_error = 1
+<
                                                         *'g:go_fmt_autosave'*
 
 Use this option to auto |:GoFmt| on save. By default it's enabled >
@@ -599,10 +623,10 @@ fails. By default it's disabled. >
 
 Use this option to enable fmt's experimental mode. This experimental mode is
 superior to the current mode as it fully saves the undo history, so undo/redo
-doesn't break. However it's causing problems on some Vim versions. By default
-it's disabled. >
+doesn't break. However it's slows (creates/deletes a file for every save) and
+it's causing problems on some Vim versions. By default it's disabled. >
 
-  let g:go_fmt_experimental = 1
+  let g:go_fmt_experimental = 0
 <
                                               *'g:go_doc_keywordprg_enabled'*
 

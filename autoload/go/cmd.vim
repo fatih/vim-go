@@ -1,7 +1,3 @@
-if !exists("g:go_jump_to_error")
-    let g:go_jump_to_error = 1
-endif
-
 if !exists("g:go_dispatch_enabled")
     let g:go_dispatch_enabled = 0
 endif
@@ -36,16 +32,15 @@ function! go#cmd#Build(bang, ...)
         silent! exe 'make!'
     endif
     redraw!
-    if !a:bang
-        cwindow
-        let errors = getqflist()
-        if !empty(errors)
-            if g:go_jump_to_error
-                cc 1 "jump to first error if there is any
-            endif
-        else
-            redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
+
+    cwindow
+    let errors = getqflist()
+    if !empty(errors) 
+        if !a:bang
+            cc 1 "jump to first error if there is any
         endif
+    else
+        redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
     endif
 
     let &makeprg = default_makeprg
@@ -86,14 +81,11 @@ function! go#cmd#Run(bang, ...)
     else
         exe 'make!'
     endif
-    if !a:bang
-        cwindow
-        let errors = getqflist()
-        if !empty(errors)
-            if g:go_jump_to_error
-                cc 1 "jump to first error if there is any
-            endif
-        endif
+
+    cwindow
+    let errors = getqflist()
+    if !empty(errors) && !a:bang
+        cc 1 "jump to first error if there is any
     endif
 
     let $GOPATH = old_gopath
@@ -103,7 +95,7 @@ endfunction
 " Install installs the package by simple calling 'go install'. If any argument
 " is given(which are passed directly to 'go insta'') it tries to install those
 " packages. Errors are populated in the quickfix window.
-function! go#cmd#Install(...)
+function! go#cmd#Install(bang, ...)
     let pkgs = join(a:000, '" "')
     let command = 'go install "' . pkgs . '"'
     call go#cmd#autowrite()
@@ -112,10 +104,8 @@ function! go#cmd#Install(...)
         call go#tool#ShowErrors(out)
         cwindow
         let errors = getqflist()
-        if !empty(errors)
-            if g:go_jump_to_error
-                cc 1 "jump to first error if there is any
-            endif
+        if !empty(errors) && !a:bang
+            cc 1 "jump to first error if there is any
         endif
         return
     endif
@@ -126,7 +116,7 @@ endfunction
 " Test runs `go test` in the current directory. If compile is true, it'll
 " compile the tests instead of running them (useful to catch errors in the
 " test files). Any other argument is appendend to the final `go test` command
-function! go#cmd#Test(compile, ...)
+function! go#cmd#Test(bang, compile, ...)
     let command = "go test "
 
     " don't run the test, only compile it. Useful to capture and fix errors or
@@ -156,10 +146,8 @@ function! go#cmd#Test(compile, ...)
         call go#tool#ShowErrors(out)
         cwindow
         let errors = getqflist()
-        if !empty(errors)
-            if g:go_jump_to_error
-                cc 1 "jump to first error if there is any
-            endif
+        if !empty(errors) && !a:bang
+            cc 1 "jump to first error if there is any
         endif
         echon "vim-go: " | echohl ErrorMsg | echon "[test] FAIL" | echohl None
     else
@@ -176,7 +164,7 @@ endfunction
 
 " Testfunc runs a single test that surrounds the current cursor position.
 " Arguments are passed to the `go test` command.
-function! go#cmd#TestFunc(...)
+function! go#cmd#TestFunc(bang, ...)
     " search flags legend (used only)
     " 'b' search backward instead of forward
     " 'c' accept a match at the cursor position
@@ -204,12 +192,12 @@ function! go#cmd#TestFunc(...)
         let flag = " " . flag
     endif
 
-    call go#cmd#Test(0, a1, flag)
+    call go#cmd#Test(a:bang, 0, a1, flag)
 endfunction
 
 " Coverage creates a new cover profile with 'go test -coverprofile' and opens
 " a new HTML coverage page from that profile.
-function! go#cmd#Coverage(...)
+function! go#cmd#Coverage(bang, ...)
     let l:tmpname=tempname()
 
     let command = "go test -coverprofile=".l:tmpname
@@ -226,20 +214,16 @@ function! go#cmd#Coverage(...)
         call go#tool#ExecuteInDir(openHTML)
     endif
     cwindow
-
     let errors = getqflist()
-    if !empty(errors)
-        if g:go_jump_to_error
-            cc 1 "jump to first error if there is any
-        endif
+    if !empty(errors) && !a:bang
+        cc 1 "jump to first error if there is any
     endif
-
     call delete(l:tmpname)
 endfunction
 
 " Vet calls "go vet' on the current directory. Any warnings are populated in
 " the quickfix window
-function! go#cmd#Vet()
+function! go#cmd#Vet(bang)
     call go#cmd#autowrite()
     echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
     let out = go#tool#ExecuteInDir('go vet')
@@ -248,11 +232,10 @@ function! go#cmd#Vet()
     else
         call setqflist([])
     endif
-    cwindow
 
     let errors = getqflist()
-    if !empty(errors)
-        if g:go_jump_to_error
+    if !empty(errors) 
+        if !a:bang
             cc 1 "jump to first error if there is any
         endif
     else
