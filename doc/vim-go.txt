@@ -774,6 +774,15 @@ supports will be added. By default it's enabled. >
 Adds custom text objects. By default it's enabled. >
 
 	let g:go_textobj_enabled = 1
+<
+
+                                                  *'g:go_install_command'*
+
+Sets the command for |GoInstallBinaries|. %s will be susbituted with a
+package.
+>
+  let g:go_install_command = "go get -u -f -v %s" 
+<
 
 
 ===============================================================================
