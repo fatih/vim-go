@@ -67,13 +67,13 @@ function! go#coverlay#overlay(file)
 endfunction
 
 function! go#coverlay#Coverlay(...)
+    call go#coverlay#Clearlay()
     let l:tmpname=tempname()
 
-    let command = "go test -coverprofile=".l:tmpname
+    let out = go#cmd#Test(1, 0, "-coverprofile=".l:tmpname)
 
-    let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        return
     else
         " clear previous quick fix window
         call setqflist([])
