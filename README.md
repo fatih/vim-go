@@ -218,7 +218,9 @@ gift from some of the books (kindle) I have in my wish list:
 
 * Go Authors for official vim plugins
 * Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and authors of those projects.
-* Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode, vim-godef)
+* Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
+  vim-godef)
+* [Contributors](https://github.com/fatih/vim-go/graphs/contributors) of vim-go
 
 ## License
 
