@@ -63,12 +63,12 @@ function! s:GoInstallBinaries(updateBinaries)
         set noshellslash
     endif
 
-    let cmd = "go get -u -v "
-
+    
     " https://github.com/golang/go/issues/10791
-    if s:go_version > "1.4.0" && s:go_version < "1.5.0"
-        let cmd .= "-f " 
-    endif
+    let cmd = printf("go get -u -v %s %%s",
+                \ s:go_version > "1.4.0" && s:go_version < "1.5.0" ? "-f" : "")
+
+    let cmd = get(g:, 'go_install_command', cmd)
 
     for pkg in s:packages
         let basename = fnamemodify(pkg, ":t")
@@ -86,8 +86,7 @@ function! s:GoInstallBinaries(updateBinaries)
                 echo "vim-go: ". basename ." not found. Installing ". pkg . " to folder " . go_bin_path
             endif
 
-
-            let out = system(cmd . shellescape(pkg))
+            let out = system(printf(cmd, shellescape(pkg)))
             if v:shell_error
                 echo "Error installing ". pkg . ": " . out
             endif
