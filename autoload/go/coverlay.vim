@@ -53,6 +53,9 @@ function! go#coverlay#overlay(file)
     highlight covered term=bold ctermbg=green guibg=green
     highlight uncover term=bold ctermbg=red guibg=red
 
+    if !filereadable(a:file)
+        return
+    endif
     let lines = readfile(a:file)
     let mode = lines[0]
     for line in lines[1:]
