@@ -9,6 +9,7 @@ function! s:gofiletype_pre()
     let s:current_fileformats = &g:fileformats
     let s:current_fileencodings = &g:fileencodings
     set fileencodings=utf-8 fileformats=unix
+		set tabstop=8
     setlocal filetype=go
 endfunction
 
