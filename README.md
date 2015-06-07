@@ -1,4 +1,4 @@
-# vim-go
+# vim-go [![Release](https://img.shields.io/github/release/fatih/vim-go.svg?style=flat-square)](https://github.com/fatih/vim-go/releases)
 
 Go (golang) support for Vim. It comes with pre-defined sensible settings (like
 auto gofmt on save), has autocomplete, snippet support, improved syntax
