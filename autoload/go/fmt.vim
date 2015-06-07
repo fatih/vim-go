@@ -87,6 +87,10 @@ function! go#fmt#Format(withGoimport)
             return 
         endif
 
+        " change GOPATH too, so goimports can pick up the correct library
+        let old_gopath = $GOPATH
+        let $GOPATH = go#path#Detect()
+
         let fmt_command = bin_path
     endif
 
@@ -96,6 +100,10 @@ function! go#fmt#Format(withGoimport)
     " execute our command...
     let out = system(command . " " . l:tmpname)
     let splitted = split(out, '\n')
+
+    if fmt_command != "gofmt"
+        let $GOPATH = old_gopath
+    endif
 
 
     "if there is no error on the temp file replace the output with the current
