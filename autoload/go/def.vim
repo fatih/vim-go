@@ -21,7 +21,7 @@ function! go#def#Jump(...)
 	let old_gopath = $GOPATH
 	let $GOPATH = go#path#Detect()
 
-	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
+	let command = bin_path . " -f=" . shellescape(expand("%:p")) . " -i " . shellescape(arg)
 
 	" get output of godef
 	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), go#util#LineEnding()))
@@ -43,7 +43,7 @@ function! go#def#JumpMode(mode)
 	let old_gopath = $GOPATH
 	let $GOPATH = go#path#Detect()
 
-	let command = bin_path . " -f=" . expand("%:p") . " -i " . shellescape(arg)
+	let command = bin_path . " -f=" . shellescape(expand("%:p")) . " -i " . shellescape(arg)
 
 	" get output of godef
 	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), go#util#LineEnding()))
