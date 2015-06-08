@@ -6,8 +6,10 @@ let s:current_fileencodings = ''
 
 " define fileencodings to open as utf-8 encoding even if it's ascii.
 function! s:gofiletype_pre()
-    let s:current_fileformats = &g:fileformats
-    let s:current_fileencodings = &g:fileencodings
+    if s:current_fileformats == ''
+        let s:current_fileformats = &g:fileformats
+        let s:current_fileencodings = &g:fileencodings
+    endif
     set fileencodings=utf-8 fileformats=unix
     setlocal filetype=go
 endfunction
