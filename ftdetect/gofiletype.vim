@@ -9,9 +9,9 @@ function! s:gofiletype_pre()
     if s:current_fileformats == ''
         let s:current_fileformats = &g:fileformats
         let s:current_fileencodings = &g:fileencodings
-        set fileencodings=utf-8 fileformats=unix
-        setlocal filetype=go
     endif
+    set fileencodings=utf-8 fileformats=unix
+    setlocal filetype=go
 endfunction
 
 " restore fileencodings as others
