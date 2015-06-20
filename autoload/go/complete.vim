@@ -61,7 +61,7 @@ fu! s:gocodeCommand(cmd, preargs, args)
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
-    let result = s:system(printf('%s %s %s %s', s:gocodeShellescape(bin_path), join(a:preargs), s:gocodeShellescape(a:cmd), join(a:args)))
+    let result = s:system(printf('%s %s %s %s', bin_path, join(a:preargs), s:gocodeShellescape(a:cmd), join(a:args)))
 
     let $GOPATH = old_gopath
 
