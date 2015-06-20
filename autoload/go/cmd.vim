@@ -242,6 +242,42 @@ function! go#cmd#Vet(bang)
         redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
     endif
 endfunction
+"
+" Generate runs 'go generate' in similar fashion to go#cmd#Build()
+function! go#cmd#Generate(bang, ...)
+    let default_makeprg = &makeprg
+    let gofiles = join(go#tool#Files(), '" "')
+
+    let old_gopath = $GOPATH
+    let $GOPATH = go#path#Detect()
+
+    if v:shell_error
+        let &makeprg = "go generate " . join(a:000, ' ')
+    else
+        let &makeprg = "go generate " . join(a:000, ' ') . ' "' . gofiles . '"'
+    endif
+
+    echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None
+    if g:go_dispatch_enabled && exists(':Make') == 2
+        silent! exe 'Make'
+    else
+        silent! exe 'make!'
+    endif
+    redraw!
+
+    cwindow
+    let errors = getqflist()
+    if !empty(errors) 
+        if !a:bang
+            cc 1 "jump to first error if there is any
+        endif
+    else
+        redraws! | echon "vim-go: " | echohl Function | echon "[generate] SUCCESS"| echohl None
+    endif
+
+    let &makeprg = default_makeprg
+    let $GOPATH = old_gopath
+endfunction
 
 " vim:ts=4:sw=4:et
 "
