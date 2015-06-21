@@ -1,3 +1,5 @@
+" to execute, `rake test` on parent dir
+
 describe 'go#coverlay#Coverlay'
     before
         new
@@ -26,6 +28,38 @@ describe 'go#coverlay#Coverlay'
         Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
+
+        call go#coverlay#Coverlay()
+        Expect len(go#coverlay#matches()) == 5
+        call go#coverlay#Coverlay()
+        Expect len(go#coverlay#matches()) == 5
+        call go#coverlay#Clearlay()
+        Expect len(go#coverlay#matches()) == 0
+    end
+end
+
+describe 'go#coverlay#Coverlay fail'
+    before
+        new
+	let g:curdir = expand('<sfile>:p:h') . '/'
+	let g:srcpath = 't/fixtures/src/'
+	let g:sample = 'failtest/sample.go'
+	let g:sampleabs = g:curdir . g:srcpath . 'failtest/sample.go'
+	let g:go_gopath = g:curdir . 't/fixtures'
+	execute "badd " . g:srcpath . g:sample
+	execute "buffer " . bufnr("$")
+    end
+    after
+	execute "bprev"
+	execute "bdelete " . g:srcpath . g:sample
+	call setqflist([])
+	cclose
+    end
+
+    it 'does nothing if test fail'
+	call go#coverlay#Coverlay()
+	Expect len(go#coverlay#matches()) == 0
+	Expect len(getqflist()) == 1
     end
 end
 

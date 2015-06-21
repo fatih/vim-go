@@ -2,6 +2,12 @@ if !exists("g:go_gopath")
     let g:go_gopath = $GOPATH
 endif
 
+function! go#coverlay#oninitbuf()
+    if !exists("b:go_coverlay_matches")
+        let b:go_coverlay_matches = []
+    endif
+endfunction
+
 function! go#coverlay#isopenedon(file, bufnr)
     if a:file[0] == "_"
         if bufnr(a:file[1:]) == a:bufnr
@@ -46,9 +52,7 @@ function! go#coverlay#genmatch(cov)
 endfunction
 
 function! go#coverlay#overlay(file)
-    if !exists("b:go_coverlay_matches")
-        let b:go_coverlay_matches = []
-    endif
+    call go#coverlay#oninitbuf()
 
     highlight covered term=bold ctermbg=green guibg=green
     highlight uncover term=bold ctermbg=red guibg=red
@@ -75,29 +79,14 @@ function! go#coverlay#Coverlay(...)
 
     let out = go#cmd#Test(1, 0, "-coverprofile=".l:tmpname)
 
-    if v:shell_error
-        return
-    else
-        " clear previous quick fix window
-        call setqflist([])
+    if !v:shell_error
         call go#coverlay#overlay(l:tmpname)
     endif
-
-    let errors = getqflist()
-    if !empty(errors)
-        cwindow
-        if g:go_jump_to_error
-            cc 1 "jump to first error if there is any
-        endif
-    endif
-
     call delete(l:tmpname)
 endfunction
 
 function! go#coverlay#Clearlay(...)
-    if !exists("b:go_coverlay_matches")
-        return
-    endif
+    call go#coverlay#oninitbuf()
     for id in b:go_coverlay_matches
         call matchdelete(id)
     endfor
@@ -105,6 +94,7 @@ function! go#coverlay#Clearlay(...)
 endfunction
 
 function! go#coverlay#matches()
+    call go#coverlay#oninitbuf()
     return b:go_coverlay_matches
 endfunction
 

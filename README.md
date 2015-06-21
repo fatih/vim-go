@@ -19,6 +19,8 @@ For example, add these lines to your vimrc:
 ```vim
 au FileType go nmap <leader>c <Plug>(go-coverlay) "test coverage then overlay covered lines
 au FileType go nmap <leader>C <Plug>(go-clearlay) "clear overlay
+
+au BufWritePost *.go call go#coverlay#Coverlay() "run test and cover on file save
 ```
 
 ## Thanks and Credits
@@ -31,4 +33,7 @@ au FileType go nmap <leader>C <Plug>(go-clearlay) "clear overlay
  * http://vim-jp.org/vimdoc-ja/options.html#%27highlight%27
  * http://www.vim.org/scripts/script.php?script_id=1238
 * Thanks for parser: https://godoc.org/golang.org/x/tools/cover#ParseProfiles
+* Thanks for contributors
+ * https://github.com/t-yuki/vim-go-coverlay
+ * https://github.com/anupcshan/vim-go-coverlay
 
