@@ -2,10 +2,45 @@ if !exists("g:go_gopath")
     let g:go_gopath = $GOPATH
 endif
 
-function! go#coverlay#oninitbuf()
+augroup plugin-go-coverlay
+    autocmd!
+    autocmd BufEnter,BufWinEnter,BufFilePost * call go#coverlay#draw()
+    autocmd BufWinLeave * call go#coverlay#clear()
+augroup END
+
+function! go#coverlay#draw()
+    call go#coverlay#hook()
+    call go#coverlay#clear()
+    for m in b:go_coverlay_matches
+        let id = matchadd(m.group, m.pattern, m.priority)
+        call add(b:go_coverlay_match_ids, id)
+    endfor
+endfunction
+
+function! go#coverlay#hook()
+    "TODO: can we initialize buf local vars more smartly?
     if !exists("b:go_coverlay_matches")
         let b:go_coverlay_matches = []
     endif
+    if !exists("b:go_coverlay_match_ids")
+        let b:go_coverlay_match_ids = []
+    endif
+endfunction
+
+"findbufnr look for the number of buffer that opens `file`,
+" as it is displayed by the ":ls" command.
+"If the buffer doesn't exist, -1 is returned.
+function! go#coverlay#findbufnr(file)
+    if a:file[0] == "_"
+        return bufnr(a:file[1:])
+    endif
+    for path in split(g:go_gopath, ':')
+        let nr = bufnr(path . '/src/' . a:file)
+        if nr != -1
+            return nr
+        endif
+    endfor
+    return -1
 endfunction
 
 function! go#coverlay#isopenedon(file, bufnr)
@@ -52,7 +87,7 @@ function! go#coverlay#genmatch(cov)
 endfunction
 
 function! go#coverlay#overlay(file)
-    call go#coverlay#oninitbuf()
+    call go#coverlay#hook()
 
     highlight covered term=bold ctermbg=green guibg=green
     highlight uncover term=bold ctermbg=red guibg=red
@@ -64,19 +99,26 @@ function! go#coverlay#overlay(file)
     let mode = lines[0]
     for line in lines[1:]
         let c = go#coverlay#parsegocoverline(line)
-        if !go#coverlay#isopenedon(c.file, bufnr("%"))
+        let nr = go#coverlay#findbufnr(c.file)
+        if nr == -1
+            "should we records cov data
+            " even if it is not opened currently?
             continue
         endif
         let m = go#coverlay#genmatch(c)
-        let id = matchadd(m.group, m.pattern, m.priority)
-        call add(b:go_coverlay_matches, id)
-   endfor
+        let matches = get(getbufvar(nr, ""), "go_coverlay_matches", [])
+        call add(matches, m)
+        call setbufvar(nr, "go_coverlay_matches", matches)
+    endfor
+    "TODO: can we draw other window for split windows mode?
+    call go#coverlay#draw()
 endfunction
 
 function! go#coverlay#Coverlay(...)
     call go#coverlay#Clearlay()
     let l:tmpname=tempname()
 
+    "TODO: add -coverpkg options based on current buf list
     let out = go#cmd#Test(1, 0, "-coverprofile=".l:tmpname)
 
     if !v:shell_error
@@ -86,15 +128,20 @@ function! go#coverlay#Coverlay(...)
 endfunction
 
 function! go#coverlay#Clearlay(...)
-    call go#coverlay#oninitbuf()
-    for id in b:go_coverlay_matches
-        call matchdelete(id)
-    endfor
+    call go#coverlay#hook()
+    call go#coverlay#clear()
     let b:go_coverlay_matches = []
 endfunction
 
+function! go#coverlay#clear(...)
+    for id in b:go_coverlay_match_ids
+        call matchdelete(id)
+    endfor
+    let b:go_coverlay_match_ids = []
+endfunction
+
 function! go#coverlay#matches()
-    call go#coverlay#oninitbuf()
+    call go#coverlay#hook()
     return b:go_coverlay_matches
 endfunction
 
