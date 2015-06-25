@@ -216,6 +216,17 @@ COMMANDS                                                          *go-commands*
 
     If [!] is not given the first error is jumped to.
 
+                                                                   *:GoGenerate*
+:GoGenerate[!] [options]
+
+    Creates or updates your auto-generated source files by running `go
+    generate`.
+
+    You may optionally pass any valid go generate flags/options. For a full list
+    please see `go help generate`.
+
+    If [!] is not given the first error is jumped to.
+
                                                                     *:GoInfo*
 :GoInfo
     Show type information about the identifer under the cursor. For example
@@ -406,6 +417,10 @@ Calls `go run` for the current file
                                                                 *(go-build)*
 
 Calls `go build` for the current package
+
+                                                                *(go-generate)*
+
+Calls `go generate` for the current package
 
 
                                                                  *(go-info)*
@@ -643,7 +658,7 @@ Default is enabled. >
                                                     *'g:go_dispatch_enabled'*
 
 Use this option to enable/disable the use of Dispatch to execute the
-`:GoGun` and `:GoBuild` commands.  More information about Dispatch is
+`:GoRun`, `:GoBuild` and `:GoGenerate` commands.  More information about Dispatch is
 available at https://github.com/tpope/vim-dispatch. Default is disabled. >
 
   let g:go_dispatch_enabled = 0
