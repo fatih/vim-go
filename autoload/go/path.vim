@@ -88,6 +88,13 @@ function! go#path#Detect()
     if !empty(src_root)
         let src_path = fnamemodify(src_root, ':p:h:h') . go#util#PathSep()
 
+        " gb vendor plugin
+        " (https://github.com/constabulary/gb/tree/master/cmd/gb-vendor)
+        let gb_vendor_root = src_path . "vendor" . go#util#PathSep()
+        if !empty(gb_vendor_root) && !go#path#HasPath(gb_vendor_root)
+            let gopath = gb_vendor_root . go#util#PathListSep() . gopath
+        endif
+
         if !go#path#HasPath(src_path)
             let gopath =  src_path . go#util#PathListSep() . gopath
         endif
