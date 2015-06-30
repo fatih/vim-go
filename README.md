@@ -75,6 +75,7 @@ completion (completion by type) install:
 [ultisnips](https://github.com/SirVer/ultisnips) or
 [neosnippet](https://github.com/Shougo/neosnippet.vim).
 * Screenshot color scheme is a slightly modified molokai: [fatih/molokai](https://github.com/fatih/molokai).
+* For a better documentation viewer checkout: [go-explorer](https://github.com/garyburd/go-explorer).
 
 ## Usage
 
