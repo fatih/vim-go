@@ -118,16 +118,9 @@ function! go#fmt#Format(withGoimport)
         let default_srr = &srr
         set srr=>%s 
 
-        " delete any leftover before we replace the whole file. Suppose the
-        " file had 20 lines, but new output has 10 lines, only 1-10 are
-        " replaced with setline, remaining lines 11-20 won't get touched. So
-        " remove them.
-        if line('$') > len(splitted)
-            execute len(splitted) .',$delete'
-        endif
-
-        " setline iterates over the list and replaces each line
-        call setline(1, splitted)
+        " replace the file with the new contents
+        execute '%delete'
+        call append(0, splitted)
 
         " only clear quickfix if it was previously set, this prevents closing
         " other quickfixes
