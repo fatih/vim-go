@@ -4,7 +4,6 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
-let s:go_version = matchstr(system("go version"), '\d.\d.\d')
 
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries
@@ -64,6 +63,8 @@ function! s:GoInstallBinaries(updateBinaries)
     endif
 
     let cmd = "go get -u -v "
+
+    let s:go_version = matchstr(system("go version"), '\d.\d.\d')
 
     " https://github.com/golang/go/issues/10791
     if s:go_version > "1.4.0" && s:go_version < "1.5.0"
