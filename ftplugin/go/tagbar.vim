@@ -25,7 +25,7 @@ function! s:SetTagbar()
 					\ 'ctagstype' : 'go',
 					\ 'kinds'     : [
 					\ 'p:package',
-					\ 'i:imports:1',
+					\ 'i:imports',
 					\ 'c:constants',
 					\ 'v:variables',
 					\ 't:types',
