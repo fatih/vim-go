@@ -4,6 +4,7 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
+
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries
 let s:packages = [
