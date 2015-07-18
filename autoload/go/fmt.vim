@@ -24,7 +24,7 @@
 "
 
 if !exists("g:go_fmt_command")
-    let g:go_fmt_command = "gofmt"
+    let g:go_fmt_command = "goimports"
 endif
 
 if !exists("g:go_goimports_bin")

@@ -39,6 +39,7 @@ disabled/enabled easily.
   your custom vim function.
 * Tagbar support to show tags of the source code in a sidebar with `gotags`
 * Custom vim text objects, such a `a function` or `inner function`
+* Automatically open `present` slides with `:GoPresent`
 
 ## Install
 
@@ -195,6 +196,12 @@ By default when `:GoInstallBinaries` is called, the binaries are installed to
 ```vim
 let g:go_bin_path = expand("~/.gotools")
 let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
+```
+
+Automatically start `present` server before opening presentation:
+
+```vim
+let g:go_slide_start_server = 1
 ```
 
 

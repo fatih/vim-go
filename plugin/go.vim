@@ -4,7 +4,6 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
-
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries
 let s:packages = [
@@ -16,6 +15,7 @@ let s:packages = [
             \ "github.com/golang/lint/golint",
             \ "github.com/kisielk/errcheck",
             \ "github.com/jstemmer/gotags",
+            \ "golang.org/x/tools/cmd/present",
             \ ]
 
 " These commands are available on any filetypes
