@@ -5,11 +5,11 @@ let s:current_fileformats = ''
 let s:current_fileencodings = ''
 
 " define fileencodings to open as utf-8 encoding even if it's ascii.
-function! s:gofiletype_pre()
+function! s:gofiletype_pre(ftype)
     let s:current_fileformats = &g:fileformats
     let s:current_fileencodings = &g:fileencodings
     set fileencodings=utf-8 fileformats=unix
-    setlocal filetype=go
+    let &filetype = a:ftype
 endfunction
 
 " restore fileencodings as others
@@ -19,8 +19,13 @@ function! s:gofiletype_post()
 endfunction
 
 au BufNewFile *.go setlocal filetype=go fileencoding=utf-8 fileformat=unix
-au BufRead *.go call s:gofiletype_pre()
+au BufRead *.go call s:gofiletype_pre("go")
 au BufReadPost *.go call s:gofiletype_post()
+
+
+au BufNewFile *.slide setlocal filetype=slide fileencoding=utf-8 fileformat=unix
+au BufRead *.slide call s:gofiletype_pre("slide")
+au BufReadPost *.slide call s:gofiletype_post()
 
 au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
 

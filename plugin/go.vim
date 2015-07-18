@@ -16,6 +16,7 @@ let s:packages = [
             \ "github.com/golang/lint/golint",
             \ "github.com/kisielk/errcheck",
             \ "github.com/jstemmer/gotags",
+            \ "golang.org/x/tools/cmd/present",
             \ ]
 
 " These commands are available on any filetypes
