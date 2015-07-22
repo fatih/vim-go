@@ -39,7 +39,7 @@
 " The backslash '\' is the default maplocalleader, so it is possible that
 " your vim is set to use a different character (:help maplocalleader).
 "
-function! go#import#SwitchImport(enabled, localname, path)
+function! go#import#SwitchImport(enabled, localname, path, bang)
     let view = winsaveview()
     let path = a:path
 
@@ -61,6 +61,12 @@ function! go#import#SwitchImport(enabled, localname, path)
         return
     endif
 
+    if a:bang == "!"
+        let out = system("go get -u -v ".shellescape(path))
+        if v:shell_error
+            call s:Error("Can't find import: " . path . ":" . out)
+        endif
+    endif
     let exists = go#tool#Exists(path)
     if exists == -1
         call s:Error("Can't find import: " . path)
