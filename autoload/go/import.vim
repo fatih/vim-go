@@ -2,42 +2,7 @@
 " Use of this source code is governed by a BSD-style
 " license that can be found in the LICENSE file.
 "
-" import.vim: Vim commands to import/drop Go packages.
-"
-" This filetype plugin adds three new commands for go buffers:
-"
-"   :GoImport {path}
-"
-"       Import ensures that the provided package {path} is imported
-"       in the current Go buffer, using proper style and ordering.
-"       If {path} is already being imported, an error will be
-"       displayed and the buffer will be untouched.
-"
-"   :GoImportAs {localname} {path}
-"
-"       Same as Import, but uses a custom local name for the package.
-"
-"   :GoDrop {path}
-"
-"       Remove the import line for the provided package {path}, if
-"       present in the current Go buffer.  If {path} is not being
-"       imported, an error will be displayed and the buffer will be
-"       untouched.
-"
-" If you would like to add shortcuts, you can do so by doing the following:
-"
-"   Import fmt
-"   au Filetype go nnoremap <buffer> <LocalLeader>f :Import fmt<CR>
-"
-"   Drop fmt
-"   au Filetype go nnoremap <buffer> <LocalLeader>F :Drop fmt<CR>
-"
-"   Import the word under your cursor
-"   au Filetype go nnoremap <buffer> <LocalLeader>k
-"       \ :exe 'Import ' . expand('<cword>')<CR>
-"
-" The backslash '\' is the default maplocalleader, so it is possible that
-" your vim is set to use a different character (:help maplocalleader).
+" Check out the docs for more information at /doc/vim-go.txt
 "
 function! go#import#SwitchImport(enabled, localname, path, bang)
     let view = winsaveview()
