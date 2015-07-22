@@ -119,11 +119,13 @@ COMMANDS                                                          *go-commands*
     the inital value which was sourced when Vim was started.
 
                                                                   *:GoImport*
-:GoImport [path]
+:GoImport[!] [path]
 
     Import ensures that the provided package {path} is imported in the current
-    Go buffer, using proper style and ordering.  If {path} is already being
+    Go buffer, using proper style and ordering. If {path} is already being
     imported, an error will be displayed and the buffer will be untouched.
+
+    If [!] is given it will download the package with `go get`
 
                                                                 *:GoImportAs*
 :GoImportAs [localname] [path]
