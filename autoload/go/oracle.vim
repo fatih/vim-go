@@ -194,6 +194,12 @@ endfunction
 
 " Show free variables of selection
 function! go#oracle#Freevars(selected)
+    " Freevars requires a selection
+    if a:selected == -1
+        echon "vim-go: " | echohl Statement | echon "GoFreevars requires a selection (range) of code "| echohl None
+        return
+    endif
+
     let out = s:RunOracle('freevars', a:selected)
     call s:qflistSecond(out)
 endfunction
