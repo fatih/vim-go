@@ -238,15 +238,17 @@ endfunction
 " Generate runs 'go generate' in similar fashion to go#cmd#Build()
 function! go#cmd#Generate(bang, ...)
     let default_makeprg = &makeprg
-    let gofiles = join(go#tool#Files(), '" "')
 
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
+    " :make expands '%' and '#' wildcards, so they must also be escaped
+    let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
     if v:shell_error
-        let &makeprg = "go generate " . join(a:000, ' ')
+        let &makeprg = "go generate " . goargs
     else
-        let &makeprg = "go generate " . join(a:000, ' ') . ' "' . gofiles . '"'
+        let gofiles = go#util#Shelljoin(go#tool#Files(), 1)
+        let &makeprg = "go generate " . goargs . ' ' . gofiles
     endif
 
     echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None
