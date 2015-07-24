@@ -97,8 +97,7 @@ endfunction
 " is given(which are passed directly to 'go insta'') it tries to install those
 " packages. Errors are populated in the quickfix window.
 function! go#cmd#Install(bang, ...)
-    let pkgs = join(a:000, '" "')
-    let command = 'go install "' . pkgs . '"'
+    let command = 'go install ' . go#util#Shelljoin(a:000)
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
