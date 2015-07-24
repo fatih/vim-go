@@ -179,13 +179,17 @@ COMMANDS                                                          *go-commands*
      'xterm-clipboard' otherwise it's get yanked into the `""` register.
 
                                                                      *:GoVet*
-:GoVet[!]
+:GoVet[!] [options]
 
     Run `go vet` for the directory under your current file. Vet examines Go
     source code and reports suspicious constructs, such as Printf calls whose
     arguments do not align with the format string. Vet uses heuristics that do not
     guarantee all reports are genuine problems, but it can find errors not caught
     by the compilers.
+
+    You may optionally pass any valid go tool vet flags/options. In this case,
+    `go tool vet` is run in place of `go vet`. For a full list please see
+    `go tool vet -h`.
 
     If [!] is not given the first error is jumped to.
 

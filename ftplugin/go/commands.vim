@@ -82,7 +82,7 @@ command! -nargs=* -bang GoTest call go#cmd#Test(<bang>0, 0, <f-args>)
 command! -nargs=* -bang GoTestFunc call go#cmd#TestFunc(<bang>0, <f-args>)
 command! -nargs=* -bang GoTestCompile call go#cmd#Test(<bang>0, 1, <f-args>)
 command! -nargs=* -bang GoCoverage call go#cmd#Coverage(<bang>0, <f-args>)
-command! -nargs=0 -bang GoVet call go#cmd#Vet(<bang>0)
+command! -nargs=* -bang GoVet call go#cmd#Vet(<bang>0, <f-args>)
 
 " -- play
 command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
