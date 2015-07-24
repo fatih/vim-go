@@ -54,13 +54,11 @@ endfunction
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...)
-    let goFiles = '"' . join(go#tool#Files(), '" "') . '"'
-
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
     if go#util#IsWin()
-        exec '!go run ' . goFiles
+        exec '!go run ' . go#util#Shelljoin(go#tool#Files())
         if v:shell_error
             redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
         else
@@ -71,11 +69,12 @@ function! go#cmd#Run(bang, ...)
         return
     endif
 
+    " :make expands '%' and '#' wildcards, so they must also be escaped
     let default_makeprg = &makeprg
-    if !len(a:000)
-        let &makeprg = 'go run ' . goFiles
+    if a:0 == 0
+        let &makeprg = 'go run ' . go#util#Shelljoin(go#tool#Files(), 1)
     else
-        let &makeprg = "go run " . expand(a:1)
+        let &makeprg = "go run " . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
     endif
 
     if g:go_dispatch_enabled && exists(':Make') == 2

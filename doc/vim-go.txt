@@ -204,6 +204,9 @@ COMMANDS                                                          *go-commands*
     current file is used. If an argument is passed, 'expand' is used as file
     selector. For example use `:GoRun %` to select the current file only.
 
+    You may optionally pass any valid go run flags/options. For a full list
+    please see `go help run`.
+
     If [!] is not given the first error is jumped to.
 
                                                                    *:GoBuild*
