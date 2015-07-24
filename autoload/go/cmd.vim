@@ -14,7 +14,6 @@ endfunction
 " dependent files for the current folder and passes it to go build.
 function! go#cmd#Build(bang, ...)
     let default_makeprg = &makeprg
-    let gofiles = join(go#tool#Files(), '" "')
 
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
@@ -22,7 +21,10 @@ function! go#cmd#Build(bang, ...)
     if v:shell_error
         let &makeprg = "go build . errors"
     else
-        let &makeprg = "go build -o /dev/null " . join(a:000, ' ') . ' "' . gofiles . '"'
+        " :make expands '%' and '#' wildcards, so they must also be escaped
+        let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
+        let gofiles = go#util#Shelljoin(go#tool#Files(), 1)
+        let &makeprg = "go build -o /dev/null " . goargs . ' ' . gofiles
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None

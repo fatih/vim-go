@@ -207,14 +207,14 @@ COMMANDS                                                          *go-commands*
     If [!] is not given the first error is jumped to.
 
                                                                    *:GoBuild*
-:GoBuild[!] [options]
+:GoBuild[!] [expand]
 
     Build your package with `go build`. It automatically builds only the files
     that depends on the current file. GoBuild doesn't produce a result file.
     Use 'make' to create a result file.
 
     You may optionally pass any valid go build flags/options. For a full list
-    please see `go help build`.
+    please see `go help build`. Options are expanded with 'expand'.
 
     If [!] is not given the first error is jumped to.
 
