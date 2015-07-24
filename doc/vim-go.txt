@@ -285,10 +285,13 @@ COMMANDS                                                          *go-commands*
     If [!] is not given the first error is jumped to.
 
                                                                 *:GoCoverage*
-:GoCoverage[!]
+:GoCoverage[!] [options]
 
     Create a coverage profile and open a browser to display the annotated
     source code of the current package.
+
+    You may optionally pass any valid go test flags/options, such as
+    `-covermode set,count,atomic`. For a full list please see `go help test`.
 
     If [!] is not given the first error is jumped to.
 

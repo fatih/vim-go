@@ -192,7 +192,7 @@ endfunction
 function! go#cmd#Coverage(bang, ...)
     let l:tmpname=tempname()
 
-    let command = "go test -coverprofile=".l:tmpname
+    let command = "go test -coverprofile=" . l:tmpname . ' ' . go#util#Shelljoin(a:000)
 
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
