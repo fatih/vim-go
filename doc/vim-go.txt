@@ -296,10 +296,13 @@ COMMANDS                                                          *go-commands*
     If [!] is not given the first error is jumped to.
 
                                                                 *:GoErrCheck*
-:GoErrCheck
+:GoErrCheck [options]
 
     Check for unchecked errors in you current package. Errors are populated in
     quickfix window.
+
+    You may optionally pass any valid errcheck flags/options. For a full list
+    please see `errcheck -h`.
 
                                                                    *:GoFiles*
 :GoFiles
