@@ -256,6 +256,9 @@ COMMANDS                                                          *go-commands*
     are populated in quickfix window.  If an argument is passed, 'expand' is
     used as file selector (useful for cases like `:GoTest ./...`).
 
+    You may optionally pass any valid go test flags/options. For a full list
+    please see `go help test`.
+
     If [!] is not given the first error is jumped to.
 
                                                               *:GoTestFunc*

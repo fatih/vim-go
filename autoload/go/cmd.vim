@@ -122,15 +122,11 @@ function! go#cmd#Test(bang, compile, ...)
     " don't run the test, only compile it. Useful to capture and fix errors or
     " to create a test binary.
     if a:compile
-        let command .= "-c"
+        let command .= "-c "
     endif
 
-    if len(a:000)
-        let command .= expand(a:1)
-    endif
-
-    if len(a:000) == 2
-        let command .= a:2
+    if a:0
+        let command .= go#util#Shelljoin(map(copy(a:000), "expand(v:val)"))
     endif
 
     call go#cmd#autowrite()
@@ -182,17 +178,13 @@ function! go#cmd#TestFunc(bang, ...)
 
     let line = getline(test)
     let name = split(split(line, " ")[1], "(")[0]
-    let flag = "-run \"" . name . "$\""
+    let args = [a:bang, 0, "-run", name . "$"]
 
-    let a1 = ""
-    if len(a:000)
-        let a1 = a:1
-
-        " add extra space
-        let flag = " " . flag
+    if a:0
+        call extend(args, a:000)
     endif
 
-    call go#cmd#Test(a:bang, 0, a1, flag)
+    call call('go#cmd#Test', args)
 endfunction
 
 " Coverage creates a new cover profile with 'go test -coverprofile' and opens
