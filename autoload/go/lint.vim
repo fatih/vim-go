@@ -8,7 +8,7 @@
 "
 " This filetype plugin add a new commands for go buffers:
 "
-"   :GoLint
+"   :GoLint [options]
 "
 "       Run golint for the current Go file.
 "
@@ -16,13 +16,18 @@ if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
 endif
 
-function! go#lint#Run() abort
+function! go#lint#Run(...) abort
 	let bin_path = go#path#CheckBinPath(g:go_golint_bin) 
 	if empty(bin_path) 
 		return 
 	endif
 
-    silent cexpr system(bin_path . " " . shellescape(expand('%')))
+    if a:0 == 0
+        let goargs = shellescape(expand('%'))
+    else
+        let goargs = go#util#Shelljoin(a:000)
+    endif
+    silent cexpr system(bin_path . " " . goargs)
     cwindow
 endfunction
 

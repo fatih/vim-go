@@ -104,7 +104,7 @@ command! -nargs=1 -bang -complete=customlist,go#package#Complete GoImport call g
 command! -nargs=* -bang -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>, '<bang>')
 
 " -- lint
-command! GoLint call go#lint#Run()
+command! -nargs=* GoLint call go#lint#Run(<f-args>)
 
 " -- errcheck
 command! -nargs=* -complete=customlist,go#package#Complete GoErrCheck call go#errcheck#Run(<f-args>)
