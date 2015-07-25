@@ -57,10 +57,9 @@ function! go#fmt#Format(withGoimport)
     " save cursor position and many other things
     let l:curw=winsaveview()
 
-    " needed for testing if gofmt fails or not
-    let l:tmpname=tempname()
-    call writefile(getline(1,'$'), l:tmpname)
-
+    " Write current unsaved buffer to a temp file
+    let l:tmpname = tempname()
+    call writefile(getline(1, '$'), l:tmpname)
 
     if g:go_fmt_experimental == 1
         " save our undo file to be restored after we are done. This is needed to
@@ -95,11 +94,10 @@ function! go#fmt#Format(withGoimport)
     endif
 
     " populate the final command with user based fmt options
-    let command = fmt_command . ' ' . g:go_fmt_options
+    let command = fmt_command . ' -w ' . g:go_fmt_options
 
     " execute our command...
     let out = system(command . " " . l:tmpname)
-    let splitted = split(out, '\n')
 
     if fmt_command != "gofmt"
         let $GOPATH = old_gopath
@@ -113,21 +111,10 @@ function! go#fmt#Format(withGoimport)
         " remove undo point caused via BufWritePre
         try | silent undojoin | catch | endtry
 
-        " do not include stderr to the buffer, this is due to goimports/gofmt
-        " tha fails with a zero exit return value (sad yeah).
-        let default_srr = &srr
-        set srr=>%s 
-
-        " delete any leftover before we replace the whole file. Suppose the
-        " file had 20 lines, but new output has 10 lines, only 1-10 are
-        " replaced with setline, remaining lines 11-20 won't get touched. So
-        " remove them.
-        if line('$') > len(splitted)
-            execute len(splitted) .',$delete'
-        endif
-
-        " setline iterates over the list and replaces each line
-        call setline(1, splitted)
+        " Replace current file with temp file, then reload buffer
+        call rename(l:tmpname, expand('%'))
+        silent edit!
+        let &syntax = &syntax
 
         " only clear quickfix if it was previously set, this prevents closing
         " other quickfixes
@@ -136,10 +123,8 @@ function! go#fmt#Format(withGoimport)
             call setqflist([])
             cwindow
         endif
-
-        " put back the users srr setting
-        let &srr = default_srr
     elseif g:go_fmt_fail_silently == 0 
+        let splitted = split(out, '\n')
         "otherwise get the errors and put them to quickfix window
         let errors = []
         for line in splitted
@@ -160,6 +145,8 @@ function! go#fmt#Format(withGoimport)
         endif
         let s:got_fmt_error = 1
         cwindow
+        " We didn't use the temp file, so clean up
+        call delete(l:tmpname)
     endif
 
     if g:go_fmt_experimental == 1
@@ -169,7 +156,6 @@ function! go#fmt#Format(withGoimport)
     endif
 
     " restore our cursor/windows positions
-    call delete(l:tmpname)
     call winrestview(l:curw)
 endfunction
 
