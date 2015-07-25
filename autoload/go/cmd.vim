@@ -77,7 +77,7 @@ function! go#cmd#Run(bang, ...)
     endif
 
     if g:go_dispatch_enabled && exists(':Make') == 2
-        silent! exe 'Make!'
+        silent! exe 'Make'
     else
         exe 'make!'
     endif
