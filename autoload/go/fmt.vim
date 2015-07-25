@@ -57,6 +57,10 @@ function! go#fmt#Format(withGoimport)
     " save cursor position and many other things
     let l:curw=winsaveview()
 
+    " Write current unsaved buffer to a temp file
+    let l:tmpname = tempname()
+    call writefile(getline(1, '$'), l:tmpname)
+
     if g:go_fmt_experimental == 1
         " save our undo file to be restored after we are done. This is needed to
         " prevent an additional undo jump due to BufWritePre auto command and also
@@ -93,7 +97,7 @@ function! go#fmt#Format(withGoimport)
     let command = fmt_command . ' -w ' . g:go_fmt_options
 
     " execute our command...
-    let out = system(command . " " . shellescape(expand('%')))
+    let out = system(command . " " . l:tmpname)
 
     if fmt_command != "gofmt"
         let $GOPATH = old_gopath
@@ -107,9 +111,10 @@ function! go#fmt#Format(withGoimport)
         " remove undo point caused via BufWritePre
         try | silent undojoin | catch | endtry
 
-        " reload file
-        exe 'e! ' . expand('%')
-        syntax on
+        " Replace current file with temp file, then reload buffer
+        call rename(l:tmpname, expand('%'))
+        silent edit!
+        let &syntax = &syntax
 
         " only clear quickfix if it was previously set, this prevents closing
         " other quickfixes
@@ -140,6 +145,8 @@ function! go#fmt#Format(withGoimport)
         endif
         let s:got_fmt_error = 1
         cwindow
+        " We didn't use the temp file, so clean up
+        call delete(l:tmpname)
     endif
 
     if g:go_fmt_experimental == 1
