@@ -14,7 +14,6 @@ endfunction
 " dependent files for the current folder and passes it to go build.
 function! go#cmd#Build(bang, ...)
     let default_makeprg = &makeprg
-    let gofiles = join(go#tool#Files(), '" "')
 
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
@@ -22,7 +21,10 @@ function! go#cmd#Build(bang, ...)
     if v:shell_error
         let &makeprg = "go build . errors"
     else
-        let &makeprg = "go build -o /dev/null " . join(a:000, ' ') . ' "' . gofiles . '"'
+        " :make expands '%' and '#' wildcards, so they must also be escaped
+        let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
+        let gofiles = go#util#Shelljoin(go#tool#Files(), 1)
+        let &makeprg = "go build -o /dev/null " . goargs . ' ' . gofiles
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
@@ -52,13 +54,11 @@ endfunction
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...)
-    let goFiles = '"' . join(go#tool#Files(), '" "') . '"'
-
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
     if go#util#IsWin()
-        exec '!go run ' . goFiles
+        exec '!go run ' . go#util#Shelljoin(go#tool#Files())
         if v:shell_error
             redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
         else
@@ -69,11 +69,12 @@ function! go#cmd#Run(bang, ...)
         return
     endif
 
+    " :make expands '%' and '#' wildcards, so they must also be escaped
     let default_makeprg = &makeprg
-    if !len(a:000)
-        let &makeprg = 'go run ' . goFiles
+    if a:0 == 0
+        let &makeprg = 'go run ' . go#util#Shelljoin(go#tool#Files(), 1)
     else
-        let &makeprg = "go run " . expand(a:1)
+        let &makeprg = "go run " . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
     endif
 
     if g:go_dispatch_enabled && exists(':Make') == 2
@@ -96,8 +97,7 @@ endfunction
 " is given(which are passed directly to 'go insta'') it tries to install those
 " packages. Errors are populated in the quickfix window.
 function! go#cmd#Install(bang, ...)
-    let pkgs = join(a:000, '" "')
-    let command = 'go install "' . pkgs . '"'
+    let command = 'go install ' . go#util#Shelljoin(a:000)
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
@@ -122,15 +122,11 @@ function! go#cmd#Test(bang, compile, ...)
     " don't run the test, only compile it. Useful to capture and fix errors or
     " to create a test binary.
     if a:compile
-        let command .= "-c"
+        let command .= "-c "
     endif
 
-    if len(a:000)
-        let command .= expand(a:1)
-    endif
-
-    if len(a:000) == 2
-        let command .= a:2
+    if a:0
+        let command .= go#util#Shelljoin(map(copy(a:000), "expand(v:val)"))
     endif
 
     call go#cmd#autowrite()
@@ -182,17 +178,13 @@ function! go#cmd#TestFunc(bang, ...)
 
     let line = getline(test)
     let name = split(split(line, " ")[1], "(")[0]
-    let flag = "-run \"" . name . "$\""
+    let args = [a:bang, 0, "-run", name . "$"]
 
-    let a1 = ""
-    if len(a:000)
-        let a1 = a:1
-
-        " add extra space
-        let flag = " " . flag
+    if a:0
+        call extend(args, a:000)
     endif
 
-    call go#cmd#Test(a:bang, 0, a1, flag)
+    call call('go#cmd#Test', args)
 endfunction
 
 " Coverage creates a new cover profile with 'go test -coverprofile' and opens
@@ -200,7 +192,7 @@ endfunction
 function! go#cmd#Coverage(bang, ...)
     let l:tmpname=tempname()
 
-    let command = "go test -coverprofile=".l:tmpname
+    let command = "go test -coverprofile=" . l:tmpname . ' ' . go#util#Shelljoin(a:000)
 
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
@@ -223,10 +215,14 @@ endfunction
 
 " Vet calls "go vet' on the current directory. Any warnings are populated in
 " the quickfix window
-function! go#cmd#Vet(bang)
+function! go#cmd#Vet(bang, ...)
     call go#cmd#autowrite()
     echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
-    let out = go#tool#ExecuteInDir('go vet')
+    if a:0 == 0
+        let out = go#tool#ExecuteInDir('go vet')
+    else
+        let out = go#tool#ExecuteInDir('go tool vet ' . go#util#Shelljoin(a:000))
+    endif
     if v:shell_error
         call go#tool#ShowErrors(out)
     else
@@ -246,15 +242,17 @@ endfunction
 " Generate runs 'go generate' in similar fashion to go#cmd#Build()
 function! go#cmd#Generate(bang, ...)
     let default_makeprg = &makeprg
-    let gofiles = join(go#tool#Files(), '" "')
 
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
+    " :make expands '%' and '#' wildcards, so they must also be escaped
+    let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
     if v:shell_error
-        let &makeprg = "go generate " . join(a:000, ' ')
+        let &makeprg = "go generate " . goargs
     else
-        let &makeprg = "go generate " . join(a:000, ' ') . ' "' . gofiles . '"'
+        let gofiles = go#util#Shelljoin(go#tool#Files(), 1)
+        let &makeprg = "go generate " . goargs . ' ' . gofiles
     endif
 
     echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None

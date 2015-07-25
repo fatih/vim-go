@@ -15,14 +15,14 @@ endif
 
 
 " Some handy plug mappings
-nnoremap <silent> <Plug>(go-run) :<C-u>call go#cmd#Run(!g:go_jump_to_error,expand('%'))<CR>
-nnoremap <silent> <Plug>(go-build) :<C-u>call go#cmd#Build(!g:go_jump_to_error,'')<CR>
-nnoremap <silent> <Plug>(go-generate) :<C-u>call go#cmd#Generate(!g:go_jump_to_error,'')<CR>
+nnoremap <silent> <Plug>(go-run) :<C-u>call go#cmd#Run(!g:go_jump_to_error, '%')<CR>
+nnoremap <silent> <Plug>(go-build) :<C-u>call go#cmd#Build(!g:go_jump_to_error)<CR>
+nnoremap <silent> <Plug>(go-generate) :<C-u>call go#cmd#Generate(!g:go_jump_to_error)<CR>
 nnoremap <silent> <Plug>(go-install) :<C-u>call go#cmd#Install(!g:go_jump_to_error)<CR>
-nnoremap <silent> <Plug>(go-test) :<C-u>call go#cmd#Test(!g:go_jump_to_error, 0, '')<CR>
-nnoremap <silent> <Plug>(go-test-func) :<C-u>call go#cmd#TestFunc(!g:go_jump_to_error, '')<CR>
-nnoremap <silent> <Plug>(go-test-compile) :<C-u>call go#cmd#Test(!g:go_jump_to_error, 1, '')<CR>
-nnoremap <silent> <Plug>(go-coverage) :<C-u>call go#cmd#Coverage(!g:go_jump_to_error, '')<CR>
+nnoremap <silent> <Plug>(go-test) :<C-u>call go#cmd#Test(!g:go_jump_to_error, 0)<CR>
+nnoremap <silent> <Plug>(go-test-func) :<C-u>call go#cmd#TestFunc(!g:go_jump_to_error)<CR>
+nnoremap <silent> <Plug>(go-test-compile) :<C-u>call go#cmd#Test(!g:go_jump_to_error, 1)<CR>
+nnoremap <silent> <Plug>(go-coverage) :<C-u>call go#cmd#Coverage(!g:go_jump_to_error)<CR>
 nnoremap <silent> <Plug>(go-vet) :<C-u>call go#cmd#Vet(!g:go_jump_to_error)<CR>
 
 nnoremap <silent> <Plug>(go-files) :<C-u>call go#tool#Files()<CR>
@@ -82,7 +82,7 @@ command! -nargs=* -bang GoTest call go#cmd#Test(<bang>0, 0, <f-args>)
 command! -nargs=* -bang GoTestFunc call go#cmd#TestFunc(<bang>0, <f-args>)
 command! -nargs=* -bang GoTestCompile call go#cmd#Test(<bang>0, 1, <f-args>)
 command! -nargs=* -bang GoCoverage call go#cmd#Coverage(<bang>0, <f-args>)
-command! -nargs=0 -bang GoVet call go#cmd#Vet(<bang>0)
+command! -nargs=* -bang GoVet call go#cmd#Vet(<bang>0, <f-args>)
 
 " -- play
 command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
@@ -104,9 +104,9 @@ command! -nargs=1 -bang -complete=customlist,go#package#Complete GoImport call g
 command! -nargs=* -bang -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>, '<bang>')
 
 " -- lint
-command! GoLint call go#lint#Run()
+command! -nargs=* GoLint call go#lint#Run(<f-args>)
 
 " -- errcheck
-command! -nargs=? -complete=customlist,go#package#Complete GoErrCheck call go#errcheck#Run(<f-args>)
+command! -nargs=* -complete=customlist,go#package#Complete GoErrCheck call go#errcheck#Run(<f-args>)
 
 " vim:ts=4:sw=4:et

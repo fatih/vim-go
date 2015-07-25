@@ -48,4 +48,14 @@ function! go#util#StripPathSep(path)
 	return a:path
 endfunction
 
+" Shelljoin returns a shell-safe string representation of arglist. The
+" {special} argument of shellescape() may optionally be passed.
+function! go#util#Shelljoin(arglist, ...)
+	if a:0
+		return join(map(copy(a:arglist), 'shellescape(v:val, ' . a:1 . ')'), ' ')
+	else
+		return join(map(copy(a:arglist), 'shellescape(v:val)'), ' ')
+	endif
+endfunction
+
 " vim:ts=4:sw=4:et
