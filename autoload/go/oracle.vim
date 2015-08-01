@@ -81,14 +81,10 @@ func! s:RunOracle(mode, selected) range abort
     if exists('g:go_oracle_scope')
         " let the user defines the scope, must be a space separated string,
         " example: 'fmt math net/http'
-        let unescaped_scopes = split(get(g:, 'go_oracle_scope'))
-        let scopes = []
-        for unescaped_scope in unescaped_scopes
-            call add(scopes, shellescape(unescaped_scope))
-        endfor
+        let scopes = split(get(g:, 'go_oracle_scope'))
     elseif exists('g:go_oracle_include_tests') && pkg != -1
         " give import path so it includes all _test.go files too
-        let scopes = [shellescape(pkg)]
+        let scopes = [pkg]
     else
         " best usable way, only pass the package itself, without the test
         " files
@@ -118,9 +114,7 @@ func! s:RunOracle(mode, selected) range abort
     " a packages or go files, dependent on the User's own choice. For more
     " info check Oracle's User Manual section about scopes:
     " https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
-    for scope in scopes
-        let cmd .= ' ' . scope
-    endfor
+    let cmd .= ' ' . go#util#Shelljoin(scopes)
 
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
