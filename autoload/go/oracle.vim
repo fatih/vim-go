@@ -137,9 +137,9 @@ func! s:RunOracle(mode, selected) range abort
 endfunc
 
 function! go#oracle#Scope(...)
-    if len(a:000)
-        if len(a:000) == 1 && a:1 == '""'
-            let g:go_oracle_scope = ""
+    if a:0
+        if a:0 == 1 && a:1 == '""'
+            unlet g:go_oracle_scope
             echon "vim-go: " | echohl Function | echon "oracle scope is cleared"| echohl None
         else
             let g:go_oracle_scope = join(a:000, ' ')
