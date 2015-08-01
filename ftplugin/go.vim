@@ -30,6 +30,9 @@ endif
 
 if get(g:, "go_def_mapping_enabled", 1)
    nnoremap <buffer> <silent> gd :GoDef<cr>
+
+   nnoremap <buffer> <silent> <c-w>d :split<bar>:GoDef<cr>
+   nmap <buffer> <silent> <c-w>D <c-w>d
 endif
 
 if get(g:, "go_textobj_enabled", 1)
