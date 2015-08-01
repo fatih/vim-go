@@ -73,7 +73,7 @@ func! s:getpos(l, c)
     return line2byte(a:l) + (a:c-2)
 endfun
 
-func! s:RunOracle(mode, selected) range abort
+func! s:RunOracle(mode, selected, needs_package) range abort
     let fname = expand('%:p')
     let dname = expand('%:p:h')
     let pkg = go#package#ImportPath(dname)
@@ -82,7 +82,7 @@ func! s:RunOracle(mode, selected) range abort
         " let the user defines the scope, must be a space separated string,
         " example: 'fmt math net/http'
         let scopes = split(get(g:, 'go_oracle_scope'))
-    elseif exists('g:go_oracle_include_tests') && pkg != -1
+    elseif a:needs_package || exists('g:go_oracle_include_tests') && pkg != -1
         " give import path so it includes all _test.go files too
         let scopes = [pkg]
     else
@@ -158,31 +158,31 @@ endfunction
 
 " Show 'implements' relation for selected package
 function! go#oracle#Implements(selected)
-    let out = s:RunOracle('implements', a:selected)
+    let out = s:RunOracle('implements', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
 function! go#oracle#Describe(selected)
-    let out = s:RunOracle('describe', a:selected)
+    let out = s:RunOracle('describe', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
 " Show possible targets of selected function call
 function! go#oracle#Callees(selected)
-    let out = s:RunOracle('callees', a:selected)
+    let out = s:RunOracle('callees', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
 " Show possible callers of selected function
 function! go#oracle#Callers(selected)
-    let out = s:RunOracle('callers', a:selected)
+    let out = s:RunOracle('callers', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
 " Show path from callgraph root to selected function
 function! go#oracle#Callstack(selected)
-    let out = s:RunOracle('callstack', a:selected)
+    let out = s:RunOracle('callstack', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
@@ -194,19 +194,19 @@ function! go#oracle#Freevars(selected)
         return
     endif
 
-    let out = s:RunOracle('freevars', a:selected)
+    let out = s:RunOracle('freevars', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
 " Show send/receive corresponding to selected channel op
 function! go#oracle#ChannelPeers(selected)
-    let out = s:RunOracle('peers', a:selected)
+    let out = s:RunOracle('peers', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
 function! go#oracle#Referrers(selected)
-    let out = s:RunOracle('referrers', a:selected)
+    let out = s:RunOracle('referrers', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
