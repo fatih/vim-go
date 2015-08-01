@@ -149,7 +149,7 @@ function! go#oracle#Scope(...)
         return
     endif
 
-    if !exists(g:go_oracle_scope)
+    if !exists('g:go_oracle_scope')
         echon "vim-go: " | echohl Function | echon "oracle scope is not set"| echohl None
     else
         echon "vim-go: " | echohl Function | echon "current oracle scope: '". g:go_oracle_scope ."'" | echohl None
