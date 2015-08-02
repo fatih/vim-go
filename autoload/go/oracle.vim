@@ -73,7 +73,7 @@ func! s:getpos(l, c)
     return line2byte(a:l) + (a:c-2)
 endfun
 
-func! s:RunOracle(mode, selected) range abort
+func! s:RunOracle(mode, selected, needs_package) range abort
     let fname = expand('%:p')
     let dname = expand('%:p:h')
     let pkg = go#package#ImportPath(dname)
@@ -81,14 +81,10 @@ func! s:RunOracle(mode, selected) range abort
     if exists('g:go_oracle_scope')
         " let the user defines the scope, must be a space separated string,
         " example: 'fmt math net/http'
-        let unescaped_scopes = split(get(g:, 'go_oracle_scope'))
-        let scopes = []
-        for unescaped_scope in unescaped_scopes
-            call add(scopes, shellescape(unescaped_scope))
-        endfor
-    elseif exists('g:go_oracle_include_tests') && pkg != -1
+        let scopes = split(get(g:, 'go_oracle_scope'))
+    elseif a:needs_package || exists('g:go_oracle_include_tests') && pkg != -1
         " give import path so it includes all _test.go files too
-        let scopes = [shellescape(pkg)]
+        let scopes = [pkg]
     else
         " best usable way, only pass the package itself, without the test
         " files
@@ -118,9 +114,7 @@ func! s:RunOracle(mode, selected) range abort
     " a packages or go files, dependent on the User's own choice. For more
     " info check Oracle's User Manual section about scopes:
     " https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
-    for scope in scopes
-        let cmd .= ' ' . scope
-    endfor
+    let cmd .= ' ' . go#util#Shelljoin(scopes)
 
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
@@ -143,9 +137,9 @@ func! s:RunOracle(mode, selected) range abort
 endfunc
 
 function! go#oracle#Scope(...)
-    if len(a:000)
-        if len(a:000) == 1 && a:1 == '""'
-            let g:go_oracle_scope = ""
+    if a:0
+        if a:0 == 1 && a:1 == '""'
+            unlet g:go_oracle_scope
             echon "vim-go: " | echohl Function | echon "oracle scope is cleared"| echohl None
         else
             let g:go_oracle_scope = join(a:000, ' ')
@@ -155,7 +149,7 @@ function! go#oracle#Scope(...)
         return
     endif
 
-    if !exists(g:go_oracle_scope)
+    if !exists('g:go_oracle_scope')
         echon "vim-go: " | echohl Function | echon "oracle scope is not set"| echohl None
     else
         echon "vim-go: " | echohl Function | echon "current oracle scope: '". g:go_oracle_scope ."'" | echohl None
@@ -164,31 +158,31 @@ endfunction
 
 " Show 'implements' relation for selected package
 function! go#oracle#Implements(selected)
-    let out = s:RunOracle('implements', a:selected)
+    let out = s:RunOracle('implements', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
 function! go#oracle#Describe(selected)
-    let out = s:RunOracle('describe', a:selected)
+    let out = s:RunOracle('describe', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
 " Show possible targets of selected function call
 function! go#oracle#Callees(selected)
-    let out = s:RunOracle('callees', a:selected)
+    let out = s:RunOracle('callees', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
 " Show possible callers of selected function
 function! go#oracle#Callers(selected)
-    let out = s:RunOracle('callers', a:selected)
+    let out = s:RunOracle('callers', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
 " Show path from callgraph root to selected function
 function! go#oracle#Callstack(selected)
-    let out = s:RunOracle('callstack', a:selected)
+    let out = s:RunOracle('callstack', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
@@ -200,19 +194,19 @@ function! go#oracle#Freevars(selected)
         return
     endif
 
-    let out = s:RunOracle('freevars', a:selected)
+    let out = s:RunOracle('freevars', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
 " Show send/receive corresponding to selected channel op
 function! go#oracle#ChannelPeers(selected)
-    let out = s:RunOracle('peers', a:selected)
+    let out = s:RunOracle('peers', a:selected, 1)
     call s:qflistSecond(out)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
 function! go#oracle#Referrers(selected)
-    let out = s:RunOracle('referrers', a:selected)
+    let out = s:RunOracle('referrers', a:selected, 0)
     call s:qflistSecond(out)
 endfunction
 
