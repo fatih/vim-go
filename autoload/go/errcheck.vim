@@ -27,7 +27,12 @@ function! go#errcheck#Run(...) abort
             let tokens = matchlist(line, mx)
 
             if !empty(tokens)
-                call add(errors, {"filename": expand(go#path#Default() . "/src/" . tokens[1]),
+                if tokens[1][0] == "/"
+                    let filename = tokens[1]
+                else
+                    let filename = expand(go#path#Default() . "/src/" . tokens[1])
+                endif
+                call add(errors, {"filename": filename,
                             \"lnum": tokens[2],
                             \"col": tokens[3],
                             \"text": tokens[4]})
