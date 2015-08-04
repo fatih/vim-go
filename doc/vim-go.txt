@@ -113,10 +113,10 @@ COMMANDS                                                          *go-commands*
                                                                   *:GoPath*
 :GoPath [path]
 
-    GoPath sets and ovverides GOPATH with the given {path}. If no {path} is
+    GoPath sets and overrides GOPATH with the given {path}. If no {path} is
     given it shows the current GOPATH. If `""` is given as path, it clears
     current `GOPATH` which was set with |GoPath| and restores `GOPATH` back to
-    the inital value which was sourced when Vim was started.
+    the initial value which was sourced when Vim was started.
 
                                                                   *:GoImport*
 :GoImport[!] [path]
@@ -238,7 +238,7 @@ COMMANDS                                                          *go-commands*
 
                                                                     *:GoInfo*
 :GoInfo
-    Show type information about the identifer under the cursor. For example
+    Show type information about the identifier under the cursor. For example
     putting it above a function call is going to show the full function
     signature. It uses gocode to get the type informations.
 
@@ -823,7 +823,7 @@ First environment variables in Fish are applied differently, it should be like:
 <
 Second, Vim needs a POSIX compatible shell (more info here:
 https://github.com/dag/vim-fish#teach-a-vim-to-fish). If you use Fish to open
-vim, it will make certainx shell based commands fail (means vim-go will fail
+vim, it will make certain shell based commands fail (means vim-go will fail
 too). To overcome this problem change the default shell by adding the
 following into your .vimrc (on the top of the file):
 >
@@ -856,7 +856,7 @@ You'll see a more detailed error. If this works, vim-go will work too.
 ===============================================================================
 CREDITS                                                         *go-credits*
 
-* Go Authors for offical vim plugins
+* Go Authors for official vim plugins
 * Gocode, Godef, Golint, Oracle, Goimports, Errcheck projects and authors of
   those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
