@@ -49,6 +49,35 @@ function! go#gb#BuildAll()
     return go#gb#Build("all")
 endfunction
 
+function! go#gb#Test(...)
+    let command = "gb test "
+    if len(a:000)
+        let pkgs = join(a:000, " ")
+        let command .= pkgs
+    endif
+
+    echon "vim-go: " | echohl Identifier | echon "testing ..."| echohl None
+    redraw
+
+    let out = go#tool#ExecuteInDir(command)
+    if v:shell_error
+        call go#tool#ShowErrors(out, 0)
+        cwindow
+        let errors = getqflist()
+        if !empty(errors)
+            if g:go_jump_to_error
+                cc 1 "jump to first error if there is any
+            endif
+        endif
+        echon "vim-go: " | echohl ErrorMsg | echon "[gb test] FAIL" | echohl None
+        return
+    endif
+
+    call setqflist([])
+    cwindow
+    echon "vim-go: " | echohl Function | echon "[gb test] PASS" | echohl None
+endfunction
+
 " findProjectRoot returns the project root by searching the src/ folder
 " recursively until it's been found till `/`
 function! s:findProjectRoot()
