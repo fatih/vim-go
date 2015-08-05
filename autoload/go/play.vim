@@ -41,6 +41,27 @@ function! go#play#Share(count, line1, line2)
     echo "vim-go: snippet uploaded: ".url
 endfunction
 
+function! go#play#Run(url)
+    if !executable('curl')
+        echohl ErrorMsg | echomsg "vim-go: require 'curl' command" | echohl None
+        return
+    endif
+
+    let file = tempname().".go"
+    let curl_command = "curl -s -o " . file . " " . a:url . ".go"
+    let command = curl_command . " && " . "go run " . file
+    let result = system(command)
+
+    call delete(file)
+
+    if v:shell_error
+        echo 'A error has occured. Run this command to see what the problem is:'
+        echo command
+        return
+    endif
+
+    echo result
+endfunction
 
 function! s:get_visual_content()
     let save_regcont = @"
