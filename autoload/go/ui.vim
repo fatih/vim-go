@@ -5,7 +5,7 @@ function! go#ui#OpenWindow(title, content)
     " reuse existing buffer window if it exists otherwise create a new one
     if !bufexists(s:buf_nr)
         execute 'botright new'
-        file `="[" . a:title . "]"`
+        file `=a:title`
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
         execute 'botright new'
@@ -25,9 +25,8 @@ function! go#ui#OpenWindow(title, content)
     endif
 	
 		" some sane default values for a readonly buffer
-    setlocal filetype=vimgo
+    setlocal filetype=go
     setlocal bufhidden=delete
-    setlocal buftype=nofile
     setlocal noswapfile
     setlocal nobuflisted
     setlocal winfixheight
@@ -44,9 +43,6 @@ function! go#ui#OpenWindow(title, content)
 
     " delete last line that comes from the append call
     $delete _  
-
-    " set it back to non modifiable
-    setlocal nomodifiable
 endfunction
 
 
