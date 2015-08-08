@@ -19,13 +19,14 @@ function! go#errcheck#Run(...) abort
     endif
 
     echon "vim-go: " | echohl Identifier | echon "errcheck analysing ..." | echohl None
+    redraw
+
     let out = system(bin_path . ' ' . goargs)
     if v:shell_error
         let errors = []
         let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
         for line in split(out, '\n')
             let tokens = matchlist(line, mx)
-
             if !empty(tokens)
                 call add(errors, {"filename": expand(go#path#Default() . "/src/" . tokens[1]),
                             \"lnum": tokens[2],
@@ -46,6 +47,7 @@ function! go#errcheck#Run(...) abort
     else
         redraw | echo
         call setqflist([])
+        echon "vim-go: " | echohl Function | echon "[errcheck] PASS" | echohl None
     endif
 
     cwindow
