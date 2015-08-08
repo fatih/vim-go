@@ -21,7 +21,9 @@ function! go#errcheck#Run(...) abort
     echon "vim-go: " | echohl Identifier | echon "errcheck analysing ..." | echohl None
     redraw
 
-    let out = system(bin_path . ' ' . goargs)
+    let command = bin_path . ' ' . goargs
+    let out = go#tool#ExecuteInDir(command)
+
     if v:shell_error
         let errors = []
         let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
