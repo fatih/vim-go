@@ -236,6 +236,7 @@ function! go#cmd#Vet(bang, ...)
             cc 1 "jump to first error if there is any
         endif
     else
+        cclose " close quickfix window
         redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
     endif
 endfunction
