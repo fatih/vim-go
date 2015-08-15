@@ -232,6 +232,7 @@ function! go#cmd#Vet(bang, ...)
     let errors = getqflist()
     if !empty(errors) 
         if !a:bang
+            cwindow " open quickfix window
             cc 1 "jump to first error if there is any
         endif
     else
