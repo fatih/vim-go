@@ -132,6 +132,11 @@ augroup vim-go
         autocmd BufWritePre *.go call go#fmt#Format(-1)
     endif
 
+    " running go vet on save
+    if get(g:, "go_vet_autosave", 0)
+        autocmd BufWritePost *.go call go#cmd#Vet(0)
+    endif
+
 augroup END
 
 

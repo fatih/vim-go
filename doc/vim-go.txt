@@ -810,6 +810,12 @@ supports will be added. By default it's enabled. >
 Adds custom text objects. By default it's enabled. >
 
 	let g:go_textobj_enabled = 1
+<
+                                                     *'g:go_vet_autosave'*
+
+Use this option to auto |:GoVet| on save. By default it's disabled. >
+
+  let g:go_vet_autosave = 0
 
 
 ===============================================================================
