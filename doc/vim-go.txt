@@ -605,7 +605,7 @@ with |:GoPlay|. By default it's enabled. >
 
 Use this option to show the type info (|:GoInfo|) for the word under the cursor
 automatically. Whenever the cursor changes the type info will be updated.
-By default it's disabled >
+By default it's disabled. >
 
   let g:go_auto_type_info = 0
 <
@@ -623,14 +623,14 @@ changing the behaviour of our custom static mappings. By default it's enabled.
 <
                                                         *'g:go_fmt_autosave'*
 
-Use this option to auto |:GoFmt| on save. By default it's enabled >
+Use this option to auto |:GoFmt| on save. By default it's enabled. >
 
   let g:go_fmt_autosave = 1
 <
                                                          *'g:go_fmt_command'*
 
 Use this option to define which tool is used to gofmt. By default `gofmt` is
-used >
+used. >
 
   let g:go_fmt_command = "gofmt"
 <
