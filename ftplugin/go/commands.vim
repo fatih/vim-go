@@ -86,7 +86,6 @@ command! -nargs=* -bang GoVet call go#cmd#Vet(<bang>0, <f-args>)
 
 " -- play
 command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
-command! -nargs=1 -range=% GoPlayRun call go#play#Run(<f-args>)
 
 " -- def
 command! -nargs=* -range GoDef :call go#def#Jump(<f-args>)

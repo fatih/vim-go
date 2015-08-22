@@ -21,6 +21,7 @@ let s:packages = [
 " These commands are available on any filetypes
 command! GoInstallBinaries call s:GoInstallBinaries(-1)
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
+command! -nargs=? GoPlayRun call go#play#Run(<f-args>)
 command! -nargs=? -complete=dir GoPath call go#path#GoPath(<f-args>)
 
 
