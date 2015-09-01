@@ -815,7 +815,7 @@ Adds custom text objects. By default it's enabled. >
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
 
-I'm using Fish shell but have some problems using Vim-go~
+I'm using Fish shell but have some problems using vim-go~
 
 First environment variables in Fish are applied differently, it should be like:
 >
@@ -823,7 +823,7 @@ First environment variables in Fish are applied differently, it should be like:
 <
 Second, Vim needs a POSIX compatible shell (more info here:
 https://github.com/dag/vim-fish#teach-a-vim-to-fish). If you use Fish to open
-vim, it will make certain shell based commands fail (means vim-go will fail
+Vim, it will make certain shell based commands fail (means vim-go will fail
 too). To overcome this problem change the default shell by adding the
 following into your .vimrc (on the top of the file):
 >
@@ -836,7 +836,7 @@ or
 	set shell='/bin/sh'
 >
 
-I'm seeing weirds errors during installation of binaries with
+I'm seeing weird errors during installation of binaries with
 GoInstallBinaries:
 
 If you see errors like this:
