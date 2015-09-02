@@ -108,6 +108,9 @@ function! go#cmd#Install(bang, ...)
             cc 1 "jump to first error if there is any
         endif
         return
+    else
+        call setqflist([])
+        cwindow
     endif
 
     echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH | echohl None
