@@ -93,7 +93,7 @@ function! go#tool#ExecuteInDir(cmd) abort
     let dir = getcwd()
     try
         execute cd . fnameescape(expand("%:p:h"))
-        let out = system(a:cmd)
+        let out = system("env GOPATH=" . $GOPATH . " " . a:cmd)
     finally
         execute cd . fnameescape(dir)
     endtry
