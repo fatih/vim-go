@@ -111,6 +111,22 @@ function! go#fmt#Format(withGoimport)
         " remove undo point caused via BufWritePre
         try | silent undojoin | catch | endtry
 
+        " avoid trying to rename buffer names in the form of 'bar/foo.go'. The
+        " following steps are creating a hidden buffer which causes the rename
+        " below fail
+        "
+        " :vs bar/foo.go
+        " :!mkdir -p bar
+        " :w
+        "
+        " After the following steps, any write (:w) will fail. The command :ls
+        " will show two buffers, one with name 'bar/foo.go' and one with
+        " 'foo.go'. Once we reach this state it's impossible to fix it,
+        " because the buffer name can't be renamed to `foo.go` anymore. We fix
+        " it by changing the buffername explicitly always to the given
+        " filename.
+        exec ':file '.  expand('%:t')
+
         " Replace current file with temp file, then reload buffer
         call rename(l:tmpname, expand('%'))
         silent edit!
