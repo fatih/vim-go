@@ -116,7 +116,7 @@ function! go#fmt#Format(withGoimport)
         " below fail
         "
         " :vs bar/foo.go
-        " :!mkidr -p bar
+        " :!mkdir -p bar
         " :w
         "
         " After the following steps, any write (:w) will fail. The command :ls
