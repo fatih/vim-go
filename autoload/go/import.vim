@@ -6,7 +6,7 @@
 "
 function! go#import#SwitchImport(enabled, localname, path, bang)
     let view = winsaveview()
-    let path = a:path
+    let path = substitute(a:path, '^\s*\(.\{-}\)\s*$', '\1', '')
 
     " Quotes are not necessary, so remove them if provided.
     if path[0] == '"'
