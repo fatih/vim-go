@@ -793,6 +793,13 @@ Highlights build constraints. By default it's disabled. >
 
 	let g:go_highlight_build_constraints = 0
 <
+                                        *'g:go_highlight_string_spellcheck*
+
+Specifies spell checking enabled for strings. Spelling errors are highlighted
+if |spell| is enabled. By default it's enabled. >
+
+	let g:go_highlight_string_spellcheck = 1
+<
 
                                                 *'g:go_autodetect_gopath'*
 
