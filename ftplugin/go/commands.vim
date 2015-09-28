@@ -2,6 +2,7 @@
 command! -nargs=? GoRename call go#rename#Rename(<f-args>)
 
 " oracle
+command! -nargs=* -complete=customlist,go#package#Complete GoOracleScope call go#oracle#Scope(<f-args>)
 command! -range=% GoImplements call go#oracle#Implements(<count>)
 command! -range=% GoCallees call go#oracle#Callees(<count>)
 command! -range=% GoDescribe call go#oracle#Describe(<count>)
@@ -10,8 +11,6 @@ command! -range=% GoCallstack call go#oracle#Callstack(<count>)
 command! -range=% GoFreevars call go#oracle#Freevars(<count>)
 command! -range=% GoChannelPeers call go#oracle#ChannelPeers(<count>)
 command! -range=% GoReferrers call go#oracle#Referrers(<count>)
-
-command! -nargs=* -complete=customlist,go#package#Complete GoOracleScope call go#oracle#Scope(<f-args>)
 
 " tool
 command! -nargs=0 GoFiles echo go#tool#Files()
@@ -27,7 +26,6 @@ command! -nargs=* -bang GoTest call go#cmd#Test(<bang>0, 0, <f-args>)
 command! -nargs=* -bang GoTestFunc call go#cmd#TestFunc(<bang>0, <f-args>)
 command! -nargs=* -bang GoTestCompile call go#cmd#Test(<bang>0, 1, <f-args>)
 command! -nargs=* -bang GoCoverage call go#cmd#Coverage(<bang>0, <f-args>)
-command! -nargs=* -bang GoVet call go#cmd#Vet(<bang>0, <f-args>)
 
 " -- play
 command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
@@ -48,10 +46,10 @@ command! -nargs=? -complete=customlist,go#package#Complete GoDrop call go#import
 command! -nargs=1 -bang -complete=customlist,go#package#Complete GoImport call go#import#SwitchImport(1, '', <f-args>, '<bang>')
 command! -nargs=* -bang -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>, '<bang>')
 
-" -- lint
+" -- linters
+command! -nargs=* GoMetaLint call go#lint#Gometa()
 command! -nargs=* GoLint call go#lint#Golint(<f-args>)
-
-" -- errcheck
+command! -nargs=* -bang GoVet call go#cmd#Vet(<bang>0, <f-args>)
 command! -nargs=* -complete=customlist,go#package#Complete GoErrCheck call go#lint#Errcheck(<f-args>)
 
 " vim:ts=4:sw=4:et

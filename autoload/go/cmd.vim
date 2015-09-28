@@ -216,32 +216,6 @@ function! go#cmd#Coverage(bang, ...)
     call delete(l:tmpname)
 endfunction
 
-" Vet calls "go vet' on the current directory. Any warnings are populated in
-" the quickfix window
-function! go#cmd#Vet(bang, ...)
-    call go#cmd#autowrite()
-    echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
-    if a:0 == 0
-        let out = go#tool#ExecuteInDir('go vet')
-    else
-        let out = go#tool#ExecuteInDir('go tool vet ' . go#util#Shelljoin(a:000))
-    endif
-    if v:shell_error
-        call go#tool#ShowErrors(out)
-    else
-        call setqflist([])
-    endif
-
-    let errors = getqflist()
-    if !empty(errors) 
-        if !a:bang
-            cc 1 "jump to first error if there is any
-        endif
-    else
-        redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
-    endif
-endfunction
-"
 " Generate runs 'go generate' in similar fashion to go#cmd#Build()
 function! go#cmd#Generate(bang, ...)
     let default_makeprg = &makeprg
@@ -281,4 +255,3 @@ function! go#cmd#Generate(bang, ...)
 endfunction
 
 " vim:ts=4:sw=4:et
-"

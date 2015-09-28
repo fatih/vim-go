@@ -6,6 +6,12 @@ if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif
 
+function! go#lint#Gometa(...) abort
+    echo "GOMETA!!!"
+endfunction
+
+" Golint calls 'golint' on the current directory. Any warnings are populated in
+" the quickfix window
 function! go#lint#Golint(...) abort
 	let bin_path = go#path#CheckBinPath(g:go_golint_bin) 
 	if empty(bin_path) 
@@ -21,6 +27,35 @@ function! go#lint#Golint(...) abort
     cwindow
 endfunction
 
+" Vet calls 'go vet' on the current directory. Any warnings are populated in
+" the quickfix window
+function! go#cmd#Vet(bang, ...)
+    call go#cmd#autowrite()
+    echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
+    if a:0 == 0
+        let out = go#tool#ExecuteInDir('go vet')
+    else
+        let out = go#tool#ExecuteInDir('go tool vet ' . go#util#Shelljoin(a:000))
+    endif
+    if v:shell_error
+        call go#tool#ShowErrors(out)
+    else
+        call setqflist([])
+    endif
+
+    cwindow
+    let errors = getqflist()
+    if !empty(errors) 
+        if !a:bang
+            cc 1 "jump to first error if there is any
+        endif
+    else
+        redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
+    endif
+endfunction
+
+" ErrCheck calls 'errcheck' for the given packages. Any warnings are populated in
+" the quickfix window.
 function! go#lint#Errcheck(...) abort
     if a:0 == 0
         let goargs = go#package#ImportPath(expand('%:p:h'))
