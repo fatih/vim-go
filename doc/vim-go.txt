@@ -422,7 +422,7 @@ COMMANDS                                                          *go-commands*
     Calls the underlying `gometalinter` tool and displays all warnings and
     errors in a quickfix window. By default the following linters are
     enabled: "'vet', 'golint', 'errcheck'". This can be changed with the
-    |g:go_metalinter_allowed| variable. To override the command completely
+    |g:go_metalinter_enabled| variable. To override the command completely
     use the variable |g:go_metalinter_command|
 
 
@@ -831,12 +831,12 @@ Adds custom text objects. By default it's enabled. >
 	let g:go_textobj_enabled = 1
 <
 
-                                                  *'g:go_metalinter_allowed'*
+                                                  *'g:go_metalinter_enabled'*
 
-Specifiies the currently allowed linters for the |GoMetaLinter| command. By
+Specifies the currently enabled linters for the |GoMetaLinter| command. By
 default it's using `vet`, `golint` and `errcheck`
 >
-  let g:go_metalinter_allowed = ['vet', 'golint', 'errcheck']
+  let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
                                                   *'g:go_metalinter_command'*
 

@@ -2,8 +2,8 @@ if !exists("g:go_metalinter_command")
     let g:go_metalinter_command = ""
 endif
 
-if !exists("g:go_metalinter_allowed")
-    let g:go_metalinter_allowed = ['vet', 'golint', 'errcheck']
+if !exists("g:go_metalinter_enabled")
+    let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 endif
 
 if !exists("g:go_golint_bin")
@@ -27,7 +27,7 @@ function! go#lint#Gometa(...) abort
             return 
         endif
 
-        for linter in g:go_metalinter_allowed
+        for linter in g:go_metalinter_enabled
             let meta_command .= " --enable=".linter
         endfor
 
