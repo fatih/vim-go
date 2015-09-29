@@ -87,7 +87,7 @@ endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
 " the quickfix window
-function! go#cmd#Vet(bang, ...)
+function! go#lint#Vet(bang, ...)
     call go#cmd#autowrite()
     echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
     if a:0 == 0
