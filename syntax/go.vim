@@ -10,7 +10,7 @@
 "     let OPTION_NAME = 0
 "   in your ~/.vimrc file to disable particular options. You can also write:
 "     let OPTION_NAME = 1
-"   to enable particular options. 
+"   to enable particular options.
 "   At present, all options default to on, except highlight of:
 "   functions, methods and structs.
 "
@@ -25,6 +25,8 @@
 "     Highlights instances of tabs following spaces.
 "   - go_highlight_trailing_whitespace_error
 "     Highlights trailing white space.
+"   - go_highlight_string_spellcheck
+"     Specifies that strings should be spell checked
 
 " Quit when a (custom) syntax file was already loaded
 if exists("b:current_syntax")
@@ -69,6 +71,10 @@ endif
 
 if !exists("g:go_highlight_build_constraints")
     let g:go_highlight_build_constraints = 0
+endif
+
+if !exists("g:go_highlight_string_spellcheck")
+  let g:go_highlight_string_spellcheck = 1
 endif
 
 syn case match
@@ -145,8 +151,13 @@ hi def link     goEscapeError       Error
 
 " Strings and their contents
 syn cluster     goStringGroup       contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU,goEscapeError
-syn region      goString            start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup
-syn region      goRawString         start=+`+ end=+`+
+if g:go_highlight_string_spellcheck != 0
+  syn region      goString            start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup,@Spell
+  syn region      goRawString         start=+`+ end=+`+ contains=@Spell
+else
+  syn region      goString            start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup
+  syn region      goRawString         start=+`+ end=+`+
+endif
 syn match       goFormatSpecifier   /%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
 
 hi def link     goString            String
@@ -234,7 +245,7 @@ syn keyword     goTodo              contained NOTE
 hi def link     goTodo              Todo
 
 
-" Operators; 
+" Operators;
 if g:go_highlight_operators != 0
 	" match single-char operators:          - + % < > ! & | ^ * =
 	" and corresponding two-char operators: -= += %= <= >= != &= |= ^= *= ==
@@ -251,20 +262,20 @@ if g:go_highlight_operators != 0
 endif
 hi def link     goOperator					Operator
 
-" Functions; 
+" Functions;
 if g:go_highlight_functions != 0
 	syn match goFunction							/\(func\s\+\)\@<=\w\+\((\)\@=/
 	syn match goFunction							/\()\s\+\)\@<=\w\+\((\)\@=/
 endif
 hi def link     goFunction					Function
 
-" Methods; 
+" Methods;
 if g:go_highlight_methods != 0
 	syn match goMethod								/\(\.\)\@<=\w\+\((\)\@=/
 endif
 hi def link     goMethod						Type
 
-" Structs; 
+" Structs;
 if g:go_highlight_structs != 0
 	syn match goStruct								/\(.\)\@<=\w\+\({\)\@=/
 	syn match goStructDef							/\(type\s\+\)\@<=\w\+\(\s\+struct\s\+{\)\@=/
@@ -274,7 +285,7 @@ hi def link     goStructDef         Function
 
 " Build Constraints
 if g:go_highlight_build_constraints != 0
-    syn keyword goBuildOs           contained ignore cgo android darwin dragonfly freebsd linux nacl netbsd openbsd plan9 solaris windows 
+    syn keyword goBuildOs           contained ignore cgo android darwin dragonfly freebsd linux nacl netbsd openbsd plan9 solaris windows
     syn keyword goBuildArch         contained 386 amd64 amd64p32 arm
     syn match   goBuildDirective    display contained "+build"
     syn region  goBuildComment      start="//\s*+build" end="$" contains=goBuildDirective,goBuildOs,goBuildArch
