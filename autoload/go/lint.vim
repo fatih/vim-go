@@ -2,10 +2,9 @@ if !exists("g:go_metalinter_command")
     let g:go_metalinter_command = ""
 endif
 
-if !exists('g:go_metalinter_allowed')
-    let g:go_metalinter_allowed = ['vet', 'golint']
+if !exists("g:go_metalinter_allowed")
+    let g:go_metalinter_allowed = ['vet', 'golint', 'errcheck']
 endif
-
 
 if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
@@ -39,6 +38,10 @@ function! go#lint#Gometa(...) abort
         " the user wants something else, let us use it.
         let meta_command = g:go_metalinter_command
     endif
+
+    " debug
+    " echo meta_command
+    " return
 
     let out = system(meta_command)
     if v:shell_error == 0
