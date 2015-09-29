@@ -1,3 +1,11 @@
+if !exists("g:go_metalinter_command")
+    let g:go_metalinter_command = "gometalinter"
+endif
+
+if !exists('g:go_metalinter_options')
+    let g:go_metalinter_options = ''
+endif
+
 if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
 endif
@@ -7,7 +15,20 @@ if !exists("g:go_errcheck_bin")
 endif
 
 function! go#lint#Gometa(...) abort
+    let bin_path = go#path#CheckBinPath(g:go_metalinter_command) 
+    if empty(bin_path) 
+        return 
+    endif
+    
+    " change GOPATH too, so the underlying tools in gometalinter can pick up
+    " the correct GOPATH
+    let old_gopath = $GOPATH
+    let $GOPATH = go#path#Detect()
+    
     echo "GOMETA!!!"
+
+    " restore GOPATH again
+    let $GOPATH = old_gopath
 endfunction
 
 " Golint calls 'golint' on the current directory. Any warnings are populated in
