@@ -1,10 +1,11 @@
 if !exists("g:go_metalinter_command")
-    let g:go_metalinter_command = "gometalinter"
+    let g:go_metalinter_command = ""
 endif
 
-if !exists('g:go_metalinter_options')
-    let g:go_metalinter_options = ''
+if !exists('g:go_metalinter_allowed')
+    let g:go_metalinter_allowed = ['vet', 'golint']
 endif
+
 
 if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
@@ -15,17 +16,50 @@ if !exists("g:go_errcheck_bin")
 endif
 
 function! go#lint#Gometa(...) abort
-    let bin_path = go#path#CheckBinPath(g:go_metalinter_command) 
-    if empty(bin_path) 
-        return 
-    endif
-    
     " change GOPATH too, so the underlying tools in gometalinter can pick up
     " the correct GOPATH
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
-    
-    echo "GOMETA!!!"
+
+    let meta_command = "gometalinter --disable-all"
+    if empty(g:go_metalinter_command)
+        let bin_path = go#path#CheckBinPath("gometalinter") 
+        if empty(bin_path) 
+            return 
+        endif
+
+        for linter in g:go_metalinter_allowed
+            let meta_command .= " --enable=".linter
+        endfor
+
+        " TODO(arslan): maybe this should be passed via argument?
+        " for now we search for all underlying files
+        let meta_command .=  " ./..."
+    else
+        " the user wants something else, let us use it.
+        let meta_command = g:go_metalinter_command
+    endif
+
+    let out = system(meta_command)
+    if v:shell_error == 0
+        redraw | echo
+        call setqflist([])
+        echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
+    else
+        " backup users errorformat, will be restored once we are finished
+        let old_errorformat = &errorformat
+
+        " GoMetaLinter can output one of the two, so we look for both of them
+        "   <file>:<line>:[<column>]: <message> (<linter>)
+        "   <file>:<line>:: <message> (<linter>)
+        let &errorformat = "%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
+
+        " create the quickfix list and open it
+        cgetexpr split(out, "\n")
+        cwindow
+
+        let &errorformat = old_errorformat
+    endif
 
     " restore GOPATH again
     let $GOPATH = old_gopath
