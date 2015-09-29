@@ -232,12 +232,17 @@ function! go#cmd#Vet(bang, ...)
         call setqflist([])
     endif
 
+    cwindow
     let errors = getqflist()
     if !empty(errors) 
+        " cleanup statusline after 'calling vet...' message
+        echo
+
         if !a:bang
             cc 1 "jump to first error if there is any
         endif
     else
+        cclose " close quickfix window
         redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
     endif
 endfunction
