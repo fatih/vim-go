@@ -53,6 +53,12 @@ nnoremap <silent> <Plug>(go-doc-split) :<C-u>call go#doc#Open("new", "split")<CR
 nnoremap <silent> <Plug>(go-doc-browser) :<C-u>call go#doc#OpenBrowser()<CR>
 
 
+nnoremap <silent> <Plug>(go-gbbuild) :<C-u>call go#gb#Build()<CR>
+
+command -nargs=* -bang GbBuild call go#gb#Build(<f-args>)
+command -nargs=* -bang GbBuildAll call go#gb#BuildAll()
+command -nargs=* -bang GbTest call go#gb#Test(<f-args>)
+
 " gorename
 command! -nargs=? GoRename call go#rename#Rename(<f-args>)
 

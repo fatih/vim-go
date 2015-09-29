@@ -101,7 +101,7 @@ function! go#cmd#Install(bang, ...)
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
         cwindow
         let errors = getqflist()
         if !empty(errors) && !a:bang
@@ -142,7 +142,7 @@ function! go#cmd#Test(bang, compile, ...)
     redraw
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
         cwindow
         let errors = getqflist()
         if !empty(errors) && !a:bang
@@ -200,7 +200,7 @@ function! go#cmd#Coverage(bang, ...)
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
     else
         " clear previous quick fix window
         call setqflist([])
@@ -227,7 +227,7 @@ function! go#cmd#Vet(bang, ...)
         let out = go#tool#ExecuteInDir('go tool vet ' . go#util#Shelljoin(a:000))
     endif
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        call go#tool#ShowErrors(out, 1)
     else
         call setqflist([])
     endif
