@@ -9,6 +9,7 @@ let g:go_loaded_install = 1
 " needed by the user with GoInstallBinaries
 let s:packages = [
             \ "github.com/nsf/gocode",
+            \ "github.com/alecthomas/gometalinter", 
             \ "golang.org/x/tools/cmd/goimports",
             \ "github.com/rogpeppe/godef",
             \ "golang.org/x/tools/cmd/oracle",

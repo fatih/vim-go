@@ -26,6 +26,8 @@ disabled/enabled easily.
 * Change or display `GOPATH` with `:GoPath`
 * Create a coverage profile and display annotated source code in browser to see
   which functions are covered with `:GoCoverage`
+* Call `gometalinter`, which is a tool that invokes all possible linters
+  (golint, vet, errcheck, deadcode, etc..) and shows the warnings/errors
 * Lint your code with `:GoLint`
 * Run your code through `:GoVet` to catch static errors
 * Advanced source analysis tools utilizing oracle, such as `:GoImplements`,
