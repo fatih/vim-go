@@ -6,6 +6,10 @@ if !exists("g:go_metalinter_enabled")
     let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 endif
 
+if !exists("g:go_metalinter_path")
+    let g:go_metalinter_path = "./..."
+endif
+
 if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
 endif
@@ -14,12 +18,7 @@ if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif
 
-function! go#lint#Gometa(...) abort
-    " change GOPATH too, so the underlying tools in gometalinter can pick up
-    " the correct GOPATH
-    let old_gopath = $GOPATH
-    let $GOPATH = go#path#Detect()
-
+function! go#lint#Gometa(path_to_lint) abort
     let meta_command = "gometalinter --disable-all"
     if empty(g:go_metalinter_command)
         let bin_path = go#path#CheckBinPath("gometalinter") 
@@ -27,23 +26,34 @@ function! go#lint#Gometa(...) abort
             return 
         endif
 
+        if empty(g:go_metalinter_enabled)
+            echohl Error | echomsg "vim-go: please enable linters with the setting g:go_metalinter_enabled" | echohl None
+            return 
+        endif
+
         for linter in g:go_metalinter_enabled
             let meta_command .= " --enable=".linter
         endfor
 
-        " TODO(arslan): maybe this should be passed via argument?
-        " for now we search for all underlying files
-        let meta_command .=  " ./..."
+
+        " by default we search for all underlying files
+        let path = g:go_metalinter_path
+        if !empty(a:path_to_lint)
+            let path = a:path_to_lint
+        endif
+
+        let meta_command .=  path
     else
         " the user wants something else, let us use it.
         let meta_command = g:go_metalinter_command
     endif
 
-    " debug
+    " comment out the following two lines for debugging
     " echo meta_command
     " return
 
-    let out = system(meta_command)
+    let out = go#tool#ExecuteInDir(meta_command)
+
     if v:shell_error == 0
         redraw | echo
         call setqflist([])
@@ -63,9 +73,6 @@ function! go#lint#Gometa(...) abort
 
         let &errorformat = old_errorformat
     endif
-
-    " restore GOPATH again
-    let $GOPATH = old_gopath
 endfunction
 
 " Golint calls 'golint' on the current directory. Any warnings are populated in
