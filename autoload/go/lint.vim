@@ -42,7 +42,7 @@ function! go#lint#Gometa(path_to_lint) abort
             let path = a:path_to_lint
         endif
 
-        let meta_command .=  path
+        let meta_command .=  " " . path
     else
         " the user wants something else, let us use it.
         let meta_command = g:go_metalinter_command
