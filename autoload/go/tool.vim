@@ -54,7 +54,7 @@ function! go#tool#ShowErrors(out)
 
     for line in split(a:out, '\n')
         let fatalerrors = matchlist(line, '^\(fatal error:.*\)$')
-        let tokens = matchlist(line, '^\s*\(.\{-}\):\(\d\+\):\s*\(.*\)')
+        let tokens = matchlist(line, '^\s\+\(.\{-}\):\(\d\+\):\s*\(.*\)')
 
         if !empty(fatalerrors)
             call add(errors, {"text": fatalerrors[1]})
