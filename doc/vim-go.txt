@@ -420,12 +420,10 @@ COMMANDS                                                          *go-commands*
 :GoMetaLinter [path]
 
     Calls the underlying `gometalinter` tool and displays all warnings and
-    errors in a quickfix window. By default it lints the files for the path
-    `./...` . This can be changed with the 'path' argument temoporary or with the
-    |g:go_metalinter_path| variable permanently. By default the following
-    linters are enabled: "'vet', 'golint', 'errcheck'". This can be changed
-    with the |g:go_metalinter_enabled| variable. To override the command
-    completely use the variable |g:go_metalinter_command|
+    errors in a quickfix window. By default the following linters are enabled:
+    "'vet', 'golint', 'errcheck'". This can be changed with the
+    |g:go_metalinter_enabled| variable. To override the command completely use
+    the variable |g:go_metalinter_command|
 
 
 ===============================================================================
@@ -847,15 +845,7 @@ an advanced settings and is for users who want to have a complete control
 over of how `gometalinter` should be executed. By default it's empty.
 >
   let g:go_metalinter_command = ""
-<
-                                                     *'g:go_metalinter_path'*
 
-Defines the default path to be linted for the |GoMetaLinter| command. By
-default it's set to `./...`, which recursively lints all files underd the
-current directory.
->
-  let g:go_metalinter_path = "./..."
-<
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*

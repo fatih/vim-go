@@ -6,10 +6,6 @@ if !exists("g:go_metalinter_enabled")
     let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 endif
 
-if !exists("g:go_metalinter_path")
-    let g:go_metalinter_path = "./..."
-endif
-
 if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
 endif
@@ -18,17 +14,23 @@ if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif
 
-function! go#lint#Gometa(path_to_lint) abort
+function! go#lint#Gometa(...) abort
+    if a:0 == 0
+        let goargs = expand('%:p:h')
+    else
+        let goargs = go#util#Shelljoin(a:000)
+    endif
+
     let meta_command = "gometalinter --disable-all"
     if empty(g:go_metalinter_command)
-        let bin_path = go#path#CheckBinPath("gometalinter") 
-        if empty(bin_path) 
-            return 
+        let bin_path = go#path#CheckBinPath("gometalinter")
+        if empty(bin_path)
+            return
         endif
 
         if empty(g:go_metalinter_enabled)
             echohl Error | echomsg "vim-go: please enable linters with the setting g:go_metalinter_enabled" | echohl None
-            return 
+            return
         endif
 
         for linter in g:go_metalinter_enabled
@@ -36,13 +38,7 @@ function! go#lint#Gometa(path_to_lint) abort
         endfor
 
 
-        " by default we search for all underlying files
-        let path = g:go_metalinter_path
-        if !empty(a:path_to_lint)
-            let path = a:path_to_lint
-        endif
-
-        let meta_command .=  " " . path
+        let meta_command .=  " " . goargs
     else
         " the user wants something else, let us use it.
         let meta_command = g:go_metalinter_command
