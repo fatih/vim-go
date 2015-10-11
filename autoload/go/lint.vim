@@ -149,7 +149,7 @@ function! go#lint#Errcheck(...) abort
         for line in split(out, '\n')
             let tokens = matchlist(line, mx)
             if !empty(tokens)
-                call add(errors, {"filename": expand(go#path#Default() . "/src/" . tokens[1]),
+                call add(errors, {"filename": tokens[1],
                             \"lnum": tokens[2],
                             \"col": tokens[3],
                             \"text": tokens[4]})
