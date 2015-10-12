@@ -205,15 +205,6 @@ let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
 Check out the [Wiki](https://github.com/fatih/vim-go/wiki) page for more information. It includes [Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
 section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
 
-## Donations
-
-Vim-go is an open source project that I'm working on in my free time. I'm
-putting in a lot of time and thought to make it stable (fixing bugs, adding new
-features, etc.). If you like vim-go and find it helpful, you might give me a
-gift from some of the books (kindle) I have in my wish list:
-
-[Amazon.com Fatih's Wish List](http://amzn.com/w/3RUTKZC0U30P6). Thanks!
-
 ## Credits
 
 * Go Authors for official vim plugins
