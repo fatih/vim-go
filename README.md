@@ -201,7 +201,7 @@ let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
 
 Quickfix windows displayed containing messages from the tools used by vim-go 
 can be controlled using the qf file type.  For example, to have quickfix windows
-always displayed across the width of the vim window at the bottom can be done using.
+always displayed across the width of the vim window at the bottom can be done using:
 
 ```vim
 autocmd FileType qf wincmd J
