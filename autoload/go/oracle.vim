@@ -96,18 +96,24 @@ func! s:RunOracle(mode, selected, needs_package) range abort
     if empty(bin_path) 
         return 
     endif
+    
+    if exists('g:go_oracle_tags')
+        let tags = get(g:, 'go_oracle_tags')
+    else
+        let tags = ""
+    endif
 
     if a:selected != -1
         let pos1 = s:getpos(line("'<"), col("'<"))
         let pos2 = s:getpos(line("'>"), col("'>"))
-        let cmd = printf('%s -format plain -pos=%s:#%d,#%d %s',
+        let cmd = printf('%s -format plain -pos=%s:#%d,#%d -tags=%s %s',
                     \  bin_path,
-                    \  shellescape(fname), pos1, pos2, a:mode)
+                    \  shellescape(fname), pos1, pos2, tags, a:mode)
     else
         let pos = s:getpos(line('.'), col('.'))
-        let cmd = printf('%s -format plain -pos=%s:#%d %s',
+        let cmd = printf('%s -format plain -pos=%s:#%d -tags=%s %s',
                     \  bin_path,
-                    \  shellescape(fname), pos, a:mode)
+                    \  shellescape(fname), pos, tags, a:mode)
     endif
 
     " now append each scope to the end as Oracle's scope parameter. It can be
@@ -115,6 +121,7 @@ func! s:RunOracle(mode, selected, needs_package) range abort
     " info check Oracle's User Manual section about scopes:
     " https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
     let cmd .= ' ' . go#util#Shelljoin(scopes)
+    " echon "vim-go: " | echohl Function | echon "current cmd is: '". cmd ."'" | echohl None
 
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
@@ -153,6 +160,26 @@ function! go#oracle#Scope(...)
         echon "vim-go: " | echohl Function | echon "oracle scope is not set"| echohl None
     else
         echon "vim-go: " | echohl Function | echon "current oracle scope: '". g:go_oracle_scope ."'" | echohl None
+    endif
+endfunction
+
+function! go#oracle#Tags(...)
+    if a:0
+        if a:0 == 1 && a:1 == '""'
+            unlet g:go_oracle_tags
+            echon "vim-go: " | echohl Function | echon "oracle tags is cleared"| echohl None
+        else
+            let g:go_oracle_tags = a:1
+            echon "vim-go: " | echohl Function | echon "oracle tags changed to: '". g:go_oracle_tags ."'" | echohl None
+        endif
+
+        return
+    endif
+
+    if !exists('g:go_oracle_tags')
+        echon "vim-go: " | echohl Function | echon "oracle tags is not set"| echohl None
+    else
+        echon "vim-go: " | echohl Function | echon "current oracle tags: '". g:go_oracle_tags ."'" | echohl None
     endif
 endfunction
 

@@ -4,6 +4,11 @@ function! go#tool#Files()
     else
         let command = "go list -f '{{range $f := .GoFiles}}{{$.Dir}}/{{$f}}{{printf \"\\n\"}}{{end}}{{range $f := .CgoFiles}}{{$.Dir}}/{{$f}}{{printf \"\\n\"}}{{end}}'"
     endif
+
+    if exists('g:go_oracle_tags')
+        let command .= ' ' .command 
+    endif
+
     let out = go#tool#ExecuteInDir(command)
     return split(out, '\n')
 endfunction

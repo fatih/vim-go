@@ -11,6 +11,7 @@ command! -range=% GoCallstack call go#oracle#Callstack(<count>)
 command! -range=% GoFreevars call go#oracle#Freevars(<count>)
 command! -range=% GoChannelPeers call go#oracle#ChannelPeers(<count>)
 command! -range=% GoReferrers call go#oracle#Referrers(<count>)
+command! -nargs=? GoTags call go#oracle#Tags(<f-args>)
 
 " tool
 command! -nargs=0 GoFiles echo go#tool#Files()
