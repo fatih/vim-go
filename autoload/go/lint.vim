@@ -6,6 +6,10 @@ if !exists("g:go_metalinter_enabled")
     let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 endif
 
+if !exists("g:go_metalinter_deadline")
+    let g:go_metalinter_deadline = "5s"
+endif
+
 if !exists("g:go_golint_bin")
     let g:go_golint_bin = "golint"
 endif
@@ -37,6 +41,8 @@ function! go#lint#Gometa(...) abort
             let meta_command .= " --enable=".linter
         endfor
 
+        " deadline
+        let meta_command .= " --deadline=" . g:go_metalinter_deadline
 
         let meta_command .=  " " . goargs
     else
