@@ -2,7 +2,7 @@ if !exists("g:go_gorename_bin")
     let g:go_gorename_bin = "gorename"
 endif
 
-function! go#rename#Rename(...)
+function! go#rename#Rename(bang, ...)
     let to = ""
     if a:0 == 0
         let from = expand("<cword>")
@@ -31,8 +31,16 @@ function! go#rename#Rename(...)
     let clean = split(out, '\n')
 
     if v:shell_error
-        redraw | echon "vim-go: " | echohl Statement | echon clean[0] | echohl None
+        call go#tool#ShowErrors(out)
+        cwindow
+        let errors = getqflist()
+        if !empty(errors) && !a:bang
+            cc 1 "jump to first error if there is any
+        endif
+        return
     else
+        call setqflist([])
+        cwindow
         redraw | echon "vim-go: " | echohl Function | echon clean[0] | echohl None
     endif
 

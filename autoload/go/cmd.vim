@@ -8,6 +8,7 @@ function! go#cmd#autowrite()
     endif
 endfunction
 
+
 " Build buils the source code without producting any output binary. We live in
 " an editor so the best is to build it to catch errors and fix them. By
 " default it tries to call simply 'go build', but it first tries to get all
@@ -18,13 +19,15 @@ function! go#cmd#Build(bang, ...)
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
+    let l:tmpname = tempname()
+
     if v:shell_error
         let &makeprg = "go build . errors"
     else
         " :make expands '%' and '#' wildcards, so they must also be escaped
         let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
         let gofiles = go#util#Shelljoin(go#tool#Files(), 1)
-        let &makeprg = "go build -o /dev/null " . goargs . ' ' . gofiles
+        let &makeprg = "go build -o " . l:tmpname . ' ' . goargs . ' ' . gofiles
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
@@ -45,6 +48,7 @@ function! go#cmd#Build(bang, ...)
         redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
     endif
 
+    call delete(l:tmpname)
     let &makeprg = default_makeprg
     let $GOPATH = old_gopath
 endfunction
@@ -130,6 +134,10 @@ function! go#cmd#Test(bang, compile, ...)
 
     if a:0
         let command .= go#util#Shelljoin(map(copy(a:000), "expand(v:val)"))
+    else
+        " only add this if no custom flags are passed
+        let timeout  = get(g:, 'go_test_timeout', '10s')
+        let command .= "-timeout=" . timeout . " "
     endif
 
     call go#cmd#autowrite()

@@ -263,6 +263,10 @@ COMMANDS                                                          *go-commands*
     You may optionally pass any valid go test flags/options. For a full list
     please see `go help test`.
 
+    GoTest timesout automatically after 10 seconds. To customize the timeout
+    use |g:go_test_timeout|. This feature is disabled if any arguments are
+    passed to the `:GoTest` command.
+
     If [!] is not given the first error is jumped to.
 
                                                               *:GoTestFunc*
@@ -338,10 +342,12 @@ COMMANDS                                                          *go-commands*
     for the type that implements an interface under the cursor (or selected
     package) is shown quickfix list.
                                                                 *:GoRename*
-:GoRename [to]
+:GoRename[!] [to]
 
     Rename the identifier under the cursor to the desired new name. If no
     argument is given a prompt will ask for the desired identifier.
+
+    If [!] is not given the first error is jumped to.
 
 
                                                             *:GoOracleScope*
@@ -423,7 +429,9 @@ COMMANDS                                                          *go-commands*
     errors in a quickfix window. By default the following linters are enabled:
     "'vet', 'golint', 'errcheck'". This can be changed with the
     |g:go_metalinter_enabled| variable. To override the command completely use
-    the variable |g:go_metalinter_command|
+    the variable |g:go_metalinter_command|. To override the maximum linters
+    execution time use |g:go_metalinter_deadline| variable.
+
                                                              *:GoOracleTags*
 :GoOracleTags [tags]
 
@@ -433,6 +441,7 @@ COMMANDS                                                          *go-commands*
     of the build tags for GoReferrers to find more accurate.
     The custom build tags is cleared (unset) if `""` is given. If no arguments
     is given it prints the current custom build tags.
+
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -605,6 +614,14 @@ if			      "inside a function", select contents of a function,
 ===============================================================================
 SETTINGS                                                        *go-settings*
 
+                                                      *'g:go_test_timeout'*
+
+Use this option to change the test timeout of |:GoTest|. By default it is
+set to 10 seconds . >
+
+  let g:go_test_timeout= '10s'
+<
+
                                                 *'g:go_play_browser_command'*
 
 Use this option to change the browser that is used to open the snippet url
@@ -612,7 +629,7 @@ posted to play.golang.org with |:GoPlay| or for the relevant documentation
 used with |:GoDocBrowser|. By default it tries to find it automatically for
 the current OS. >
 
-  let g:play_browser_command = ''
+  let g:go_play_browser_command = ''
 <
                                                    *'g:go_play_open_browser'*
 
@@ -853,7 +870,14 @@ an advanced settings and is for users who want to have a complete control
 over of how `gometalinter` should be executed. By default it's empty.
 >
   let g:go_metalinter_command = ""
+<
+                                                  *'g:go_metalinter_deadline'*
 
+Overrides the maximum time the linters have to complete. By default it's 5
+seconds.
+>
+  let g:go_metalinter_deadline = "5s"
+<
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*

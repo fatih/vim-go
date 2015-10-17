@@ -1,5 +1,5 @@
 " gorename
-command! -nargs=? GoRename call go#rename#Rename(<f-args>)
+command! -nargs=? GoRename call go#rename#Rename(<bang>0,<f-args>)
 
 " oracle
 command! -nargs=* -complete=customlist,go#package#Complete GoOracleScope call go#oracle#Scope(<f-args>)

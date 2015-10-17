@@ -33,7 +33,7 @@ nnoremap <silent> <Plug>(go-freevars) :<C-u>call go#oracle#Freevars(-1)<CR>
 nnoremap <silent> <Plug>(go-channelpeers) :<C-u>call go#oracle#ChannelPeers(-1)<CR>
 nnoremap <silent> <Plug>(go-referrers) :<C-u>call go#oracle#Referrers(-1)<CR>
 
-nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename()<CR>
+nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename(!g:go_jump_to_error)<CR>
 
 nnoremap <silent> <Plug>(go-def) :<C-u>call go#def#Jump()<CR>
 nnoremap <silent> <Plug>(go-def-vertical) :<C-u>call go#def#JumpMode("vsplit")<CR>
