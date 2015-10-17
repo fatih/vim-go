@@ -121,7 +121,6 @@ func! s:RunOracle(mode, selected, needs_package) range abort
     " info check Oracle's User Manual section about scopes:
     " https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
     let cmd .= ' ' . go#util#Shelljoin(scopes)
-    " echon "vim-go: " | echohl Function | echon "current cmd is: '". cmd ."'" | echohl None
 
     echon "vim-go: " | echohl Identifier | echon "analysing ..." | echohl None
 
