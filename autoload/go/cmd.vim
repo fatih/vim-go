@@ -18,13 +18,15 @@ function! go#cmd#Build(bang, ...)
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
+    let l:tmpname = tempname()
+
     if v:shell_error
         let &makeprg = "go build . errors"
     else
         " :make expands '%' and '#' wildcards, so they must also be escaped
         let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
         let gofiles = go#util#Shelljoin(go#tool#Files(), 1)
-        let &makeprg = "go build -o /dev/null " . goargs . ' ' . gofiles
+        let &makeprg = "go build -o " . l:tmpname . ' ' . goargs . ' ' . gofiles
     endif
 
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
@@ -45,6 +47,7 @@ function! go#cmd#Build(bang, ...)
         redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
     endif
 
+    call delete(l:tmpname)
     let &makeprg = default_makeprg
     let $GOPATH = old_gopath
 endfunction
