@@ -27,7 +27,7 @@ endfunction
 
 " IsWin returns 1 if current OS is Windows or 0 otherwise
 function! go#util#IsWin()
-	let win = ['win16', 'win32', 'win32unix', 'win64', 'win95']
+	let win = ['win16', 'win32', 'win64', 'win95']
 	for w in win
 		if (has(w))
 			return 1
