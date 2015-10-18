@@ -338,10 +338,12 @@ COMMANDS                                                          *go-commands*
     for the type that implements an interface under the cursor (or selected
     package) is shown quickfix list.
                                                                 *:GoRename*
-:GoRename [to]
+:GoRename[!] [to]
 
     Rename the identifier under the cursor to the desired new name. If no
     argument is given a prompt will ask for the desired identifier.
+
+    If [!] is not given the first error is jumped to.
 
 
                                                             *:GoOracleScope*
