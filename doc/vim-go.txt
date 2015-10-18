@@ -263,6 +263,10 @@ COMMANDS                                                          *go-commands*
     You may optionally pass any valid go test flags/options. For a full list
     please see `go help test`.
 
+    GoTest timesout automatically after 10 seconds. To customize the timeout
+    use |g:go_test_timeout|. This feature is disabled if any arguments are
+    passed to the `:GoTest` command.
+
     If [!] is not given the first error is jumped to.
 
                                                               *:GoTestFunc*
@@ -599,6 +603,14 @@ if			      "inside a function", select contents of a function,
 ===============================================================================
 SETTINGS                                                        *go-settings*
 
+                                                      *'g:go_test_timeout'*
+
+Use this option to change the test timeout of |:GoTest|. By default it is
+set to 10 seconds . >
+
+  let g:go_test_timeout= '10s'
+<
+
                                                 *'g:go_play_browser_command'*
 
 Use this option to change the browser that is used to open the snippet url
@@ -606,7 +618,7 @@ posted to play.golang.org with |:GoPlay| or for the relevant documentation
 used with |:GoDocBrowser|. By default it tries to find it automatically for
 the current OS. >
 
-  let g:play_browser_command = ''
+  let g:go_play_browser_command = ''
 <
                                                    *'g:go_play_open_browser'*
 

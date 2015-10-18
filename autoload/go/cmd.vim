@@ -8,6 +8,7 @@ function! go#cmd#autowrite()
     endif
 endfunction
 
+
 " Build buils the source code without producting any output binary. We live in
 " an editor so the best is to build it to catch errors and fix them. By
 " default it tries to call simply 'go build', but it first tries to get all
@@ -133,6 +134,10 @@ function! go#cmd#Test(bang, compile, ...)
 
     if a:0
         let command .= go#util#Shelljoin(map(copy(a:000), "expand(v:val)"))
+    else
+        " only add this if no custom flags are passed
+        let timeout  = get(g:, 'go_test_timeout', '10s')
+        let command .= "-timeout=" . timeout . " "
     endif
 
     call go#cmd#autowrite()
