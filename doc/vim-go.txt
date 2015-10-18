@@ -425,7 +425,8 @@ COMMANDS                                                          *go-commands*
     errors in a quickfix window. By default the following linters are enabled:
     "'vet', 'golint', 'errcheck'". This can be changed with the
     |g:go_metalinter_enabled| variable. To override the command completely use
-    the variable |g:go_metalinter_command|
+    the variable |g:go_metalinter_command|. To override the maximum linters
+    execution time use |g:go_metalinter_deadline| variable.
 
 
 ===============================================================================
@@ -847,7 +848,14 @@ an advanced settings and is for users who want to have a complete control
 over of how `gometalinter` should be executed. By default it's empty.
 >
   let g:go_metalinter_command = ""
+<
+                                                  *'g:go_metalinter_deadline'*
 
+Overrides the maximum time the linters have to complete. By default it's 5
+seconds.
+>
+  let g:go_metalinter_deadline = "5s"
+<
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
