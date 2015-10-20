@@ -199,6 +199,14 @@ let g:go_bin_path = expand("~/.gotools")
 let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
 ```
 
+## Using with Syntastic
+Sometimes when using both `vim-go` and `syntastic` Vim will start lagging while saving and opening
+files. The following fixes this:
+
+```vim
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+```
 
 ## More info
 
