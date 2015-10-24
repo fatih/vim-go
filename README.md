@@ -9,6 +9,8 @@ disabled/enabled easily.
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go-2.png)
 
+This plugin contributes to [vim-polyglot](https://github.com/sheerun/vim-polyglot) language pack.
+
 ## Features
 
 * Improved Syntax highlighting with items such as Functions, Operators, Methods.
