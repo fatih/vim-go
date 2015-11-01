@@ -54,23 +54,23 @@ if !exists("g:go_highlight_trailing_whitespace_error")
 endif
 
 if !exists("g:go_highlight_operators")
-	let g:go_highlight_operators = 0
+  let g:go_highlight_operators = 0
 endif
 
 if !exists("g:go_highlight_functions")
-	let g:go_highlight_functions = 0
+  let g:go_highlight_functions = 0
 endif
 
 if !exists("g:go_highlight_methods")
-	let g:go_highlight_methods = 0
+  let g:go_highlight_methods = 0
 endif
 
 if !exists("g:go_highlight_structs")
-	let g:go_highlight_structs = 0
+  let g:go_highlight_structs = 0
 endif
 
 if !exists("g:go_highlight_build_constraints")
-    let g:go_highlight_build_constraints = 0
+  let g:go_highlight_build_constraints = 0
 endif
 
 if !exists("g:go_highlight_string_spellcheck")
@@ -162,7 +162,7 @@ syn match       goFormatSpecifier   /%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\
 
 hi def link     goString            String
 hi def link     goRawString         String
-hi def link 	goFormatSpecifier   goSpecialString
+hi def link     goFormatSpecifier   goSpecialString
 
 " Characters; their contents
 syn cluster     goCharacterGroup    contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU
@@ -247,40 +247,40 @@ hi def link     goTodo              Todo
 
 " Operators;
 if g:go_highlight_operators != 0
-	" match single-char operators:          - + % < > ! & | ^ * =
-	" and corresponding two-char operators: -= += %= <= >= != &= |= ^= *= ==
-	syn match goOperator /[-+%<>!&|^*=]=\?/
-	" match / and /=
-	syn match goOperator /\/\%(=\|\ze[^/*]\)/
-	" match two-char operators:               << >> &^
-	" and corresponding three-char operators: <<= >>= &^=
-	syn match goOperator /\%(<<\|>>\|&^\)=\?/
-	" match remaining two-char operators: := && || <- ++ --
-	syn match goOperator /:=\|||\|<-\|++\|--/
-	" match ...
-	syn match goOperator /\.\.\./
+  " match single-char operators:          - + % < > ! & | ^ * =
+  " and corresponding two-char operators: -= += %= <= >= != &= |= ^= *= ==
+  syn match goOperator /[-+%<>!&|^*=]=\?/
+  " match / and /=
+  syn match goOperator /\/\%(=\|\ze[^/*]\)/
+  " match two-char operators:               << >> &^
+  " and corresponding three-char operators: <<= >>= &^=
+  syn match goOperator /\%(<<\|>>\|&^\)=\?/
+  " match remaining two-char operators: := && || <- ++ --
+  syn match goOperator /:=\|||\|<-\|++\|--/
+  " match ...
+  syn match goOperator /\.\.\./
 endif
-hi def link     goOperator					Operator
+hi def link     goOperator          Operator
 
 " Functions;
 if g:go_highlight_functions != 0
-	syn match goFunction							/\(func\s\+\)\@<=\w\+\((\)\@=/
-	syn match goFunction							/\()\s\+\)\@<=\w\+\((\)\@=/
+  syn match goFunction              /\(func\s\+\)\@<=\w\+\((\)\@=/
+  syn match goFunction              /\()\s\+\)\@<=\w\+\((\)\@=/
 endif
-hi def link     goFunction					Function
+hi def link     goFunction          Function
 
 " Methods;
 if g:go_highlight_methods != 0
-	syn match goMethod								/\(\.\)\@<=\w\+\((\)\@=/
+  syn match goMethod                /\(\.\)\@<=\w\+\((\)\@=/
 endif
-hi def link     goMethod						Type
+hi def link     goMethod            Type
 
 " Structs;
 if g:go_highlight_structs != 0
-	syn match goStruct								/\(.\)\@<=\w\+\({\)\@=/
-	syn match goStructDef							/\(type\s\+\)\@<=\w\+\(\s\+struct\s\+{\)\@=/
+  syn match goStruct                /\(.\)\@<=\w\+\({\)\@=/
+  syn match goStructDef             /\(type\s\+\)\@<=\w\+\(\s\+struct\s\+{\)\@=/
 endif
-hi def link     goStruct						Function
+hi def link     goStruct            Function
 hi def link     goStructDef         Function
 
 " Build Constraints
