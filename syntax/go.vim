@@ -290,7 +290,7 @@ if g:go_highlight_build_constraints != 0
     syn keyword goBuildDirectives   contained
       \ android darwin dragonfly freebsd linux nacl netbsd openbsd plan9
       \ solaris windows 386 amd64 amd64p32 arm arm64 ppc64 ppc64le
-      \ cgo ignore
+      \ cgo ignore race
 
     " Other words in the build directive are build tags not listed above, so
     " avoid highlighting them as comments by using a matchgroup just for the
