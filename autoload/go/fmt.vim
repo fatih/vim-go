@@ -94,7 +94,10 @@ function! go#fmt#Format(withGoimport)
     endif
 
     " populate the final command with user based fmt options
-    let command = fmt_command . ' -w ' . g:go_fmt_options
+    let command = fmt_command . ' -w '
+    if a:withGoimport  != 1 
+        let command  = command . g:go_fmt_options
+    endif
 
     " execute our command...
     let out = system(command . " " . l:tmpname)
