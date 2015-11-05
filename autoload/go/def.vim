@@ -26,8 +26,14 @@ function! go#def#Jump(...)
 	" get output of godef
 	let out=system(command, join(getbufline(bufnr('%'), 1, '$'), go#util#LineEnding()))
 
+	" get jump mode
+	let split_mode = ""
+	if exists("g:godef_split")
+		let split_mode = g:godef_split
+	endif
+	
 	" jump to it
-	call s:godefJump(out, "")
+	call s:godefJump(out, split_mode)
 	let $GOPATH = old_gopath
 endfunction
 
