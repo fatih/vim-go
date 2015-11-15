@@ -72,6 +72,7 @@ function! go#lint#Gometa(...) abort
         " create the quickfix list and open it
         cgetexpr split(out, "\n")
         cwindow
+        cc 1
 
         let &errorformat = old_errorformat
     endif
@@ -92,6 +93,7 @@ function! go#lint#Golint(...) abort
     endif
     silent cexpr system(bin_path . " " . goargs)
     cwindow
+    cc 1
 endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
@@ -151,7 +153,7 @@ function! go#lint#Errcheck(...) abort
         for line in split(out, '\n')
             let tokens = matchlist(line, mx)
             if !empty(tokens)
-                call add(errors, {"filename": tokens[1],
+                call add(errors, {"filename": expand(go#path#Default() . "/src/" . tokens[1]),
                             \"lnum": tokens[2],
                             \"col": tokens[3],
                             \"text": tokens[4]})
@@ -166,6 +168,8 @@ function! go#lint#Errcheck(...) abort
         if !empty(errors)
             redraw | echo
             call setqflist(errors, 'r')
+            cwindow
+            cc 1 "jump to first error if there is any
         endif
     else
         redraw | echo
