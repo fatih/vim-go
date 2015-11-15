@@ -36,7 +36,7 @@ func! s:qflist(output)
         call add(qflist, item)
     endfor
     call setqflist(qflist)
-    cwindow
+    call go#util#Cwindow(len(qflist))
 endfun
 
 " This uses Vim's errorformat to parse the output from Oracle's 'plain output
@@ -59,7 +59,8 @@ func! s:qflistSecond(output)
 
     " create the quickfix list and open it
     cgetexpr split(a:output, "\n")
-    cwindow
+    let errors = getqflist()
+    call go#util#Cwindow(len(errors))
 
     let &errorformat = old_errorformat
 endfun
