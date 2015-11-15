@@ -54,23 +54,23 @@ if !exists("g:go_highlight_trailing_whitespace_error")
 endif
 
 if !exists("g:go_highlight_operators")
-	let g:go_highlight_operators = 0
+  let g:go_highlight_operators = 0
 endif
 
 if !exists("g:go_highlight_functions")
-	let g:go_highlight_functions = 0
+  let g:go_highlight_functions = 0
 endif
 
 if !exists("g:go_highlight_methods")
-	let g:go_highlight_methods = 0
+  let g:go_highlight_methods = 0
 endif
 
 if !exists("g:go_highlight_structs")
-	let g:go_highlight_structs = 0
+  let g:go_highlight_structs = 0
 endif
 
 if !exists("g:go_highlight_build_constraints")
-    let g:go_highlight_build_constraints = 0
+  let g:go_highlight_build_constraints = 0
 endif
 
 if !exists("g:go_highlight_string_spellcheck")
@@ -162,7 +162,7 @@ syn match       goFormatSpecifier   /%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\
 
 hi def link     goString            String
 hi def link     goRawString         String
-hi def link 	goFormatSpecifier   goSpecialString
+hi def link     goFormatSpecifier   goSpecialString
 
 " Characters; their contents
 syn cluster     goCharacterGroup    contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU
@@ -247,55 +247,73 @@ hi def link     goTodo              Todo
 
 " Operators;
 if g:go_highlight_operators != 0
-	" match single-char operators:          - + % < > ! & | ^ * =
-	" and corresponding two-char operators: -= += %= <= >= != &= |= ^= *= ==
-	syn match goOperator /[-+%<>!&|^*=]=\?/
-	" match / and /=
-	syn match goOperator /\/\%(=\|\ze[^/*]\)/
-	" match two-char operators:               << >> &^
-	" and corresponding three-char operators: <<= >>= &^=
-	syn match goOperator /\%(<<\|>>\|&^\)=\?/
-	" match remaining two-char operators: := && || <- ++ --
-	syn match goOperator /:=\|||\|<-\|++\|--/
-	" match ...
-	syn match goOperator /\.\.\./
+  " match single-char operators:          - + % < > ! & | ^ * =
+  " and corresponding two-char operators: -= += %= <= >= != &= |= ^= *= ==
+  syn match goOperator /[-+%<>!&|^*=]=\?/
+  " match / and /=
+  syn match goOperator /\/\%(=\|\ze[^/*]\)/
+  " match two-char operators:               << >> &^
+  " and corresponding three-char operators: <<= >>= &^=
+  syn match goOperator /\%(<<\|>>\|&^\)=\?/
+  " match remaining two-char operators: := && || <- ++ --
+  syn match goOperator /:=\|||\|<-\|++\|--/
+  " match ...
+  syn match goOperator /\.\.\./
 endif
-hi def link     goOperator					Operator
+hi def link     goOperator          Operator
 
 " Functions;
 if g:go_highlight_functions != 0
-	syn match goFunction							/\(func\s\+\)\@<=\w\+\((\)\@=/
-	syn match goFunction							/\()\s\+\)\@<=\w\+\((\)\@=/
+  syn match goFunction              /\(func\s\+\)\@<=\w\+\((\)\@=/
+  syn match goFunction              /\()\s\+\)\@<=\w\+\((\)\@=/
 endif
-hi def link     goFunction					Function
+hi def link     goFunction          Function
 
 " Methods;
 if g:go_highlight_methods != 0
-	syn match goMethod								/\(\.\)\@<=\w\+\((\)\@=/
+  syn match goMethod                /\(\.\)\@<=\w\+\((\)\@=/
 endif
-hi def link     goMethod						Type
+hi def link     goMethod            Type
 
 " Structs;
 if g:go_highlight_structs != 0
-	syn match goStruct								/\(.\)\@<=\w\+\({\)\@=/
-	syn match goStructDef							/\(type\s\+\)\@<=\w\+\(\s\+struct\s\+{\)\@=/
+  syn match goStruct                /\(.\)\@<=\w\+\({\)\@=/
+  syn match goStructDef             /\(type\s\+\)\@<=\w\+\(\s\+struct\s\+{\)\@=/
 endif
-hi def link     goStruct						Function
+hi def link     goStruct            Function
 hi def link     goStructDef         Function
 
 " Build Constraints
 if g:go_highlight_build_constraints != 0
-    syn keyword goBuildOs           contained ignore cgo android darwin dragonfly freebsd linux nacl netbsd openbsd plan9 solaris windows
-    syn keyword goBuildArch         contained 386 amd64 amd64p32 arm
-    syn match   goBuildDirective    display contained "+build"
-    syn region  goBuildComment      start="//\s*+build" end="$" contains=goBuildDirective,goBuildOs,goBuildArch
-    syn region  goBuildComment      start="/\*\s*+build" end="\*/" contains=goBuildDirective,goBuildOs,goBuildArch
-endif
+    syn match   goBuildKeyword      display contained "+build"
+    " Highlight the known values of GOOS, GOARCH, and other +build options.
+    syn keyword goBuildDirectives   contained
+      \ android darwin dragonfly freebsd linux nacl netbsd openbsd plan9
+      \ solaris windows 386 amd64 amd64p32 arm arm64 ppc64 ppc64le
+      \ cgo ignore race
 
-hi def link     goBuildComment      Comment
-hi def link     goBuildOs           Type
-hi def link     goBuildArch         Type
-hi def link     goBuildDirective    PreProc
+    " Other words in the build directive are build tags not listed above, so
+    " avoid highlighting them as comments by using a matchgroup just for the
+    " start of the comment.
+    " The rs=s+2 option lets the \s*+build portion be part of the inner region
+    " instead of the matchgroup so it will be highlighted as a goBuildKeyword.
+    syn region  goBuildComment      matchgroup=goBuildCommentStart
+      \ start="//\s*+build\s"rs=s+2 end="$"
+      \ contains=goBuildKeyword,goBuildDirectives
+    hi def link goBuildCommentStart Comment
+    hi def link goBuildDirectives   Type
+    hi def link goBuildKeyword      PreProc
+
+    " One or more line comments that are followed immediately by a "package"
+    " declaration are treated like package documentation, so these must be
+    " matched as comments to avoid looking like working build constraints.
+    " The he, me, and re options let the "package" itself be highlighted by
+    " the usual rules.
+    syn region  goPackageComment    start=/\v(\/\/.*\n)+\s*package/
+      \ end=/\v\n\s*package/he=e-7,me=e-7,re=e-7
+      \ contains=@goCommentGroup,@Spell
+    hi def link goPackageComment    Comment
+endif
 
 
 " Search backwards for a global declaration to start processing the syntax.
