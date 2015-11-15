@@ -432,6 +432,16 @@ COMMANDS                                                          *go-commands*
     the variable |g:go_metalinter_command|. To override the maximum linters
     execution time use |g:go_metalinter_deadline| variable.
 
+                                                             *:GoOracleTags*
+:GoOracleTags [tags]
+
+    Changes the custom |g:go_oracle_tags| setting and overrides it with the
+    given build tags. This command cooperate with GoReferrers command when 
+    there exist mulitiple build tags in your project,then you can set one 
+    of the build tags for GoReferrers to find more accurate.
+    The custom build tags is cleared (unset) if `""` is given. If no arguments
+    is given it prints the current custom build tags.
+
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
