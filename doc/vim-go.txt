@@ -878,6 +878,14 @@ seconds.
 >
   let g:go_metalinter_deadline = "5s"
 <
+                                                  *'g:go_quickfix_height'*
+
+Specifies the current quickfix height for all quickfix windows. The default
+value (empty) sets automatically the height to the number of errors (maximum
+up to 10 errors to prevent large heights). Setting the value explicitly
+overrides this behavior. To get default Vim behavior set it to 10.
+>
+  let g:go_quickfix_height = 0
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*

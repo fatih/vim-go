@@ -32,15 +32,15 @@ function! go#rename#Rename(bang, ...)
 
     if v:shell_error
         call go#tool#ShowErrors(out)
-        cwindow
         let errors = getqflist()
+        call go#util#Cwindow(len(errors))
         if !empty(errors) && !a:bang
             cc 1 "jump to first error if there is any
         endif
         return
     else
         call setqflist([])
-        cwindow
+        call go#util#Cwindow()
         redraw | echon "vim-go: " | echohl Function | echon clean[0] | echohl None
     endif
 

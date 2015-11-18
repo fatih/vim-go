@@ -60,6 +60,7 @@ function! go#lint#Gometa(...) abort
         redraw | echo
         call setqflist([])
         echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
+        call go#util#Cwindow()
     else
         " backup users errorformat, will be restored once we are finished
         let old_errorformat = &errorformat
@@ -71,7 +72,9 @@ function! go#lint#Gometa(...) abort
 
         " create the quickfix list and open it
         cgetexpr split(out, "\n")
-        cwindow
+        let errors = getqflist()
+        call go#util#Cwindow(len(errors))
+        cc 1
 
         let &errorformat = old_errorformat
     endif
@@ -90,8 +93,17 @@ function! go#lint#Golint(...) abort
     else
         let goargs = go#util#Shelljoin(a:000)
     endif
-    silent cexpr system(bin_path . " " . goargs)
-    cwindow
+
+    let out = system(bin_path . " " . goargs)
+    if empty(out)
+        echon "vim-go: " | echohl Function | echon "[lint] PASS" | echohl None
+        return
+    endif
+
+    cgetexpr out
+    let errors = getqflist()
+    call go#util#Cwindow(len(errors))
+    cc 1
 endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
@@ -110,13 +122,14 @@ function! go#lint#Vet(bang, ...)
         call setqflist([])
     endif
 
-    cwindow
     let errors = getqflist()
+    call go#util#Cwindow(len(errors))
     if !empty(errors) 
         if !a:bang
             cc 1 "jump to first error if there is any
         endif
     else
+        call go#util#Cwindow()
         redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
     endif
 endfunction
@@ -151,7 +164,7 @@ function! go#lint#Errcheck(...) abort
         for line in split(out, '\n')
             let tokens = matchlist(line, mx)
             if !empty(tokens)
-                call add(errors, {"filename": tokens[1],
+                call add(errors, {"filename": expand(go#path#Default() . "/src/" . tokens[1]),
                             \"lnum": tokens[2],
                             \"col": tokens[3],
                             \"text": tokens[4]})
@@ -166,14 +179,16 @@ function! go#lint#Errcheck(...) abort
         if !empty(errors)
             redraw | echo
             call setqflist(errors, 'r')
+            call go#util#Cwindow(len(errors))
+            cc 1 "jump to first error if there is any
         endif
     else
         redraw | echo
         call setqflist([])
+        call go#util#Cwindow()
         echon "vim-go: " | echohl Function | echon "[errcheck] PASS" | echohl None
     endif
 
-    cwindow
 endfunction
 
 " vim:ts=4:sw=4:et
