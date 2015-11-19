@@ -9,19 +9,20 @@ function Go.on_stderr(job_id, data)
 endfunction
 
 function Go.on_exit(job_id, data)
-	call self.quickfix()
+	call self.set_quickfix()
+	call self.show_quickfix()
 endfunction
 
-function Go.quickfix()
-	" echo self.stderr
-	" return
-
-	call go#tool#ShowErrors(join(self.stderr, "\n"))
+function Go.show_quickfix()
 	let errors = getqflist()
 	call go#util#Cwindow(len(errors))
 	if !empty(errors)
 		cc 1 "jump to first error if there is any
 	endif
+endfunction
+
+function Go.set_quickfix()
+	call go#tool#ShowErrors(join(self.stderr, "\n"))
 endfunction
 
 function Go.cmd(...)
