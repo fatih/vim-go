@@ -1,19 +1,19 @@
-let Go = {}
+let GoCommandJob = {}
 
-function Go.on_stdout(job_id, data)
+function GoCommandJob.on_stdout(job_id, data)
 	call extend(self.stdout, a:data)
 endfunction
 
-function Go.on_stderr(job_id, data)
+function GoCommandJob.on_stderr(job_id, data)
 	call extend(self.stderr, a:data)
 endfunction
 
-function Go.on_exit(job_id, data)
+function GoCommandJob.on_exit(job_id, data)
 	call self.set_quickfix()
 	call self.show_quickfix()
 endfunction
 
-function Go.show_quickfix()
+function GoCommandJob.show_quickfix()
 	let errors = getqflist()
 	call go#util#Cwindow(len(errors))
 	if !empty(errors)
@@ -21,32 +21,27 @@ function Go.show_quickfix()
 	endif
 endfunction
 
-function Go.set_quickfix()
+function GoCommandJob.set_quickfix()
 	call go#tool#ShowErrors(join(self.stderr, "\n"))
 endfunction
 
-function Go.cmd(...)
+function GoCommandJob.cmd(args)
 	let argv = ['go']
-	if a:0 > 0
-		call extend(argv, a:000) " append the subcommand, such as 'build'
-	else
-		redraws! | echon "vim-go: " | echohl ErrorMsg | echon "subcommand not passed"| echohl None
-		return -1
-	endif
+	call extend(argv, a:args) " append the subcommand, such as 'build'
 
 	" each Go instance has these local fields.
 	" name: defines the subcommand
 	" stderr: stores the stderr
 	" stdout: stores the stdout
 	let fields = {
-				\ 'name': a:1,  
+				\ 'name': a:args[0],  
 				\ 'stderr':[], 
 				\ 'stdout':[]
 				\ }
 
 	" populate the instace with on_stdout, on_stderr ... functions. These are
 	" needed by jobstart.
-	let instance = extend(copy(g:Go), fields)
+	let instance = extend(copy(g:GoCommandJob), fields)
 
 	" modify GOPATH if needed
 	let old_gopath = $GOPATH
@@ -69,6 +64,10 @@ function Go.cmd(...)
 	return instance
 endfunction
 
-let job1 = Go.cmd('build', '.', 'errors')
+function! go#jobcontrol#Run(args)
+	let job1 = g:GoCommandJob.cmd(a:args)
+	return job1.id
+endfunction
+
 
 " vim:ts=4:sw=4:et

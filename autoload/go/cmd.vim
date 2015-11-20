@@ -33,11 +33,14 @@ function! go#cmd#Build(bang, ...)
     echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
+    elseif has('nvim')
+        let job1 = go#jobcontrol#Run(['build', '.', 'errors'])
+        " rest is handled by go#jobcontrol#run :)
+        return
     else
         silent! exe 'make!'
     endif
     redraw!
-
 
     let errors = getqflist()
     call go#util#Cwindow(len(errors))
