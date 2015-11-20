@@ -16,7 +16,11 @@ endfunction
 function GoCommandJob.show_quickfix()
 	let errors = getqflist()
 	call go#util#Cwindow(len(errors))
-    " redraws! | echon "vim-go: " | echohl Function | echon printf("[%s] SUCCESS", self.name) | echohl None
+	if !empty(errors)
+		cc 1 "jump to first error if there is any
+    else
+        redraws! | echon "vim-go: " | echohl Function | echon printf("[%s] SUCCESS", self.name) | echohl None
+	endif
 endfunction
 
 function GoCommandJob.update_quickfix()
@@ -24,7 +28,7 @@ function GoCommandJob.update_quickfix()
         call setqflist([])
         call go#util#Cwindow()
     else
-        " redraws! | echon "vim-go: " | echohl ErrorMsg | echon printf("[%s] FAILED", self.name)| echohl None
+        redraws! | echon "vim-go: " | echohl ErrorMsg | echon printf("[%s] FAILED", self.name)| echohl None
 	    call go#tool#ShowErrors(join(self.stderr, "\n"))
     endif
 endfunction
