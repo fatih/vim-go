@@ -34,8 +34,11 @@ function! go#cmd#Build(bang, ...)
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
     elseif has('nvim')
+        " autowrite is not enabled for jobs
+        call go#cmd#autowrite()
         let job1 = go#jobcontrol#Run(['build', '.', 'errors'])
-        " rest is handled by go#jobcontrol#run :)
+
+        " rest is handled by go#jobcontrol#Run :)
         return
     else
         silent! exe 'make!'

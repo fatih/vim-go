@@ -9,20 +9,24 @@ function GoCommandJob.on_stderr(job_id, data)
 endfunction
 
 function GoCommandJob.on_exit(job_id, data)
-	call self.set_quickfix()
+	call self.update_quickfix()
 	call self.show_quickfix()
 endfunction
 
 function GoCommandJob.show_quickfix()
 	let errors = getqflist()
 	call go#util#Cwindow(len(errors))
-	if !empty(errors)
-		cc 1 "jump to first error if there is any
-	endif
+    " redraws! | echon "vim-go: " | echohl Function | echon printf("[%s] SUCCESS", self.name) | echohl None
 endfunction
 
-function GoCommandJob.set_quickfix()
-	call go#tool#ShowErrors(join(self.stderr, "\n"))
+function GoCommandJob.update_quickfix()
+    if empty(self.stderr)
+        call setqflist([])
+        call go#util#Cwindow()
+    else
+        " redraws! | echon "vim-go: " | echohl ErrorMsg | echon printf("[%s] FAILED", self.name)| echohl None
+	    call go#tool#ShowErrors(join(self.stderr, "\n"))
+    endif
 endfunction
 
 function GoCommandJob.cmd(args)
