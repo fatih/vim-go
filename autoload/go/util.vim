@@ -86,4 +86,24 @@ function! go#util#Cwindow(...)
     exe 'copen '. height
 endfunction
 
+" TODO(arslan): I couldn't parameterize the highlight types. Check if we can
+" simplify the following functions
+
+function! go#util#EchoSuccess(msg)
+    redraws! | echon "vim-go: " | echohl Function | echon a:msg | echohl None
+endfunction
+
+function! go#util#EchoError(msg)
+    redraws! | echon "vim-go: " | echohl ErrorMsg | echon a:msg | echohl None
+endfunction
+
+function! go#util#EchoWarning(msg)
+    redraws! | echon "vim-go: " | echohl WarningMsg | echon a:msg | echohl None
+endfunction
+
+function! go#util#EchoProgress(msg)
+    redraws! | echon "vim-go: " | echohl Identifier | echon a:msg | echohl None
+endfunction
+
+
 " vim:ts=4:sw=4:et

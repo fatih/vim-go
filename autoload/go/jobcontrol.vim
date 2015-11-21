@@ -5,6 +5,9 @@ let s:jobs = {}
 " Spawn is a wrapper around s:spawn. It can be executed by other files and
 " scripts if needed.
 function! go#jobcontrol#Spawn(args)
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
   let job = s:spawn(a:args[0], a:args)
   return job.id
 endfunction
@@ -74,7 +77,8 @@ endfunction
 
 " on_exit is the exit handler for jobstart(). It handles cleaning up the job
 " references and also displaying errors in the quickfix window collected by
-" on_stderr handler
+" on_stderr handler. If there are no errors and a quickfix window is open,
+" it'll be closed.
 function! s:on_exit(job_id, data)
   if !has_key(s:jobs, a:job_id)
     return
@@ -84,8 +88,7 @@ function! s:on_exit(job_id, data)
   if empty(job.stderr)
     call setqflist([])
     call go#util#Cwindow()
-
-    redraws! | echon "vim-go: " | echohl Function | echon printf("[%s] SUCCESS", self.name) | echohl None
+    call go#util#EchoSuccess(printf("[%s] SUCCESS", self.name))
     return
   else
     call go#tool#ShowErrors(join(job.stderr, "\n"))
@@ -96,7 +99,7 @@ function! s:on_exit(job_id, data)
       cc 1 "jump to first error if there is any
     endif
 
-    redraws! | echon "vim-go: " | echohl ErrorMsg | echon printf("[%s] FAILED", self.name)| echohl None
+    call go#util#EchoError(printf("[%s] FAILED", self.name))
   endif
 
   " do not keep anything when we are finished
@@ -129,8 +132,7 @@ function! s:abort(name)
     if job.name == name && job.id > 0
       silent! call jobstop(job.id)
       unlet s:jobs['job.id']
-      redraws! | echon "vim-go: " | echohl WarningMsg | echon printf("[%s] ABORTED", a:name) | echohl None
-
+      call go#util#EchoWarning(printf("[%s] ABORTED", a:name))
     endif
   endfor
 endfunction

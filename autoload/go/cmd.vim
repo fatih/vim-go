@@ -30,17 +30,16 @@ function! go#cmd#Build(bang, ...)
         let &makeprg = "go build -o " . l:tmpname . ' ' . goargs . ' ' . gofiles
     endif
 
-    echon "vim-go: " | echohl Identifier | echon "building ..."| echohl None
     if g:go_dispatch_enabled && exists(':Make') == 2
+        call go#util#EchoProgress("building dispatched ...")
         silent! exe 'Make'
     elseif has('nvim')
-        " autowrite is not enabled for jobs
-        call go#cmd#autowrite()
-        let job = go#jobcontrol#Spawn(['build', '.', 'errors'])
-
+        let job_id = go#jobcontrol#Spawn(['build', '.', 'errors'])
+        call go#util#EchoProgress(printf("building with id [%d] ...", job_id))
         " rest is handled by go#jobcontrol#Run :)
         return
     else
+        call go#util#EchoProgress("building ...")
         silent! exe 'make!'
     endif
     redraw!
