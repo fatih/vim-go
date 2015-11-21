@@ -36,7 +36,7 @@ function! go#cmd#Build(bang, ...)
     elseif has('nvim')
         " autowrite is not enabled for jobs
         call go#cmd#autowrite()
-        let job1 = go#jobcontrol#Run(['build', '.', 'errors'])
+        let job = go#jobcontrol#Spawn(['build', '.', 'errors'])
 
         " rest is handled by go#jobcontrol#Run :)
         return
