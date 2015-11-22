@@ -12,6 +12,15 @@ function! go#jobcontrol#Spawn(args)
   return job.id
 endfunction
 
+" Statusline returns the current status of the job
+function! go#jobcontrol#Statusline(id) abort
+  if empty(s:jobs)
+    return ''
+  endif
+  "TODO(arslan): change this according to the type of job
+  return "building ..."
+endfunction
+
 " spawn spawns a go subcommand with the name and arguments with jobstart. Once
 " a job is started a reference will be stored inside s:jobs. spawn changes the
 " GOPATH when g:go_autodetect_gopath is enabled. The job is started inside the
@@ -89,7 +98,6 @@ function! s:on_exit(job_id, data)
     call setqflist([])
     call go#util#Cwindow()
     call go#util#EchoSuccess(printf("[%s] SUCCESS", self.name))
-    return
   else
     call go#tool#ShowErrors(join(job.stderr, "\n"))
     let errors = getqflist()
