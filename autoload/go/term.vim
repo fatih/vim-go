@@ -1,8 +1,18 @@
+if has('nvim') && !exists("g:go_term_mode")
+    let g:go_term_mode = 'vsplit'
+endif
+
 " s:jobs is a global reference to all jobs started with new()
 let s:jobs = {}
 
-" new creates a new terminal with the given command
-function! go#term#new(cmd, mode)
+" new creates a new terminal with the given command. Mode is set based on the
+" global variable g:go_term_mode, which is by default set to :vsplit
+function! go#term#new(cmd)
+	call go#term#newmode(a:cmd, g:go_term_mode)
+endfunction
+
+" new creates a new terminal with the given command and window mode.
+function! go#term#newmode(cmd, mode)
 	execute a:mode.' new'
   call s:init_view()
 

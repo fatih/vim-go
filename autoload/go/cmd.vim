@@ -67,7 +67,7 @@ endfunction
 function! go#cmd#Run(bang, ...)
     if has('nvim')
         let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
-        call go#term#new(cmd, "vsplit")
+        call go#term#new(cmd)
         return
     endif
 
