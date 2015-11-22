@@ -13,12 +13,18 @@ function! go#jobcontrol#Spawn(args)
 endfunction
 
 " Statusline returns the current status of the job
-function! go#jobcontrol#Statusline(id) abort
+function! go#jobcontrol#Statusline() abort
   if empty(s:jobs)
     return ''
   endif
-  "TODO(arslan): change this according to the type of job
-  return "building ..."
+
+  for job in values(s:jobs)
+    if job.filename == fnameescape(expand("%:p"))
+      return printf("job [%d] running...", job.id)
+    endif
+  endfor
+
+  return ''
 endfunction
 
 " spawn spawns a go subcommand with the name and arguments with jobstart. Once
@@ -43,11 +49,12 @@ function! s:spawn(name, args)
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
   try
-    execute cd . fnameescape(expand("%:p:h"))
+    let job.dir = fnameescape(expand("%:p:h"))
+    let job.filename = fnameescape(expand("%:p"))
+    execute cd . job.dir
 
     " append the subcommand, such as 'build'
     let argv = ['go'] + a:args
-    " call extend(argv, a:args) 
 
     " run, forrest, run!
     let id = jobstart(argv, job)
