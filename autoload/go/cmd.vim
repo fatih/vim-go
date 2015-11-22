@@ -66,7 +66,9 @@ endfunction
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...)
     if has('nvim')
-        call go#term#new("go run ". go#util#Shelljoin(go#tool#Files()))
+        call go#term#vsplit()
+        let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
+        call go#term#new(cmd)
         return
     endif
 
