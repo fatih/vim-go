@@ -53,9 +53,18 @@ endfunction
 function! go#util#Shelljoin(arglist, ...)
 	if a:0
 		return join(map(copy(a:arglist), 'shellescape(v:val, ' . a:1 . ')'), ' ')
-	else
-		return join(map(copy(a:arglist), 'shellescape(v:val)'), ' ')
 	endif
+
+	return join(map(copy(a:arglist), 'shellescape(v:val)'), ' ')
+endfunction
+
+" Shelljoin returns a shell-safe representation of the items in the given
+" arglist. The {special} argument of shellescape() may optionally be passed.
+function! go#util#Shelllist(arglist, ...)
+	if a:0
+		return map(copy(a:arglist), 'shellescape(v:val, ' . a:1 . ')')
+    endif
+	return map(copy(a:arglist), 'shellescape(v:val)')
 endfunction
 
 

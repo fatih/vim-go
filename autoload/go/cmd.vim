@@ -14,30 +14,31 @@ endfunction
 " default it tries to call simply 'go build', but it first tries to get all
 " dependent files for the current folder and passes it to go build.
 function! go#cmd#Build(bang, ...)
-    let default_makeprg = &makeprg
+    " expand all wildcards(i.e: '%' to the current file name)
+    let goargs = map(copy(a:000), "expand(v:val)")
+
+    " escape all shell arguments before we pass it to make
+    let goargs = go#util#Shelllist(goargs, 1)
+
+    " create our command arguments. go build discards any results when it
+    " compiles multiple packages. So we pass the `errors` package just as an
+    " placeholder with the current folder (indicated with '.')
+    let args = ["build"]  + goargs + [".", "errors"]
+
+    " if we have nvim, call it asynchronously and return early ;)
+    if has('nvim')
+        call go#jobcontrol#Spawn("building ...", args)
+        return
+    endif
 
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
-
-    let l:tmpname = tempname()
-
-    if v:shell_error
-        let &makeprg = "go build . errors"
-    else
-        " :make expands '%' and '#' wildcards, so they must also be escaped
-        let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
-        let gofiles = go#util#Shelljoin(go#tool#Files(), 1)
-        let &makeprg = "go build -o " . l:tmpname . ' ' . goargs . ' ' . gofiles
-    endif
+    let default_makeprg = &makeprg
+    let &makeprg = "go " . join(args, ' ')
 
     if g:go_dispatch_enabled && exists(':Make') == 2
         call go#util#EchoProgress("building dispatched ...")
         silent! exe 'Make'
-    elseif has('nvim')
-        let job_id = go#jobcontrol#Spawn(['build', '.', 'errors'])
-        call go#util#EchoProgress(printf("building with id [%d] ...", job_id))
-        " rest is handled by go#jobcontrol#Run :)
-        return
     else
         call go#util#EchoProgress("building ...")
         silent! exe 'make!'
@@ -47,16 +48,14 @@ function! go#cmd#Build(bang, ...)
     let errors = getqflist()
     call go#util#Cwindow(len(errors))
 
-    if !empty(errors) 
+    if !empty(errors)
         if !a:bang
             cc 1 "jump to first error if there is any
         endif
     else
-        redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
+        call go#util#EchoSuccess("[build] SUCCESS")
     endif
 
-
-    call delete(l:tmpname)
     let &makeprg = default_makeprg
     let $GOPATH = old_gopath
 endfunction
