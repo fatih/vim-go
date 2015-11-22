@@ -65,6 +65,11 @@ endfunction
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...)
+    if has('nvim')
+        call go#term#new("go run ". go#util#Shelljoin(go#tool#Files()))
+        return
+    endif
+
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
@@ -79,6 +84,7 @@ function! go#cmd#Run(bang, ...)
         let $GOPATH = old_gopath
         return
     endif
+
 
     " :make expands '%' and '#' wildcards, so they must also be escaped
     let default_makeprg = &makeprg
