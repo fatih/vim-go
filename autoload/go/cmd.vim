@@ -60,24 +60,12 @@ function! go#cmd#Build(bang, ...)
     let $GOPATH = old_gopath
 endfunction
 
+
 " Run runs the current file (and their dependencies if any) in a new terminal.
 function! go#cmd#RunTerm(mode)
-    " guard for other callers
-    if !has('nvim')
-        return
-    endif
-
     let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
-
-    " if empty call the default term
-    if empty(a:mode)
-        call go#term#new(cmd)
-        return
-    endif
-
     call go#term#newmode(cmd, a:mode)
 endfunction
-
 
 " Run runs the current file (and their dependencies if any) and outputs it.
 " This is intented to test small programs and play with them. It's not
@@ -103,7 +91,6 @@ function! go#cmd#Run(bang, ...)
         let $GOPATH = old_gopath
         return
     endif
-
 
     " :make expands '%' and '#' wildcards, so they must also be escaped
     let default_makeprg = &makeprg
@@ -199,6 +186,11 @@ function! go#cmd#Test(bang, compile, ...)
         echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
     else
         echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
+    endif
+
+    if has('nvim')
+        call go#term#new(command)
+        return
     endif
 
     redraw

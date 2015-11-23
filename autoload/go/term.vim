@@ -13,8 +13,12 @@ endfunction
 
 " new creates a new terminal with the given command and window mode.
 function! go#term#newmode(cmd, mode)
-	execute a:mode.' new'
+	let mode = a:mode
+	if empty(mode)
+		let mode = g:go_term_mode
+	endif
 
+	execute mode.' new'
 
   sil file `="[term]"`
 	setlocal bufhidden=delete
@@ -39,13 +43,14 @@ function! go#term#newmode(cmd, mode)
 	let width = get(g:, 'go_term_width', winwidth(0))
 
 	" we are careful how to resize. for example it's vertical we don't change
-	" the height
-	if a:mode == "vertical"
-		exe 'vertical resize ' . width
-	elseif a:mode == "split"
+	" the height. The below command resizes the buffer
+	if a:mode == "split"
 		exe 'resize ' . height
+	elseif a:mode == "vertical"
+		exe 'vertical resize ' . width
 	endif
 
+	" we also need to resize the pty, so there you go...
 	call jobresize(id, width, height)
 
   let s:jobs[id] = job
