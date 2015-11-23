@@ -14,7 +14,15 @@ endfunction
 " new creates a new terminal with the given command and window mode.
 function! go#term#newmode(cmd, mode)
 	execute a:mode.' new'
-  call s:init_view()
+
+
+  sil file `="[term]"`
+	setlocal bufhidden=delete
+	setlocal buftype=nofile
+	setlocal winfixheight
+	setlocal noswapfile
+	setlocal nobuflisted
+	setlocal cursorline		" make it easy to distinguish
 
   let job = { 
         \ 'on_stdout': function('s:on_stdout'),
@@ -24,20 +32,24 @@ function! go#term#newmode(cmd, mode)
 
   let id = termopen(a:cmd, job)
 	let job.id = id
-  let s:jobs[id] = job
 	startinsert
-	return id
-endfunction
 
-"init_view initializes the view for a new terminal buffer
-function! s:init_view()
-  sil file `="[term]"`
-	setlocal bufhidden=delete
-	setlocal buftype=nofile
-	setlocal winfixheight
-	setlocal noswapfile
-	setlocal nobuflisted
-	setlocal cursorline		" make it easy to distinguish
+	" resize new term if needed.
+	let height = get(g:, 'go_term_height', winheight(0))
+	let width = get(g:, 'go_term_width', winwidth(0))
+
+	" we are careful how to resize. for example it's vertical we don't change
+	" the height
+	if a:mode == "vertical"
+		exe 'vertical resize ' . width
+	elseif a:mode == "split"
+		exe 'resize ' . height
+	endif
+
+	call jobresize(id, width, height)
+
+  let s:jobs[id] = job
+	return id
 endfunction
 
 function! s:on_stdout(job_id, data)
