@@ -60,14 +60,32 @@ function! go#cmd#Build(bang, ...)
     let $GOPATH = old_gopath
 endfunction
 
+" Run runs the current file (and their dependencies if any) in a new terminal.
+function! go#cmd#RunTerm(mode)
+    " guard for other callers
+    if !has('nvim')
+        return
+    endif
+
+    let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
+
+    " if empty call the default term
+    if empty(a:mode)
+        call go#term#new(cmd)
+        return
+    endif
+
+    call go#term#newmode(cmd, a:mode)
+endfunction
+
+
 " Run runs the current file (and their dependencies if any) and outputs it.
 " This is intented to test small programs and play with them. It's not
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...)
     if has('nvim')
-        let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
-        call go#term#new(cmd)
+        call go#cmd#RunTerm('')
         return
     endif
 
