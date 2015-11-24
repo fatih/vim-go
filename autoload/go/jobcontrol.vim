@@ -51,9 +51,8 @@ function! s:spawn(desc, name, args)
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
   try
-    let job.dir = fnameescape(expand("%:p:h"))
     let job.filename = fnameescape(expand("%:p"))
-    execute cd . job.dir
+    execute cd . fnameescape(expand("%:p:h"))
 
     " append the subcommand, such as 'build'
     let argv = ['go'] + a:args
