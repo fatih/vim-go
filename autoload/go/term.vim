@@ -1,5 +1,5 @@
 if has('nvim') && !exists("g:go_term_mode")
-    let g:go_term_mode = 'vsplit'
+	let g:go_term_mode = 'vsplit'
 endif
 
 " s:jobs is a global reference to all jobs started with new()
@@ -18,23 +18,24 @@ function! go#term#newmode(cmd, mode)
 		let mode = g:go_term_mode
 	endif
 
-	execute mode.' new'
+	execute mode.' __go_term__'
 
-  sil file `="[term]"`
+	setlocal filetype=goterm
 	setlocal bufhidden=delete
-	setlocal buftype=nofile
 	setlocal winfixheight
 	setlocal noswapfile
 	setlocal nobuflisted
-	setlocal cursorline		" make it easy to distinguish
+	setlocal cursorline		" makes it easy to distinguish
 
-  let job = { 
-        \ 'on_stdout': function('s:on_stdout'),
-        \ 'on_stderr': function('s:on_stderr'),
-        \ 'on_exit' : function('s:on_exit'),
-        \ }
+	let job = { 
+				\ 'stderr' : [],
+				\ 'stdout' : [],
+				\ 'on_stdout': function('s:on_stdout'),
+				\ 'on_stderr': function('s:on_stderr'),
+				\ 'on_exit' : function('s:on_exit'),
+				\ }
 
-  let id = termopen(a:cmd, job)
+	let id = termopen(a:cmd, job)
 	let job.id = id
 	startinsert
 
@@ -53,16 +54,56 @@ function! go#term#newmode(cmd, mode)
 	" we also need to resize the pty, so there you go...
 	call jobresize(id, width, height)
 
-  let s:jobs[id] = job
+	let s:jobs[id] = job
 	return id
 endfunction
 
 function! s:on_stdout(job_id, data)
+	if !has_key(s:jobs, a:job_id)
+		return
+	endif
+	let job = s:jobs[a:job_id]
+
+	call extend(job.stdout, a:data)
 endfunction
 
 function! s:on_stderr(job_id, data)
+	if !has_key(s:jobs, a:job_id)
+		return
+	endif
+	let job = s:jobs[a:job_id]
+
+	call extend(job.stderr, a:data)
 endfunction
 
 function! s:on_exit(job_id, data)
-  unlet s:jobs[a:job_id]
+	if !has_key(s:jobs, a:job_id)
+		return
+	endif
+	let job = s:jobs[a:job_id]
+
+	" usually there is always output so never branch into this clause
+	if empty(job.stdout)
+		call setqflist([])
+		call go#util#Cwindow()
+		call go#util#EchoSuccess(printf("[%s] SUCCESS", self.name))
+	else
+		let errors = go#tool#ParseErrors(job.stdout)
+		if !empty(errors)
+			" close terminal we don't need it
+			close 
+
+			call setqflist(errors, 'r')
+			call go#util#Cwindow(len(errors))
+			cc 1 "jump to first error if there is any
+
+			call go#util#EchoError(printf("[%s] FAILED", self.name))
+		else
+			call setqflist([])
+			call go#util#Cwindow()
+		endif
+
+	endif
+
+	unlet s:jobs[a:job_id]
 endfunction

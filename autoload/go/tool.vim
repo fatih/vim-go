@@ -50,26 +50,7 @@ function! go#tool#ShowErrors(out)
     let current_dir = getcwd()
     execute cd . fnameescape(expand("%:p:h"))
 
-    let errors = []
-
-    for line in split(a:out, '\n')
-        let fatalerrors = matchlist(line, '^\(fatal error:.*\)$')
-        let tokens = matchlist(line, '^\s*\(.\{-}\):\(\d\+\):\s*\(.*\)')
-
-        if !empty(fatalerrors)
-            call add(errors, {"text": fatalerrors[1]})
-        elseif !empty(tokens)
-            call add(errors, {"filename" : fnamemodify(tokens[1], ':p'),
-                        \"lnum":     tokens[2],
-                        \"text":     tokens[3]})
-        elseif !empty(errors)
-            " Preserve indented lines.
-            " This comes up especially with multi-line test output.
-            if match(line, '^\s') >= 0
-                call add(errors, {"text": line})
-            endif
-        endif
-    endfor
+    let errors = go#tool#ParseErrors(split(a:out, '\n'))
 
     " return back to old dir once we are finished with populating the errors
     execute cd . fnameescape(current_dir)
@@ -83,6 +64,35 @@ function! go#tool#ShowErrors(out)
         " Couldn't detect error format, output errors
         echo a:out
     endif
+endfunction
+
+function! go#tool#ParseErrors(out)
+    let errors = []
+
+    for line in a:out
+        let fatalerrors = matchlist(line, '^\(fatal error:.*\)$')
+        let tokens = matchlist(line, '^\s*\(.\{-}\):\(\d\+\):\s*\(.*\)')
+
+        if !empty(fatalerrors)
+            call add(errors, {"text": fatalerrors[1]})
+        elseif !empty(tokens)
+
+            " strip endlines of form ^M
+            let out=substitute(tokens[3], '\r$', '', '')
+
+            call add(errors, {"filename" : fnamemodify(tokens[1], ':p'),
+                        \"lnum":     tokens[2],
+                        \"text":     out})
+        elseif !empty(errors)
+            " Preserve indented lines.
+            " This comes up especially with multi-line test output.
+            if match(line, '^\s') >= 0
+                call add(errors, {"text": line})
+            endif
+        endif
+    endfor
+
+    return errors
 endfunction
 
 function! go#tool#ExecuteInDir(cmd) abort
