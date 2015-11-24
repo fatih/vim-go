@@ -115,8 +115,10 @@ function! go#fmt#Format(withGoimport)
         try | silent undojoin | catch | endtry
 
         " Replace current file with temp file, then reload buffer
+        let old_fileformat = &fileformat
         call rename(l:tmpname, expand('%'))
         silent edit!
+        let &fileformat = old_fileformat
         let &syntax = &syntax
 
         " only clear quickfix if it was previously set, this prevents closing
