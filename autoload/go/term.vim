@@ -28,12 +28,12 @@ function! go#term#newmode(cmd, mode)
 	setlocal cursorline		" makes it easy to distinguish
 
 	let job = { 
-				\ 'stderr' : [],
-				\ 'stdout' : [],
-				\ 'on_stdout': function('s:on_stdout'),
-				\ 'on_stderr': function('s:on_stderr'),
-				\ 'on_exit' : function('s:on_exit'),
-				\ }
+		\ 'stderr' : [],
+		\ 'stdout' : [],
+		\ 'on_stdout': function('s:on_stdout'),
+		\ 'on_stderr': function('s:on_stderr'),
+		\ 'on_exit' : function('s:on_exit'),
+		\ }
 
 	let id = termopen(a:cmd, job)
 	let job.id = id
@@ -105,3 +105,5 @@ function! s:on_exit(job_id, data)
 
 	unlet s:jobs[a:job_id]
 endfunction
+
+" vim:ts=2:sw=2:et
