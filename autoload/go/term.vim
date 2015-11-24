@@ -86,7 +86,6 @@ function! s:on_exit(job_id, data)
 	if empty(job.stdout)
 		call setqflist([])
 		call go#util#Cwindow()
-		call go#util#EchoSuccess(printf("[%s] SUCCESS", self.name))
 	else
 		let errors = go#tool#ParseErrors(job.stdout)
 		if !empty(errors)
@@ -97,7 +96,6 @@ function! s:on_exit(job_id, data)
 			call go#util#Cwindow(len(errors))
 			cc 1 "jump to first error if there is any
 
-			call go#util#EchoError(printf("[%s] FAILED", self.name))
 		else
 			call setqflist([])
 			call go#util#Cwindow()
