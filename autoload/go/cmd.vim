@@ -34,17 +34,17 @@ function! go#cmd#Build(bang, ...)
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
     else
-        silent! exe 'make!'
+        silent! exe 'lmake!'
     endif
     redraw!
 
 
-    let errors = getqflist()
-    call go#util#Cwindow(len(errors))
+    let errors = go#list#Get()
+    call go#list#Window(len(errors))
 
     if !empty(errors) 
         if !a:bang
-            cc 1 "jump to first error if there is any
+            call go#list#JumpToFirst()
         endif
     else
         redraws! | echon "vim-go: " | echohl Function | echon "[build] SUCCESS"| echohl None
@@ -87,16 +87,17 @@ function! go#cmd#Run(bang, ...)
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
     else
-        exe 'make!'
+        exe 'lmake!'
     endif
 
-    " Remove any nonvalid filename from the qflist to avoid opening an empty
-    " buffer. See https://github.com/fatih/vim-go/issues/287 for details.
-    let qflist = getqflist()
+    " Remove any nonvalid filename from the location list to avoid opening an
+    " empty buffer. See https://github.com/fatih/vim-go/issues/287 for
+    " details.
+    let items = go#list#Get()
     let errors = []
     let is_readable = {}
 
-    for item in qflist
+    for item in items
         let filename = bufname(item.bufnr)
         if !has_key(is_readable, filename)
             let is_readable[filename] = filereadable(filename)
@@ -111,11 +112,10 @@ function! go#cmd#Run(bang, ...)
         echohl Identifier | echon " from QuickFix list (nonvalid filename)" | echohl None
     endfor
 
-    call go#util#Cwindow(len(errors))
-
-    call setqflist(errors)
+    call go#list#Populate(errors)
+    call go#list#Window(len(errors))
     if !empty(errors) && !a:bang
-        cc 1 "jump to first error if there is any
+        call go#list#JumpToFirst()
     endif
     
     let $GOPATH = old_gopath
@@ -130,16 +130,17 @@ function! go#cmd#Install(bang, ...)
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
-        let errors = getqflist()
-        call go#util#Cwindow(len(errors))
+        let errors = go#tool#ParseErrors(split(out, '\n'))
+
+        call go#list#Populate(errors)
+        call go#list#Window(len(errors))
         if !empty(errors) && !a:bang
-            cc 1 "jump to first error if there is any
+            call go#list#JumpToFirst()
         endif
         return
     else
-        call setqflist([])
-        call go#util#Cwindow()
+        call go#list#Clean()
+        call go#list#Window()
     endif
 
     echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH | echohl None
