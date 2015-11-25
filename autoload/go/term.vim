@@ -25,7 +25,6 @@ function! go#term#newmode(cmd, mode)
 	setlocal winfixheight
 	setlocal noswapfile
 	setlocal nobuflisted
-	setlocal cursorline		" makes it easy to distinguish
 
 	let job = { 
 		\ 'stderr' : [],
