@@ -76,16 +76,15 @@ function! go#fmt#Format(withGoimport)
         let fmt_command  = g:go_goimports_bin
     endif
 
-    " if it's something else than gofmt, we need to check the existing of that
-    " binary. For example if it's goimports, let us check if it's installed,
+    " check if the user has installed command binary.
+    " For example if it's goimports, let us check if it's installed,
     " if not the user get's a warning via go#path#CheckBinPath()
-    if fmt_command != "gofmt"
-        " check if the user has installed goimports
-        let bin_path = go#path#CheckBinPath(fmt_command) 
-        if empty(bin_path) 
-            return 
-        endif
+    let bin_path = go#path#CheckBinPath(fmt_command)
+    if empty(bin_path)
+        return
+    endif
 
+    if fmt_command != "gofmt"
         " change GOPATH too, so goimports can pick up the correct library
         let old_gopath = $GOPATH
         let $GOPATH = go#path#Detect()
