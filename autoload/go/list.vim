@@ -1,5 +1,5 @@
 " Window opens the location list with the given height up to 10 lines maximum.
-" Otherwise g:go_location_height is used. If no or zero height is given it
+" Otherwise g:go_loclist_height is used. If no or zero height is given it
 " closes the window
 function! go#list#Window(...)
     " we don't use lwindow to close the location list as we need also the
@@ -12,7 +12,7 @@ function! go#list#Window(...)
         return
     endif
 
-    let height = get(g:, "go_location_height", 0)
+    let height = get(g:, "go_loclist_height", 0)
     if height == 0
         " prevent creating a large location height for a large set of numbers
         if a:1 > 10
