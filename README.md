@@ -18,9 +18,9 @@ disabled/enabled easily.
 * Go to symbol/declaration with `:GoDef`
 * Look up documentation with `:GoDoc` inside Vim or open it in browser
 * Automatically import packages via `:GoImport` or plug it into autosave
-* Compile your package with `:GoBuild`, install it with `:GoInstall`
+* Compile your package with `:GoBuild`, install it with `:GoInstall` or test
+  them with `:GoTest` (also supports running single tests via `:GoTestFunc`)
 * Quickly execute your current file/files with `:GoRun`
-* Run `:GoTest` and see any errors in the quickfix window
 * Automatic `GOPATH` detection based on the directory structure (i.e. `gb`
   projects, `godep` vendored projects)
 * Change or display `GOPATH` with `:GoPath`
@@ -41,6 +41,8 @@ disabled/enabled easily.
   your custom vim function.
 * Tagbar support to show tags of the source code in a sidebar with `gotags`
 * Custom vim text objects such as `a function` or `inner function`
+* All commands support collecting and displaying errors in Vim's location
+  list.
 
 ## Install
 
@@ -63,7 +65,7 @@ Please be sure all necessary binaries are installed (such as `gocode`, `godef`,
 `:GoInstallBinaries` command. If invoked, all necessary binaries will be
 automatically downloaded and installed to your `$GOBIN` environment (if not set
 it will use `$GOPATH/bin`). Note that this command requires `git` for fetching the individual Go
-packages.
+packages. Additionally, use `:GoUpdateBinaries` to update the installed binaries.
 
 ### Optional
 

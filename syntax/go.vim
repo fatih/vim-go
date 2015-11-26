@@ -117,8 +117,8 @@ syn match       goDeclaration       /\<func\>/
 
 
 " Predefined functions and values
-syn keyword     goBuiltins          append cap close complex copy delete imag len
-syn keyword     goBuiltins          make new panic print println real recover
+syn match       goBuiltins          /\v(append|cap|close|complex|copy|delete|imag|len)\ze\(/
+syn match       goBuiltins          /\v(make|new|panic|print|println|real|recover)\ze\(/
 syn keyword     goBoolean           iota true false nil
 
 hi def link     goBuiltins          Keyword
