@@ -117,7 +117,7 @@ function! go#cmd#Run(bang, ...)
     if !empty(errors) && !a:bang
         call go#list#JumpToFirst()
     endif
-    
+
     let $GOPATH = old_gopath
     let &makeprg = default_makeprg
 endfunction
@@ -131,7 +131,6 @@ function! go#cmd#Install(bang, ...)
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         let errors = go#tool#ParseErrors(split(out, '\n'))
-
         call go#list#Populate(errors)
         call go#list#Window(len(errors))
         if !empty(errors) && !a:bang
@@ -176,16 +175,16 @@ function! go#cmd#Test(bang, compile, ...)
     redraw
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
-        let errors = getqflist()
-        call go#util#Cwindow(len(errors))
+        let errors = go#tool#ParseErrors(split(out, '\n'))
+        call go#list#Populate(errors)
+        call go#list#Window(len(errors))
         if !empty(errors) && !a:bang
-            cc 1 "jump to first error if there is any
+            call go#list#JumpToFirst()
         endif
         echon "vim-go: " | echohl ErrorMsg | echon "[test] FAIL" | echohl None
     else
-        call setqflist([])
-        call go#util#Cwindow()
+        call go#list#Clean()
+        call go#list#Window()
 
         if a:compile
             echon "vim-go: " | echohl Function | echon "[test] SUCCESS" | echohl None
@@ -234,19 +233,21 @@ function! go#cmd#Coverage(bang, ...)
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
-        call go#tool#ShowErrors(out)
+        let errors = go#tool#ParseErrors(split(out, '\n'))
+        call go#list#Populate(errors)
+        call go#list#Window(len(errors))
+        if !empty(errors) && !a:bang
+            call go#list#JumpToFirst()
+        endif
     else
-        " clear previous quick fix window
-        call setqflist([])
+        " clear previous location list 
+        call go#list#Clean()
+        call go#list#Window()
 
         let openHTML = 'go tool cover -html='.l:tmpname
         call go#tool#ExecuteInDir(openHTML)
     endif
-    let errors = getqflist()
-    call go#util#Cwindow(len(errors))
-    if !empty(errors) && !a:bang
-        cc 1 "jump to first error if there is any
-    endif
+
     call delete(l:tmpname)
 endfunction
 
@@ -270,15 +271,15 @@ function! go#cmd#Generate(bang, ...)
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
     else
-        silent! exe 'make!'
+        silent! exe 'lmake!'
     endif
     redraw!
 
-    let errors = getqflist()
-    call go#util#Cwindow(len(errors))
+    let errors = go#list#Get()
+    call go#list#Window(len(errors))
     if !empty(errors) 
         if !a:bang
-            cc 1 "jump to first error if there is any
+            call go#list#JumpToFirst()
         endif
     else
         redraws! | echon "vim-go: " | echohl Function | echon "[generate] SUCCESS"| echohl None

@@ -36,6 +36,26 @@ function! go#list#Populate(items)
 	call setloclist(0, a:items, 'r')
 endfunction
 
+" Parse parses the given items based on the specified errorformat nad
+" populates the location list.
+function! go#list#ParseFormat(errformat, items)
+  " backup users errorformat, will be restored once we are finished
+  let old_errorformat = &errorformat
+
+	" parse and populate the location list
+  let &errorformat = a:errformat
+	lgetexpr a:items
+
+	"restore back
+  let &errorformat = old_errorformat
+endfunction
+
+" Parse parses the given items based on the global errorformat nad
+" populates the location list.
+function! go#list#Parse(items)
+	lgetexpr a:items
+endfunction
+
 " JumpToFirst jumps to the first item in the location list
 function! go#list#JumpToFirst()
   ll 1 
