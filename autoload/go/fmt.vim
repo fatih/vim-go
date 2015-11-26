@@ -43,8 +43,6 @@ if !exists("g:go_fmt_experimental")
     let g:go_fmt_experimental = 0
 endif
 
-let s:got_fmt_error = 0
-
 "  we have those problems : 
 "  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
 "  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
@@ -106,7 +104,6 @@ function! go#fmt#Format(withGoimport)
         let $GOPATH = old_gopath
     endif
 
-
     "if there is no error on the temp file replace the output with the current
     "file (if this fails, we can always check the outputs first line with:
     "splitted =~ 'package \w\+')
@@ -119,16 +116,12 @@ function! go#fmt#Format(withGoimport)
         silent edit!
         let &syntax = &syntax
 
-        " only clear quickfix if it was previously set, this prevents closing
-        " other quickfixes
-        if s:got_fmt_error 
-            let s:got_fmt_error = 0
-            call setqflist([])
-            call go#util#Cwindow()
-        endif
+        " clean up previous location list
+        call go#list#Clean()
+        call go#list#Window()
     elseif g:go_fmt_fail_silently == 0 
         let splitted = split(out, '\n')
-        "otherwise get the errors and put them to quickfix window
+        "otherwise get the errors and put them to location list
         let errors = []
         for line in splitted
             let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
@@ -143,11 +136,12 @@ function! go#fmt#Format(withGoimport)
             % | " Couldn't detect gofmt error format, output errors
         endif
         if !empty(errors)
-            call setqflist(errors, 'r')
+            call go#list#Populate(errors)
             echohl Error | echomsg "Gofmt returned error" | echohl None
         endif
-        let s:got_fmt_error = 1
-        call go#util#Cwindow(len(errors))
+
+        call go#list#Window(len(errors))
+
         " We didn't use the temp file, so clean up
         call delete(l:tmpname)
     endif

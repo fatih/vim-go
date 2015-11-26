@@ -109,7 +109,7 @@ function! go#cmd#Run(bang, ...)
 
     for k in keys(filter(is_readable, '!v:val'))
         echo "vim-go: " | echohl Identifier | echon "[run] Dropped " | echohl Constant | echon  '"' . k . '"'
-        echohl Identifier | echon " from QuickFix list (nonvalid filename)" | echohl None
+        echohl Identifier | echon " from location list (nonvalid filename)" | echohl None
     endfor
 
     call go#list#Populate(errors)
@@ -123,8 +123,8 @@ function! go#cmd#Run(bang, ...)
 endfunction
 
 " Install installs the package by simple calling 'go install'. If any argument
-" is given(which are passed directly to 'go insta'') it tries to install those
-" packages. Errors are populated in the quickfix window.
+" is given(which are passed directly to 'go instal') it tries to install those
+" packages. Errors are populated in the location window.
 function! go#cmd#Install(bang, ...)
     let command = 'go install ' . go#util#Shelljoin(a:000)
     call go#cmd#autowrite()
