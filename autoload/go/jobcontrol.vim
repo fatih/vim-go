@@ -103,16 +103,16 @@ function! s:on_exit(job_id, data)
   let job = s:jobs[a:job_id]
 
   if empty(job.stderr)
-    call setqflist([])
-    call go#util#Cwindow()
+    call go#list#Clean()
+    call go#list#Window()
     call go#util#EchoSuccess(printf("[%s] SUCCESS", self.name))
   else
-    call go#tool#ShowErrors(join(job.stderr, "\n"))
-    let errors = getqflist()
-    call go#util#Cwindow(len(errors))
+    let errors = go#tool#ParseErrors(job.stderr)
+    call go#list#Populate(errors)
+    call go#list#Window(len(errors))
 
     if !empty(errors)
-      cc 1 "jump to first error if there is any
+      call go#list#JumpToFirst()
     endif
 
     call go#util#EchoError(printf("[%s] FAILED", self.name))

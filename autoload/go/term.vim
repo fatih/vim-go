@@ -83,21 +83,20 @@ function! s:on_exit(job_id, data)
 
 	" usually there is always output so never branch into this clause
 	if empty(job.stdout)
-		call setqflist([])
-		call go#util#Cwindow()
+    call go#list#Clean()
+    call go#list#Window()
 	else
 		let errors = go#tool#ParseErrors(job.stdout)
 		if !empty(errors)
 			" close terminal we don't need it
 			close 
 
-			call setqflist(errors, 'r')
-			call go#util#Cwindow(len(errors))
-			cc 1 "jump to first error if there is any
-
+      call go#list#Populate(errors)
+      call go#list#Window(len(errors))
+      call go#list#JumpToFirst()
 		else
-			call setqflist([])
-			call go#util#Cwindow()
+      call go#list#Clean()
+      call go#list#Window()
 		endif
 
 	endif
