@@ -33,29 +33,38 @@ support, improved syntax highlighting, go toolchain commands, etc... It's
 highly customizable and each individual feature can be disabled/enabled
 easily.
 
-  * Improved Syntax highlighting, such as Functions, Operators, Methods..
+  * Improved Syntax highlighting with items such as Functions, Operators, Methods.
   * Auto completion support via `gocode`
-  * Better `gofmt` on save, keeps cursor position and doesn't break your undo
+  * Better `gofmt` on save, which keeps cursor position and doesn't break your undo
     history
-  * Go to symbol/declaration with `godef`
-  * Look up documentation with `godoc` inside Vim or open it in browser.
-  * Automatically import packages via `goimports`
-  * Compile and `go build` your package, install it with `go install`
-  * `go run` quickly your current file/files
-  * Run `go test` and see any errors in quickfix window
-  * Create a coverage profile and display annotated source code in browser to
-    see which functions are covered.
-  * Lint your code with `golint`
-  * Run your code trough `go vet` to catch static errors.
-  * Advanced source analysis tool with `oracle`
-  * Precise type-safe renaming of identifiers with `gorename`
+  * Go to symbol/declaration with `:GoDef`
+  * Look up documentation with `:GoDoc` inside Vim or open it in browser
+  * Automatically import packages via `:GoImport` or plug it into autosave
+  * Compile your package with `:GoBuild`, install it with `:GoInstall` or test
+    them with `:GoTest` (also supports running single tests via `:GoTestFunc`)
+  * Quickly execute your current file/files with `:GoRun`
+  * Automatic `GOPATH` detection based on the directory structure (i.e. `gb`
+    projects, `godep` vendored projects)
+  * Change or display `GOPATH` with `:GoPath`
+  * Create a coverage profile and display annotated source code in browser to see
+    which functions are covered with `:GoCoverage`
+  * Call `gometalinter` with `:GoMetaLinter`, which invokes all possible linters
+    (golint, vet, errcheck, deadcode, etc..) and shows the warnings/errors
+  * Lint your code with `:GoLint`
+  * Run your code through `:GoVet` to catch static errors
+  * Advanced source analysis tools utilizing oracle, such as `:GoImplements`,
+    `:GoCallees`, and `:GoReferrers`
+  * Precise type-safe renaming of identifiers with `:GoRename`
   * List all source files and dependencies
-  * Checking with `errcheck` for unchecked errors.
-  * Integrated and improved snippets. Supports `ultisnips` or `neosnippet`
-  * Share your current code to play.golang.org
-  * On-the-fly type information about the word under the cursor
+  * Unchecked error checking with `:GoErrCheck`
+  * Integrated and improved snippets, supporting `ultisnips` or `neosnippet`
+  * Share your current code to [play.golang.org](http://play.golang.org) with `:GoPlay`
+  * On-the-fly type information about the word under the cursor. Plug it into
+    your custom vim function.
   * Tagbar support to show tags of the source code in a sidebar with `gotags`
-  * Custom vim text objects, such a `a function` or `inner function`
+  * Custom vim text objects such as `a function` or `inner function`
+  * All commands support collecting and displaying errors in Vim's location
+  list.
 
 ===============================================================================
 INSTALL                                                           *go-install*
@@ -257,7 +266,7 @@ COMMANDS                                                          *go-commands*
 :GoTest[!] [expand]
 
     Run the tests on your _test.go files via in your current directory. Errors
-    are populated in quickfix window.  If an argument is passed, 'expand' is
+    are populated in location list.  If an argument is passed, 'expand' is
     used as file selector (useful for cases like `:GoTest ./...`).
 
     You may optionally pass any valid go test flags/options. For a full list
@@ -285,7 +294,7 @@ COMMANDS                                                          *go-commands*
 :GoTestCompile[!] [expand]
 
     Compile your _test.go files via in your current directory. Errors are
-    populated in quickfix window.  If an argument is passed, 'expand' is used
+    populated in location list.  If an argument is passed, 'expand' is used
     as file selector (useful for cases like `:GoTest ./...`). Useful to not
     run the tests and capture/fix errors before running the tests or to
     create test binary.
@@ -307,7 +316,7 @@ COMMANDS                                                          *go-commands*
 :GoErrCheck [options]
 
     Check for unchecked errors in you current package. Errors are populated in
-    quickfix window.
+    location list.
 
     You may optionally pass any valid errcheck flags/options. For a full list
     please see `errcheck -h`.
@@ -340,7 +349,7 @@ COMMANDS                                                          *go-commands*
 
     Show 'implements' relation for a selected package. A list of interfaces
     for the type that implements an interface under the cursor (or selected
-    package) is shown quickfix list.
+    package) is shown location list.
                                                                 *:GoRename*
 :GoRename[!] [to]
 
@@ -363,13 +372,13 @@ COMMANDS                                                          *go-commands*
 
     Show 'callees' relation for a selected package. A list of possible call
     targets for the type under the cursor (or selected package) is shown in a
-    quickfix list.
+    location list.
 
                                                               *:GoCallers*
 :GoCallers
 
     Show 'callers' relation for a selected function. A list of possible
-    callers for the selected function under the cursor is shown in a quickfix
+    callers for the selected function under the cursor is shown in a location
     list.
 
                                                               *:GoDescribe*
@@ -386,7 +395,7 @@ COMMANDS                                                          *go-commands*
 
     Shows 'callstack' relation for the selected function. An arbitrary path
     from the root of the callgraph to the selected function is showed in a
-    quickfix list. This may be useful to understand how the function is
+    location list. This may be useful to understand how the function is
     reached in a given program.
 
                                                               *:GoFreevars*
@@ -426,7 +435,7 @@ COMMANDS                                                          *go-commands*
 :GoMetaLinter [path]
 
     Calls the underlying `gometalinter` tool and displays all warnings and
-    errors in a quickfix window. By default the following linters are enabled:
+    errors in a location list. By default the following linters are enabled:
     "'vet', 'golint', 'errcheck'". This can be changed with the
     |g:go_metalinter_enabled| variable. To override the command completely use
     the variable |g:go_metalinter_command|. To override the maximum linters
@@ -681,7 +690,7 @@ is empty. >
 
                                                    *'g:go_fmt_fail_silently'*
 
-Use this option to disable showing a quickfix window when |g:go_fmt_command|
+Use this option to disable showing a location list when |g:go_fmt_command|
 fails. By default it's disabled. >
 
   let g:go_fmt_fail_silently = 0
@@ -878,14 +887,14 @@ seconds.
 >
   let g:go_metalinter_deadline = "5s"
 <
-                                                  *'g:go_quickfix_height'*
+                                                  *'g:go_loclist_height'*
 
-Specifies the current quickfix height for all quickfix windows. The default
+Specifies the current location list height for all location lists. The default
 value (empty) sets automatically the height to the number of errors (maximum
 up to 10 errors to prevent large heights). Setting the value explicitly
 overrides this behavior. To get default Vim behavior set it to 10.
 >
-  let g:go_quickfix_height = 0
+  let g:go_loclist_height = 0
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
