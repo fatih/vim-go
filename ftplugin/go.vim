@@ -40,7 +40,7 @@ if get(g:, "go_textobj_enabled", 1)
 endif
 
 if get(g:, "go_auto_type_info", 0)
-    setlocal updatetime=800
+    let &updatetime = get(g:, 'go_updatetime', 800)
 endif
 
 " vim:ts=4:sw=4:et
