@@ -28,7 +28,7 @@ else
 endif
 
 fu! s:shell_error()
-    let empty(s:vim_shell_error)
+    if empty(s:vim_shell_error)
         return v:shell_error
     endif
     return call(s:vim_shell_error, [])
