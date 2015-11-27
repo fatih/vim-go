@@ -13,6 +13,23 @@ function! go#jobcontrol#Spawn(desc, args)
   return job.id
 endfunction
 
+function! go#jobcontrol#DisplayLoclist()
+  if empty(s:jobs)
+    return ''
+  endif
+
+  for job in values(s:jobs)
+    if job.winnr == winnr() && !empty(job.stderr)
+      let errors = go#tool#ParseErrors(job.stderr)
+      call go#list#PopulateWin(job.winnr, errors)
+      call go#list#Window(len(errors))
+
+      unlet s:jobs[job.id]
+      return
+    endif
+  endfor
+endfunction
+
 " Statusline returns the current status of the job
 function! go#jobcontrol#Statusline() abort
   if empty(s:jobs)
@@ -36,6 +53,8 @@ function! s:spawn(desc, name, args)
   let job = { 
         \ 'name': a:name, 
         \ 'desc': a:desc, 
+        \ 'id': '',
+        \ 'winnr': winnr(),
         \ 'stderr' : [],
         \ 'stdout' : [],
         \ 'on_stdout': function('s:on_stdout'),
@@ -49,47 +68,24 @@ function! s:spawn(desc, name, args)
 
   " execute go build in the files directory
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let job.filename = fnameescape(expand("%:p"))
   let dir = getcwd()
-  try
-    let job.filename = fnameescape(expand("%:p"))
-    execute cd . fnameescape(expand("%:p:h"))
 
-    " append the subcommand, such as 'build'
-    let argv = ['go'] + a:args
+  execute cd . fnameescape(expand("%:p:h"))
 
-    " run, forrest, run!
-    let id = jobstart(argv, job)
-    let job.id = id
-    let s:jobs[id] = job
-  finally
-    execute cd . fnameescape(dir)
-  endtry
+  " append the subcommand, such as 'build'
+  let argv = ['go'] + a:args
+
+  " run, forrest, run!
+  let id = jobstart(argv, job)
+  let job.id = id
+  let s:jobs[id] = job
+
+  execute cd . fnameescape(dir)
 
   " restore back GOPATH
   let $GOPATH = old_gopath
   return job
-endfunction
-
-" on_stdout is the stdout handler for jobstart(). It collects the output of
-" stderr and stores them to the jobs internal stdout list. 
-function! s:on_stdout(job_id, data)
-  if !has_key(s:jobs, a:job_id)
-    return
-  endif
-  let job = s:jobs[a:job_id]
-
-  call extend(job.stdout, a:data)
-endfunction
-
-" on_stderr is the stderr handler for jobstart(). It collects the output of
-" stderr and stores them to the jobs internal stderr list.
-function! s:on_stderr(job_id, data)
-  if !has_key(s:jobs, a:job_id)
-    return
-  endif
-  let job = s:jobs[a:job_id]
-
-  call extend(job.stderr, a:data)
 endfunction
 
 " on_exit is the exit handler for jobstart(). It handles cleaning up the job
@@ -97,29 +93,41 @@ endfunction
 " on_stderr handler. If there are no errors and a quickfix window is open,
 " it'll be closed.
 function! s:on_exit(job_id, data)
-  if !has_key(s:jobs, a:job_id)
-    return
-  endif
-  let job = s:jobs[a:job_id]
-
-  if empty(job.stderr)
+  if empty(self.stderr)
     call go#list#Clean()
     call go#list#Window()
     call go#util#EchoSuccess(printf("[%s] SUCCESS", self.name))
-  else
-    let errors = go#tool#ParseErrors(job.stderr)
-    call go#list#Populate(errors)
+
+    " do not keep anything when we are finished
+    unlet s:jobs[a:job_id]
+    return
+  endif
+
+
+  " if we are still in the same windows show the list
+  if self.winnr == winnr()
+    let errors = go#tool#ParseErrors(self.stderr)
+    call go#list#PopulateWin(self.winnr, errors)
     call go#list#Window(len(errors))
 
-    if !empty(errors)
-      call go#list#JumpToFirst()
+    if has_key(s:jobs, a:job_id) 
+      unlet s:jobs[a:job_id]
     endif
 
     call go#util#EchoError(printf("[%s] FAILED", self.name))
   endif
+endfunction
 
-  " do not keep anything when we are finished
-  unlet s:jobs[a:job_id]
+" on_stdout is the stdout handler for jobstart(). It collects the output of
+" stderr and stores them to the jobs internal stdout list. 
+function! s:on_stdout(job_id, data)
+  call extend(self.stdout, a:data)
+endfunction
+
+" on_stderr is the stderr handler for jobstart(). It collects the output of
+" stderr and stores them to the jobs internal stderr list.
+function! s:on_stderr(job_id, data)
+  call extend(self.stderr, a:data)
 endfunction
 
 " abort_all aborts all current jobs created with s:spawn()

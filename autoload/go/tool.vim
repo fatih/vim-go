@@ -50,13 +50,14 @@ function! go#tool#ParseErrors(lines)
         if !empty(fatalerrors)
             call add(errors, {"text": fatalerrors[1]})
         elseif !empty(tokens)
-
             " strip endlines of form ^M
             let out=substitute(tokens[3], '\r$', '', '')
 
-            call add(errors, {"filename" : fnamemodify(tokens[1], ':p'),
-                        \"lnum":     tokens[2],
-                        \"text":     out})
+            call add(errors, {
+                        \ "filename" : fnamemodify(tokens[1], ':p'),
+                        \ "lnum"     : tokens[2],
+                        \ "text"     : out,
+                        \ })
         elseif !empty(errors)
             " Preserve indented lines.
             " This comes up especially with multi-line test output.

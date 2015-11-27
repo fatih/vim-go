@@ -133,6 +133,9 @@ augroup vim-go
         autocmd BufWritePre *.go call go#fmt#Format(-1)
     endif
 
+    if has('nvim')
+        autocmd WinEnter *.go call go#jobcontrol#DisplayLoclist()
+    endif
 augroup END
 
 
