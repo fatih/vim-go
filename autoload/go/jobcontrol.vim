@@ -96,7 +96,6 @@ function! s:on_exit(job_id, data)
   if empty(self.stderr)
     call go#list#Clean()
     call go#list#Window()
-    call go#util#EchoSuccess(printf("[%s] SUCCESS", self.name))
 
     " do not keep anything when we are finished
     unlet s:jobs[a:job_id]
@@ -107,14 +106,13 @@ function! s:on_exit(job_id, data)
   " if we are still in the same windows show the list
   if self.winnr == winnr()
     let errors = go#tool#ParseErrors(self.stderr)
-    call go#list#PopulateWin(self.winnr, errors)
+    call go#list#Populate(errors)
     call go#list#Window(len(errors))
+    " call go#list#JumpToFirst()
 
     if has_key(s:jobs, a:job_id) 
       unlet s:jobs[a:job_id]
     endif
-
-    call go#util#EchoError(printf("[%s] FAILED", self.name))
   endif
 endfunction
 
