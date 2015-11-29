@@ -133,6 +133,11 @@ augroup vim-go
         autocmd BufWritePre *.go call go#fmt#Format(-1)
     endif
 
+    " run gometalinter on save
+    if get(g:, "go_metalinter_autosave", 0)
+        autocmd BufWritePost *.go call go#lint#Gometa(1)
+    endif
+
 augroup END
 
 
