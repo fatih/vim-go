@@ -165,35 +165,46 @@ endfunction
 " compile the tests instead of running them (useful to catch errors in the
 " test files). Any other argument is appendend to the final `go test` command
 function! go#cmd#Test(bang, compile, ...)
-    let command = "go test "
+    let args = ["test"]
 
     " don't run the test, only compile it. Useful to capture and fix errors or
     " to create a test binary.
     if a:compile
-        let command .= "-c "
+        call add(args, "-c")
     endif
 
     if a:0
-        let command .= go#util#Shelljoin(map(copy(a:000), "expand(v:val)"))
+        " expand all wildcards(i.e: '%' to the current file name)
+        let goargs = map(copy(a:000), "expand(v:val)")
+
+        " escape all shell arguments before we pass it to test
+        call extend(args, go#util#Shelllist(goargs, 1))
     else
         " only add this if no custom flags are passed
         let timeout  = get(g:, 'go_test_timeout', '10s')
-        let command .= "-timeout=" . timeout . " "
+        call add(args, printf("-timeout=%s", timeout))
     endif
 
-    call go#cmd#autowrite()
+    if has('nvim')
+        if get(g:, 'go_term_enabled', 0)
+            call go#term#new(["go"] + args)
+        else
+            call go#jobcontrol#Spawn("testing ...", args)
+        endif
+        return
+    endif
+
     if a:compile
         echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
     else
         echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
     endif
 
-    if has('nvim')
-        call go#term#new(command)
-        return
-    endif
-
+    call go#cmd#autowrite()
     redraw
+
+    let command = "go " . join(args, ' ')
+
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         let errors = go#tool#ParseErrors(split(out, '\n'))
