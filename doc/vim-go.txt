@@ -864,7 +864,20 @@ Adds custom text objects. By default it's enabled. >
 
 	let g:go_textobj_enabled = 1
 <
+                                                 *'g:go_metalinter_autosave'*
 
+Use this option to auto |:GoMetaLinter| on save. Only linter messages for
+the active buffer will be shown. By default it's disabled >
+
+  let g:go_metalinter_autosave = 0
+<
+                                         *'g:go_metalinter_autosave_enabled'*
+
+Specifies the enabled linters for auto |GoMetaLinter| on save. By
+default it's using `vet` and `golint`
+>
+  let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+<
                                                   *'g:go_metalinter_enabled'*
 
 Specifies the currently enabled linters for the |GoMetaLinter| command. By

@@ -136,6 +136,11 @@ augroup vim-go
     if has('nvim')
         autocmd WinEnter *.go call go#jobcontrol#DisplayLoclist()
     endif
+
+    " run gometalinter on save
+    if get(g:, "go_metalinter_autosave", 0)
+        autocmd BufWritePost *.go call go#lint#Gometa(1)
+    endif
 augroup END
 
 

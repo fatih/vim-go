@@ -2,6 +2,10 @@ if !exists("g:go_metalinter_command")
     let g:go_metalinter_command = ""
 endif
 
+if !exists("g:go_metalinter_autosave_enabled")
+    let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+endif
+
 if !exists("g:go_metalinter_enabled")
     let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 endif
@@ -18,7 +22,7 @@ if !exists("g:go_errcheck_bin")
     let g:go_errcheck_bin = "errcheck"
 endif
 
-function! go#lint#Gometa(...) abort
+function! go#lint#Gometa(autosave, ...) abort
     if a:0 == 0
         let goargs = expand('%:p:h')
     else
@@ -26,24 +30,27 @@ function! go#lint#Gometa(...) abort
     endif
 
     let meta_command = "gometalinter --disable-all"
-    if empty(g:go_metalinter_command)
+    if a:autosave || empty(g:go_metalinter_command)
         let bin_path = go#path#CheckBinPath("gometalinter")
         if empty(bin_path)
             return
         endif
 
-        if empty(g:go_metalinter_enabled)
-            echohl Error | echomsg "vim-go: please enable linters with the setting g:go_metalinter_enabled" | echohl None
-            return
+        if a:autosave
+            " include only messages for the active buffer
+            let meta_command .= " --include='^" . expand('%:p') . ".*$'"
         endif
 
-        for linter in g:go_metalinter_enabled
+        " linters
+        let linters = a:autosave ? g:go_metalinter_autosave_enabled : g:go_metalinter_enabled
+        for linter in linters
             let meta_command .= " --enable=".linter
         endfor
 
         " deadline
         let meta_command .= " --deadline=" . g:go_metalinter_deadline
 
+        " path
         let meta_command .=  " " . goargs
     else
         " the user wants something else, let us use it.
@@ -73,7 +80,10 @@ function! go#lint#Gometa(...) abort
 
         let errors = go#list#Get()
         call go#list#Window(len(errors))
-        call go#list#JumpToFirst()
+
+        if !a:autosave
+            call go#list#JumpToFirst()
+        endif
     endif
 endfunction
 
