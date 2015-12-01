@@ -158,9 +158,11 @@ based on `:he go-commands`.
 
 ### Location list navigation
 
-vim-go makes use of Location lists for the output of `:GoLint`, `:GoMetaLinter` etc.
+All commands support collecting and displaying errors in Vim's location
+  list.
 
-Quickly navigate through those location lists with `:lne` for next error and `:lp` for the previous.  You can also bind these to keys for example:
+Quickly navigate through those location lists with `:lne` for next error and `:lp` 
+for the previous.  You can also bind these to keys, for example:
 
 ```vim
 map <C-n> :lne<CR>
