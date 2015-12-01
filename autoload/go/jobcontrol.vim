@@ -20,9 +20,15 @@ function! go#jobcontrol#Statusline() abort
   endif
 
   for job in values(s:jobs)
-    if job.filename == fnameescape(expand("%:p"))
-      return printf("%s [%s]", job.desc, job.state)
+    if job.filename != fnameescape(expand("%:p"))
+      continue
     endif
+
+    if job.state == "SUCCESS"
+      return ''
+    endif
+
+    return printf("%s [%s]", job.desc, job.state)
   endfor
 
   return ''
