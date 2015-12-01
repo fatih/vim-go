@@ -9,7 +9,7 @@ function! go#jobcontrol#Spawn(desc, args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let job = s:spawn(a:desc, a:args[0], a:args)
+  let job = s:spawn(a:desc, a:args)
   return job.id
 endfunction
 
@@ -40,9 +40,8 @@ endfunction
 " a job is started a reference will be stored inside s:jobs. spawn changes the
 " GOPATH when g:go_autodetect_gopath is enabled. The job is started inside the
 " current files folder.
-function! s:spawn(desc, name, args)
+function! s:spawn(desc, args)
   let job = { 
-        \ 'name': a:name, 
         \ 'desc': a:desc, 
         \ 'winnr': winnr(),
         \ 'importpath': go#package#ImportPath(expand('%:p:h')),
@@ -141,16 +140,15 @@ endfunction
 
 " abort aborts the job with the given name, where name is the first argument
 " passed to s:spawn()
-function! s:abort(name)
+function! s:abort(path)
   if empty(s:jobs)
     return
   endif
 
   for job in values(s:jobs)
-    if job.name == name && job.id > 0
+    if job.importpath == path && job.id > 0
       silent! call jobstop(job.id)
       unlet s:jobs['job.id']
-      call go#util#EchoWarning(printf("[%s] ABORTED", a:name))
     endif
   endfor
 endfunction
