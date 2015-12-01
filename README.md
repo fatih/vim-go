@@ -156,6 +156,17 @@ More `<Plug>` mappings can be seen with `:he go-mappings`. Also these are just
 recommendations, you are free to create more advanced mappings or functions
 based on `:he go-commands`.
 
+### Location list navigation
+
+vim-go makes use of Location lists for the output of `:GoLint`, `:GoMetaLinter` etc.
+
+Quickly navigate through those location lists with `:lne` for next error and `:lp` for the previous.  You can also bind these to keys for example:
+
+```vim
+map <C-n> :lne<CR>
+map <C-m> :lp<CR>
+```
+
 ## Settings
 Below are some settings you might find useful. For the full list see `:he go-settings`.
 
