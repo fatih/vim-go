@@ -161,8 +161,8 @@ based on `:he go-commands`.
 All commands support collecting and displaying errors in Vim's location
   list.
 
-Quickly navigate through those location lists with `:lne` for next error and `:lp` 
-for the previous.  You can also bind these to keys, for example:
+Quickly navigate through these location lists with `:lne` for next error and `:lp` 
+for previous.  You can also bind these to keys, for example:
 
 ```vim
 map <C-n> :lne<CR>
