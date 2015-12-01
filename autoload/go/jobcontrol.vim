@@ -19,8 +19,10 @@ function! go#jobcontrol#Statusline() abort
     return ''
   endif
 
+  let import_path =  go#package#ImportPath(expand('%:p:h'))
+
   for job in values(s:jobs)
-    if job.filename != fnameescape(expand("%:p"))
+    if job.importpath != import_path
       continue
     endif
 
@@ -42,8 +44,8 @@ function! s:spawn(desc, name, args)
   let job = { 
         \ 'name': a:name, 
         \ 'desc': a:desc, 
-        \ 'id': '',
         \ 'winnr': winnr(),
+        \ 'importpath': go#package#ImportPath(expand('%:p:h')),
         \ 'state': "RUNNING",
         \ 'stderr' : [],
         \ 'stdout' : [],
@@ -58,11 +60,10 @@ function! s:spawn(desc, name, args)
 
   " execute go build in the files directory
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let job.filename = fnameescape(expand("%:p"))
 
   " cleanup previous jobs for this file
   for jb in values(s:jobs)
-    if jb.filename == job.filename
+    if jb.importpath == job.importpath
       unlet s:jobs[jb.id]
     endif
   endfor
@@ -83,6 +84,7 @@ function! s:spawn(desc, name, args)
 
   " restore back GOPATH
   let $GOPATH = old_gopath
+
   return job
 endfunction
 
