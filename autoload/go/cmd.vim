@@ -27,7 +27,7 @@ function! go#cmd#Build(bang, ...)
 
     " if we have nvim, call it asynchronously and return early ;)
     if has('nvim')
-        call go#jobcontrol#Spawn("building ...", args)
+        call go#jobcontrol#Spawn("build", args)
         return
     endif
 
@@ -189,7 +189,7 @@ function! go#cmd#Test(bang, compile, ...)
         if get(g:, 'go_term_enabled', 0)
             call go#term#new(["go"] + args)
         else
-            call go#jobcontrol#Spawn("testing ...", args)
+            call go#jobcontrol#Spawn("test", args)
         endif
         return
     endif

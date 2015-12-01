@@ -133,10 +133,6 @@ augroup vim-go
         autocmd BufWritePre *.go call go#fmt#Format(-1)
     endif
 
-    if has('nvim')
-        autocmd WinEnter *.go call go#jobcontrol#DisplayLoclist()
-    endif
-
     " run gometalinter on save
     if get(g:, "go_metalinter_autosave", 0)
         autocmd BufWritePost *.go call go#lint#Gometa(1)

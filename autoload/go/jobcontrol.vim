@@ -13,23 +13,6 @@ function! go#jobcontrol#Spawn(desc, args)
   return job.id
 endfunction
 
-function! go#jobcontrol#DisplayLoclist()
-  if empty(s:jobs)
-    return ''
-  endif
-
-  for job in values(s:jobs)
-    if job.winnr == winnr() && !empty(job.stderr)
-      let errors = go#tool#ParseErrors(job.stderr)
-      call go#list#PopulateWin(job.winnr, errors)
-      call go#list#Window(len(errors))
-
-      unlet s:jobs[job.id]
-      return
-    endif
-  endfor
-endfunction
-
 " Statusline returns the current status of the job
 function! go#jobcontrol#Statusline() abort
   if empty(s:jobs)
@@ -38,7 +21,7 @@ function! go#jobcontrol#Statusline() abort
 
   for job in values(s:jobs)
     if job.filename == fnameescape(expand("%:p"))
-      return job.desc
+      return printf("%s [%s]", job.desc, job.state)
     endif
   endfor
 
@@ -55,6 +38,7 @@ function! s:spawn(desc, name, args)
         \ 'desc': a:desc, 
         \ 'id': '',
         \ 'winnr': winnr(),
+        \ 'state': "RUNNING",
         \ 'stderr' : [],
         \ 'stdout' : [],
         \ 'on_stdout': function('s:on_stdout'),
@@ -69,6 +53,14 @@ function! s:spawn(desc, name, args)
   " execute go build in the files directory
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let job.filename = fnameescape(expand("%:p"))
+
+  " cleanup previous jobs for this file
+  for jb in values(s:jobs)
+    if jb.filename == job.filename
+      unlet s:jobs[jb.id]
+    endif
+  endfor
+
   let dir = getcwd()
 
   execute cd . fnameescape(expand("%:p:h"))
@@ -97,22 +89,18 @@ function! s:on_exit(job_id, data)
     call go#list#Clean()
     call go#list#Window()
 
-    " do not keep anything when we are finished
-    unlet s:jobs[a:job_id]
+    let self.state = "SUCCESS"
     return
   endif
 
+  let self.state = "FAILED"
 
   " if we are still in the same windows show the list
   if self.winnr == winnr()
     let errors = go#tool#ParseErrors(self.stderr)
     call go#list#Populate(errors)
     call go#list#Window(len(errors))
-    " call go#list#JumpToFirst()
-
-    if has_key(s:jobs, a:job_id) 
-      unlet s:jobs[a:job_id]
-    endif
+    call go#list#JumpToFirst()
   endif
 endfunction
 
