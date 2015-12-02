@@ -80,9 +80,13 @@ function! go#tool#FilterValids(items)
     let is_readable = {}
 
     for item in a:items
-        let filename = item.filename
         if has_key(item, 'bufnr')
             let filename = bufname(item.bufnr)
+        elseif has_key(item, 'filename')
+            let filename = item.filename
+        else
+            echohl Identifier | echon "no filename available" | echohl None
+            continue
         endif
 
         if !has_key(is_readable, filename)
