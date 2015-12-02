@@ -101,8 +101,9 @@ function! s:on_exit(job_id, data)
     return
   endif
 
-
   let errors = go#tool#ParseErrors(std_combined)
+  let errors = go#tool#FilterValids(errors)
+
   if !len(errors)
     " no errors could be past, just return
     let self.state = "SUCCESS"

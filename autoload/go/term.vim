@@ -87,6 +87,7 @@ function! s:on_exit(job_id, data)
     call go#list#Window()
 	else
 		let errors = go#tool#ParseErrors(job.stdout)
+		let errors = go#tool#FilterValids(errors)
 		if !empty(errors)
 			" close terminal we don't need it
 			close 

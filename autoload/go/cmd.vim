@@ -106,27 +106,8 @@ function! go#cmd#Run(bang, ...)
         exe 'lmake!'
     endif
 
-    " Remove any nonvalid filename from the location list to avoid opening an
-    " empty buffer. See https://github.com/fatih/vim-go/issues/287 for
-    " details.
     let items = go#list#Get()
-    let errors = []
-    let is_readable = {}
-
-    for item in items
-        let filename = bufname(item.bufnr)
-        if !has_key(is_readable, filename)
-            let is_readable[filename] = filereadable(filename)
-        endif
-        if is_readable[filename]
-            call add(errors, item)
-        endif
-    endfor
-
-    for k in keys(filter(is_readable, '!v:val'))
-        echo "vim-go: " | echohl Identifier | echon "[run] Dropped " | echohl Constant | echon  '"' . k . '"'
-        echohl Identifier | echon " from location list (nonvalid filename)" | echohl None
-    endfor
+    let errors = go#tool#FilterValids(items)
 
     call go#list#Populate(errors)
     call go#list#Window(len(errors))
@@ -208,6 +189,8 @@ function! go#cmd#Test(bang, compile, ...)
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         let errors = go#tool#ParseErrors(split(out, '\n'))
+        let errors = go#tool#FilterValids(errors)
+
         call go#list#Populate(errors)
         call go#list#Window(len(errors))
         if !empty(errors) && !a:bang
