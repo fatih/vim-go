@@ -99,6 +99,9 @@ function! go#cmd#Run(bang, ...)
 
     for item in items
         let filename = bufname(item.bufnr)
+        if filename == ''
+            continue
+        endif
         if !has_key(is_readable, filename)
             let is_readable[filename] = filereadable(filename)
         endif
