@@ -30,7 +30,7 @@ function! go#jobcontrol#Statusline() abort
       return ''
     endif
 
-    return printf("%s [%s]", job.desc, job.state)
+    return printf("%s ... [%s]", job.desc, job.state)
   endfor
 
   return ''
@@ -106,6 +106,9 @@ function! s:on_exit(job_id, data)
 
   if !len(errors)
     " no errors could be past, just return
+    call go#list#Clean()
+    call go#list#Window()
+
     let self.state = "SUCCESS"
     return
   endif
