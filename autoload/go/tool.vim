@@ -85,7 +85,8 @@ function! go#tool#FilterValids(items)
         elseif has_key(item, 'filename')
             let filename = item.filename
         else
-            echohl Identifier | echon "no filename available" | echohl None
+            " nothing to do, add item back to the list
+            call add(filtered, item)
             continue
         endif
 
