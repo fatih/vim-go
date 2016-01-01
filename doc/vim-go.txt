@@ -61,6 +61,7 @@ easily.
   * Share your current code to [play.golang.org](http://play.golang.org) with `:GoPlay`
   * On-the-fly type information about the word under the cursor. Plug it into
     your custom vim function.
+  * Go asm formatting on save
   * Tagbar support to show tags of the source code in a sidebar with `gotags`
   * Custom vim text objects such as `a function` or `inner function`
   * All commands support collecting and displaying errors in Vim's location
@@ -450,6 +451,13 @@ COMMANDS                                                          *go-commands*
     of the build tags for GoReferrers to find more accurate.
     The custom build tags is cleared (unset) if `""` is given. If no arguments
     is given it prints the current custom build tags.
+
+                                                                     *:AsmFmt*
+:AsmFmt
+
+    Filter the current Go asm buffer through asmfmt. It tries to preserve cursor
+    position and avoids replacing the buffer with stderr output.
+
 
 
 ===============================================================================
@@ -908,6 +916,13 @@ up to 10 errors to prevent large heights). Setting the value explicitly
 overrides this behavior. To get default Vim behavior set it to 10.
 >
   let g:go_loclist_height = 0
+<
+                                                  *'g:go_asmfmt_autosave'*
+
+Use this option to auto |:AsmFmt| on save. By default it's enabled. >
+
+  let g:go_asmfmt_autosave = 1
+<
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*

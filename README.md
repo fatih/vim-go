@@ -39,6 +39,7 @@ disabled/enabled easily.
 * Share your current code to [play.golang.org](http://play.golang.org) with `:GoPlay`
 * On-the-fly type information about the word under the cursor. Plug it into
   your custom vim function.
+* Go asm formatting on save
 * Tagbar support to show tags of the source code in a sidebar with `gotags`
 * Custom vim text objects such as `a function` or `inner function`
 * All commands support collecting and displaying errors in Vim's location
