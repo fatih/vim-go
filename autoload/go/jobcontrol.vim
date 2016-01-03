@@ -91,21 +91,9 @@ endfunction
 " references and also displaying errors in the quickfix window collected by
 " on_stderr handler. If there are no errors and a quickfix window is open,
 " it'll be closed.
-function! s:on_exit(job_id, data)
+function! s:on_exit(job_id, exit_status)
   let std_combined = self.stderr + self.stdout
-  if empty(std_combined)
-    call go#list#Clean()
-    call go#list#Window()
-
-    let self.state = "SUCCESS"
-    return
-  endif
-
-  let errors = go#tool#ParseErrors(std_combined)
-  let errors = go#tool#FilterValids(errors)
-
-  if !len(errors)
-    " no errors could be past, just return
+  if a:exit_status == 0
     call go#list#Clean()
     call go#list#Window()
 
@@ -114,6 +102,15 @@ function! s:on_exit(job_id, data)
   endif
 
   let self.state = "FAILED"
+
+  let errors = go#tool#ParseErrors(std_combined)
+  let errors = go#tool#FilterValids(errors)
+
+  if !len(errors)
+    " failed to parse errors, output the original content
+    call go#util#EchoError(std_combined[0])
+    return
+  endif
 
   " if we are still in the same windows show the list
   if self.winnr == winnr()
