@@ -833,6 +833,12 @@ Highlights struct names. By default it's disabled. >
 
 	let g:go_highlight_structs = 0
 <
+                                               *'g:go_highlight_interfaces'*
+
+Highlights interface names. By default it's disabled. >
+
+  let g:go_highlight_interfaces = 0
+<
                                         *'g:go_highlight_build_constraints'*
 
 Highlights build constraints. By default it's disabled. >
