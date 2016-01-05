@@ -68,8 +68,8 @@ function! s:spawn(desc, args)
   endfor
 
   let dir = getcwd()
-
-  execute cd . fnameescape(expand("%:p:h"))
+  let jobdir = fnameescape(expand("%:p:h"))
+  execute cd . jobdir
 
   " append the subcommand, such as 'build'
   let argv = ['go'] + a:args
@@ -77,6 +77,7 @@ function! s:spawn(desc, args)
   " run, forrest, run!
   let id = jobstart(argv, job)
   let job.id = id
+  let job.dir = jobdir
   let s:jobs[id] = job
 
   execute cd . fnameescape(dir)
@@ -103,8 +104,15 @@ function! s:on_exit(job_id, exit_status)
 
   let self.state = "FAILED"
 
-  let errors = go#tool#ParseErrors(std_combined)
-  let errors = go#tool#FilterValids(errors)
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let dir = getcwd()
+  try
+    execute cd self.dir
+    let errors = go#tool#ParseErrors(std_combined)
+    let errors = go#tool#FilterValids(errors)
+  finally
+    execute cd . fnameescape(dir)
+  endtry
 
   if !len(errors)
     " failed to parse errors, output the original content

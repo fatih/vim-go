@@ -36,14 +36,22 @@ function! go#cmd#Build(bang, ...)
     let default_makeprg = &makeprg
     let &makeprg = "go " . join(args, ' ')
 
-    if g:go_dispatch_enabled && exists(':Make') == 2
-        call go#util#EchoProgress("building dispatched ...")
-        silent! exe 'Make'
-    else
-        silent! exe 'lmake!'
-    endif
-    redraw!
-
+    " execute make inside the source folder so we can parse the errors
+    " correctly
+    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    let dir = getcwd()
+    try
+      execute cd . fnameescape(expand("%:p:h"))
+      if g:go_dispatch_enabled && exists(':Make') == 2
+          call go#util#EchoProgress("building dispatched ...")
+          silent! exe 'Make'
+      else
+          silent! exe 'lmake!'
+      endif
+      redraw!
+    finally
+      execute cd . fnameescape(dir)
+    endtry
 
     let errors = go#list#Get()
     call go#list#Window(len(errors))
