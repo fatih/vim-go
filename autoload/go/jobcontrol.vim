@@ -92,15 +92,17 @@ endfunction
 " references and also displaying errors in the quickfix window collected by
 " on_stderr handler. If there are no errors and a quickfix window is open,
 " it'll be closed.
-function! s:on_exit(job_id, data)
+function! s:on_exit(job_id, exit_status)
   let std_combined = self.stderr + self.stdout
-  if empty(std_combined)
+  if a:exit_status == 0
     call go#list#Clean()
     call go#list#Window()
 
     let self.state = "SUCCESS"
     return
   endif
+
+  let self.state = "FAILED"
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
@@ -112,17 +114,11 @@ function! s:on_exit(job_id, data)
     execute cd . fnameescape(dir)
   endtry
 
-
   if !len(errors)
-    " no errors could be past, just return
-    call go#list#Clean()
-    call go#list#Window()
-
-    let self.state = "SUCCESS"
+    " failed to parse errors, output the original content
+    call go#util#EchoError(std_combined[0])
     return
   endif
-
-  let self.state = "FAILED"
 
   " if we are still in the same windows show the list
   if self.winnr == winnr()
