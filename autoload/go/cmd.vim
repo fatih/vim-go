@@ -27,7 +27,7 @@ function! go#cmd#Build(bang, ...)
 
     " if we have nvim, call it asynchronously and return early ;)
     if has('nvim')
-        call go#jobcontrol#Spawn("build", args)
+        call go#jobcontrol#Spawn(a:bang, "build", args)
         return
     endif
 
@@ -70,9 +70,9 @@ endfunction
 
 
 " Run runs the current file (and their dependencies if any) in a new terminal.
-function! go#cmd#RunTerm(mode)
+function! go#cmd#RunTerm(bang, mode)
     let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
-    call go#term#newmode(cmd, a:mode)
+    call go#term#newmode(a:bang, cmd, a:mode)
 endfunction
 
 " Run runs the current file (and their dependencies if any) and outputs it.
@@ -81,7 +81,7 @@ endfunction
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...)
     if has('nvim')
-        call go#cmd#RunTerm('')
+        call go#cmd#RunTerm(a:bang, '')
         return
     endif
 
@@ -176,9 +176,9 @@ function! go#cmd#Test(bang, compile, ...)
 
     if has('nvim')
         if get(g:, 'go_term_enabled', 0)
-            call go#term#new(["go"] + args)
+            call go#term#new(a:bang, ["go"] + args)
         else
-            call go#jobcontrol#Spawn("test", args)
+            call go#jobcontrol#Spawn(a:bang, "test", args)
         endif
         return
     endif

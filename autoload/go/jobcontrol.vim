@@ -5,11 +5,11 @@ let s:jobs = {}
 " Spawn is a wrapper around s:spawn. It can be executed by other files and
 " scripts if needed. Desc defines the description for printing the status
 " during the job execution (useful for statusline integration).
-function! go#jobcontrol#Spawn(desc, args)
+function! go#jobcontrol#Spawn(bang, desc, args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let job = s:spawn(a:desc, a:args)
+  let job = s:spawn(a:bang, a:desc, a:args)
   return job.id
 endfunction
 
@@ -40,9 +40,10 @@ endfunction
 " a job is started a reference will be stored inside s:jobs. spawn changes the
 " GOPATH when g:go_autodetect_gopath is enabled. The job is started inside the
 " current files folder.
-function! s:spawn(desc, args)
+function! s:spawn(bang, desc, args)
   let job = { 
         \ 'desc': a:desc, 
+        \ 'bang': a:bang, 
         \ 'winnr': winnr(),
         \ 'importpath': go#package#ImportPath(expand('%:p:h')),
         \ 'state': "RUNNING",
@@ -124,7 +125,9 @@ function! s:on_exit(job_id, exit_status)
   if self.winnr == winnr()
     call go#list#Populate(errors)
     call go#list#Window(len(errors))
-    call go#list#JumpToFirst()
+    if !empty(errors) && !self.bang
+      call go#list#JumpToFirst()
+    endif
   endif
 endfunction
 
