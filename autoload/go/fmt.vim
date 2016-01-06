@@ -55,7 +55,11 @@ let s:got_fmt_error = 0
 "  improvements, patches are welcome :)
 function! go#fmt#Format(withGoimport)
     " save cursor position and many other things
-    let l:curw=winsaveview()
+    if g:vim_stay_present == 1
+        call stay#view#make(winnr())
+    else
+        let l:curw=winsaveview()
+    endif
 
     " Write current unsaved buffer to a temp file
     let l:tmpname = tempname()
@@ -160,7 +164,11 @@ function! go#fmt#Format(withGoimport)
     endif
 
     " restore our cursor/windows positions
-    call winrestview(l:curw)
+    if g:vim_stay_present == 1
+        call stay#view#load(winnr())
+    else
+        call winrestview(l:curw)
+    endif
 endfunction
 
 
