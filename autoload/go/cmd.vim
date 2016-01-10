@@ -41,16 +41,16 @@ function! go#cmd#Build(bang, ...)
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     let dir = getcwd()
     try
-      execute cd . fnameescape(expand("%:p:h"))
-      if g:go_dispatch_enabled && exists(':Make') == 2
-          call go#util#EchoProgress("building dispatched ...")
-          silent! exe 'Make'
-      else
-          silent! exe 'lmake!'
-      endif
-      redraw!
+        execute cd . fnameescape(expand("%:p:h"))
+        if g:go_dispatch_enabled && exists(':Make') == 2
+            call go#util#EchoProgress("building dispatched ...")
+            silent! exe 'Make'
+        else
+            silent! exe 'lmake!'
+        endif
+        redraw!
     finally
-      execute cd . fnameescape(dir)
+        execute cd . fnameescape(dir)
     endtry
 
     let errors = go#list#Get()
@@ -195,9 +195,17 @@ function! go#cmd#Test(bang, compile, ...)
     let command = "go " . join(args, ' ')
 
     let out = go#tool#ExecuteInDir(command)
+
     if v:shell_error
-        let errors = go#tool#ParseErrors(split(out, '\n'))
-        let errors = go#tool#FilterValids(errors)
+        let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+        let dir = getcwd()
+        try
+            execute cd fnameescape(expand("%:p:h"))
+            let errors = go#tool#ParseErrors(split(out, '\n'))
+            let errors = go#tool#FilterValids(errors)
+        finally
+            execute cd . fnameescape(dir)
+        endtry
 
         call go#list#Populate(errors)
         call go#list#Window(len(errors))
