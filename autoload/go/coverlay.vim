@@ -114,20 +114,46 @@ function! go#coverlay#overlay(file)
     call go#coverlay#draw()
 endfunction
 
-function! go#coverlay#Coverlay(...)
+let s:coverlay_handler_id = ''
+let s:coverlay_handler_jobs = {}
+
+function! s:coverlay_handler(job, exit_status, data)
+    if !has_key(s:coverlay_handler_jobs, a:job.id)
+        return
+    endif
+    let l:tmpname = s:coverlay_handler_jobs[a:job.id]
+    if a:exit_status == 0
+        call go#coverlay#overlay(l:tmpname)
+    endif
+
+    call delete(l:tmpname)
+    unlet s:coverlay_handler_jobs[a:job.id]
+endfunction
+
+function! go#coverlay#Coverlay(bang, ...)
     call go#coverlay#Clearlay()
     let l:tmpname=tempname()
+    let args = [a:bang, 0, "-coverprofile", l:tmpname]
 
+    if a:0
+        call extend(args, a:000)
+    endif
     "TODO: add -coverpkg options based on current buf list
-    let out = go#cmd#Test(1, 0, "-coverprofile=".l:tmpname)
-
+    let id = call('go#cmd#Test', args)
+    if has('nvim')
+        if s:coverlay_handler_id == ''
+            let s:coverlay_handler_id = go#jobcontrol#AddHandler(function('s:coverlay_handler'))
+        endif
+        let s:coverlay_handler_jobs[id] = l:tmpname
+        return
+    endif
     if !v:shell_error
         call go#coverlay#overlay(l:tmpname)
     endif
     call delete(l:tmpname)
 endfunction
 
-function! go#coverlay#Clearlay(...)
+function! go#coverlay#Clearlay()
     call go#coverlay#hook()
     call go#coverlay#clear()
     let b:go_coverlay_matches = []
