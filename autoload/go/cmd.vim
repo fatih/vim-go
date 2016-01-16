@@ -213,11 +213,11 @@ function! go#cmd#Test(bang, compile, ...)
 
     if has('nvim')
         if get(g:, 'go_term_enabled', 0)
-            call go#term#new(a:bang, ["go"] + args)
+            let id = go#term#new(a:bang, ["go"] + args)
         else
-            call go#jobcontrol#Spawn(a:bang, "test", args)
+            let id = go#jobcontrol#Spawn(a:bang, "test", args)
         endif
-        return
+        return id
     endif
 
     call go#cmd#autowrite()
@@ -290,29 +290,40 @@ function! go#cmd#TestFunc(bang, ...)
     call call('go#cmd#Test', args)
 endfunction
 
+let s:coverage_handler_id = ''
+let s:coverage_handler_jobs = {}
+
+function! s:coverage_handler(job, exit_status, data)
+    if !has_key(s:coverage_handler_jobs, a:job.id)
+        return
+    endif
+    let l:tmpname = s:coverage_handler_jobs[a:job.id]
+    if a:exit_status == 0
+        let openHTML = 'go tool cover -html='.l:tmpname
+        call go#tool#ExecuteInDir(openHTML)
+    endif
+    call delete(l:tmpname)
+    unlet s:coverage_handler_jobs[a:job.id]
+endfunction
+
 " Coverage creates a new cover profile with 'go test -coverprofile' and opens
 " a new HTML coverage page from that profile.
 function! go#cmd#Coverage(bang, ...)
     let l:tmpname=tempname()
+    let args = [a:bang, 0, "-coverprofile", l:tmpname]
 
-    let command = "go test -coverprofile=" . l:tmpname . ' ' . go#util#Shelljoin(a:000)
-
-
-    let l:listtype = "quickfix"
-    call go#cmd#autowrite()
-    let out = go#tool#ExecuteInDir(command)
-    if v:shell_error
-        let errors = go#tool#ParseErrors(split(out, '\n'))
-        call go#list#Populate(l:listtype, errors)
-        call go#list#Window(l:listtype, len(errors))
-        if !empty(errors) && !a:bang
-            call go#list#JumpToFirst(l:listtype)
+    if a:0
+        call extend(args, a:000)
+    endif
+    let id = call('go#cmd#Test', args)
+    if has('nvim')
+        if s:coverage_handler_id == ''
+            let s:coverage_handler_id = go#jobcontrol#AddHandler(function('s:coverage_handler'))
         endif
-    else
-        " clear previous location list 
-        call go#list#Clean(l:listtype)
-        call go#list#Window(l:listtype)
-
+        let s:coverage_handler_jobs[id] = l:tmpname
+        return
+    endif
+    if !v:shell_error
         let openHTML = 'go tool cover -html='.l:tmpname
         call go#tool#ExecuteInDir(openHTML)
     endif
