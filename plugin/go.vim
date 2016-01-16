@@ -122,9 +122,16 @@ endfunction
 " ============================================================================
 "
 function! s:echo_go_info()
-    let offset = go#complete#gocodeCursor()
-    let result = go#complete#GetInfoFromOffset(offset-1)
-    redraws! | echo "vim-go: " | echohl Function | echon result | echohl None
+    if !exists('v:completed_item') || empty(v:completed_item)
+        return
+    endif
+    let item = v:completed_item
+
+    if !has_key(item, "info")
+        return
+    endif
+
+    redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
 endfunction
 
 augroup vim-go
@@ -135,6 +142,8 @@ augroup vim-go
         autocmd CursorHold *.go nested call go#complete#Info()
     endif
 
+    " Echo the identifier information when completion is done. Useful to see
+    " the signature of a function, etc...
     autocmd CompleteDone *.go nested call s:echo_go_info()
 
     " Go code formatting on save
