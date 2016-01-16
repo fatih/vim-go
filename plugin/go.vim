@@ -123,7 +123,7 @@ endfunction
 function! s:echo_go_info()
     let offset = go#complete#gocodeCursor()
     let result = go#complete#GetInfoFromOffset(offset-1)
-    echo "vim-go: " | echohl Function | echon result | echohl None
+    redraws! | echo "vim-go: " | echohl Function | echon result | echohl None
 endfunction
 
 augroup vim-go
