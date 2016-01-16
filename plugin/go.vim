@@ -119,6 +119,12 @@ endfunction
 
 " Autocommands
 " ============================================================================
+"
+function! s:echo_go_info()
+    let offset = go#complete#gocodeCursor()
+    let result = go#complete#GetInfoFromOffset(offset-1)
+    echo "vim-go: " | echohl Function | echon result | echohl None
+endfunction
 
 augroup vim-go
     autocmd!
@@ -127,6 +133,8 @@ augroup vim-go
     if get(g:, "go_auto_type_info", 0)
         autocmd CursorHold *.go nested call go#complete#Info()
     endif
+
+    autocmd CompleteDone *.go nested call s:echo_go_info()
 
     " code formatting on save
     if get(g:, "go_fmt_autosave", 1)
