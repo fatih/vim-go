@@ -17,6 +17,7 @@ let s:packages = [
             \ "github.com/golang/lint/golint",
             \ "github.com/kisielk/errcheck",
             \ "github.com/jstemmer/gotags",
+            \ "github.com/klauspost/asmfmt/cmd/asmfmt",
             \ ]
 
 " These commands are available on any filetypes
@@ -136,9 +137,14 @@ augroup vim-go
 
     autocmd CompleteDone *.go nested call s:echo_go_info()
 
-    " code formatting on save
+    " Go code formatting on save
     if get(g:, "go_fmt_autosave", 1)
         autocmd BufWritePre *.go call go#fmt#Format(-1)
+    endif
+
+    " Go asm formatting on save
+    if get(g:, "go_asmfmt_autosave", 1)
+        autocmd BufWritePre *.s call go#asmfmt#Format()
     endif
 
     " run gometalinter on save
