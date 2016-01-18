@@ -144,7 +144,9 @@ augroup vim-go
 
     " Echo the identifier information when completion is done. Useful to see
     " the signature of a function, etc...
-    autocmd CompleteDone *.go nested call s:echo_go_info()
+    if exists('##CompleteDone')
+        autocmd CompleteDone *.go nested call s:echo_go_info()
+    endif
 
     " Go code formatting on save
     if get(g:, "go_fmt_autosave", 1)
