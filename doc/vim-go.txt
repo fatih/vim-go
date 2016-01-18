@@ -14,14 +14,15 @@
 ===============================================================================
 CONTENTS                                                          *go-contents*
 
-	1. Intro........................................|go-intro|
-	2. Install......................................|go-install|
-	3. Commands.....................................|go-commands|
-	4. Mappings.....................................|go-mappings|
-	5. Text Objects.................................|go-text-objects|
-	6. Settings.....................................|go-settings|
-	7. Troubleshooting..............................|go-troubleshooting|
-	8. Credits......................................|go-credits|
+  1. Intro........................................|go-intro|
+  2. Install......................................|go-install|
+  3. Commands.....................................|go-commands|
+  4. Mappings.....................................|go-mappings|
+  5. Text Objects.................................|go-text-objects|
+  6. Functions....................................|go-functions|
+  7. Settings.....................................|go-settings|
+  8. Troubleshooting..............................|go-troubleshooting|
+  9. Credits......................................|go-credits|
 
 ===============================================================================
 INTRO                                                                *go-intro*
@@ -65,7 +66,12 @@ easily.
   * Tagbar support to show tags of the source code in a sidebar with `gotags`
   * Custom vim text objects such as `a function` or `inner function`
   * All commands support collecting and displaying errors in Vim's location
-  list.
+    list
+  * A async launcher for the go command is implemented for neovim, fully async
+    building and testing.
+  * Check the status of any async jobs in the statusline with |go#jobcontrol#Statusline()|
+  * Integrated with the neovim terminal, launch `:GoRun` and other go commands
+    in their own new terminal.
 
 ===============================================================================
 INSTALL                                                           *go-install*
@@ -223,17 +229,24 @@ COMMANDS                                                          *go-commands*
 
     If [!] is not given the first error is jumped to.
 
+    If using neovim then `:GoRun` will run in a new terminal according to
+    |g:go_term_mode|.
+
                                                                    *:GoBuild*
 :GoBuild[!] [expand]
 
-    Build your package with `go build`. It automatically builds only the files
-    that depends on the current file. GoBuild doesn't produce a result file.
+    Build your package with `go build`. Errors are populated inside the
+    location list. It automatically builds only the files that depends on the
+    current file. `:GoBuild` doesn't produce a result file.
     Use 'make' to create a result file.
 
     You may optionally pass any valid go build flags/options. For a full list
     please see `go help build`. Options are expanded with 'expand'.
 
     If [!] is not given the first error is jumped to.
+
+    If using neovim then this command is fully async, it does not block the
+    UI.
 
                                                                    *:GoGenerate*
 :GoGenerate[!] [expand]
@@ -279,6 +292,10 @@ COMMANDS                                                          *go-commands*
 
     If [!] is not given the first error is jumped to.
 
+    If using neovim `:GoTest` will run in a new terminal or run asynchronously
+    in the background according to |g:go_term_enabled|. You can set the mode of
+    the new terminal with |g:go_term_mode|.
+
                                                               *:GoTestFunc*
 :GoTestFunc[!] [expand]
 
@@ -291,6 +308,10 @@ COMMANDS                                                          *go-commands*
 
     If [!] is not given the first error is jumped to.
 
+    If using neovim `:GoTestFunc` will run in a new terminal or run asynchronously
+    in the background according to |g:go_term_enabled|. You can set the mode of
+    the new terminal with |g:go_term_mode|.
+
                                                               *:GoTestCompile*
 :GoTestCompile[!] [expand]
 
@@ -301,6 +322,10 @@ COMMANDS                                                          *go-commands*
     create test binary.
 
     If [!] is not given the first error is jumped to.
+
+    If using neovim `:GoTestCompile` will run in a new terminal or run asynchronously
+    in the background according to |g:go_term_enabled|. You can set the mode of
+    the new terminal with |g:go_term_mode|.
 
                                                                 *:GoCoverage*
 :GoCoverage[!] [options]
@@ -446,8 +471,8 @@ COMMANDS                                                          *go-commands*
 :GoOracleTags [tags]
 
     Changes the custom |g:go_oracle_tags| setting and overrides it with the
-    given build tags. This command cooperate with GoReferrers command when 
-    there exist mulitiple build tags in your project,then you can set one 
+    given build tags. This command cooperate with GoReferrers command when
+    there exist mulitiple build tags in your project, then you can set one
     of the build tags for GoReferrers to find more accurate.
     The custom build tags is cleared (unset) if `""` is given. If no arguments
     is given it prints the current custom build tags.
@@ -476,6 +501,21 @@ documentation in the |go-commands| section. Available <Plug> keys are:
                                                                   *(go-run)*
 
 Calls `go run` for the current file
+
+                                                               *(go-run-tab)*
+
+Calls `go run` for the current file in a new terminal tab
+This option is neovim only.
+
+                                                              *(go-run-split)*
+
+Calls `go run` for the current file in a new terminal horizontal split
+This option is neovim only.
+
+                                                              *(go-run-vertical)*
+
+Calls `go run` for the current file in a new terminal vertical split
+This option is neovim only.
 
 
                                                                 *(go-build)*
@@ -627,6 +667,22 @@ if			      "inside a function", select contents of a function,
 			        excluding the function definition and the closing bracket.
 
 
+
+===============================================================================
+FUNCTIONS                                                       *go-functions*
+
+                                                  *go#jobcontrol#Statusline()*
+
+Shows the status of a job running asynchronously. Can be used to plug into the
+statusline. It works to show the status per package instead of per
+file. Assume you have three files open, all belonging to the same package,
+if the package build (`:GoBuild`) is successful, all statusline's will be empty
+(means SUCCESS), if you it fails all file's statusline will show FAILED.
+
+                                                      *go#complete#GetInfo()*
+
+Returns the description of the identifer under the cursor. Can be used to plug
+into the statusline. This function is also used for |g:go_auto_type_info|.
 
 ===============================================================================
 SETTINGS                                                        *go-settings*
@@ -928,6 +984,37 @@ overrides this behavior. To get default Vim behavior set it to 10.
 Use this option to auto |:AsmFmt| on save. By default it's enabled. >
 
   let g:go_asmfmt_autosave = 1
+<
+                                                       *g:go_term_mode*
+
+This option is neovim only. Use it to change the default terminal mode of
+go commands that run in a new terminal. The default is vsplit.
+Current options are vsplit, split or tab.
+>
+  let g:go_term_mode = "vsplit"
+<
+                                                       *g:go_term_height*
+                                                        *g:go_term_width*
+
+These options are neovim only. Use them to control the height and width of
+a terminal split. By default these are not set meaning that the height and
+width are set automatically by neovim. The height only applies with a
+horizontal split and width only applies to a vertical split.
+
+For example here is how to set each to 30.
+>
+  let g:go_term_height = 30
+  let g:go_term_width = 30
+<
+                                                       *g:go_term_enabled*
+
+This option is neovim only. Use it to change the behavior of the test
+commands. If set to 1 it opens the test commands inside a new terminal
+according to |g:go_term_mode|, otherwise it will run them in the background
+just like `:GoBuild` and then display the status with |go#jobcontrol#Statusline()|.
+By default it is disabled.
+>
+  let g:go_term_enabled = 0
 <
 
 ===============================================================================
