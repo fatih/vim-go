@@ -44,6 +44,11 @@ disabled/enabled easily.
 * Custom vim text objects such as `a function` or `inner function`
 * All commands support collecting and displaying errors in Vim's location
   list.
+* A async launcher for the go command is implemented for neovim, fully async
+  building and testing.
+* Check the status of any async jobs in the statusline with `go#jobcontrol#Statusline()`
+* Integrated with the neovim terminal, launch `:GoRun` and other go commands
+  in their own new terminal.
 
 ## Install
 
@@ -207,10 +212,9 @@ let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
 
 ### Location list navigation
 
-All commands support collecting and displaying errors in Vim's location
-  list.
+All commands support collecting and displaying errors in Vim's location list.
 
-Quickly navigate through these location lists with `:lne` for next error and `:lp` 
+Quickly navigate through these location lists with `:lne` for next error and `:lp`
 for previous.  You can also bind these to keys, for example:
 
 ```vim
@@ -218,6 +222,28 @@ map <C-n> :lne<CR>
 map <C-m> :lp<CR>
 ```
 
+### Using with Neovim
+
+Run `:GoRun` in a new tab, horizontal split or vertical split terminal
+
+```vim
+au FileType go nmap <leader>rt <Plug>(go-run-tab)
+au FileType go nmap <Leader>rs <Plug>(go-run-split)
+au FileType go nmap <Leader>rv <Plug>(go-run-vertical)
+```
+
+By default new terminals are opened in a vertical split. To change it
+
+```vim
+let g:go_term_mode = "split"                   "or set to tab
+```
+
+By default the testing commands run asynchronously in the background and display results
+with `go#jobcontrol#Statusline()`. To make them run in a new terminal
+
+```vim
+let g:go_term_enabled = 1
+```
 
 ### Using with Syntastic
 Sometimes when using both `vim-go` and `syntastic` Vim will start lagging while saving and opening
