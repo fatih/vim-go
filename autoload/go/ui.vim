@@ -4,8 +4,8 @@ let s:buf_nr = -1
 function! go#ui#OpenWindow(title, content)
     " reuse existing buffer window if it exists otherwise create a new one
     if !bufexists(s:buf_nr)
-        execute 'botright new'
-        file `="[" . a:title . "]"`
+        execute 'vertical botright new'
+        file `=a:title`
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
         execute 'botright new'
@@ -13,21 +13,10 @@ function! go#ui#OpenWindow(title, content)
     elseif bufwinnr(s:buf_nr) != bufwinnr('%')
         execute bufwinnr(s:buf_nr) . 'wincmd w'
     endif
-
-
-    " Keep minimum height to 10, if there is more just increase it that it
-    " occupies all results
-    let buffer_height = 10
-    if len(a:content) < buffer_height
-        exe 'resize ' . buffer_height
-    else
-        exe 'resize ' . len(a:content)
-    endif
 	
 		" some sane default values for a readonly buffer
-    setlocal filetype=vimgo
+    setlocal filetype=go
     setlocal bufhidden=delete
-    setlocal buftype=nofile
     setlocal noswapfile
     setlocal nobuflisted
     setlocal winfixheight
@@ -44,9 +33,6 @@ function! go#ui#OpenWindow(title, content)
 
     " delete last line that comes from the append call
     $delete _  
-
-    " set it back to non modifiable
-    setlocal nomodifiable
 endfunction
 
 

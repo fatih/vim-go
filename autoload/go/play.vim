@@ -41,6 +41,24 @@ function! go#play#Share(count, line1, line2)
     echo "vim-go: snippet uploaded: ".url
 endfunction
 
+function! go#play#Run(url)
+    if !executable('curl')
+        echohl ErrorMsg | echomsg "vim-go: require 'curl' command" | echohl None
+        return
+    endif
+
+    let url = a:url . ".go"
+    let command = "curl -s " . url
+    let source_code = system(command)
+
+    if v:shell_error
+        echo 'A error has occured. Run this command to see what the problem is:'
+        echo command
+        return
+    endif
+
+    call go#ui#OpenWindow(tempname() . "_playground.go", split(source_code, "\n"))
+endfunction
 
 function! s:get_visual_content()
     let save_regcont = @"
@@ -70,7 +88,7 @@ function! s:get_visual_selection()
     return join(lines, "\n")
 endfunction
 
-" following two functions are from: https://github.com/mattn/gist-vim 
+" following two functions are from: https://github.com/mattn/gist-vim
 " thanks  @mattn
 function! s:get_browser_command()
     let go_play_browser_command = get(g:, 'go_play_browser_command', '')
