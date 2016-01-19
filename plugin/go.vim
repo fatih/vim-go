@@ -120,6 +120,19 @@ endfunction
 
 " Autocommands
 " ============================================================================
+"
+function! s:echo_go_info()
+    if !exists('v:completed_item') || empty(v:completed_item)
+        return
+    endif
+    let item = v:completed_item
+
+    if !has_key(item, "info")
+        return
+    endif
+
+    redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
+endfunction
 
 augroup vim-go
     autocmd!
@@ -127,6 +140,12 @@ augroup vim-go
     " GoInfo automatic update
     if get(g:, "go_auto_type_info", 0)
         autocmd CursorHold *.go nested call go#complete#Info()
+    endif
+
+    " Echo the identifier information when completion is done. Useful to see
+    " the signature of a function, etc...
+    if exists('##CompleteDone')
+        autocmd CompleteDone *.go nested call s:echo_go_info()
     endif
 
     " Go code formatting on save
