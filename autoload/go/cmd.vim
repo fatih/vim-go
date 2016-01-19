@@ -131,23 +131,40 @@ endfunction
 " is given(which are passed directly to 'go instal') it tries to install those
 " packages. Errors are populated in the location window.
 function! go#cmd#Install(bang, ...)
-    let command = 'go install ' . go#util#Shelljoin(a:000)
-    call go#cmd#autowrite()
-    let out = go#tool#ExecuteInDir(command)
-    if v:shell_error
-        let errors = go#tool#ParseErrors(split(out, '\n'))
-        call go#list#Populate(errors)
-        call go#list#Window(len(errors))
-        if !empty(errors) && !a:bang
+    let default_makeprg = &makeprg
+
+    " :make expands '%' and '#' wildcards, so they must also be escaped
+    let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
+    let &makeprg = "go install " . goargs
+
+    " execute make inside the source folder so we can parse the errors
+    " correctly
+    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    let dir = getcwd()
+    try
+        execute cd . fnameescape(expand("%:p:h"))
+        if g:go_dispatch_enabled && exists(':Make') == 2
+            call go#util#EchoProgress("building dispatched ...")
+            silent! exe 'Make'
+        else
+            silent! exe 'lmake!'
+        endif
+        redraw!
+    finally
+        execute cd . fnameescape(dir)
+    endtry
+
+    let errors = go#list#Get()
+    call go#list#Window(len(errors))
+    if !empty(errors)
+        if !a:bang
             call go#list#JumpToFirst()
         endif
-        return
     else
-        call go#list#Clean()
-        call go#list#Window()
+        redraws! | echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH | echohl None
     endif
 
-    echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH | echohl None
+    let &makeprg = default_makeprg
 endfunction
 
 " Test runs `go test` in the current directory. If compile is true, it'll
