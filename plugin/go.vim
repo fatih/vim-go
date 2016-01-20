@@ -131,6 +131,10 @@ function! s:echo_go_info()
         return
     endif
 
+    if empty(item.info)
+        return
+    endif
+
     redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
 endfunction
 
