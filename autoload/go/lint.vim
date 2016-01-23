@@ -159,21 +159,16 @@ function! go#lint#Errcheck(...) abort
     echon "vim-go: " | echohl Identifier | echon "errcheck analysing ..." | echohl None
     redraw
 
-    let command = bin_path . ' ' . goargs
+    let command = bin_path . ' -abspath ' . goargs
     let out = go#tool#ExecuteInDir(command)
 
     if v:shell_error
-        let errors = []
-        let mx = '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)'
-        for line in split(out, '\n')
-            let tokens = matchlist(line, mx)
-            if !empty(tokens)
-                call add(errors, {"filename": expand(go#path#Default() . "/src/" . tokens[1]),
-                            \"lnum": tokens[2],
-                            \"col": tokens[3],
-                            \"text": tokens[4]})
-            endif
-        endfor
+        let errformat = "%f:%l:%c:\ %m, %f:%l:%c\ %#%m"
+
+        " Parse and populate our location list
+        call go#list#ParseFormat(errformat, split(out, "\n"))
+
+        let errors = go#list#Get()
 
         if empty(errors)
             echohl Error | echomsg "GoErrCheck returned error" | echohl None
