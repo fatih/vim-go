@@ -9,7 +9,7 @@ function! go#cmd#autowrite()
 endfunction
 
 
-" Build buils the source code without producting any output binary. We live in
+" Build builds the source code without producting any output binary. We live in
 " an editor so the best is to build it to catch errors and fix them. By
 " default it tries to call simply 'go build', but it first tries to get all
 " dependent files for the current folder and passes it to go build.
@@ -27,6 +27,7 @@ function! go#cmd#Build(bang, ...)
 
     " if we have nvim, call it asynchronously and return early ;)
     if has('nvim')
+        call go#util#EchoProgress("building dispatched ...")
         call go#jobcontrol#Spawn(a:bang, "build", args)
         return
     endif
@@ -183,12 +184,17 @@ function! go#cmd#Test(bang, compile, ...)
         " expand all wildcards(i.e: '%' to the current file name)
         let goargs = map(copy(a:000), "expand(v:val)")
 
-        " escape all shell arguments before we pass it to test
-        call extend(args, go#util#Shelllist(goargs, 1))
+        call extend(args, goargs, 1)
     else
         " only add this if no custom flags are passed
         let timeout  = get(g:, 'go_test_timeout', '10s')
         call add(args, printf("-timeout=%s", timeout))
+    endif
+
+    if a:compile
+        echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
+    else
+        echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
     endif
 
     if has('nvim')
@@ -198,12 +204,6 @@ function! go#cmd#Test(bang, compile, ...)
             call go#jobcontrol#Spawn(a:bang, "test", args)
         endif
         return
-    endif
-
-    if a:compile
-        echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
-    else
-        echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
     endif
 
     call go#cmd#autowrite()

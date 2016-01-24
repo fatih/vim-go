@@ -100,10 +100,12 @@ function! s:on_exit(job_id, exit_status)
     call go#list#Window()
 
     let self.state = "SUCCESS"
+    call go#util#EchoSuccess("SUCCESS")
     return
   endif
 
   let self.state = "FAILED"
+  call go#util#EchoError("FAILED")
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
