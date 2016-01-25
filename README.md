@@ -42,7 +42,6 @@ disabled/enabled easily.
 * Go asm formatting on save
 * Tagbar support to show tags of the source code in a sidebar with `gotags`
 * Custom vim text objects such as `a function` or `inner function`
-* All commands support collecting and displaying errors in Vim's location
   list.
 * A async launcher for the go command is implemented for Neovim, fully async
   building and testing (beta).
@@ -212,18 +211,6 @@ By default when `:GoInstallBinaries` is called, the binaries are installed to
 ```vim
 let g:go_bin_path = expand("~/.gotools")
 let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
-```
-
-### Location list navigation
-
-All commands support collecting and displaying errors in Vim's location list.
-
-Quickly navigate through these location lists with `:lne` for next error and `:lp`
-for previous.  You can also bind these to keys, for example:
-
-```vim
-map <C-n> :lne<CR>
-map <C-m> :lp<CR>
 ```
 
 ### Using with Neovim (beta)

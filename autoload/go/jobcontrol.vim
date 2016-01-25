@@ -96,8 +96,8 @@ endfunction
 function! s:on_exit(job_id, exit_status)
   let std_combined = self.stderr + self.stdout
   if a:exit_status == 0
-    call go#list#Clean()
-    call go#list#Window()
+    call go#list#Clean(0)
+    call go#list#Window(0)
 
     let self.state = "SUCCESS"
     call go#util#EchoSuccess("SUCCESS")
@@ -125,10 +125,11 @@ function! s:on_exit(job_id, exit_status)
 
   " if we are still in the same windows show the list
   if self.winnr == winnr()
-    call go#list#Populate(errors)
-    call go#list#Window(len(errors))
+    let l:quickfix = 0
+    call go#list#Populate(l:quickfix, errors)
+    call go#list#Window(l:quickfix, len(errors))
     if !empty(errors) && !self.bang
-      call go#list#JumpToFirst()
+      call go#list#JumpToFirst(l:quickfix)
     endif
   endif
 endfunction

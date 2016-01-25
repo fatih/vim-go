@@ -63,10 +63,11 @@ function! go#lint#Gometa(autosave, ...) abort
 
     let out = go#tool#ExecuteInDir(meta_command)
 
+    let l:quickfix = 1
     if v:shell_error == 0
         redraw | echo
-        call go#list#Clean()
-        call go#list#Window()
+        call go#list#Clean(l:quickfix)
+        call go#list#Window(l:quickfix)
         echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
     else
         " GoMetaLinter can output one of the two, so we look for both:
@@ -76,13 +77,13 @@ function! go#lint#Gometa(autosave, ...) abort
         let errformat = "%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
 
         " Parse and populate our location list
-        call go#list#ParseFormat(errformat, split(out, "\n"))
+        call go#list#ParseFormat(l:quickfix, errformat, split(out, "\n"))
 
-        let errors = go#list#Get()
-        call go#list#Window(len(errors))
+        let errors = go#list#Get(l:quickfix)
+        call go#list#Window(l:quickfix, len(errors))
 
         if !a:autosave
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         endif
     endif
 endfunction
@@ -107,10 +108,11 @@ function! go#lint#Golint(...) abort
         return
     endif
 
-    call go#list#Parse(out)
-    let errors = go#list#Get()
-    call go#list#Window(len(errors))
-    call go#list#JumpToFirst()
+    let l:quickfix = 1
+    call go#list#Parse(l:quickfix, out)
+    let errors = go#list#Get(l:quickfix)
+    call go#list#Window(l:quickfix, len(errors))
+    call go#list#JumpToFirst(l:quickfix)
 endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
@@ -123,17 +125,19 @@ function! go#lint#Vet(bang, ...)
     else
         let out = go#tool#ExecuteInDir('go tool vet ' . go#util#Shelljoin(a:000))
     endif
+
+    let l:quickfix = 1
     if v:shell_error
         let errors = go#tool#ParseErrors(split(out, '\n'))
-        call go#list#Populate(errors)
-        call go#list#Window(len(errors))
+        call go#list#Populate(l:quickfix, errors)
+        call go#list#Window(l:quickfix, len(errors))
         if !empty(errors) && !a:bang
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         endif
         echon "vim-go: " | echohl ErrorMsg | echon "[vet] FAIL" | echohl None
     else
-        call go#list#Clean()
-        call go#list#Window()
+        call go#list#Clean(l:quickfix)
+        call go#list#Window(l:quickfix)
         redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
     endif
 endfunction
@@ -162,13 +166,14 @@ function! go#lint#Errcheck(...) abort
     let command = bin_path . ' -abspath ' . goargs
     let out = go#tool#ExecuteInDir(command)
 
+    let l:quickfix = 1
     if v:shell_error
         let errformat = "%f:%l:%c:\ %m, %f:%l:%c\ %#%m"
 
         " Parse and populate our location list
-        call go#list#ParseFormat(errformat, split(out, "\n"))
+        call go#list#ParseFormat(l:quickfix, errformat, split(out, "\n"))
 
-        let errors = go#list#Get()
+        let errors = go#list#Get(l:quickfix)
 
         if empty(errors)
             echohl Error | echomsg "GoErrCheck returned error" | echohl None
@@ -177,15 +182,15 @@ function! go#lint#Errcheck(...) abort
         endif
 
         if !empty(errors)
-            call go#list#Populate(errors)
-            call go#list#Window(len(errors))
+            call go#list#Populate(l:quickfix, errors)
+            call go#list#Window(l:quickfix, len(errors))
             if !empty(errors)
-                call go#list#JumpToFirst()
+                call go#list#JumpToFirst(l:quickfix)
             endif
         endif
     else
-        call go#list#Clean()
-        call go#list#Window()
+        call go#list#Clean(l:quickfix)
+        call go#list#Window(l:quickfix)
         echon "vim-go: " | echohl Function | echon "[errcheck] PASS" | echohl None
     endif
 

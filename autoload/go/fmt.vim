@@ -105,6 +105,7 @@ function! go#fmt#Format(withGoimport)
         let $GOPATH = old_gopath
     endif
 
+    let l:quickfix = 0
     "if there is no error on the temp file replace the output with the current
     "file (if this fails, we can always check the outputs first line with:
     "splitted =~ 'package \w\+')
@@ -122,8 +123,8 @@ function! go#fmt#Format(withGoimport)
         " clean up previous location list, but only if it's due fmt
         if s:got_fmt_error 
             let s:got_fmt_error = 0
-            call go#list#Clean()
-            call go#list#Window()
+            call go#list#Clean(l:quickfix)
+            call go#list#Window(l:quickfix)
         endif
     elseif g:go_fmt_fail_silently == 0 
         let splitted = split(out, '\n')
@@ -142,12 +143,12 @@ function! go#fmt#Format(withGoimport)
             % | " Couldn't detect gofmt error format, output errors
         endif
         if !empty(errors)
-            call go#list#Populate(errors)
+            call go#list#Populate(l:quickfix, errors)
             echohl Error | echomsg "Gofmt returned error" | echohl None
         endif
 
         let s:got_fmt_error = 1
-        call go#list#Window(len(errors))
+        call go#list#Window(l:quickfix, len(errors))
 
         " We didn't use the temp file, so clean up
         call delete(l:tmpname)

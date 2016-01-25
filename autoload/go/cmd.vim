@@ -37,6 +37,7 @@ function! go#cmd#Build(bang, ...)
     let default_makeprg = &makeprg
     let &makeprg = "go " . join(args, ' ')
 
+    let l:quickfix = go#list#Type(1)
     " execute make inside the source folder so we can parse the errors
     " correctly
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -46,20 +47,22 @@ function! go#cmd#Build(bang, ...)
         if g:go_dispatch_enabled && exists(':Make') == 2
             call go#util#EchoProgress("building dispatched ...")
             silent! exe 'Make'
-        else
+        elseif l:quickfix == 0
             silent! exe 'lmake!'
+        else
+            silent! exe 'make!'
         endif
         redraw!
     finally
         execute cd . fnameescape(dir)
     endtry
 
-    let errors = go#list#Get()
-    call go#list#Window(len(errors))
+    let errors = go#list#Get(l:quickfix)
+    call go#list#Window(l:quickfix, len(errors))
 
     if !empty(errors)
         if !a:bang
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         endif
     else
         call go#util#EchoSuccess("[build] SUCCESS")
@@ -109,19 +112,23 @@ function! go#cmd#Run(bang, ...)
         let &makeprg = "go run " . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
     endif
 
+    let l:quickfix = go#list#Type(1)
+
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
+    elseif l:quickfix == 0
+        silent! exe 'lmake!'
     else
-        exe 'lmake!'
+        silent! exe 'make!'
     endif
 
-    let items = go#list#Get()
+    let items = go#list#Get(l:quickfix)
     let errors = go#tool#FilterValids(items)
 
-    call go#list#Populate(errors)
-    call go#list#Window(len(errors))
+    call go#list#Populate(l:quickfix, errors)
+    call go#list#Window(l:quickfix, len(errors))
     if !empty(errors) && !a:bang
-        call go#list#JumpToFirst()
+        call go#list#JumpToFirst(l:quickfix)
     endif
 
     let $GOPATH = old_gopath
@@ -138,6 +145,7 @@ function! go#cmd#Install(bang, ...)
     let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
     let &makeprg = "go install " . goargs
 
+    let l:quickfix = go#list#Type(1)
     " execute make inside the source folder so we can parse the errors
     " correctly
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -147,19 +155,21 @@ function! go#cmd#Install(bang, ...)
         if g:go_dispatch_enabled && exists(':Make') == 2
             call go#util#EchoProgress("building dispatched ...")
             silent! exe 'Make'
-        else
+        elseif l:quickfix == 0
             silent! exe 'lmake!'
+        else
+            silent! exe 'make!'
         endif
         redraw!
     finally
         execute cd . fnameescape(dir)
     endtry
 
-    let errors = go#list#Get()
-    call go#list#Window(len(errors))
+    let errors = go#list#Get(l:quickfix)
+    call go#list#Window(l:quickfix, len(errors))
     if !empty(errors)
         if !a:bang
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         endif
     else
         redraws! | echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH | echohl None
@@ -213,6 +223,8 @@ function! go#cmd#Test(bang, compile, ...)
 
     let out = go#tool#ExecuteInDir(command)
 
+    let l:quickfix = 1
+
     if v:shell_error
         let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
         let dir = getcwd()
@@ -224,18 +236,18 @@ function! go#cmd#Test(bang, compile, ...)
             execute cd . fnameescape(dir)
         endtry
 
-        call go#list#Populate(errors)
-        call go#list#Window(len(errors))
+        call go#list#Populate(l:quickfix, errors)
+        call go#list#Window(l:quickfix, len(errors))
         if !empty(errors) && !a:bang
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         elseif empty(errors)
             " failed to parse errors, output the original content
             call go#util#EchoError(out)
         endif
         echon "vim-go: " | echohl ErrorMsg | echon "[test] FAIL" | echohl None
     else
-        call go#list#Clean()
-        call go#list#Window()
+        call go#list#Clean(l:quickfix)
+        call go#list#Window(l:quickfix)
 
         if a:compile
             echon "vim-go: " | echohl Function | echon "[test] SUCCESS" | echohl None
@@ -281,19 +293,21 @@ function! go#cmd#Coverage(bang, ...)
 
     let command = "go test -coverprofile=" . l:tmpname . ' ' . go#util#Shelljoin(a:000)
 
+
+    let l:quickfix = 1
     call go#cmd#autowrite()
     let out = go#tool#ExecuteInDir(command)
     if v:shell_error
         let errors = go#tool#ParseErrors(split(out, '\n'))
-        call go#list#Populate(errors)
-        call go#list#Window(len(errors))
+        call go#list#Populate(l:quickfix, errors)
+        call go#list#Window(l:quickfix, len(errors))
         if !empty(errors) && !a:bang
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         endif
     else
         " clear previous location list 
-        call go#list#Clean()
-        call go#list#Window()
+        call go#list#Clean(l:quickfix)
+        call go#list#Window(l:quickfix)
 
         let openHTML = 'go tool cover -html='.l:tmpname
         call go#tool#ExecuteInDir(openHTML)
@@ -318,19 +332,23 @@ function! go#cmd#Generate(bang, ...)
         let &makeprg = "go generate " . goargs . ' ' . gofiles
     endif
 
+    let l:quickfix = go#list#Type(1)
+
     echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
-    else
+    elseif l:quickfix == 0
         silent! exe 'lmake!'
+    else
+        silent! exe 'make!'
     endif
     redraw!
 
-    let errors = go#list#Get()
-    call go#list#Window(len(errors))
+    let errors = go#list#Get(l:quickfix)
+    call go#list#Window(l:quickfix, len(errors))
     if !empty(errors) 
         if !a:bang
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         endif
     else
         redraws! | echon "vim-go: " | echohl Function | echon "[generate] SUCCESS"| echohl None

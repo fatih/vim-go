@@ -40,20 +40,21 @@ function! go#rename#Rename(bang, ...)
     " will trigger the 'Hit ENTER to continue' prompt
     let clean = split(out, '\n')
 
+    let l:quickfix = 1
     if v:shell_error
         let errors = go#tool#ParseErrors(split(out, '\n'))
-        call go#list#Populate(errors)
-        call go#list#Window(len(errors))
+        call go#list#Populate(l:quickfix, errors)
+        call go#list#Window(l:quickfix, len(errors))
         if !empty(errors) && !a:bang
-            call go#list#JumpToFirst()
+            call go#list#JumpToFirst(l:quickfix)
         elseif empty(errors)
             " failed to parse errors, output the original content
             call go#util#EchoError(out)
         endif
         return
     else
-        call go#list#Clean()
-        call go#list#Window()
+        call go#list#Clean(l:quickfix)
+        call go#list#Window(l:quickfix)
         redraw | echon "vim-go: " | echohl Function | echon clean[0] | echohl None
     endif
 
