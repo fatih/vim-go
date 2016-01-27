@@ -69,7 +69,6 @@ easily.
     list
   * A async launcher for the go command is implemented for neovim, fully async
     building and testing.
-  * Check the status of any async jobs in the statusline with |go#jobcontrol#Statusline()|
   * Integrated with the neovim terminal, launch `:GoRun` and other go commands
     in their own new terminal.
 

@@ -44,11 +44,10 @@ disabled/enabled easily.
 * Custom vim text objects such as `a function` or `inner function`
 * All commands support collecting and displaying errors in Vim's location
   list.
-* A async launcher for the go command is implemented for neovim, fully async
-  building and testing.
-* Check the status of any async jobs in the statusline with `go#jobcontrol#Statusline()`
-* Integrated with the neovim terminal, launch `:GoRun` and other go commands
-  in their own new terminal.
+* A async launcher for the go command is implemented for Neovim, fully async
+  building and testing (beta).
+* Integrated with the Neovim terminal, launch `:GoRun` and other go commands
+  in their own new terminal. (beta)
 
 ## Install
 
@@ -105,9 +104,9 @@ vim-go has several `<Plug>` mappings which can be used to create custom
 mappings. Below are some examples you might find useful:
 
 Run commands such as `go run` for the current file with `<leader>r` or `go
-build` and `go test` for the current package with `<leader>b` and `<leader>t` respectively.
-Display beautifully annotated source code to see which functions are covered
-with `<leader>c`.
+build` and `go test` for the current package with `<leader>b` and `<leader>t`
+respectively. Display beautifully annotated source code to see which functions
+are covered with `<leader>c`.
 
 ```vim
 au FileType go nmap <leader>r <Plug>(go-run)
@@ -165,7 +164,8 @@ recommendations, you are free to create more advanced mappings or functions
 based on `:he go-commands`.
 
 ## Settings
-Below are some settings you might find useful. For the full list see `:he go-settings`.
+Below are some settings you might find useful. For the full list see `:he
+go-settings`.
 
 By default syntax-highlighting for Functions, Methods and Structs is disabled.
 To change it:
@@ -222,7 +222,13 @@ map <C-n> :lne<CR>
 map <C-m> :lp<CR>
 ```
 
-### Using with Neovim
+### Using with Neovim (beta)
+
+**Note: Neovim currently is not a first class citizen for vim-go. You are free
+to open bugs but I'm not going to look at them. Even though I'm using Neovim
+myself, Neovim itself is still alpha. So vim-go might not well as good as in
+Vim. I'm happy to accept pull requests or very detailed bug reports.**
+
 
 Run `:GoRun` in a new tab, horizontal split or vertical split terminal
 
@@ -238,16 +244,17 @@ By default new terminals are opened in a vertical split. To change it
 let g:go_term_mode = "split"                   "or set to tab
 ```
 
-By default the testing commands run asynchronously in the background and display results
-with `go#jobcontrol#Statusline()`. To make them run in a new terminal
+By default the testing commands run asynchronously in the background and
+display results with `go#jobcontrol#Statusline()`. To make them run in a new
+terminal
 
 ```vim
 let g:go_term_enabled = 1
 ```
 
 ### Using with Syntastic
-Sometimes when using both `vim-go` and `syntastic` Vim will start lagging while saving and opening
-files. The following fixes this:
+Sometimes when using both `vim-go` and `syntastic` Vim will start lagging while
+saving and opening files. The following fixes this:
 
 ```vim
 let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
@@ -256,8 +263,11 @@ let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 
 ## More info
 
-Check out the [Wiki](https://github.com/fatih/vim-go/wiki) page for more information. It includes [Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
-section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
+Check out the [Wiki](https://github.com/fatih/vim-go/wiki) page for more
+information. It includes
+[Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
+section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many
+other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
 
 ## Credits
 
