@@ -224,10 +224,10 @@ map <C-m> :lp<CR>
 
 ### Using with Neovim (beta)
 
-**Note: Neovim currently is not a first class citizen for vim-go. You are free
+Note: Neovim currently is not a first class citizen for vim-go. You are free
 to open bugs but I'm not going to look at them. Even though I'm using Neovim
-myself, Neovim itself is still alpha. So vim-go might not well as good as in
-Vim. I'm happy to accept pull requests or very detailed bug reports.**
+myself, Neovim itself is still alpha. So vim-go might not work well as good as
+in Vim. I'm happy to accept pull requests or very detailed bug reports.
 
 
 Run `:GoRun` in a new tab, horizontal split or vertical split terminal
