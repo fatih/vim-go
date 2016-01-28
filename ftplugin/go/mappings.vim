@@ -8,7 +8,6 @@ if !exists("g:go_jump_to_error")
 	let g:go_jump_to_error = 1
 endif
 
-
 " Some handy plug mappings
 nnoremap <silent> <Plug>(go-run) :<C-u>call go#cmd#Run(!g:go_jump_to_error, '%')<CR>
 
@@ -56,4 +55,6 @@ nnoremap <silent> <Plug>(go-doc-browser) :<C-u>call go#doc#OpenBrowser()<CR>
 nnoremap <silent> <Plug>(go-metalinter) :<C-u>call go#lint#Gometa(0)<CR>
 nnoremap <silent> <Plug>(go-vet) :<C-u>call go#lint#Vet(!g:go_jump_to_error)<CR>
 
-
+nnoremap <silent> <Plug>(go-alternate-edit) :<C-u>call go#alternate#Switch(0, "edit")<CR>
+nnoremap <silent> <Plug>(go-alternate-vertical) :<C-u>call go#alternate#Switch(0, "vsplit")<CR>
+nnoremap <silent> <Plug>(go-alternate-split) :<C-u>call go#alternate#Switch(0, "split")<CR>

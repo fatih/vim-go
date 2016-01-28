@@ -12,7 +12,7 @@
 "     let OPTION_NAME = 1
 "   to enable particular options.
 "   At present, all options default to on, except highlight of:
-"   functions, methods and structs.
+"   functions, methods, structs, operators, build constraints and interfaces.
 "
 "   - go_highlight_array_whitespace_error
 "     Highlights white space after "[]".
