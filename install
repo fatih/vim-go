@@ -1,0 +1,34 @@
+#! /bin/sh
+
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT"
+
+VIMVERSION="$(vim --version|head -n1|awk '{print $5}'|sed 's/\.//')"
+if [ -z "$VIMVERSION" ]; then
+    echo "err: vim not installed"
+    exit 1
+fi
+
+if [ $(id -u) -ne 0 ]; then
+    echo "Superuser previlege required"
+    echo "e.g. sudo $0"
+    exit 1
+fi
+
+DEST="/usr/share/vim/vim$VIMVERSION"
+
+if [ ! -d "$DEST" ]; then
+    mkdir -p "$DEST"
+fi
+
+cp -r autoload $DEST/
+cp -r compiler $DEST/
+cp -r doc $DEST/
+cp -r ftdetect $DEST/
+cp -r ftplugin $DEST/
+cp -r gosnippets $DEST/
+cp -r indent $DEST/
+cp -r plugin $DEST/
+cp -r scripts $DEST/
+cp -r syntax $DEST/
