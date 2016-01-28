@@ -8,7 +8,7 @@ let s:jobs = {}
 " new creates a new terminal with the given command. Mode is set based on the
 " global variable g:go_term_mode, which is by default set to :vsplit
 function! go#term#new(bang, cmd)
-    call go#term#newmode(a:bang, a:cmd, g:go_term_mode)
+    return go#term#newmode(a:bang, a:cmd, g:go_term_mode)
 endfunction
 
 " new creates a new terminal with the given command and window mode.

@@ -64,7 +64,7 @@ function! go#util#Shelljoin(arglist, ...)
     endtry
 endfunction
 
-" Shelljoin returns a shell-safe representation of the items in the given
+" Shelllist returns a shell-safe representation of the items in the given
 " arglist. The {special} argument of shellescape() may optionally be passed.
 function! go#util#Shelllist(arglist, ...)
     try
