@@ -129,7 +129,7 @@ function! go#cmd#Run(bang, ...)
 endfunction
 
 " Install installs the package by simple calling 'go install'. If any argument
-" is given(which are passed directly to 'go instal') it tries to install those
+" is given(which are passed directly to 'go install') it tries to install those
 " packages. Errors are populated in the location window.
 function! go#cmd#Install(bang, ...)
     let default_makeprg = &makeprg
