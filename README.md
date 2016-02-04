@@ -48,6 +48,7 @@ disabled/enabled easily.
   building and testing (beta).
 * Integrated with the Neovim terminal, launch `:GoRun` and other go commands
   in their own new terminal. (beta)
+* Alternate between implementation and test code with `:GoAlternate`
 
 ## Install
 
@@ -241,7 +242,7 @@ au FileType go nmap <Leader>rv <Plug>(go-run-vertical)
 By default new terminals are opened in a vertical split. To change it
 
 ```vim
-let g:go_term_mode = "split"                   "or set to tab
+let g:go_term_mode = "split"
 ```
 
 By default the testing commands run asynchronously in the background and

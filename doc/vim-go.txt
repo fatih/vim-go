@@ -71,6 +71,7 @@ easily.
     building and testing.
   * Integrated with the neovim terminal, launch `:GoRun` and other go commands
     in their own new terminal.
+  * Alternate between implementation and test code with `:GoAlternate`
 
 ===============================================================================
 INSTALL                                                           *go-install*
@@ -483,6 +484,16 @@ COMMANDS                                                          *go-commands*
     position and avoids replacing the buffer with stderr output.
 
 
+                                                                   *:GoAlternate*
+:GoAlternate[!]
+
+    Alternates between the implementation and test code. For example if in main.go,
+    switch to main_test.go. Uses the |g:go_alternate_mode| setting as the command
+    to open the file.
+
+    If [!] is given then it switches to the new file even if it does not exist.
+
+
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -650,6 +661,18 @@ Show all refs to entity denoted by selected identifier
                                                             *(go-metalinter)*
 
 Calls `go-metalinter` for the current directory
+
+                                                        *(go-alternate-edit)*
+
+Alternates between the implementation and test code in the current window
+
+                                                      *(go-alternate-split)*
+
+Alternates between the implementation and test code in a new horizontal split
+
+                                                    *(go-alternate-vertical)*
+
+Alternates between the implementation and test code in a new vertical split
 
 ===============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
@@ -986,9 +1009,9 @@ Use this option to auto |:AsmFmt| on save. By default it's enabled. >
 <
                                                        *g:go_term_mode*
 
-This option is neovim only. Use it to change the default terminal mode of
-go commands that run in a new terminal. The default is vsplit.
-Current options are vsplit, split or tab.
+This option is neovim only. Use it to change the default command used to
+open a new terminal for go commands such as |:GoRun|.
+The default is vsplit.
 >
   let g:go_term_mode = "vsplit"
 <
@@ -1015,6 +1038,14 @@ By default it is disabled.
 >
   let g:go_term_enabled = 0
 <
+                                                        *g:go_alternate_mode*
+
+Specifies the command that |:GoAlternate| uses to open the alternate file.
+It is by default set to edit.
+>
+  let g:go_alternate_mode = "edit"
+<
+
 
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
