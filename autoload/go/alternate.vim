@@ -6,7 +6,7 @@ endif
 " Test alternates between the implementation of code and the test code.
 function! go#alternate#Switch(bang, cmd)
   let l:file = go#alternate#Filename(fnameescape(expand("%")))
-  if !filereadable(l:file) && !a:bang
+  if !filereadable(l:file) && !bufexists(l:file) && !a:bang
     redraws! | echon "vim-go: " | echohl ErrorMsg | echon "couldn't find ".file | echohl None
     return
   elseif empty(a:cmd)
