@@ -1054,6 +1054,13 @@ It is by default set to edit.
 >
   let g:go_alternate_mode = "edit"
 <
+                                                       *g:go_gorename_prefill*
+
+Specifies whether |:GoRename| prefills the new identifer name with the
+word under the cursor. By default is is on.
+>
+  let g:go_gorename_prefill = 1
+<
 
 
 ===============================================================================
