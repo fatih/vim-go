@@ -115,7 +115,6 @@ packages.
 
 * Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
 completion (completion by type) install:
-https://github.com/Valloric/YouCompleteMe or
 https://github.com/Shougo/neocomplete.vim
 * To get displayed source code tag informations on a sidebar install
 https://github.com/majutsushi/tagbar.

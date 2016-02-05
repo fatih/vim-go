@@ -20,12 +20,8 @@ setlocal noexpandtab
 
 compiler go
 
-" Set gocode completion, but do not set if YCM exists, as it conflicts with
-" it. I wish they wouldn't implement their own omnifunc for Go from the
-" beginning.  Now everthing is a fcking mess.
-if globpath(&rtp, 'plugin/youcompleteme.vim') == ""
-    setlocal omnifunc=go#complete#Complete
-endif
+" Set gocode completion
+setlocal omnifunc=go#complete#Complete
 
 if get(g:, "go_doc_keywordprg_enabled", 1)
     " keywordprg doesn't allow to use vim commands, override it

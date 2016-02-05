@@ -79,7 +79,6 @@ installed binaries.
 
 * Autocompletion is enabled by default via `<C-x><C-o>`. To get real-time
 completion (completion by type) install:
-[YCM](https://github.com/Valloric/YouCompleteMe) or
 [neocomplete](https://github.com/Shougo/neocomplete.vim).
 * To display source code tag information on a sidebar install
 [tagbar](https://github.com/majutsushi/tagbar).
