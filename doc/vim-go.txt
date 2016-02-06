@@ -785,7 +785,7 @@ is empty. >
                                                    *'g:go_fmt_fail_silently'*
 
 Use this option to disable showing a location list when |g:go_fmt_command|
-fails. By default it's disabled. >
+fails. By default the location list is shown. >
 
   let g:go_fmt_fail_silently = 0
 <
@@ -801,26 +801,24 @@ it's causing problems on some Vim versions. By default it's disabled. >
 <
                                               *'g:go_doc_keywordprg_enabled'*
 
-Use this option to change the enable GoDoc to run on words under the cursor
-with the default K , keywordprg shortcut. This shortcut is by default set to
-use the program man. However in go using godoc is more idiomatic. Default is
-enabled. >
+Use this option to run `godoc` on words under the cursor with the default
+K , keywordprg shortcut. Usually this shortcut is set to use the program `man`.
+In Go, using `godoc` is more idiomatic. Default is enabled. >
 
   let g:go_doc_keywordprg_enabled = 1
 <
                                                  *'g:go_def_mapping_enabled'*
 
-Use this option to enabled/ disable the default mapping (`gd`) for GoDef
-enabled. Disabling it allows you to map something else to the mapping `gd`.
-Default is enabled. >
+Use this option to enable/disable the default mapping of (`gd`) for GoDef.
+Disabling it allows you to map something else to `gd`. Default is enabled. >
 
   let g:go_def_mapping_enabled = 1
 <
                                                     *'g:go_dispatch_enabled'*
 
 Use this option to enable/disable the use of Dispatch to execute the
-`:GoRun`, `:GoBuild` and `:GoGenerate` commands.  More information about Dispatch is
-available at https://github.com/tpope/vim-dispatch. Default is disabled. >
+`:GoRun`, `:GoBuild` and `:GoGenerate` commands. More information about Dispatch
+is available at https://github.com/tpope/vim-dispatch. Default is disabled. >
 
   let g:go_dispatch_enabled = 0
 <
@@ -856,13 +854,12 @@ is used. Use "neosnippet" for neosnippet.vim: >
 
                                                       *'g:go_oracle_scope'*
 
-Use this option to define the scope of the analysis to be passed for Oracle
-related commands, such as |GoImplements|, |GoCallers|, etc..  By default it's
-not set, so only the current packages go files are passed as scope. You can
-change it on-the-fly with |GoOracleScope|. For more
-info please have look at Oracle's User Manual:
-https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#heading=h.nwso96pj07q8
->
+Use this option to define the scope of the analysis to be passed for oracle
+related commands, such as |GoImplements|, |GoCallers|, etc.  By default it's
+not set, so only the current package's go files are passed as scope. You can
+change it on-the-fly with |GoOracleScope|. For more info, please have a look
+at oracle's user manual:
+https://golang.org/s/oracle-user-manual#heading=h.nwso96pj07q8 >
 
   let g:go_oracle_scope = ''
 <
@@ -876,8 +873,8 @@ Highlights white space after "[]". >
 
                                       *'g:go_highlight_chan_whitespace_error'*
 
-Highlights white space around the communications operator that don't follow
-the standard style. >
+Highlights white space around the communications operator (`<-`) that doesn't
+follow the standard style. >
 
   let g:go_highlight_chan_whitespace_error = 1
 <
@@ -904,7 +901,7 @@ Highlights trailing white space. >
 <
                                                   *'g:go_highlight_operators'*
 
-Highlights operators such as `:=` , `==`, `-=`, etc ...By default it's
+Highlights operators such as `:=` , `==`, `-=`, etc. By default it's
 disabled. >
 
 	let g:go_highlight_operators = 0
@@ -941,8 +938,8 @@ Highlights build constraints. By default it's disabled. >
 <
                                         *'g:go_highlight_string_spellcheck*
 
-Specifies spell checking enabled for strings. Spelling errors are highlighted
-if |spell| is enabled. By default it's enabled. >
+Use this option to highlight spelling errors in strings when |spell| is
+also enabled. By default it's enabled. >
 
 	let g:go_highlight_string_spellcheck = 1
 <
@@ -950,7 +947,7 @@ if |spell| is enabled. By default it's enabled. >
                                                 *'g:go_autodetect_gopath'*
 
 Automatically modifies GOPATH for certain directory structures, such as for
-the tool godep which has his own dependencies via the `Godeps` folder. What
+the tool `godep` which has his own dependencies via the `Godeps` folder. What
 this means is that all tools are now working with the newly modified GOPATH.
 So |GoDef| for example jumps to the source inside the `Godeps` (vendored)
 source. Currently `godep` and `gb` is supported, in the near future more tool
@@ -974,14 +971,14 @@ the active buffer will be shown. By default it's disabled >
                                          *'g:go_metalinter_autosave_enabled'*
 
 Specifies the enabled linters for auto |GoMetaLinter| on save. By
-default it's using `vet` and `golint`
+default it's using `vet` and `golint`.
 >
   let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 <
                                                   *'g:go_metalinter_enabled'*
 
 Specifies the currently enabled linters for the |GoMetaLinter| command. By
-default it's using `vet`, `golint` and `errcheck`
+default it's using `vet`, `golint` and `errcheck`.
 >
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
@@ -989,7 +986,7 @@ default it's using `vet`, `golint` and `errcheck`
 
 Overrides the command to be executed when |GoMetaLinter| is called. This is
 an advanced settings and is for users who want to have a complete control
-over of how `gometalinter` should be executed. By default it's empty.
+over how `gometalinter` should be executed. By default it's empty.
 >
   let g:go_metalinter_command = ""
 <
@@ -1003,9 +1000,9 @@ seconds.
                                                   *'g:go_loclist_height'*
 
 Specifies the current location list height for all location lists. The default
-value (empty) sets automatically the height to the number of errors (maximum
+value (empty) automatically sets the height to the number of errors (maximum
 up to 10 errors to prevent large heights). Setting the value explicitly
-overrides this behavior. To get default Vim behavior set it to 10.
+overrides this behavior. For standard Vim behavior, set it to 10.
 >
   let g:go_loclist_height = 0
 <
@@ -1017,7 +1014,7 @@ Use this option to auto |:AsmFmt| on save. By default it's enabled. >
 <
                                                        *g:go_term_mode*
 
-This option is neovim only. Use it to change the default command used to
+This option is Neovim only. Use it to change the default command used to
 open a new terminal for go commands such as |:GoRun|.
 The default is vsplit.
 >
@@ -1026,9 +1023,9 @@ The default is vsplit.
                                                        *g:go_term_height*
                                                         *g:go_term_width*
 
-These options are neovim only. Use them to control the height and width of
-a terminal split. By default these are not set meaning that the height and
-width are set automatically by neovim. The height only applies with a
+These options are Neovim only. Use them to control the height and width of
+a terminal split. By default these are not set, meaning that the height and
+width are set automatically by Neovim. The height only applies to a
 horizontal split and width only applies to a vertical split.
 
 For example here is how to set each to 30.
@@ -1038,7 +1035,7 @@ For example here is how to set each to 30.
 <
                                                        *g:go_term_enabled*
 
-This option is neovim only. Use it to change the behavior of the test
+This option is Neovim only. Use it to change the behavior of the test
 commands. If set to 1 it opens the test commands inside a new terminal
 according to |g:go_term_mode|, otherwise it will run them in the background
 just like `:GoBuild` and then display the status with |go#jobcontrol#Statusline()|.
@@ -1049,14 +1046,14 @@ By default it is disabled.
                                                         *g:go_alternate_mode*
 
 Specifies the command that |:GoAlternate| uses to open the alternate file.
-It is by default set to edit.
+By default it is set to edit.
 >
   let g:go_alternate_mode = "edit"
 <
                                                        *g:go_gorename_prefill*
 
-Specifies whether |:GoRename| prefills the new identifer name with the
-word under the cursor. By default is is on.
+Specifies whether |:GoRename| prefills the new identifier name with the
+word under the cursor. By default is is enabled.
 >
   let g:go_gorename_prefill = 1
 <
