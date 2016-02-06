@@ -79,14 +79,18 @@ installed binaries.
 
 * Autocompletion is enabled by default via `<C-x><C-o>`. To get real-time
 completion (completion by type) install:
-[neocomplete](https://github.com/Shougo/neocomplete.vim).
+[neocomplete](https://github.com/Shougo/neocomplete.vim) for Vim or
+[deoplete](https://github.com/Shougo/deoplete.nvim) and
+[deoplete-go](https://github.com/zchee/deoplete-go) for NeoVim
 * To display source code tag information on a sidebar install
 [tagbar](https://github.com/majutsushi/tagbar).
 * For snippet features install:
-[ultisnips](https://github.com/SirVer/ultisnips) or
-[neosnippet](https://github.com/Shougo/neosnippet.vim).
-* Screenshot color scheme is a slightly modified molokai: [fatih/molokai](https://github.com/fatih/molokai).
-* For a better documentation viewer checkout: [go-explorer](https://github.com/garyburd/go-explorer).
+[neosnippet](https://github.com/Shougo/neosnippet.vim) or
+[ultisnips](https://github.com/SirVer/ultisnips).
+* Screenshot color scheme is a slightly modified molokai:
+  [fatih/molokai](https://github.com/fatih/molokai).
+* For a better documentation viewer checkout:
+  [go-explorer](https://github.com/garyburd/go-explorer).
 
 ## Usage
 
@@ -272,7 +276,8 @@ other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
 ## Credits
 
 * Go Authors for official vim plugins
-* Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and authors of those projects.
+* Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and
+  authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
   vim-godef)
 * [Contributors](https://github.com/fatih/vim-go/graphs/contributors) of vim-go
