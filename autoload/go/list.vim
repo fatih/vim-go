@@ -5,15 +5,15 @@ endif
 " Window opens the list with the given height up to 10 lines maximum.
 " Otherwise g:go_loclist_height is used. If no or zero height is given it
 " closes the window
-function! go#list#Window(quickfix, ...)
-    let l:quickfix = go#list#Type(a:quickfix)
+function! go#list#Window(listtype, ...)
+    let l:listtype = go#list#Type(a:listtype)
     " we don't use lwindow to close the location list as we need also the
     " ability to resize the window. So, we are going to use lopen and lclose
     " for a better user experience. If the number of errors in a current
     " location list increases/decreases, cwindow will not resize when a new
     " updated height is passed. lopen in the other hand resizes the screen.
     if !a:0 || a:1 == 0
-        if l:quickfix == 0
+        if l:listtype == "locationlist"
             lclose
         else
             cclose
@@ -31,7 +31,7 @@ function! go#list#Window(quickfix, ...)
         endif
     endif
 
-    if l:quickfix == 0
+    if l:listtype == "locationlist"
       exe 'lopen ' . height
     else
       exe 'copen ' . height
@@ -40,9 +40,9 @@ endfunction
 
 
 " Get returns the current list of items from the location list
-function! go#list#Get(quickfix)
-    let l:quickfix = go#list#Type(a:quickfix)
-    if l:quickfix == 0
+function! go#list#Get(listtype)
+    let l:listtype = go#list#Type(a:listtype)
+    if l:listtype == "locationlist"
         return getloclist(0)
     else
         return getqflist()
@@ -50,9 +50,9 @@ function! go#list#Get(quickfix)
 endfunction
 
 " Populate populate the location list with the given items
-function! go#list#Populate(quickfix, items)
-    let l:quickfix = go#list#Type(a:quickfix)
-    if l:quickfix == 0
+function! go#list#Populate(listtype, items)
+    let l:listtype = go#list#Type(a:listtype)
+    if l:listtype == "locationlist"
         call setloclist(0, a:items, 'r')
     else
         call setqflist(a:items, 'r')
@@ -65,14 +65,14 @@ endfunction
 
 " Parse parses the given items based on the specified errorformat nad
 " populates the location list.
-function! go#list#ParseFormat(quickfix, errformat, items)
-    let l:quickfix = go#list#Type(a:quickfix)
+function! go#list#ParseFormat(listtype, errformat, items)
+    let l:listtype = go#list#Type(a:listtype)
     " backup users errorformat, will be restored once we are finished
     let old_errorformat = &errorformat
 
     " parse and populate the location list
     let &errorformat = a:errformat
-    if l:quickfix == 0
+    if l:listtype == "locationlist"
         lgetexpr a:items
     else
         cgetexpr a:items
@@ -84,9 +84,9 @@ endfunction
 
 " Parse parses the given items based on the global errorformat and
 " populates the location list.
-function! go#list#Parse(quickfix, items)
-    let l:quickfix = go#list#Type(a:quickfix)
-    if l:quickfix == 0
+function! go#list#Parse(listtype, items)
+    let l:listtype = go#list#Type(a:listtype)
+    if l:listtype == "locationlist"
         lgetexpr a:items
     else
         cgetexpr a:items
@@ -94,9 +94,9 @@ function! go#list#Parse(quickfix, items)
 endfunction
 
 " JumpToFirst jumps to the first item in the location list
-function! go#list#JumpToFirst(quickfix)
-    let l:quickfix = go#list#Type(a:quickfix)
-    if l:quickfix == 0
+function! go#list#JumpToFirst(listtype)
+    let l:listtype = go#list#Type(a:listtype)
+    if l:listtype == "locationlist"
         ll 1
     else
         cc 1
@@ -104,22 +104,22 @@ function! go#list#JumpToFirst(quickfix)
 endfunction
 
 " Clean cleans the location list
-function! go#list#Clean(quickfix)
-    let l:quickfix = go#list#Type(a:quickfix)
-    if l:quickfix == 0
+function! go#list#Clean(listtype)
+    let l:listtype = go#list#Type(a:listtype)
+    if l:listtype == "locationlist"
         lex []
     else
         cex []
     endif
 endfunction
 
-function! go#list#Type(quickfix)
+function! go#list#Type(listtype)
     if g:go_list_type == "locationlist"
-        return 0
+        return "locationlist"
     elseif g:go_list_type == "quickfix"
-        return 1
+        return "quickfix" 
     else
-        return a:quickfix
+        return a:listtype
     endif
 endfunction
 

@@ -125,11 +125,11 @@ function! s:on_exit(job_id, exit_status)
 
   " if we are still in the same windows show the list
   if self.winnr == winnr()
-    let l:quickfix = 0
-    call go#list#Populate(l:quickfix, errors)
-    call go#list#Window(l:quickfix, len(errors))
+    let l:listtype = "locationlist"
+    call go#list#Populate(l:listtype, errors)
+    call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !self.bang
-      call go#list#JumpToFirst(l:quickfix)
+      call go#list#JumpToFirst(l:listtype)
     endif
   endif
 endfunction
