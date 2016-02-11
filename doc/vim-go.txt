@@ -65,8 +65,6 @@ easily.
   * Go asm formatting on save
   * Tagbar support to show tags of the source code in a sidebar with `gotags`
   * Custom vim text objects such as `a function` or `inner function`
-  * All commands support collecting and displaying errors in Vim's location
-    list
   * A async launcher for the go command is implemented for neovim, fully async
     building and testing.
   * Integrated with the neovim terminal, launch `:GoRun` and other go commands
@@ -237,9 +235,9 @@ COMMANDS                                                          *go-commands*
                                                                    *:GoBuild*
 :GoBuild[!] [expand]
 
-    Build your package with `go build`. Errors are populated inside the
-    location list. It automatically builds only the files that depends on the
-    current file. `:GoBuild` doesn't produce a result file.
+    Build your package with `go build`. Errors are populated in the quickfix
+    window. It automatically builds only the files that depends on the current
+    file. `:GoBuild` doesn't produce a result file.
     Use 'make' to create a result file.
 
     You may optionally pass any valid go build flags/options. For a full list
@@ -282,8 +280,8 @@ COMMANDS                                                          *go-commands*
 :GoTest[!] [expand]
 
     Run the tests on your _test.go files via in your current directory. Errors
-    are populated in location list.  If an argument is passed, 'expand' is
-    used as file selector (useful for cases like `:GoTest ./...`).
+    are populated in the quickfix window.  If an argument is passed, 'expand'
+    is used as file selector (useful for cases like `:GoTest ./...`).
 
     You may optionally pass any valid go test flags/options. For a full list
     please see `go help test`.
@@ -318,9 +316,9 @@ COMMANDS                                                          *go-commands*
 :GoTestCompile[!] [expand]
 
     Compile your _test.go files via in your current directory. Errors are
-    populated in location list.  If an argument is passed, 'expand' is used
-    as file selector (useful for cases like `:GoTest ./...`). Useful to not
-    run the tests and capture/fix errors before running the tests or to
+    populated in the quickfix window.  If an argument is passed, 'expand' is
+    used as file selector (useful for cases like `:GoTest ./...`). Useful to
+    not run the tests and capture/fix errors before running the tests or to
     create test binary.
 
     If [!] is not given the first error is jumped to.
@@ -344,7 +342,7 @@ COMMANDS                                                          *go-commands*
 :GoErrCheck [options]
 
     Check for unchecked errors in you current package. Errors are populated in
-    location list.
+    the quickfix window.
 
     You may optionally pass any valid errcheck flags/options. For a full list
     please see `errcheck -h`.
@@ -377,7 +375,7 @@ COMMANDS                                                          *go-commands*
 
     Show 'implements' relation for a selected package. A list of interfaces
     for the type that implements an interface under the cursor (or selected
-    package) is shown location list.
+    package) is shown in a location list.
                                                                 *:GoRename*
 :GoRename[!] [to]
 
@@ -422,7 +420,7 @@ COMMANDS                                                          *go-commands*
 :GoCallstack
 
     Shows 'callstack' relation for the selected function. An arbitrary path
-    from the root of the callgraph to the selected function is showed in a
+    from the root of the callgraph to the selected function is shown in a
     location list. This may be useful to understand how the function is
     reached in a given program.
 
@@ -463,8 +461,8 @@ COMMANDS                                                          *go-commands*
 :GoMetaLinter [path]
 
     Calls the underlying `gometalinter` tool and displays all warnings and
-    errors in a location list. By default the following linters are enabled:
-    "'vet', 'golint', 'errcheck'". This can be changed with the
+    errors in the quickfix window. By default the following linters are
+    enabled: "'vet', 'golint', 'errcheck'". This can be changed with the
     |g:go_metalinter_enabled| variable. To override the command completely use
     the variable |g:go_metalinter_command|. To override the maximum linters
     execution time use |g:go_metalinter_deadline| variable.
@@ -1000,14 +998,22 @@ seconds.
 >
   let g:go_metalinter_deadline = "5s"
 <
-                                                  *'g:go_loclist_height'*
+                                                  *'g:go_list_height'*
 
-Specifies the current location list height for all location lists. The default
-value (empty) automatically sets the height to the number of errors (maximum
-up to 10 errors to prevent large heights). Setting the value explicitly
-overrides this behavior. For standard Vim behavior, set it to 10.
+Specifies the window height for the quickfix and location list windows. The
+default value (empty) automatically sets the height to the number of items
+(maximum up to 10 items to prevent large heights). Setting the value
+explicitly overrides this behavior. For standard Vim behavior, set it to 10.
 >
-  let g:go_loclist_height = 0
+  let g:go_list_height = 0
+<
+                                                  *'g:go_list_type'*
+
+Specifies the type of list to use. The default value (empty) will use the
+appropriate kind of list for the command that was called. Supported values are
+"", "quickfix", and "locationlist". >
+
+  let g:go_list_type = ""
 <
                                                   *'g:go_asmfmt_autosave'*
 

@@ -98,10 +98,11 @@ function! s:on_exit(job_id, data)
     endif
     let job = s:jobs[a:job_id]
 
+    let l:listtype = "locationlist"
     " usually there is always output so never branch into this clause
     if empty(job.stdout)
-        call go#list#Clean()
-        call go#list#Window()
+        call go#list#Clean(l:listtype)
+        call go#list#Window(l:listtype)
     else
         let errors = go#tool#ParseErrors(job.stdout)
         let errors = go#tool#FilterValids(errors)
@@ -109,14 +110,14 @@ function! s:on_exit(job_id, data)
             " close terminal we don't need it
             close 
 
-            call go#list#Populate(errors)
-            call go#list#Window(len(errors))
+            call go#list#Populate(l:listtype, errors)
+            call go#list#Window(l:listtype, len(errors))
             if !self.bang
-                call go#list#JumpToFirst()
+                call go#list#JumpToFirst(l:listtype)
             endif
         else
-            call go#list#Clean()
-            call go#list#Window()
+            call go#list#Clean(l:listtype)
+            call go#list#Window(l:listtype)
         endif
 
     endif
