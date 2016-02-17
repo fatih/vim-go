@@ -74,8 +74,12 @@ endfunction
 
 
 " Run runs the current file (and their dependencies if any) in a new terminal.
-function! go#cmd#RunTerm(bang, mode)
-    let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
+function! go#cmd#RunTerm(bang, mode, files)
+    if empty(a:files)
+        let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
+    else
+        let cmd = "go run ".  go#util#Shelljoin(map(copy(a:files), "expand(v:val)"), 1)
+    endif
     call go#term#newmode(a:bang, cmd, a:mode)
 endfunction
 
@@ -85,7 +89,7 @@ endfunction
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...)
     if has('nvim')
-        call go#cmd#RunTerm(a:bang, '')
+        call go#cmd#RunTerm(a:bang, '', a:000)
         return
     endif
 
