@@ -149,7 +149,7 @@ function! go#complete#GetInfoFromOffset(offset)
 endfunction
 
 function! go#complete#GetInfo()
-    let offset = go#complete#gocodeCursor()
+    let offset = go#complete#gocodeCursor()+1
     return go#complete#GetInfoFromOffset(offset)
 endfunction
 
