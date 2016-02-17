@@ -53,7 +53,12 @@ endif
 "  improvements, patches are welcome :)
 function! go#fmt#Format(withGoimport)
     " save cursor position, folds and many other things
-    mkview!
+    let l:curw = {}
+    try
+        mkview!
+    catch
+        let l:curw=winsaveview()
+    endtry
 
     " Write current unsaved buffer to a temp file
     let l:tmpname = tempname()
@@ -159,7 +164,11 @@ function! go#fmt#Format(withGoimport)
     endif
 
     " restore our cursor/windows positions, folds, etc..
-    silent! loadview
+    if empty(l:curw)
+        silent! loadview
+    else
+        call winrestview(l:curw)
+    endif
 endfunction
 
 
