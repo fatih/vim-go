@@ -18,13 +18,13 @@ enabled:
 
 ### Configuration
 
-# `vimrc` you used to reproduce:
+#### `vimrc` you used to reproduce:
 
-# vim version: 
+#### vim version: 
 
-# vim-go version:
+#### vim-go version:
 
-# go version:
+#### go version:
 
 
 
