@@ -100,14 +100,21 @@ function! go#fmt#Format(withGoimport)
     if a:withGoimport  != 1 
         let command  = command . g:go_fmt_options
     endif
+
     if fmt_command == "goimports"
-        let out = system("goimports --help")
-        if out !~ "-srcdir"
-            echohl WarningMsg
-            echomsg "vim-go: goimports does not support srcdir."
-            echomsg "  update with: :GoUpdateBinaries"
-            echohl None
-        else
+        if !exists('b:goimports_vendor_compatible')
+            let out = system("goimports --help")
+            if out !~ "-srcdir"
+                echohl WarningMsg
+                echomsg "vim-go: goimports does not support srcdir."
+                echomsg "  update with: :GoUpdateBinaries"
+                echohl None
+            else
+               let b:goimports_vendor_compatible = 1
+            endif
+        endif
+
+        if exists('b:goimports_vendor_compatible') && b:goimports_vendor_compatible
             let command  = command . '-srcdir ' . fnameescape(expand("%:p:h"))
         endif
     endif
