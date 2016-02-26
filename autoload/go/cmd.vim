@@ -137,6 +137,7 @@ function! go#cmd#Run(bang, ...)
 
     let $GOPATH = old_gopath
     let &makeprg = default_makeprg
+    redraw!
 endfunction
 
 " Install installs the package by simple calling 'go install'. If any argument
