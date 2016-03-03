@@ -121,9 +121,9 @@ function! go#cmd#Run(bang, ...)
     if g:go_dispatch_enabled && exists(':Make') == 2
         silent! exe 'Make'
     elseif l:listtype == "locationlist"
-        silent! exe 'lmake!'
+        exe 'lmake!'
     else
-        silent! exe 'make!'
+        exe 'make!'
     endif
 
     let items = go#list#Get(l:listtype)
