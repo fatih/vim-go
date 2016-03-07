@@ -15,8 +15,8 @@ endf
 " modified and improved version of vim-godef
 function! go#def#Jump(...)
 	if !len(a:000)
-		" gives us the offset of the word, basicall the position of the word under
-		" he cursor
+		" gives us the offset of the word, basically the position of the word under
+		" the cursor
 		let arg = s:getOffset()
 	else
 		let arg = a:1
