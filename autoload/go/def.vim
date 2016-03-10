@@ -31,13 +31,17 @@ function! go#def#Jump(...)
 	let $GOPATH = go#path#Detect()
 
 	let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
-	let command = bin_path . " -f=" . shellescape(fname) . " -i " . shellescape(arg)
+	let command = bin_path . " -t -f=" . shellescape(fname) . " -i " . shellescape(arg)
 
 	" get output of godef
 	let out = s:system(command, join(getbufline(bufnr('%'), 1, '$'), go#util#LineEnding()))
 
+	" First line is <file>:<line>:<col>
+	" Second line is <identifier><space><type>
+	let godefout=split(out, go#util#LineEnding())
+
 	" jump to it
-	call s:godefJump(out, "")
+	call s:godefJump(godefout, "")
 	let $GOPATH = old_gopath
 endfunction
 
@@ -59,7 +63,12 @@ function! go#def#JumpMode(mode)
 	" get output of godef
 	let out = s:system(command, join(getbufline(bufnr('%'), 1, '$'), go#util#LineEnding()))
 
-	call s:godefJump(out, a:mode)
+	" First line is <file>:<line>:<col>
+	" Second line is <identifier><space><type>
+	let godefout=split(out, go#util#LineEnding())
+
+	" jump to it
+	call s:godefJump(godefout, a:mode)
 	let $GOPATH = old_gopath
 endfunction
 
@@ -84,17 +93,29 @@ function! s:godefJump(out, mode)
 	let old_errorformat = &errorformat
 	let &errorformat = "%f:%l:%c"
 
-	if a:out =~ 'godef: '
-		let out = substitute(a:out, go#util#LineEnding() . '$', '', '')
-		echom out
+	" Location is the first line of godef output. Ideally in the proper format
+	" but it could also be an error
+	let location = a:out[0]
+
+	" Echo the godef error if we had one.
+	if location =~ 'godef: '
+		let gderr=substitute(location, go#util#LineEnding() . '$', '', '')
+		echom gderr
+		" Don't jump if we're in a modified buffer
+	elseif getbufvar(bufnr('%'), "&mod")
+        echohl ErrorMsg
+		echo "No write since last change"
+        echohl None
 	else
-		let parts = split(a:out, ':')
+		let parts = split(a:out[0], ':')
+
 		" parts[0] contains filename
 		let fileName = parts[0]
 
-		" put the error format into location list so we can jump automatically to
-		" it
-		lgetexpr a:out
+        " Don't jump if it's the same identifier we just jumped to
+        if len(w:go_stack) > 0 && w:go_stack[w:go_stack_level-1]['ident'] == a:out[1] && w:go_stack[w:go_stack_level-1]['file'] == fileName
+            return
+        endif
 
 		" needed for restoring back user setting this is because there are two
 		" modes of switchbuf which we need based on the split mode
@@ -114,11 +135,122 @@ function! s:godefJump(out, mode)
 			endif
 		endif
 
-		" jump to file now
-		sil ll 1
-		normal zz
+        " Remove anything newer than the current position, just like basic
+        " vim tag support
+        if w:go_stack_level == 0
+            let w:go_stack = []
+        else
+            let w:go_stack = w:go_stack[0:w:go_stack_level-1]
+        endif
 
-		let &switchbuf = old_switchbuf
+		" increment the stack counter
+		let w:go_stack_level = w:go_stack_level + 1
+
+		" push it on to the jumpstack
+        call add(w:go_stack,
+            \{'line': line("."), 'col': col("."),
+            \'file': expand('%:p'), 'ident': a:out[1]})
+
+		" jump to file now
+        call s:goToFileLocation(location)
 	end
-	let &errorformat = old_errorformat
+endfunction
+
+function! go#def#StackPrint()
+    if len(w:go_stack) == 0
+        echohl ErrorMsg
+        echo "godef stack empty"
+        echohl None
+        return
+    endif
+    let i = 0
+    while i < len(w:go_stack)
+        let entry = w:go_stack[i]
+        if i == w:go_stack_level
+            echon "> "
+        else
+            echon "  "
+        endif
+        echon i+1 . " "
+        echohl Directory
+        echon entry["file"]
+        echohl None
+        echon "|"
+        echohl LineNr
+        echon entry["line"] . " col " . entry["col"]
+        echohl None
+        echon "|"
+        echon entry["ident"] . "\n"
+        let i += 1
+    endwhile
+    if w:go_stack_level == i
+        echo ">"
+    endif
+endfunction
+
+function! go#def#StackPop(numPop)
+    let newLevel = str2nr(w:go_stack_level) - str2nr(a:numPop)
+    if newLevel < 0
+        echohl ErrorMsg
+        echo "at bottom of godef stack"
+        echohl None
+        let newLevel = 0
+    endif
+    if w:go_stack_level > 0
+        let w:go_stack_level = newLevel
+        let target = w:go_stack[w:go_stack_level]
+
+        " jump
+        call s:goToFileLocation(target["file"], target["line"], target["col"])
+    endif
+endfunction
+
+function! go#def#StackJump(...)
+    if len(w:go_stack) == 0
+        echohl ErrorMsg
+        echo "godef stack empty"
+        echohl None
+        return
+    endif
+	if !len(a:000)
+        " Display interactive stack
+        call go#def#StackPrint()
+        echon "\n"
+        let jumpTarget=input("Type number and <Enter> (empty cancels): ")
+	else
+		let jumpTarget= a:1
+	endif
+
+    let jumpTarget=str2nr(jumpTarget) - 1
+    if jumpTarget >= 0 && jumpTarget < len(w:go_stack)
+        let w:go_stack_level = jumpTarget
+        let target = w:go_stack[w:go_stack_level]
+
+        " jump
+        call s:goToFileLocation(target["file"], target["line"], target["col"])
+    else
+        echohl ErrorMsg
+        echo "invalid godef stack location"
+        echohl None
+    endif
+endfunction
+
+function! s:goToFileLocation(...)
+	let old_errorformat = &errorformat
+	let &errorformat = "%f:%l:%c"
+
+    " put the error format into location list so we can jump automatically to
+    " it
+    if a:0 == 3
+        lgetexpr printf("%s:%s:%s", a:1, a:2, a:3)
+    elseif a:0 == 1
+        lgetexpr a:1
+    else
+        lgetexpr ""
+    endif
+
+    sil ll 1
+    normal zz
+
+    let &errorformat = old_errorformat
 endfunction
