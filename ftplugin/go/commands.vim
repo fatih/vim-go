@@ -16,7 +16,7 @@ command! -nargs=? GoOracleTags call go#oracle#Tags(<f-args>)
 " tool
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
-command! -nargs=* GoInfo call go#complete#Info()
+command! -nargs=* GoInfo call go#complete#Info(0)
 
 " cmd
 command! -nargs=* -bang GoBuild call go#cmd#Build(<bang>0,<f-args>)
