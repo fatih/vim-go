@@ -21,7 +21,7 @@ command! -nargs=* GoInfo call go#complete#Info()
 " cmd
 command! -nargs=* -bang GoBuild call go#cmd#Build(<bang>0,<f-args>)
 command! -nargs=* -bang GoGenerate call go#cmd#Generate(<bang>0,<f-args>)
-command! -nargs=* -bang GoRun call go#cmd#Run(<bang>0,<f-args>)
+command! -nargs=* -bang -complete=file GoRun call go#cmd#Run(<bang>0,<f-args>)
 command! -nargs=* -bang GoInstall call go#cmd#Install(<bang>0, <f-args>)
 command! -nargs=* -bang GoTest call go#cmd#Test(<bang>0, 0, <f-args>)
 command! -nargs=* -bang GoTestFunc call go#cmd#TestFunc(<bang>0, <f-args>)
