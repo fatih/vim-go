@@ -144,7 +144,7 @@ function! s:godefJump(out, mode)
         endif
 
 		" increment the stack counter
-		let w:go_stack_level = w:go_stack_level + 1
+		let w:go_stack_level += 1
 
 		" push it on to the jumpstack
         call add(w:go_stack,
