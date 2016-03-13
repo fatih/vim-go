@@ -100,7 +100,7 @@ function! s:godefJump(out, mode)
 	" Echo the godef error if we had one.
 	if location =~ 'godef: '
 		let gderr=substitute(location, go#util#LineEnding() . '$', '', '')
-		echom gderr
+        call go#util#EchoError(gderr)
 		" Don't jump if we're in a modified buffer
 	elseif getbufvar(bufnr('%'), "&mod")
 		call go#util#EchoError("No write since last change")
