@@ -214,6 +214,15 @@ function! go#def#StackJump(...)
 		let jumpTarget= a:1
 	endif
 
+    if jumpTarget !~ '^\d\+$'
+        if jumpTarget !~ '^\s*$'
+            echohl ErrorMsg
+            echo "location must be a number"
+            echohl None
+        endif
+        return
+    endif
+
     let jumpTarget=str2nr(jumpTarget) - 1
     if jumpTarget >= 0 && jumpTarget < len(w:go_stack)
         let w:go_stack_level = jumpTarget
