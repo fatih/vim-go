@@ -14,16 +14,15 @@
 ===============================================================================
 CONTENTS                                                          *go-contents*
 
-  1.  Intro........................................|go-intro|
-  2.  Install......................................|go-install|
-  3.  Commands.....................................|go-commands|
-  4.  GoDef Stack..................................|godef-stack|
-  5.  Mappings.....................................|go-mappings|
-  6.  Text Objects.................................|go-text-objects|
-  7.  Functions....................................|go-functions|
-  8.  Settings.....................................|go-settings|
-  9.  Troubleshooting..............................|go-troubleshooting|
-  10. Credits......................................|go-credits|
+  1. Intro........................................|go-intro|
+  2. Install......................................|go-install|
+  3. Commands.....................................|go-commands|
+  4. Mappings.....................................|go-mappings|
+  5. Text Objects.................................|go-text-objects|
+  6. Functions....................................|go-functions|
+  7. Settings.....................................|go-settings|
+  8. Troubleshooting..............................|go-troubleshooting|
+  9. Credits......................................|go-credits|
 
 ===============================================================================
 INTRO                                                                *go-intro*
@@ -221,8 +220,59 @@ CTRL-]
     identifier under the cursor. See |g:go_def_mapping_enabled| to disable them.
 
     vim-go also keeps a location stack, roughly analagous to how vim's internal
-    |tags| functionality works. This is pushed to every time a jump is made using
-    the GoDef functionality. See |godef-stack| for more information.
+    |tags| functionality works. This is pushed to every time a jump is made
+    using the GoDef functionality. In essence, this is a LIFO list of file
+    locations you have visited with :GoDef that is retained to help you navigate
+    software.
+
+                                                                *:GoDefStack*
+:GoDefStack
+
+    This command displays the entries in the GoDef stack.  Its output looks
+    like this:
+
+      1 /path/to/first/file.go|1187 col 16|AddThing func(t *Thing)
+    > 2 /path/to/thing/thing.go|624 col 19|String() string
+      3 /path/to/thing/thing.go|744 col 6|func Sprintln(a ...interface{}) string
+
+    This list shows the identifiers that you jumped to and the file and cursor
+    position before that jump.  The older jumps are at the top, the newer at the
+    bottom.
+
+    The '>' points to the active entry.  This entry and any newer entries below
+    it will be replaced if a jump is done from this location. The CTRL-t and
+    |:GoDefPop| command will use the position above the active entry.
+
+                                                                  *:GoDefPop*
+:GoDefPop [count]
+CTRL-t
+
+    Navigate to the [count] earlier entry in the jump stack, retaining the newer
+    entries. If no argument is given, it will jump to the next most recent entry
+    (`:GoDefPop 1`).  If [count] is greater than the number of prior entries,
+    the stack will bottom out at the first entry and print a message informing
+    you that you are at the bottom of the stack.
+
+    If you have used :GoDefPop to jump to an earlier location, and you issue
+    another :GoDef command, the current entry will be replaced, and all newer
+    entries will be removed, effectively resuming the stack at that location.
+
+    By default [count]CTRL-t is enabled to invoke :GoDefPop.  Similarly, hitting
+    CTRL-t without a prior count is equivalent to `:GoDefPop 1`.  See
+    |g:go_def_mapping_enabled| to disable this.
+
+                                                                 *:GoDefJump*
+:GoDefJump [number]
+
+    Jumps to a given location in the jump stack, retaining all other entries.
+    If no argument is given, it will print out an list of all items in the
+    stack, and you will be prompted to select one or hit <enter> to abort.
+
+    For details on the format of this list, see |:GoDefStack|.
+
+    Jumps to non-existent entries will print an informative message, but are
+    otherwise a noop.  As with |:GoDefPop|, any :GoDef command after a jump
+    will replace the current entry and remove all newer entries.
 
                                                                      *:GoRun*
 :GoRun[!] [expand]
@@ -510,65 +560,6 @@ CTRL-]
       autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
     augroup END
 <
-
-===============================================================================
-GODEF STACK                                                     *godef-stack*
-vim-go keeps track of locations jumped to using the |:GoDef| command.  In
-essence, this is a LIFO list of file locations you have visited with :GoDef
-that is retained to help you navigate software.
-
-Entries in this list can be jumped to and browsed in much the same way as those
-provided by vim's native |tags| support, and special commands are provided to
-do this.
-
-                                                                  *:GoDefPop*
-:GoDefPop [count]
-CTRL-t
-
-    Navigate to the [count] earlier entry in the jump stack, retaining the newer
-    entries. If no argument is given, it will jump to the next most recent entry
-    (`:GoDefPop 1`).  If [count] is greater than the number of prior entries,
-    the stack will bottom out at the first entry and print a message informing
-    you that you are at the bottom of the stack.
-
-    If you have used :GoDefPop to jump to an earlier location, and you issue
-    another :GoDef command, the current entry will be replaced, and all newer
-    entries will be removed, effectively resuming the stack at that location.
-
-    By default [count]CTRL-t is enabled to invoke :GoDefPop.  Similarly, hitting
-    CTRL-t without a prior count is equivalent to `:GoDefPop 1`.  See
-    |g:go_def_mapping_enabled| to disable this.
-
-                                                                 *:GoDefJump*
-:GoDefJump [number]
-
-    Jumps to a given location in the jump stack, retaining all other entries.
-    If no argument is given, it will print out an list of all items in the
-    stack, and you will be prompted to select one or hit <enter> to abort.
-
-    For details on the format of this list, see |:GoDefStack|.
-
-    Jumps to non-existent entries will print an informative message, but are
-    otherwise a noop.  As with |:GoDefPop|, any :GoDef command after a jump
-    will replace the current entry and remove all newer entries.
-
-                                                                *:GoDefStack*
-:GoDefStack
-
-    This command displays the entries in the GoDef stack.  Its output looks
-    like this:
-
-      1 /path/to/first/file.go|1187 col 16|AddThing func(t *Thing)
-    > 2 /path/to/thing/thing.go|624 col 19|String() string
-      3 /path/to/thing/thing.go|744 col 6|func Sprintln(a ...interface{}) string
-
-    This list shows the identifiers that you jumped to and the file and cursor
-    position before that jump.  The older jumps are at the top, the newer at the
-    bottom.
-
-    The '>' points to the active entry.  This entry and any newer entries below
-    it will be replaced if a jump is done from this location. The CTRL-t and
-    |:GoDefPop| command will use the position above the active entry.
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
