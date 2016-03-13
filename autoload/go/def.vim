@@ -58,7 +58,7 @@ function! go#def#JumpMode(mode)
 	let $GOPATH = go#path#Detect()
 
 	let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
-	let command = bin_path . " -f=" . shellescape(fname) . " -i " . shellescape(arg)
+	let command = bin_path . " -t -f=" . shellescape(fname) . " -i " . shellescape(arg)
 
 	" get output of godef
 	let out = s:system(command, join(getbufline(bufnr('%'), 1, '$'), go#util#LineEnding()))
