@@ -103,9 +103,7 @@ function! s:godefJump(out, mode)
 		echom gderr
 		" Don't jump if we're in a modified buffer
 	elseif getbufvar(bufnr('%'), "&mod")
-        echohl ErrorMsg
-		echo "No write since last change"
-        echohl None
+		call go#util#EchoError("No write since last change")
 	else
 		let parts = split(a:out[0], ':')
 
@@ -158,9 +156,7 @@ endfunction
 
 function! go#def#StackPrint()
     if len(w:go_stack) == 0
-        echohl ErrorMsg
-        echo "godef stack empty"
-        echohl None
+        call go#util#EchoError("godef stack empty")
         return
     endif
     let i = 0
@@ -200,9 +196,7 @@ endfunction
 
 function! go#def#StackJump(...)
     if len(w:go_stack) == 0
-        echohl ErrorMsg
-        echo "godef stack empty"
-        echohl None
+        call go#util#EchoError("godef stack empty")
         return
     endif
 	if !len(a:000)
@@ -216,9 +210,7 @@ function! go#def#StackJump(...)
 
     if jumpTarget !~ '^\d\+$'
         if jumpTarget !~ '^\s*$'
-            echohl ErrorMsg
-            echo "location must be a number"
-            echohl None
+            call go#util#EchoError("location must be a number")
         endif
         return
     endif
@@ -231,9 +223,7 @@ function! go#def#StackJump(...)
         " jump
         call s:goToFileLocation(target["file"], target["line"], target["col"])
     else
-        echohl ErrorMsg
-        echo "invalid godef stack location"
-        echohl None
+        call go#util#EchoError("invalid godef stack location")
     endif
 endfunction
 
