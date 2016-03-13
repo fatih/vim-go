@@ -185,6 +185,14 @@ function! go#def#StackPrint()
 endfunction
 
 function! go#def#StackPop(...)
+    if len(w:go_stack) == 0
+        call go#util#EchoError("godef stack empty")
+        return
+    endif
+    if w:go_stack_level == 0
+        call go#util#EchoError("at bottom of the godef stack")
+        return
+    endif
     if !len(a:000)
         let numPop = 1
     else
@@ -223,7 +231,7 @@ function! go#def#StackJump(...)
         " jump
         call s:goToFileLocation(target["file"], target["line"], target["col"])
     else
-        call go#util#EchoError("invalid godef stack location")
+        call go#util#EchoError("invalid godef stack location. Try :GoDefJump to see the list of valid entries")
     endif
 endfunction
 
