@@ -101,57 +101,61 @@ function! s:godefJump(out, mode)
 	if location =~ 'godef: '
 		let gderr=substitute(location, go#util#LineEnding() . '$', '', '')
         call go#util#EchoError(gderr)
-		" Don't jump if we're in a modified buffer
-	elseif getbufvar(bufnr('%'), "&mod")
-		call go#util#EchoError("No write since last change")
-	else
-		let parts = split(a:out[0], ':')
+        return
+    endif
 
-		" parts[0] contains filename
-		let fileName = parts[0]
+    " Don't jump if we're in a modified buffer
+    if getbufvar(bufnr('%'), "&mod")
+        call go#util#EchoError("No write since last change")
+        return
+    endif
 
-        " Don't jump if it's the same identifier we just jumped to
-        if len(w:go_stack) > 0 && w:go_stack[w:go_stack_level-1]['ident'] == a:out[1] && w:go_stack[w:go_stack_level-1]['file'] == fileName
-            return
+    let parts = split(a:out[0], ':')
+
+    " parts[0] contains filename
+    let fileName = parts[0]
+
+    " Don't jump if it's the same identifier we just jumped to
+    if len(w:go_stack) > 0 && w:go_stack[w:go_stack_level-1]['ident'] == a:out[1] && w:go_stack[w:go_stack_level-1]['file'] == fileName
+        return
+    endif
+
+    " needed for restoring back user setting this is because there are two
+    " modes of switchbuf which we need based on the split mode
+    let old_switchbuf = &switchbuf
+
+    if a:mode == "tab"
+        let &switchbuf = "usetab"
+
+        if bufloaded(fileName) == 0
+            tab split
         endif
-
-		" needed for restoring back user setting this is because there are two
-		" modes of switchbuf which we need based on the split mode
-		let old_switchbuf = &switchbuf
-
-		if a:mode == "tab"
-			let &switchbuf = "usetab"
-
-			if bufloaded(fileName) == 0
-				tab split
-			endif
-		else
-			if a:mode  == "split"
-				split
-			elseif a:mode == "vsplit"
-				vsplit
-			endif
-		endif
-
-        " Remove anything newer than the current position, just like basic
-        " vim tag support
-        if w:go_stack_level == 0
-            let w:go_stack = []
-        else
-            let w:go_stack = w:go_stack[0:w:go_stack_level-1]
+    else
+        if a:mode  == "split"
+            split
+        elseif a:mode == "vsplit"
+            vsplit
         endif
+    endif
 
-		" increment the stack counter
-		let w:go_stack_level += 1
+    " Remove anything newer than the current position, just like basic
+    " vim tag support
+    if w:go_stack_level == 0
+        let w:go_stack = []
+    else
+        let w:go_stack = w:go_stack[0:w:go_stack_level-1]
+    endif
 
-		" push it on to the jumpstack
-        call add(w:go_stack,
-            \{'line': line("."), 'col': col("."),
-            \'file': expand('%:p'), 'ident': a:out[1]})
+    " increment the stack counter
+    let w:go_stack_level += 1
 
-		" jump to file now
-        call s:goToFileLocation(location)
-	end
+    " push it on to the jumpstack
+    call add(w:go_stack,
+        \{'line': line("."), 'col': col("."),
+        \'file': expand('%:p'), 'ident': a:out[1]})
+
+    " jump to file now
+    call s:goToFileLocation(location)
 endfunction
 
 function! go#def#StackPrint()
