@@ -188,21 +188,14 @@ function! go#def#StackPrint()
     endif
 endfunction
 
-function! go#def#StackPop(numPop)
-    let newLevel = str2nr(w:go_stack_level) - str2nr(a:numPop)
-    if newLevel < 0
-        echohl ErrorMsg
-        echo "at bottom of godef stack"
-        echohl None
-        let newLevel = 0
+function! go#def#StackPop(...)
+    if !len(a:000)
+        let numPop = 1
+    else
+        let numPop = a:1
     endif
-    if w:go_stack_level > 0
-        let w:go_stack_level = newLevel
-        let target = w:go_stack[w:go_stack_level]
-
-        " jump
-        call s:goToFileLocation(target["file"], target["line"], target["col"])
-    endif
+    let newLevel = str2nr(w:go_stack_level) - str2nr(numPop)
+    call go#def#StackJump(newLevel + 1)
 endfunction
 
 function! go#def#StackJump(...)

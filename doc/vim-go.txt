@@ -250,8 +250,7 @@ CTRL-t
     Navigate to the [count] earlier entry in the jump stack, retaining the newer
     entries. If no argument is given, it will jump to the next most recent entry
     (`:GoDefPop 1`).  If [count] is greater than the number of prior entries,
-    the stack will bottom out at the first entry and print a message informing
-    you that you are at the bottom of the stack.
+    an error will be printed and no jump will be performed.
 
     If you have used :GoDefPop to jump to an earlier location, and you issue
     another :GoDef command, the current entry will be replaced, and all newer
