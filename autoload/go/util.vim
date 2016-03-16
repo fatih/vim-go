@@ -85,6 +85,21 @@ function! go#util#Shelllist(arglist, ...)
     endtry
 endfunction
 
+" Returns the byte offset for line a:l and column a:c
+function! go#util#Offset(l, c)
+    if &encoding != 'utf-8'
+        let buf = a:l == 1 ? '' : (join(getline(1, a:l-1), "\n") . "\n")
+        let buf .= a:c == 1 ? '' : getline('.')[:a:c-2]
+        return len(iconv(buf, &encoding, 'utf-8'))
+    endif
+    return line2byte(a:l) + (a:c-2)
+endfunction
+"
+" Returns the byte offset for the cursor
+function! go#util#OffsetCursor()
+    return go#util#Offset(line('.'), col('.'))
+endfunction
+
 " TODO(arslan): I couldn't parameterize the highlight types. Check if we can
 " simplify the following functions
 

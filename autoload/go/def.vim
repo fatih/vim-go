@@ -65,18 +65,7 @@ endfunction
 
 
 function! s:getOffset()
-	let pos = getpos(".")[1:2]
-	if &encoding == 'utf-8'
-		let offs = line2byte(pos[0]) + pos[1] - 2
-	else
-		let c = pos[1]
-		let buf = line('.') == 1 ? "" : (join(getline(1, pos[0] - 1), go#util#LineEnding()) . go#util#LineEnding())
-		let buf .= c == 1 ? "" : getline(pos[0])[:c-2]
-		let offs = len(iconv(buf, &encoding, "utf-8"))
-	endif
-
-	let argOff = "-o=" . offs
-	return argOff
+	return "-o=" . go#util#OffsetCursor()
 endfunction
 
 
