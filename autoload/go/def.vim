@@ -15,9 +15,7 @@ endf
 " modified and improved version of vim-godef
 function! go#def#Jump(...)
 	if !len(a:000)
-		" gives us the offset of the word, basicall the position of the word under
-		" he cursor
-		let arg = s:getOffset()
+		let arg = "-o=" . go#util#OffsetCursor()
 	else
 		let arg = a:1
 	endif
@@ -43,7 +41,7 @@ endfunction
 
 
 function! go#def#JumpMode(mode)
-	let arg = s:getOffset()
+	let arg = "-o=" . go#util#OffsetCursor()
 
 	let bin_path = go#path#CheckBinPath(g:go_godef_bin)
 	if empty(bin_path)

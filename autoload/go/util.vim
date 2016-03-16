@@ -85,14 +85,15 @@ function! go#util#Shelllist(arglist, ...)
     endtry
 endfunction
 
-" Returns the byte offset for line a:l and column a:c
-function! go#util#Offset(l, c)
+" Returns the byte offset for line and column
+function! go#util#Offset(line, col)
     if &encoding != 'utf-8'
-        let buf = a:l == 1 ? '' : (join(getline(1, a:l-1), "\n") . "\n")
-        let buf .= a:c == 1 ? '' : getline('.')[:a:c-2]
+        let sep = go#util#LineEnding()
+        let buf = a:line == 1 ? '' : (join(getline(1, a:line-1), sep) . sep)
+        let buf .= a:col == 1 ? '' : getline('.')[:a:col-2]
         return len(iconv(buf, &encoding, 'utf-8'))
     endif
-    return line2byte(a:l) + (a:c-2)
+    return line2byte(a:line) + (a:col-2)
 endfunction
 "
 " Returns the byte offset for the cursor
