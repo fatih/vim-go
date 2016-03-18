@@ -219,11 +219,11 @@ CTRL-]
     CTRL-] key and the mapping `gd` are enabled to invoke :GoDef for the
     identifier under the cursor. See |g:go_def_mapping_enabled| to disable them.
 
-    vim-go also keeps a location stack, roughly analagous to how vim's internal
-    |tags| functionality works. This is pushed to every time a jump is made
-    using the GoDef functionality. In essence, this is a LIFO list of file
-    locations you have visited with :GoDef that is retained to help you navigate
-    software.
+    vim-go also keeps a per-window location stack, roughly analagous to how
+    vim's internal |tags| functionality works. This is pushed to every time a
+    jump is made using the GoDef functionality. In essence, this is a LIFO list
+    of file locations you have visited with :GoDef that is retained to help you
+    navigate software.
 
                                                                 *:GoDefStack*
 :GoDefStack
@@ -264,8 +264,8 @@ CTRL-t
 :GoDefJump [number]
 
     Jumps to a given location in the jump stack, retaining all other entries.
-    If no argument is given, it will print out an list of all items in the
-    stack, and you will be prompted to select one or hit <enter> to abort.
+    If no argument is given, it will print out an interactive list of all items
+    in the stack, from which you can select one, if you choose.
 
     For details on the format of this list, see |:GoDefStack|.
 
