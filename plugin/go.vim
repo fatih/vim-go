@@ -18,6 +18,7 @@ let s:packages = [
             \ "github.com/kisielk/errcheck",
             \ "github.com/jstemmer/gotags",
             \ "github.com/klauspost/asmfmt/cmd/asmfmt",
+            \ "github.com/fatih/motion",
             \ ]
 
 " These commands are available on any filetypes
@@ -143,7 +144,7 @@ augroup vim-go
 
     " GoInfo automatic update
     if get(g:, "go_auto_type_info", 0)
-        autocmd CursorHold *.go nested call go#complete#Info()
+        autocmd CursorHold *.go nested call go#complete#Info(1)
     endif
 
     " Echo the identifier information when completion is done. Useful to see
