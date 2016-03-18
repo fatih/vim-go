@@ -104,12 +104,6 @@ function! s:godefJump(out, mode)
         return
     endif
 
-    " Don't jump if we're in a modified buffer
-    if getbufvar(bufnr('%'), "&mod")
-        call go#util#EchoError("No write since last change")
-        return
-    endif
-
     let parts = split(a:out[0], ':')
 
     " parts[0] contains filename
@@ -124,67 +118,84 @@ function! s:godefJump(out, mode)
     " modes of switchbuf which we need based on the split mode
     let old_switchbuf = &switchbuf
 
+    " If we got a mode, then just open the def in a new tab/split
     if a:mode == "tab"
         let &switchbuf = "usetab"
 
         if bufloaded(fileName) == 0
             tab split
         endif
+    elseif a:mode  == "split"
+        split
+    elseif a:mode == "vsplit"
+        vsplit
     else
-        if a:mode  == "split"
-            split
-        elseif a:mode == "vsplit"
-            vsplit
+        " We didn't get a mode, so we start the process of pushing to the
+        " jumpstack
+
+        " Don't jump in this window if it's been modified
+        if getbufvar(bufnr('%'), "&mod")
+            call go#util#EchoError("No write since last change")
+            return
         endif
+
+        " Remove anything newer than the current position, just like basic
+        " vim tag support
+        if w:go_stack_level == 0
+            let w:go_stack = []
+        else
+            let w:go_stack = w:go_stack[0:w:go_stack_level-1]
+        endif
+
+        " increment the stack counter
+        let w:go_stack_level += 1
+
+        " push it on to the jumpstack
+        call add(w:go_stack,
+                    \{'line': line("."), 'col': col("."),
+                    \'file': expand('%:p'), 'ident': a:out[1]})
     endif
-
-    " Remove anything newer than the current position, just like basic
-    " vim tag support
-    if w:go_stack_level == 0
-        let w:go_stack = []
-    else
-        let w:go_stack = w:go_stack[0:w:go_stack_level-1]
-    endif
-
-    " increment the stack counter
-    let w:go_stack_level += 1
-
-    " push it on to the jumpstack
-    call add(w:go_stack,
-        \{'line': line("."), 'col': col("."),
-        \'file': expand('%:p'), 'ident': a:out[1]})
 
     " jump to file now
     call s:goToFileLocation(location)
+
+    let &switchbuf = old_switchbuf
 endfunction
 
-function! go#def#StackPrint()
+function! go#def#StackUI(interactive)
     if len(w:go_stack) == 0
         call go#util#EchoError("godef stack empty")
         return
     endif
+
+    if a:interactive
+        let stackOut = ['" Navigate: arrows, hjkl Jump: <Enter> ']
+    else
+        let stackOut = ['" <Esc> or <Enter> to close']
+    endif
+
     let i = 0
     while i < len(w:go_stack)
         let entry = w:go_stack[i]
+        let prefix = ""
         if i == w:go_stack_level
-            echon "> "
+            let prefix = ">"
         else
-            echon "  "
+            let prefix = " "
         endif
-        echon i+1 . " "
-        echohl Directory
-        echon entry["file"]
-        echohl None
-        echon "|"
-        echohl LineNr
-        echon entry["line"] . " col " . entry["col"]
-        echohl None
-        echon "|"
-        echon entry["ident"] . "\n"
+        call add(stackOut, printf("%s %d %s|%d col %d|%s", prefix, i+1, entry["file"], entry["line"], entry["col"], entry["ident"]))
         let i += 1
     endwhile
     if w:go_stack_level == i
-        echo ">"
+        call add(stackOut, "> ")
+    endif
+
+    call go#ui#OpenWindow("GoDef Stack", stackOut, "godefstack")
+    if a:interactive
+        noremap <buffer> <silent> <CR>  :<C-U>call go#def#SelectStackEntry()<CR>
+    else
+        noremap <buffer> <silent> <CR> :<C-U>call go#ui#CloseWindow()<CR>
+        noremap <buffer> <silent> <Esc> :<C-U>call go#ui#CloseWindow()<CR>
     endif
 endfunction
 
@@ -213,9 +224,8 @@ function! go#def#StackJump(...)
     endif
 	if !len(a:000)
         " Display interactive stack
-        call go#def#StackPrint()
-        echon "\n"
-        let jumpTarget=input("Type number and <Enter> (empty cancels): ")
+        call go#def#StackUI(1)
+        return
 	else
 		let jumpTarget= a:1
 	endif
@@ -257,4 +267,17 @@ function! s:goToFileLocation(...)
     normal zz
 
     let &errorformat = old_errorformat
+endfunction
+
+function! go#def#SelectStackEntry()
+    let target_window = go#ui#GetReturnWindow()
+    if empty(target_window)
+        let target_window = winnr()
+    endif
+    let highlighted_stack_entry = matchstr(getline("."), '^..\zs\(\d\+\)')
+    if !empty(highlighted_stack_entry)
+        execute target_window . "wincmd w"
+        call go#def#StackJump(str2nr(highlighted_stack_entry))
+    endif
+    call go#ui#CloseWindow()
 endfunction
