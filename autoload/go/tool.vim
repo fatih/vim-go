@@ -51,7 +51,7 @@ function! go#tool#ParseErrors(lines)
             call add(errors, {"text": fatalerrors[1]})
         elseif !empty(tokens)
             " strip endlines of form ^M
-            let out=substitute(tokens[3], '\r$', '', '')
+            let out = substitute(tokens[3], '\r$', '', '')
 
             call add(errors, {
                         \ "filename" : fnamemodify(tokens[1], ':p'),

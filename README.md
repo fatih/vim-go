@@ -30,7 +30,7 @@ disabled/enabled easily.
   (golint, vet, errcheck, deadcode, etc..) and shows the warnings/errors
 * Lint your code with `:GoLint`
 * Run your code through `:GoVet` to catch static errors
-* Advanced source analysis tools utilizing oracle, such as `:GoImplements`,
+* Advanced source analysis tools utilizing guru, such as `:GoImplements`,
   `:GoCallees`, and `:GoReferrers`
 * Precise type-safe renaming of identifiers with `:GoRename`
 * List all source files and dependencies
@@ -52,7 +52,9 @@ disabled/enabled easily.
 
 ## Donation
 
-People have asked for this for a long time, now you can be a fully supporter by [being a patron](https://www.patreon.com/fatih)! This is fully optional and is just a way to support vim-go's ongoing development directly. Thanks!
+People have asked for this for a long time, now you can be a fully supporter by
+[being a patron](https://www.patreon.com/fatih)! This is fully optional and is
+just a way to support vim-go's ongoing development directly. Thanks!
 
 [https://www.patreon.com/fatih](https://www.patreon.com/fatih)
 
@@ -270,7 +272,7 @@ other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
 ## Credits
 
 * Go Authors for official vim plugins
-* Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and
+* Gocode, Godef, Golint, Guru, Goimports, Gotags, Errcheck projects and
   authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
   vim-godef)

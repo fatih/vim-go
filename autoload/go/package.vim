@@ -117,7 +117,7 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos)
     let words = split(a:CmdLine, '\s\+', 1)
 
     " do not complete package members for these commands
-    let neglect_commands = ["GoImportAs", "GoOracleScope"]
+    let neglect_commands = ["GoImportAs", "GoGuruScope"]
 
     if len(words) > 2 && index(neglect_commands, words[0]) == -1
         " Complete package members
