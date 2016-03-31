@@ -208,7 +208,7 @@ function! go#cmd#Test(bang, compile, ...)
     if args[1] == "-run"
         let target = args[2]
     else
-        let target = expand("%:t")
+        let target = expand("%:h")
     endif
 
     if a:compile
