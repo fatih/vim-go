@@ -205,10 +205,16 @@ function! go#cmd#Test(bang, compile, ...)
         call add(args, printf("-timeout=%s", timeout))
     endif
 
+    if args[1] == "-run"
+        let target = args[2]
+    else
+        let target = expand("%:t")
+    endif
+
     if a:compile
         echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
     else
-        echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
+        echon "vim-go: " | echohl Identifier | echon "testing: " | echon target | echon " ..." | echohl None
     endif
 
     if has('nvim')
@@ -248,7 +254,7 @@ function! go#cmd#Test(bang, compile, ...)
             " failed to parse errors, output the original content
             call go#util#EchoError(out)
         endif
-        echon "vim-go: " | echohl ErrorMsg | echon "[test] FAIL" | echohl None
+        echon "vim-go: " | echohl ErrorMsg | echon "[test] FAIL, Target: " | echon target | echohl None
     else
         call go#list#Clean(l:listtype)
         call go#list#Window(l:listtype)
@@ -256,7 +262,7 @@ function! go#cmd#Test(bang, compile, ...)
         if a:compile
             echon "vim-go: " | echohl Function | echon "[test] SUCCESS" | echohl None
         else
-            echon "vim-go: " | echohl Function | echon "[test] PASS" | echohl None
+            echon "vim-go: " | echohl Function | echon "[test] PASS, Target: " | echon target | echohl None
         endif
     endif
 endfunction
