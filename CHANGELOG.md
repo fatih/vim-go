@@ -11,5 +11,6 @@ IMPROVEMENTS:
 
 BUG FIXES:
 
+* Term mode: fix closing location list if result is succesfull after a failed attempt [gh-768]
 * Syntax: fix gotexttmpl identifier highlighting [gh-778]
 
