@@ -57,6 +57,8 @@ People have asked for this for a long time, now you can be a fully supporter by 
 
 [https://www.patreon.com/fatih](https://www.patreon.com/fatih)
 
+![ss-vim-go-coverlay](https://cloud.githubusercontent.com/assets/3804806/5319001/81a3b89a-7ce8-11e4-9fbd-2f0fd00ce1c7.gif)
+
 ## Install
 
 Vim-go follows the standard runtime path structure, so I highly recommend to
@@ -217,8 +219,15 @@ By default when `:GoInstallBinaries` is called, the binaries are installed to
 `$GOBIN` or `$GOPATH/bin`. To change it:
 
 ```vim
+<<<<<<< HEAD
 let g:go_bin_path = expand("~/.gotools")
 let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
+=======
+au FileType go nmap <leader>c <Plug>(go-coverlay) "test coverage then overlay covered lines
+au FileType go nmap <leader>C <Plug>(go-clearlay) "clear overlay
+
+au BufWritePost *.go call go#coverlay#Coverlay() "run test and cover on file save
+>>>>>>> 70c8cf8... code cleanup
 ```
 
 ### Using with Neovim (beta)
