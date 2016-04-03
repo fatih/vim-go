@@ -82,7 +82,6 @@ describe 'go#coverlay#Coverlay build fail'
     it 'does nothing if test fail'
 	call go#coverlay#Coverlay(0)
 	Expect len(go#coverlay#matches()) == 0
-	Expect len(getqflist()) == 1
     end
 end
 
@@ -105,7 +104,6 @@ describe 'go#coverlay#Coverlay build test fail'
     it 'does nothing if test fail'
 	call go#coverlay#Coverlay(0)
 	Expect len(go#coverlay#matches()) == 0
-	Expect len(getqflist()) == 1
     end
 end
 
