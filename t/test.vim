@@ -19,19 +19,19 @@ describe 'go#coverlay#Coverlay'
     end
 
     it 'puts match to the list'
-        call go#coverlay#Coverlay()
+        call go#coverlay#Coverlay(0)
         Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
 
-        call go#coverlay#Coverlay()
+        call go#coverlay#Coverlay(0)
         Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
 
-        call go#coverlay#Coverlay()
+        call go#coverlay#Coverlay(0)
         Expect len(go#coverlay#matches()) == 5
-        call go#coverlay#Coverlay()
+        call go#coverlay#Coverlay(0)
         Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
@@ -44,6 +44,7 @@ describe 'go#coverlay#Coverlay fail'
 	let g:curdir = expand('<sfile>:p:h') . '/'
 	let g:srcpath = 't/fixtures/src/'
 	let g:sample = 'failtest/sample.go'
+	let g:sampletest = 'failtest/sample_test.go'
 	let g:sampleabs = g:curdir . g:srcpath . 'failtest/sample.go'
 	let g:go_gopath = g:curdir . 't/fixtures'
 	execute "badd " . g:srcpath . g:sample
@@ -51,13 +52,58 @@ describe 'go#coverlay#Coverlay fail'
     end
     after
 	execute "bprev"
+	execute "bdelete " . g:srcpath . g:sampletest
 	execute "bdelete " . g:srcpath . g:sample
-	call setqflist([])
-	cclose
     end
 
     it 'does nothing if test fail'
-	call go#coverlay#Coverlay()
+	call go#coverlay#Coverlay(0)
+	Expect len(go#coverlay#matches()) == 0
+	Expect len(getqflist()) == 1
+    end
+end
+
+describe 'go#coverlay#Coverlay build fail'
+    before
+        new
+	let g:curdir = expand('<sfile>:p:h') . '/'
+	let g:srcpath = 't/fixtures/src/'
+	let g:sample = 'buildfail/sample.go'
+	let g:sampleabs = g:curdir . g:srcpath . 'buildfail/sample.go'
+	let g:go_gopath = g:curdir . 't/fixtures'
+	execute "badd " . g:srcpath . g:sample
+	execute "buffer " . bufnr("$")
+    end
+    after
+	execute "bprev"
+	execute "bdelete " . g:srcpath . g:sample
+    end
+
+    it 'does nothing if test fail'
+	call go#coverlay#Coverlay(0)
+	Expect len(go#coverlay#matches()) == 0
+	Expect len(getqflist()) == 1
+    end
+end
+
+describe 'go#coverlay#Coverlay build test fail'
+    before
+        new
+	let g:curdir = expand('<sfile>:p:h') . '/'
+	let g:srcpath = 't/fixtures/src/'
+	let g:sample = 'buildtestfail/sample.go'
+	let g:sampleabs = g:curdir . g:srcpath . 'buildtestfail/sample.go'
+	let g:go_gopath = g:curdir . 't/fixtures'
+	execute "badd " . g:srcpath . g:sample
+	execute "buffer " . bufnr("$")
+    end
+    after
+	execute "bprev"
+	execute "bdelete " . g:srcpath . g:sample
+    end
+
+    it 'does nothing if test fail'
+	call go#coverlay#Coverlay(0)
 	Expect len(go#coverlay#matches()) == 0
 	Expect len(getqflist()) == 1
     end
