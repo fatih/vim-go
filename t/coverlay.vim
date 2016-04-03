@@ -1,6 +1,6 @@
 " to execute, `rake test` on parent dir
 
-describe 'go#coverlay#Coverlay'
+describe 'go#coverage#Buffer'
     before
         new
 	let g:curdir = expand('<sfile>:p:h') . '/'
@@ -19,26 +19,26 @@ describe 'go#coverlay#Coverlay'
     end
 
     it 'puts match to the list'
-        call go#coverlay#Coverlay(0)
+        call go#coverage#Buffer(0)
         Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
 
-        call go#coverlay#Coverlay(0)
+        call go#coverage#Buffer(0)
         Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
 
-        call go#coverlay#Coverlay(0)
+        call go#coverage#Buffer(0)
         Expect len(go#coverlay#matches()) == 5
-        call go#coverlay#Coverlay(0)
+        call go#coverage#Buffer(0)
         Expect len(go#coverlay#matches()) == 5
         call go#coverlay#Clearlay()
         Expect len(go#coverlay#matches()) == 0
     end
 end
 
-describe 'go#coverlay#Coverlay fail'
+describe 'go#coverage#Buffer fail'
     before
         new
 	let g:curdir = expand('<sfile>:p:h') . '/'
@@ -57,13 +57,13 @@ describe 'go#coverlay#Coverlay fail'
     end
 
     it 'does nothing if test fail'
-	call go#coverlay#Coverlay(0)
+	call go#coverage#Buffer(0)
 	Expect len(go#coverlay#matches()) == 0
 	Expect len(getqflist()) == 1
     end
 end
 
-describe 'go#coverlay#Coverlay build fail'
+describe 'go#coverage#Buffer build fail'
     before
         new
 	let g:curdir = expand('<sfile>:p:h') . '/'
@@ -80,12 +80,12 @@ describe 'go#coverlay#Coverlay build fail'
     end
 
     it 'does nothing if test fail'
-	call go#coverlay#Coverlay(0)
+	call go#coverage#Buffer(0)
 	Expect len(go#coverlay#matches()) == 0
     end
 end
 
-describe 'go#coverlay#Coverlay build test fail'
+describe 'go#coverage#Buffer build test fail'
     before
         new
 	let g:curdir = expand('<sfile>:p:h') . '/'
@@ -102,7 +102,7 @@ describe 'go#coverlay#Coverlay build test fail'
     end
 
     it 'does nothing if test fail'
-	call go#coverlay#Coverlay(0)
+	call go#coverage#Buffer(0)
 	Expect len(go#coverlay#matches()) == 0
     end
 end

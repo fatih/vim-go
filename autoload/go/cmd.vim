@@ -290,47 +290,6 @@ function! go#cmd#TestFunc(bang, ...)
     call call('go#cmd#Test', args)
 endfunction
 
-let s:coverage_handler_id = ''
-let s:coverage_handler_jobs = {}
-
-function! s:coverage_handler(job, exit_status, data)
-    if !has_key(s:coverage_handler_jobs, a:job.id)
-        return
-    endif
-    let l:tmpname = s:coverage_handler_jobs[a:job.id]
-    if a:exit_status == 0
-        let openHTML = 'go tool cover -html='.l:tmpname
-        call go#tool#ExecuteInDir(openHTML)
-    endif
-    call delete(l:tmpname)
-    unlet s:coverage_handler_jobs[a:job.id]
-endfunction
-
-" Coverage creates a new cover profile with 'go test -coverprofile' and opens
-" a new HTML coverage page from that profile.
-function! go#cmd#Coverage(bang, ...)
-    let l:tmpname=tempname()
-    let args = [a:bang, 0, "-coverprofile", l:tmpname]
-
-    if a:0
-        call extend(args, a:000)
-    endif
-    let id = call('go#cmd#Test', args)
-    if has('nvim')
-        if s:coverage_handler_id == ''
-            let s:coverage_handler_id = go#jobcontrol#AddHandler(function('s:coverage_handler'))
-        endif
-        let s:coverage_handler_jobs[id] = l:tmpname
-        return
-    endif
-    if !v:shell_error
-        let openHTML = 'go tool cover -html='.l:tmpname
-        call go#tool#ExecuteInDir(openHTML)
-    endif
-
-    call delete(l:tmpname)
-endfunction
-
 " Generate runs 'go generate' in similar fashion to go#cmd#Build()
 function! go#cmd#Generate(bang, ...)
     let default_makeprg = &makeprg
