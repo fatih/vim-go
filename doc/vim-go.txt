@@ -323,12 +323,21 @@ COMMANDS                                                          *go-commands*
 
     If [!] is not given the first error is jumped to.
 
-    If using neovim `:GoTestCompile` will run in a new terminal or run asynchronously
-    in the background according to |g:go_term_enabled|. You can set the mode of
-    the new terminal with |g:go_term_mode|.
+    If using neovim `:GoTestCompile` will run in a new terminal or run
+    asynchronously in the background according to |g:go_term_enabled|. You can
+    set the mode of the new terminal with |g:go_term_mode|.
 
                                                                 *:GoCoverage*
 :GoCoverage[!] [options]
+
+    Create a coverage profile and annotates the current file's source code. If
+    called again clears the annotation (works as a toggle)
+
+    If [!] is not given the first error is jumped to.
+
+
+                                                          *:GoCoverageBrowser*
+:GoCoverageBrowser[!] [options]
 
     Create a coverage profile and open a browser to display the annotated
     source code of the current package.
