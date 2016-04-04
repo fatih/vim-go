@@ -4,6 +4,12 @@ FEATURES:
 
 * New `CHANGELOG.md` file (which you're reading now). This will make it easier
   for me to track changes and release versions
+* **`:GoCoverage`**: is now highlighting the current source file for
+  covered/uncovered lines. If called again it clears the highlighting. This is
+  a pretty good addition to vim-go and I suggest to check out the gif that shows
+  it in action: https://twitter.com/fatih/status/716722650383564800 [gh-786]
+* **`:GoCoverageBrowser`**: opens a new annotated HTML page. This is the old
+  `:GoCoverage` behavior [gh-786]
 
 IMPROVEMENTS:
 
