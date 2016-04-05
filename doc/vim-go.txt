@@ -989,7 +989,13 @@ also enabled. By default it's enabled. >
 
 	let g:go_highlight_string_spellcheck = 1
 <
+                                        *'g:go_highlight_format_strings*
 
+Use this option to highlight printf-style operators inside string literals.
+By default it's enabled. >
+
+	let g:go_highlight_format_strings = 1
+<
                                                 *'g:go_autodetect_gopath'*
 
 Automatically modifies GOPATH for certain directory structures, such as for
