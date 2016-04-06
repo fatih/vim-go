@@ -43,6 +43,7 @@ disabled/enabled easily.
 * Tagbar support to show tags of the source code in a sidebar with `gotags`
 * Custom vim text objects such as `a function` or `inner function`
   list.
+* Jump to function or type declarations with `:GoDecls` or `:GoDeclsDir`
 * A async launcher for the go command is implemented for Neovim, fully async
   building and testing (beta).
 * Integrated with the Neovim terminal, launch `:GoRun` and other go commands
