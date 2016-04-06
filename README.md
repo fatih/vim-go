@@ -9,8 +9,6 @@ disabled/enabled easily.
 
 ![vim-go](https://dl.dropboxusercontent.com/u/174404/vim-go-2.png)
 
-
-
 ## Features
 
 * Improved Syntax highlighting with items such as Functions, Operators, Methods.
