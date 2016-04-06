@@ -24,8 +24,8 @@ disabled/enabled easily.
 * Automatic `GOPATH` detection based on the directory structure (i.e. `gb`
   projects, `godep` vendored projects)
 * Change or display `GOPATH` with `:GoPath`
-* Create a coverage profile and display annotated source code in browser to see
-  which functions are covered with `:GoCoverage`
+* Create a coverage profile and display annotated source code to see which
+  functions are covered with `:GoCoverage`
 * Call `gometalinter` with `:GoMetaLinter`, which invokes all possible linters
   (golint, vet, errcheck, deadcode, etc..) and shows the warnings/errors
 * Lint your code with `:GoLint`
