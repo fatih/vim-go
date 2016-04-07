@@ -33,7 +33,6 @@ command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
 
 " -- def
 command! -nargs=* -range GoDef :call go#def#Jump(<f-args>)
-command! -nargs=0 GoDefStack :call go#def#StackUI(0)
 command! -nargs=? GoDefPop :call go#def#StackPop(<f-args>)
 command! -nargs=? GoDefJump :call go#def#StackJump(<f-args>)
 

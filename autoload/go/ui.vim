@@ -19,15 +19,8 @@ function! go#ui#OpenWindow(title, content, filetype)
         execute bufwinnr(s:buf_nr) . 'wincmd w'
     endif
 
-
-    " Keep minimum height to 10, if there is more just increase it that it
-    " occupies all results
-    let buffer_height = 10
-    if len(a:content) < buffer_height
-        exe 'resize ' . buffer_height
-    else
-        exe 'resize ' . len(a:content)
-    endif
+    " Resize window to content length
+    exe 'resize' . len(a:content)
 
     execute "setlocal filetype=".a:filetype
 
@@ -56,6 +49,9 @@ function! go#ui#OpenWindow(title, content, filetype)
 
     " set it back to non modifiable
     setlocal nomodifiable
+
+    " Remove the '... [New File]' message line from the command line
+    echon
 endfunction
 
 function! go#ui#GetReturnWindow()

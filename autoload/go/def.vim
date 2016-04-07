@@ -105,7 +105,6 @@ function! s:godefJump(out, mode)
     " modes of switchbuf which we need based on the split mode
     let old_switchbuf = &switchbuf
 
-    " If we got a mode, then just open the def in a new tab/split
     if a:mode == "tab"
         let &switchbuf = "usetab"
 
@@ -117,49 +116,43 @@ function! s:godefJump(out, mode)
     elseif a:mode == "vsplit"
         vsplit
     else
-        " We didn't get a mode, so we start the process of pushing to the
-        " jumpstack
-
         " Don't jump in this window if it's been modified
         if getbufvar(bufnr('%'), "&mod")
             call go#util#EchoError("No write since last change")
             return
         endif
-
-        " Remove anything newer than the current position, just like basic
-        " vim tag support
-        if w:go_stack_level == 0
-            let w:go_stack = []
-        else
-            let w:go_stack = w:go_stack[0:w:go_stack_level-1]
-        endif
-
-        " increment the stack counter
-        let w:go_stack_level += 1
-
-        " push it on to the jumpstack
-        call add(w:go_stack,
-                    \{'line': line("."), 'col': col("."),
-                    \'file': expand('%:p'), 'ident': a:out[1]})
     endif
+
+    let stack_entry = {'line': line("."), 'col': col("."),
+                \'file': expand('%:p'), 'ident': a:out[1]}
 
     " jump to file now
     call s:goToFileLocation(location)
+    "
+    " Remove anything newer than the current position, just like basic
+    " vim tag support
+    if w:go_stack_level == 0
+        let w:go_stack = []
+    else
+        let w:go_stack = w:go_stack[0:w:go_stack_level-1]
+    endif
+
+    " increment the stack counter
+    let w:go_stack_level += 1
+
+    " push it on to the jumpstack
+    call add(w:go_stack, stack_entry)
 
     let &switchbuf = old_switchbuf
 endfunction
 
-function! go#def#StackUI(interactive)
+function! go#def#StackUI()
     if len(w:go_stack) == 0
         call go#util#EchoError("godef stack empty")
         return
     endif
 
-    if a:interactive
-        let stackOut = ['" Navigate: arrows, hjkl Jump: <Enter> ']
-    else
-        let stackOut = ['" <Esc> or <Enter> to close']
-    endif
+    let stackOut = ['" <Up>,<Down>:navigate <Enter>:jump <Esc>,q:exit']
 
     let i = 0
     while i < len(w:go_stack)
@@ -178,12 +171,9 @@ function! go#def#StackUI(interactive)
     endif
 
     call go#ui#OpenWindow("GoDef Stack", stackOut, "godefstack")
-    if a:interactive
-        noremap <buffer> <silent> <CR>  :<C-U>call go#def#SelectStackEntry()<CR>
-    else
-        noremap <buffer> <silent> <CR> :<C-U>call go#ui#CloseWindow()<CR>
-        noremap <buffer> <silent> <Esc> :<C-U>call go#ui#CloseWindow()<CR>
-    endif
+    noremap <buffer> <silent> <CR>  :<C-U>call go#def#SelectStackEntry()<CR>
+    noremap <buffer> <silent> <Esc> :<C-U>call go#ui#CloseWindow()<CR>
+    noremap <buffer> <silent> q     :<C-U>call go#ui#CloseWindow()<CR>
 endfunction
 
 function! go#def#StackPop(...)
@@ -211,7 +201,7 @@ function! go#def#StackJump(...)
     endif
 	if !len(a:000)
         " Display interactive stack
-        call go#def#StackUI(1)
+        call go#def#StackUI()
         return
 	else
 		let jumpTarget= a:1

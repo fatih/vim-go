@@ -223,13 +223,18 @@ CTRL-]
     vim's internal |tags| functionality works. This is pushed to every time a
     jump is made using the GoDef functionality. In essence, this is a LIFO list
     of file locations you have visited with :GoDef that is retained to help you
-    navigate software.
+    navigate software. For more information on displaying the stack, see
+    |:GoDefJump|
 
-                                                                *:GoDefStack*
-:GoDefStack
+                                                                 *:GoDefJump*
+:GoDefJump [number]
 
-    This command displays the entries in the GoDef stack.  Its output looks
-    like this:
+    This command Jumps to a given location in the jumpstack, retaining all other
+    entries. Jumps to non-existent entries will print an informative message,
+    but are otherwise a noop.
+
+    If no argument is given, it will print out an interactive list of all items
+    in the stack. Its output looks like this:
 
       1 /path/to/first/file.go|1187 col 16|AddThing func(t *Thing)
     > 2 /path/to/thing/thing.go|624 col 19|String() string
@@ -240,8 +245,11 @@ CTRL-]
     bottom.
 
     The '>' points to the active entry.  This entry and any newer entries below
-    it will be replaced if a jump is done from this location. The CTRL-t and
-    |:GoDefPop| command will use the position above the active entry.
+    it will be replaced if |:GoDef| is done from this location. The CTRL-t and
+    |:GoDefPop| command will jump to the position above the active entry.
+
+    Jumps to non-existent entries will print an informative message, but are
+    otherwise a noop.
 
                                                                   *:GoDefPop*
 :GoDefPop [count]
@@ -259,19 +267,6 @@ CTRL-t
     By default [count]CTRL-t is enabled to invoke :GoDefPop.  Similarly, hitting
     CTRL-t without a prior count is equivalent to `:GoDefPop 1`.  See
     |g:go_def_mapping_enabled| to disable this.
-
-                                                                 *:GoDefJump*
-:GoDefJump [number]
-
-    Jumps to a given location in the jump stack, retaining all other entries.
-    If no argument is given, it will print out an interactive list of all items
-    in the stack, from which you can select one, if you choose.
-
-    For details on the format of this list, see |:GoDefStack|.
-
-    Jumps to non-existent entries will print an informative message, but are
-    otherwise a noop.  As with |:GoDefPop|, any :GoDef command after a jump
-    will replace the current entry and remove all newer entries.
 
                                                                      *:GoRun*
 :GoRun[!] [expand]
