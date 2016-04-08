@@ -92,7 +92,7 @@ function! s:on_stderr(job_id, data)
     call extend(job.stderr, a:data)
 endfunction
 
-function! s:on_exit(job_id, data)
+function! s:on_exit(job_id, exit_status)
     if !has_key(s:jobs, a:job_id)
         return
     endif
@@ -110,7 +110,6 @@ function! s:on_exit(job_id, data)
 
     let errors = go#tool#ParseErrors(job.stdout)
     let errors = go#tool#FilterValids(errors)
-
 
     if !empty(errors)
         " close terminal we don't need it anymore

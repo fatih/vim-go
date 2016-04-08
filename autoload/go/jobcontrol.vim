@@ -115,13 +115,14 @@ endfunction
 " it'll be closed.
 function! s:on_exit(job_id, exit_status)
   let std_combined = self.stderr + self.stdout
+  call s:callback_handlers_on_exit(s:jobs[a:job_id], a:exit_status, std_combined)
+
   if a:exit_status == 0
     call go#list#Clean(0)
     call go#list#Window(0)
 
     let self.state = "SUCCESS"
     call go#util#EchoSuccess("SUCCESS")
-    call s:callback_handlers_on_exit(s:jobs[a:job_id], a:exit_status, std_combined)
     return
   endif
 
@@ -141,7 +142,6 @@ function! s:on_exit(job_id, exit_status)
   if !len(errors)
     " failed to parse errors, output the original content
     call go#util#EchoError(std_combined[0])
-    call s:callback_handlers_on_exit(s:jobs[a:job_id], a:exit_status, std_combined)
     return
   endif
 
@@ -154,7 +154,6 @@ function! s:on_exit(job_id, exit_status)
       call go#list#JumpToFirst(l:listtype)
     endif
   endif
-  call s:callback_handlers_on_exit(s:jobs[a:job_id], a:exit_status, std_combined)
 endfunction
 
 " callback_handlers_on_exit runs all handlers for job on exit event.

@@ -16,18 +16,29 @@ function! go#coverage#Buffer(bang, ...)
     if a:0
         call extend(args, a:000)
     endif
-    "TODO: add -coverpkg options based on current buf list
+
+    let disabled_term = 0
+    if get(g:, 'go_term_enabled')
+        let disabled_term = 1
+        let g:go_term_enabled = 0
+    endif
+
     let id = call('go#cmd#Test', args)
+
+    if disabled_term
+        let g:go_term_enabled = 1
+    endif
+
     if has('nvim')
-        if s:coverage_handler_id == ''
-            let s:coverage_handler_id = go#jobcontrol#AddHandler(function('s:coverage_handler'))
-        endif
+        call go#jobcontrol#AddHandler(function('s:coverage_handler'))
         let s:coverage_handler_jobs[id] = l:tmpname
         return
     endif
+
     if !v:shell_error
         call go#coverage#overlay(l:tmpname)
     endif
+
     call delete(l:tmpname)
 endfunction
 
@@ -56,9 +67,7 @@ function! go#coverage#Browser(bang, ...)
     endif
     let id = call('go#cmd#Test', args)
     if has('nvim')
-        if s:coverage_browser_handler_id == ''
-            let s:coverage_browser_handler_id = go#jobcontrol#AddHandler(function('s:coverage_browser_handler'))
-        endif
+        call go#jobcontrol#AddHandler(function('s:coverage_browser_handler'))
         let s:coverage_browser_handler_jobs[id] = l:tmpname
         return
     endif
@@ -207,8 +216,8 @@ endfunction
 " | Neovim job handlers |
 " -----------------------
 
-let s:coverage_handler_id = ''
 let s:coverage_handler_jobs = {}
+let s:coverage_browser_handler_jobs = {}
 
 function! s:coverage_handler(job, exit_status, data)
     if !has_key(s:coverage_handler_jobs, a:job.id)
@@ -223,19 +232,17 @@ function! s:coverage_handler(job, exit_status, data)
     unlet s:coverage_handler_jobs[a:job.id]
 endfunction
 
-
-let s:coverage_browser_handler_id = ''
-let s:coverage_browser_handler_jobs = {}
-
 function! s:coverage_browser_handler(job, exit_status, data)
     if !has_key(s:coverage_browser_handler_jobs, a:job.id)
         return
     endif
+
     let l:tmpname = s:coverage_browser_handler_jobs[a:job.id]
     if a:exit_status == 0
         let openHTML = 'go tool cover -html='.l:tmpname
         call go#tool#ExecuteInDir(openHTML)
     endif
+
     call delete(l:tmpname)
     unlet s:coverage_browser_handler_jobs[a:job.id]
 endfunction
