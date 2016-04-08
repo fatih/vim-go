@@ -168,8 +168,13 @@ function! go#coverage#overlay(file)
         let l:root = split(fname, '_test.go$')[0]
         let fname = l:root . ".go"
 
+        if !filereadable(fname)
+            call go#util#EchoError("couldn't find ".fname)
+            return
+        endif
+
         " open the alternate file to show the coverage
-        exe ":edit ". fname 
+        exe ":edit ". fnamemodify(fname, ":p")
     endif
 
     for line in lines[1:]
