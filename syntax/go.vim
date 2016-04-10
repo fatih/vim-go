@@ -181,7 +181,7 @@ else
 endif
 
 if g:go_highlight_format_strings != 0
-  syn match       goFormatSpecifier   /%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
+  syn match       goFormatSpecifier   /%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)*\%([vTtbcdoqxXUeEfgGspr]\|h\[[a-zA-Z0-9+]\+\]\)/ contained containedin=goString
   hi def link     goFormatSpecifier   goSpecialString
 endif
 
