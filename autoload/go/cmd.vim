@@ -272,7 +272,7 @@ function! go#cmd#TestFunc(bang, ...)
     "
     " for the full list
     " :help search
-    let test = search("func Test", "bcnW")
+    let test = search('func \(Test\|Example\)', "bcnW")
 
     if test == 0
         echo "vim-go: [test] no test found immediate to cursor"
