@@ -4,17 +4,17 @@ FEATURES:
 
 * New `CHANGELOG.md` file (which you're reading now). This will make it easier
   for me to track changes and release versions
-* **`:GoCoverage`**: is now highlighting the current source file for
+* **`:GoCoverage`** is now highlighting the current source file for
   covered/uncovered lines. If called again it clears the highlighting. This is
   a pretty good addition to vim-go and I suggest to check out the gif that shows
   it in action: https://twitter.com/fatih/status/716722650383564800 [gh-786]
-* **`:GoCoverageBrowser`**: opens a new annotated HTML page. This is the old
+* **`:GoCoverageBrowser`** opens a new annotated HTML page. This is the old
   `:GoCoverage` behavior [gh-786]
-* **`GoDoc`**: uses now `[gogetdoc](https://github.com/zmb3/gogetdoc)` to
+* **`:GoDoc`** uses now `[gogetdoc](https://github.com/zmb3/gogetdoc)` to
   lookup and display the comment documentation for the identifier under the
   cursor. This is more superior as it support looking up dot imports, named
   imports and imports where package name and file name are different [gh-782]
-* **`GoDef`**: does have now history of the call stack. This means you can
+* **`:GoDef`** does have now history of the call stack. This means you can
   easily jump back to your last entry. This can be done with the new command
   `:GoDefPop` or the mapping `c-t`. To see the stack and jump between entries
   you can use the new command `:GoDefStack`, which shows the list of all stack
