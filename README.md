@@ -50,15 +50,10 @@ disabled/enabled easily.
   in their own new terminal. (beta)
 * Alternate between implementation and test code with `:GoAlternate`
 
-## Donation
-
-People have asked for this for a long time, now you can be a fully supporter by
-[being a patron](https://www.patreon.com/fatih)! This is fully optional and is
-just a way to support vim-go's ongoing development directly. Thanks!
-
-[https://www.patreon.com/fatih](https://www.patreon.com/fatih)
-
 ## Install
+
+Master branch is supposed to be a development branch. So stuff here can break and change. 
+Please try use always the [latest release](https://github.com/fatih/vim-go/releases/latest)
 
 Vim-go follows the standard runtime path structure, so I highly recommend to
 use a common and well known plugin manager to install vim-go. Do not use vim-go
@@ -268,6 +263,14 @@ information. It includes
 [Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
 section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many
 other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
+
+## Donation
+
+People have asked for this for a long time, now you can be a fully supporter by
+[being a patron](https://www.patreon.com/fatih)! This is fully optional and is
+just a way to support vim-go's ongoing development directly. Thanks!
+
+[https://www.patreon.com/fatih](https://www.patreon.com/fatih)
 
 ## Credits
 
