@@ -24,6 +24,7 @@ FEATURES:
 IMPROVEMENTS:
 
 * **`:GoCoverage`** is now executed async when used within Neovim [gh-686]
+* **`:GoTestFunc`** supports now testable examples [gh-794]
 
 BUG FIXES:
 
