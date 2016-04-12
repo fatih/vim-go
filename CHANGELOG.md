@@ -10,7 +10,7 @@ FEATURES:
   it in action: https://twitter.com/fatih/status/716722650383564800 [gh-786]
 * **`:GoCoverageBrowser`** opens a new annotated HTML page. This is the old
   `:GoCoverage` behavior [gh-786]
-* **`:GoDoc`** uses now `[gogetdoc](https://github.com/zmb3/gogetdoc)` to
+* **`:GoDoc`** uses now [gogetdoc](https://github.com/zmb3/gogetdoc) to
   lookup and display the comment documentation for the identifier under the
   cursor. This is more superior as it support looking up dot imports, named
   imports and imports where package name and file name are different [gh-782]
@@ -23,7 +23,7 @@ FEATURES:
 
 IMPROVEMENTS:
 
-* **`:GoCoverage`** is now executed async when used within Neovim [gh-686]
+* **`:GoCoverage`** is executed asynchronously when used within Neovim [gh-686]
 * **`:GoTestFunc`** supports now testable examples [gh-794]
 
 BUG FIXES:
