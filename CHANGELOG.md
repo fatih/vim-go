@@ -14,6 +14,12 @@ FEATURES:
   lookup and display the comment documentation for the identifier under the
   cursor. This is more superior as it support looking up dot imports, named
   imports and imports where package name and file name are different [gh-782]
+* **`GoDef`**: does have now history of the call stack. This means you can
+  easily jump back to your last entry. This can be done with the new command
+  `:GoDefPop` or the mapping `c-t`. To see the stack and jump between entries
+  you can use the new command `:GoDefStack`, which shows the list of all stack
+  entries. To reset the stack list anytime you can call `:GoDefStackClear`
+  [gh-776]
 
 IMPROVEMENTS:
 

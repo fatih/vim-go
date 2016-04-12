@@ -37,7 +37,8 @@ command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
 " -- def
 command! -nargs=* -range GoDef :call go#def#Jump(<f-args>)
 command! -nargs=? GoDefPop :call go#def#StackPop(<f-args>)
-command! -nargs=? GoDefJump :call go#def#StackJump(<f-args>)
+command! -nargs=? GoDefStack :call go#def#Stack(<f-args>)
+command! -nargs=? GoDefStackClear :call go#def#StackClear(<f-args>)
 
 " -- doc
 command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc call go#doc#Open('new', 'split', <f-args>)

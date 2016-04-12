@@ -226,8 +226,8 @@ CTRL-]
     navigate software. For more information on displaying the stack, see
     |:GoDefJump|
 
-                                                                 *:GoDefJump*
-:GoDefJump [number]
+                                                                *:GoDefStack*
+:GoDefStack [number]
 
     This command Jumps to a given location in the jumpstack, retaining all other
     entries. Jumps to non-existent entries will print an informative message,
@@ -250,6 +250,11 @@ CTRL-]
 
     Jumps to non-existent entries will print an informative message, but are
     otherwise a noop.
+
+                                                            *:GoDefStackClear*
+:GoDefStackClear 
+
+    Clears the current stack list and resets it.
 
                                                                   *:GoDefPop*
 :GoDefPop [count]
@@ -711,11 +716,23 @@ Goto declaration/definition. Results are shown in a vertical split window.
 
 Goto declaration/definition. Results are shown in a tab window.
 
-                                                          *(go-implements)*
+                                                              *(go-def-stack)*
+
+Shows the godef tag stack
+
+                                                        *(go-def-stack-clear)*
+
+Resets and clers the tasg stack
+
+                                                              *(go-def-pop)*
+
+Jump to previous entry in the tag stack
+
+                                                            *(go-implements)*
 
 Show the interfaces that the type under the cursor implements.
 
-                                                              *(go-rename)*
+                                                                *(go-rename)*
 
 Rename the identifier under the cursor to the desired new name
 
