@@ -56,3 +56,8 @@ BACKWARDS INCOMPATIBILITIES:
 * `g:go_guru_scope` accepts a variable in type of `list` instead of `string`.
   i.g: `let g:go_guru_scope = ["github.com/fatih/structs", "golang.org/x/tools/..."]`
 
+
+## Previous releases
+
+Previous changelogs can be found here: https://github.com/fatih/vim-go/releases
+
