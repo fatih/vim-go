@@ -169,8 +169,8 @@ augroup vim-go
     endif
 
     " initialize window-local godef stack
-	au BufReadPre,WinEnter *.go if !exists('w:go_stack') | let w:go_stack = [] | endif
-	au BufReadPre,WinEnter *.go if !exists('w:go_stack_level') | let w:go_stack_level = 0 | endif
+	au FileType go if !exists('w:go_stack') | let w:go_stack = [] | endif
+	au FileType go if !exists('w:go_stack_level') | let w:go_stack_level = 0 | endif
 augroup END
 
 
