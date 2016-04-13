@@ -19,7 +19,11 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
 
     " start constructing the 'command' variable
     let command = bin_path
-    let command .= printf(" -format %s", a:format)
+
+    " enable outputting in json format
+    if a:format == "json"
+        let command .= " -json"
+    endif
 
     " check for any tags
     if exists('g:go_guru_tags')
