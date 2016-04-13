@@ -26,7 +26,7 @@ FEATURES:
   anymore.
 * **`:GoDef`** does have now history of the call stack. This means you can
   easily jump back to your last entry. This can be done with the new command
-  `:GoDefPop` or the mapping `c-t`. To see the stack and jump between entries
+  `:GoDefPop` or the mapping `CTRL-t`. To see the stack and jump between entries
   you can use the new command `:GoDefStack`, which shows the list of all stack
   entries. To reset the stack list anytime you can call `:GoDefStackClear`
   [gh-776]
