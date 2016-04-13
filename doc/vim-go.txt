@@ -245,7 +245,7 @@ CTRL-]
     bottom.
 
     The '>' points to the active entry.  This entry and any newer entries below
-    it will be replaced if |:GoDef| is done from this location. The CTRL-t and
+    it will be replaced if |:GoDef| is done from this location. The CTRL-T and
     |:GoDefPop| command will jump to the position above the active entry.
 
     Jumps to non-existent entries will print an informative message, but are
@@ -258,7 +258,7 @@ CTRL-]
 
                                                                   *:GoDefPop*
 :GoDefPop [count]
-CTRL-t
+CTRL-T
 
     Navigate to the [count] earlier entry in the jump stack, retaining the newer
     entries. If no argument is given, it will jump to the next most recent entry
@@ -269,8 +269,8 @@ CTRL-t
     another :GoDef command, the current entry will be replaced, and all newer
     entries will be removed, effectively resuming the stack at that location.
 
-    By default [count]CTRL-t is enabled to invoke :GoDefPop.  Similarly, hitting
-    CTRL-t without a prior count is equivalent to `:GoDefPop 1`.  See
+    By default [count]CTRL-T is enabled to invoke :GoDefPop.  Similarly, hitting
+    CTRL-T without a prior count is equivalent to `:GoDefPop 1`.  See
     |g:go_def_mapping_enabled| to disable this.
 
                                                                      *:GoRun*
@@ -941,7 +941,7 @@ In Go, using `godoc` is more idiomatic. Default is enabled. >
                                                  *'g:go_def_mapping_enabled'*
 
 Use this option to enable/disable the default mapping of CTRL-] and (`gd`) for
-GoDef and CTRL-t for :GoDefPop. Disabling it allows you to map something else to
+GoDef and CTRL-T for :GoDefPop. Disabling it allows you to map something else to
 these keys or mappings. Default is enabled. >
 
   let g:go_def_mapping_enabled = 1
