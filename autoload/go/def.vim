@@ -30,33 +30,14 @@ function! go#def#Jump(mode)
 endfunction
 
 function! s:jump_to_declaration(out, mode)
-	let old_errorformat = &errorformat
-	let &errorformat = "%f:%l:%c:\ %m"
-
 	" strip line ending
 	let out = split(a:out, go#util#LineEnding())[0]
 	let parts = split(out, ':')
 
-	" parts[0] contains filename
-	let fileName = parts[0]
-
-	" put the error format into location list so we can jump automatically to it
-	lgetexpr a:out
-
-	" needed for restoring back user setting this is because there are two
-	" modes of switchbuf which we need based on the split mode
-	let old_switchbuf = &switchbuf
-
-	if a:mode == "tab"
-		let &switchbuf = "usetab"
-		if bufloaded(fileName) == 0
-			tab split
-		endif
-	elseif a:mode  == "split"
-		split
-	elseif a:mode == "vsplit"
-		vsplit
-	endif
+	let filename = parts[0]
+	let line = parts[1]
+	let col = parts[2]
+	let ident = parts[3]
 
 	" Remove anything newer than the current position, just like basic
 	" vim tag support
@@ -70,16 +51,37 @@ function! s:jump_to_declaration(out, mode)
 	let s:go_stack_level += 1
 
 	" push it on to the jumpstack
-	let ident = parts[3]
 	let stack_entry = {'line': line("."), 'col': col("."), 'file': expand('%:p'), 'ident': ident}
 	call add(s:go_stack, stack_entry)
 
-	" jump to file now
-	sil ll 1
+	" needed for restoring back user setting this is because there are two
+	" modes of switchbuf which we need based on the split mode
+	let old_switchbuf = &switchbuf
+
+	" jump to existing buffer if, 1. we have enabled it, 2. the buffer is loaded
+	" and 3. there is buffer window number we switch to
+	if get(g:, 'go_def_use_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
+		" jumpt to existing buffer if it exists
+		execute bufwinnr(filename) . 'wincmd w'
+	elseif a:mode == "tab"
+		let &switchbuf = "usetab"
+		if bufloaded(filename) == 0
+			tab split
+		endif
+	elseif a:mode == "split"
+		split
+	elseif a:mode == "vsplit"
+		vsplit
+	endif
+
+	" open the file and jump to line and column
+	exec 'edit '.filename
+	call cursor(line, col)
+
+	" also align the line to middle of the view
 	normal! zz
 
 	let &switchbuf = old_switchbuf
-	let &errorformat = old_errorformat
 endfunction
 
 function! go#def#SelectStackEntry()
@@ -186,16 +188,9 @@ function! go#def#Stack(...)
 		let target = s:go_stack[s:go_stack_level]
 
 		" jump
-		let old_errorformat = &errorformat
-		let &errorformat = "%f:%l:%c"
-
-		" put the error format into location list so we can jump automatically to it
-		lgetexpr printf("%s:%s:%s", target["file"], target["line"], target["col"])
-
-		sil ll 1
+		edit target["file"]
+		call cursor(target["line"], target["col"])
 		normal! zz
-
-		let &errorformat = old_errorformat
 	else
 		call go#util#EchoError("invalid location. Try :GoDefStack to see the list of valid entries")
 	endif

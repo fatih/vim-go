@@ -473,7 +473,6 @@ CTRL-t
 <
     Under the hood, the patterns are all joined to a comma-separated list and
     passed to `guru`'s `-scope` flag.
-    
 
                                                               *:GoCallees*
 :GoCallees
@@ -721,17 +720,18 @@ Goto declaration/definition. Results are shown in the current buffer.
 
                                                             *(go-def-split)*
 
-Goto declaration/definition. Results are shown in a split window.
-
+Goto declaration/definition. Results are shown in a split window. 
+Jumps to an existing buffer if |g:go_def_use_buffer| is enabled.
 
                                                          *(go-def-vertical)*
 
 Goto declaration/definition. Results are shown in a vertical split window.
-
+Jumps to an existing buffer if |g:go_def_use_buffer| is enabled.
 
                                                               *(go-def-tab)*
 
 Goto declaration/definition. Results are shown in a tab window.
+Jumps to an existing buffer if |g:go_def_use_buffer| is enabled.
 
                                                               *(go-def-stack)*
 
@@ -946,6 +946,14 @@ these keys or mappings. Default is enabled. >
 
   let g:go_def_mapping_enabled = 1
 <
+                                                     *'g:go_def_use_buffer'*
+
+Use this option to jump to an existing buffer for the split, vsplit and tab
+mappings of |:GoDef|. By default it's disabled. >
+
+  let g:go_def_use_buffer = 0
+<
+
                                                     *'g:go_dispatch_enabled'*
 
 Use this option to enable/disable the use of Dispatch to execute the
