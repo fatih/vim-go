@@ -167,10 +167,6 @@ augroup vim-go
     if get(g:, "go_metalinter_autosave", 0)
         autocmd BufWritePost *.go call go#lint#Gometa(1)
     endif
-
-    " initialize window-local godef stack
-	au BufReadPre,WinEnter *.go if !exists('w:go_stack') | let w:go_stack = [] | endif
-	au BufReadPre,WinEnter *.go if !exists('w:go_stack_level') | let w:go_stack_level = 0 | endif
 augroup END
 
 
