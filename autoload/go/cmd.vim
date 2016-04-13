@@ -25,10 +25,14 @@ function! go#cmd#Build(bang, ...)
     " placeholder with the current folder (indicated with '.')
     let args = ["build"]  + goargs + [".", "errors"]
 
-    " if we have nvim, call it asynchronously and return early ;)
     if has('nvim')
+        " if we have nvim, call it asynchronously and return early ;)
         call go#util#EchoProgress("building dispatched ...")
         call go#jobcontrol#Spawn(a:bang, "build", args)
+        return
+    elseif has('job')
+        " use vim's job functionality
+        call go#job#Spawn(a:bang, ['go'] + args)
         return
     endif
 

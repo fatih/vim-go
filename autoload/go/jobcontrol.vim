@@ -179,34 +179,4 @@ function! s:on_stderr(job_id, data)
   call extend(self.stderr, a:data)
 endfunction
 
-" abort_all aborts all current jobs created with s:spawn()
-function! s:abort_all()
-  if empty(s:jobs)
-    return
-  endif
-
-  for id in keys(s:jobs)
-    if id > 0
-      silent! call jobstop(id)
-    endif
-  endfor
-
-  let s:jobs = {}
-endfunction
-
-" abort aborts the job with the given name, where name is the first argument
-" passed to s:spawn()
-function! s:abort(path)
-  if empty(s:jobs)
-    return
-  endif
-
-  for job in values(s:jobs)
-    if job.importpath == path && job.id > 0
-      silent! call jobstop(job.id)
-      unlet s:jobs['job.id']
-    endif
-  endfor
-endfunction
-
 " vim:ts=2:sw=2:et
