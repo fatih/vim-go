@@ -24,6 +24,10 @@ function! go#def#Jump(mode)
 	let command = printf("%s definition %s:#%s", bin_path, shellescape(fname), go#util#OffsetCursor())
 
 	let out = s:system(command)
+	if !v:shell_error == 0
+		call go#util#EchoError(out)
+		return
+	endif
 
 	call s:jump_to_declaration(out, a:mode)
 	let $GOPATH = old_gopath
