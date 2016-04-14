@@ -32,6 +32,7 @@ function! go#cmd#Build(bang, ...)
         return
     elseif has('job')
         " use vim's job functionality
+        call go#util#EchoProgress("building dispatched ...")
         call go#job#Spawn(a:bang, ['go'] + args)
         return
     endif
