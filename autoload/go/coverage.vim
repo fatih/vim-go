@@ -4,6 +4,13 @@ let s:toggle = 0
 " teh current buffers highlighting to show covered and uncovered sections of
 " the code. If run again it clears the annotation
 function! go#coverage#Buffer(bang, ...)
+    " we use matchaddpos() which was introduce with 7.4.330, be sure we have
+    " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
+    if !exists("*matchaddpos")
+        call go#util#EchoError("GoCoverage is supported with Vim version 7.4-330 or later")
+        return -1
+    endif
+
     if s:toggle
         call go#coverage#Clear()
         return
