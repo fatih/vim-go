@@ -192,7 +192,7 @@ function! go#def#Stack(...)
 		let target = s:go_stack[s:go_stack_level]
 
 		" jump
-		edit target["file"]
+		exec 'edit '.target["file"]
 		call cursor(target["line"], target["col"])
 		normal! zz
 	else
