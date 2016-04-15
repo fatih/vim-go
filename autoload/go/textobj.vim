@@ -36,8 +36,8 @@ function! go#textobj#Function(mode)
     let command .= " -parse-comments"
   endif
 
-  let out = system(command)
-  if v:shell_error != 0
+  let out = go#util#system(command)
+  if go#util#shell_error() != 0
     call go#util#EchoError(out)
     return
   endif
@@ -129,8 +129,8 @@ function! go#textobj#FunctionJump(mode, direction)
     let command .= " -parse-comments"
   endif
 
-  let out = system(command)
-  if v:shell_error != 0
+  let out = go#util#system(command)
+  if go#util#shell_error() != 0
     call go#util#EchoError(out)
     return
   endif
