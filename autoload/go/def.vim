@@ -36,7 +36,7 @@ endfunction
 function! s:jump_to_declaration(out, mode)
 	" strip line ending
 	let out = split(a:out, go#util#LineEnding())[0]
-	if has('win32') || has('win64')
+	if go#util#IsWin()
 		let parts = split(out, '\(^[a-zA-Z]\)\@<!:')
 	else
 		let parts = split(out, ':')
