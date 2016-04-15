@@ -610,8 +610,8 @@ CTRL-t
 MAPPINGS                                                        *go-mappings*
 
 vim-go has several <Plug> keys which can be used to create custom mappings
-For example, to create a mapping that `go run` the current file create a
-mapping for the `(go-run)`: >
+For example, to create a mapping that `go run` for the current package, create
+a mapping for the `(go-run)`: >
 
   au FileType go nmap <leader>r <Plug>(go-run)
 
@@ -621,7 +621,7 @@ documentation in the |go-commands| section. Available <Plug> keys are:
 
                                                                   *(go-run)*
 
-Calls `go run` for the current file
+Calls `go run` for the current main package
 
                                                                *(go-run-tab)*
 

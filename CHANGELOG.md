@@ -44,6 +44,8 @@ BUG FIXES:
 * Fix not showing documentation for dot, named and package/file name being different imports [gh-332]
 * Term mode: fix closing location list if result is successful after a failed attempt [gh-768]
 * Syntax: fix gotexttmpl identifier highlighting [gh-778]
+* Doc: fix wrong wording for `go-run` mapping. It's for the whole main package,
+  not for the current file
 
 BACKWARDS INCOMPATIBILITIES:
 
