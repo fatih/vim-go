@@ -105,10 +105,11 @@ After that just open the help page to see all commands:
 
     :help vim-go
 
-## Mappings
+## Example Mappings
 
 vim-go has several `<Plug>` mappings which can be used to create custom
-mappings. Below are some examples you might find useful:
+mappings. Unless otherwise specified, none of these mappings are enabled
+by default. Here some examples you might find useful:
 
 Run commands such as `go run` for the current file with `<leader>r` or `go
 build` and `go test` for the current package with `<leader>b` and `<leader>t`
