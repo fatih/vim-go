@@ -16,7 +16,7 @@ function! go#rename#Rename(bang, ...)
         else
             let to = input(ask)
         endif
-        redraw!
+        redraw
         if empty(to)
             return
         endif
