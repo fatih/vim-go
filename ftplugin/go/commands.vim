@@ -71,4 +71,7 @@ if globpath(&rtp, 'plugin/ctrlp.vim') != ""
   command! -nargs=? -complete=dir GoDeclsDir call ctrlp#init(ctrlp#decls#cmd(1, <q-args>))
 endif
 
+" -- test
+command! -nargs=* GoTableTests call go#test#TableTests(0)
+
 " vim:ts=4:sw=4:et

@@ -49,6 +49,7 @@ disabled/enabled easily.
 * Integrated with the Neovim terminal, launch `:GoRun` and other go commands
   in their own new terminal. (beta)
 * Alternate between implementation and test code with `:GoAlternate`
+* Generate table tests using [gotests](https://github.com/cweill/gotests) with `:GoTableTests`
 
 ## Install
 
@@ -276,8 +277,8 @@ just a way to support vim-go's ongoing development directly. Thanks!
 ## Credits
 
 * Go Authors for official vim plugins
-* Gocode, Godef, Golint, Guru, Goimports, Gotags, Errcheck projects and
-  authors of those projects.
+* Gocode, Godef, Golint, Guru, Goimports, Gotags, Errcheck, Gotests projects
+  and authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
   vim-godef)
 * [Contributors](https://github.com/fatih/vim-go/graphs/contributors) of vim-go
