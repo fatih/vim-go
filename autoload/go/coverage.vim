@@ -1,19 +1,31 @@
 let s:toggle = 0
 
 " Buffer creates a new cover profile with 'go test -coverprofile' and changes
+" the current buffers highlighting to show covered and uncovered sections of
+" the code. If run again it clears the annotation.
+function! go#coverage#BufferToggle(bang, ...)
+    if s:toggle
+        call go#coverage#Clear()
+        return
+    endif
+
+    if a:0 == 0
+        return call(function('go#coverage#Buffer'), [a:bang])
+    endif
+
+    return call(function('go#coverage#Buffer'), [a:bang] + a:000)
+endfunction
+
+" Buffer creates a new cover profile with 'go test -coverprofile' and changes
 " teh current buffers highlighting to show covered and uncovered sections of
-" the code. If run again it clears the annotation
+" the code. Calling it again reruns the tests and shows the last updated
+" coverage.
 function! go#coverage#Buffer(bang, ...)
     " we use matchaddpos() which was introduce with 7.4.330, be sure we have
     " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
     if !exists("*matchaddpos")
         call go#util#EchoError("GoCoverage is supported with Vim version 7.4-330 or later")
         return -1
-    endif
-
-    if s:toggle
-        call go#coverage#Clear()
-        return
     endif
 
     let s:toggle = 1

@@ -387,9 +387,22 @@ CTRL-t
 :GoCoverage[!] [options]
 
     Create a coverage profile and annotates the current file's source code. If
-    called again clears the annotation (works as a toggle)
+    called again it rerurns the tests.
 
     If [!] is not given the first error is jumped to.
+
+                                                            *:GoCoverageToggle*
+:GoCoverageToggle[!] [options]
+
+    Create a coverage profile and annotates the current file's source code. If
+    called again clears the annotation (works as a toggle).
+
+    If [!] is not given the first error is jumped to.
+
+                                                             *:GoCoverageClear*
+:GoCoverageClear [options]
+
+   Clears the coverage annotation.
 
 
                                                           *:GoCoverageBrowser*
@@ -672,7 +685,18 @@ Calls `go test -c` for the current package
 
                                                              *(go-coverage)*
 
-Calls `go test -coverprofile-temp.out` for the current package
+Calls `go test -coverprofile-temp.out` for the current package and shows the
+coverage annotation.
+
+                                                        *(go-coverage-clear)*
+
+Clears the coverage annotation
+
+                                                        *(go-coverage-toggle)*
+
+Calls `go test -coverprofile-temp.out` for the current package and shows the
+coverage annotation. If run agains it acts as a toggle and clears the
+annotation.
 
                                                                   *(go-vet)*
 
