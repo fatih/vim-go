@@ -41,7 +41,7 @@ IMPROVEMENTS:
 * **`:GoTestFunc`** supports now testable examples [gh-794]
 * **`:GoDef`** can jump to existing buffers instead of opening a new window
   (split, vsplit or tab). By default it's disabled to not break the old
-  behavior, can be enabled with `let g:go_def_use_buffer = 1`
+  behavior, can be enabled with `let g:go_def_reuse_buffer = 1`
 
 BUG FIXES:
 

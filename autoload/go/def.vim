@@ -68,7 +68,7 @@ function! s:jump_to_declaration(out, mode)
 
 	" jump to existing buffer if, 1. we have enabled it, 2. the buffer is loaded
 	" and 3. there is buffer window number we switch to
-	if get(g:, 'go_def_use_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
+	if get(g:, 'go_def_reuse_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
 		" jumpt to existing buffer if it exists
 		execute bufwinnr(filename) . 'wincmd w'
 	elseif a:mode == "tab"

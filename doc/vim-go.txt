@@ -745,17 +745,17 @@ Goto declaration/definition. Results are shown in the current buffer.
                                                             *(go-def-split)*
 
 Goto declaration/definition. Results are shown in a split window. 
-Jumps to an existing buffer if |g:go_def_use_buffer| is enabled.
+Jumps to an existing buffer if |g:go_def_reuse_buffer| is enabled.
 
                                                          *(go-def-vertical)*
 
 Goto declaration/definition. Results are shown in a vertical split window.
-Jumps to an existing buffer if |g:go_def_use_buffer| is enabled.
+Jumps to an existing buffer if |g:go_def_reuse_buffer| is enabled.
 
                                                               *(go-def-tab)*
 
 Goto declaration/definition. Results are shown in a tab window.
-Jumps to an existing buffer if |g:go_def_use_buffer| is enabled.
+Jumps to an existing buffer if |g:go_def_reuse_buffer| is enabled.
 
                                                               *(go-def-stack)*
 
@@ -970,12 +970,12 @@ these keys or mappings. Default is enabled. >
 
   let g:go_def_mapping_enabled = 1
 <
-                                                     *'g:go_def_use_buffer'*
+                                                     *'g:go_def_reuse_buffer'*
 
 Use this option to jump to an existing buffer for the split, vsplit and tab
 mappings of |:GoDef|. By default it's disabled. >
 
-  let g:go_def_use_buffer = 0
+  let g:go_def_reuse_buffer = 0
 <
 
                                                     *'g:go_dispatch_enabled'*
