@@ -1,4 +1,4 @@
-## 1.6 (unreleased)
+## 1.6 (April 25, 2016)
 
 FEATURES:
 
