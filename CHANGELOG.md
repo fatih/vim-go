@@ -1,3 +1,11 @@
+## 1.7 (unreleased)
+
+IMPROVEMENTS:
+
+* Add new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [gh-816]
+
+
+
 ## 1.6 (April 25, 2016)
 
 FEATURES:
