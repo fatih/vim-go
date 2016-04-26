@@ -67,7 +67,7 @@ function! s:GoInstallBinaries(updateBinaries)
 
     let cmd = "go get -u -v "
 
-    let s:go_version = matchstr(system("go version"), '\d.\d.\d')
+    let s:go_version = matchstr(go#util#System("go version"), '\d.\d.\d')
 
     " https://github.com/golang/go/issues/10791
     if s:go_version > "1.4.0" && s:go_version < "1.5.0"
@@ -91,8 +91,8 @@ function! s:GoInstallBinaries(updateBinaries)
             endif
 
 
-            let out = system(cmd . shellescape(pkg))
-            if v:shell_error
+            let out = go#util#System(cmd . shellescape(pkg))
+            if go#util#ShellError() != 0
                 echo "Error installing ". pkg . ": " . out
             endif
         endif

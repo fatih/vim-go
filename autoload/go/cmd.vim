@@ -229,7 +229,7 @@ function! go#cmd#Test(bang, compile, ...)
 
     let l:listtype = "quickfix"
 
-    if v:shell_error
+    if go#util#ShellError() != 0
         let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
         let dir = getcwd()
         try
@@ -299,7 +299,7 @@ function! go#cmd#Generate(bang, ...)
 
     " :make expands '%' and '#' wildcards, so they must also be escaped
     let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
-    if v:shell_error
+    if go#util#ShellError() != 0
         let &makeprg = "go generate " . goargs
     else
         let gofiles = go#util#Shelljoin(go#tool#Files(), 1)

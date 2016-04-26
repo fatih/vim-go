@@ -1,13 +1,3 @@
-if go#vimproc#has_vimproc()
-	let s:vim_system = get(g:, 'gocomplete#system_function', 'vimproc#system2')
-else
-	let s:vim_system = get(g:, 'gocomplete#system_function', 'system')
-endif
-
-fu! s:system(str, ...)
-	return call(s:vim_system, [a:str] + a:000)
-endf
-
 let s:go_stack = []
 let s:go_stack_level = 0
 
@@ -23,8 +13,8 @@ function! go#def#Jump(mode)
 	let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
 	let command = printf("%s definition %s:#%s", bin_path, shellescape(fname), go#util#OffsetCursor())
 
-	let out = s:system(command)
-	if !v:shell_error == 0
+	let out = go#util#System(command)
+	if go#util#ShellError() != 0
 		call go#util#EchoError(out)
 		return
 	endif

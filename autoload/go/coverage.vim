@@ -29,7 +29,7 @@ function! go#coverage#Buffer(bang, ...)
     endif
 
     let s:toggle = 1
-    let l:tmpname=tempname()
+    let l:tmpname = tempname()
     let args = [a:bang, 0, "-coverprofile", l:tmpname]
 
     if a:0
@@ -54,7 +54,7 @@ function! go#coverage#Buffer(bang, ...)
         return
     endif
 
-    if !v:shell_error
+    if go#util#ShellError() != 0
         call go#coverage#overlay(l:tmpname)
     endif
 
@@ -78,7 +78,7 @@ endfunction
 " Browser creates a new cover profile with 'go test -coverprofile' and opens
 " a new HTML coverage page from that profile in a new browser
 function! go#coverage#Browser(bang, ...)
-    let l:tmpname=tempname()
+    let l:tmpname = tempname()
     let args = [a:bang, 0, "-coverprofile", l:tmpname]
 
     if a:0
@@ -90,7 +90,7 @@ function! go#coverage#Browser(bang, ...)
         let s:coverage_browser_handler_jobs[id] = l:tmpname
         return
     endif
-    if !v:shell_error
+    if go#util#ShellError() != 0
         let openHTML = 'go tool cover -html='.l:tmpname
         call go#tool#ExecuteInDir(openHTML)
     endif
