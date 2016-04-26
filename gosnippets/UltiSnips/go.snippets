@@ -327,6 +327,18 @@ func Test${1:Function}(t *testing.T) {
 }
 endsnippet
 
+snippet hf "http.HandlerFunc" !b
+func ${1:handler}(w ResponseWriter, r *Request) {
+	${0:fmt.Fprintf(w, "hello world")}
+}
+endsnippet
+
+snippet hhf "mux.HandleFunc" !b
+${1:http}.HandleFunc("${2:/}", func(w ResponseWriter, r *Request) {
+	${0:fmt.Fprintf(w, "hello world")}
+})
+endsnippet
+
 # quick test server
 snippet tsrv "httptest.NewServer"
 ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -371,7 +383,6 @@ if !reflect.DeepEqual(${1:expected}, ${2:actual}) {
 	t.FailNow()
 }
 endsnippet
-
 
 global !p
 
