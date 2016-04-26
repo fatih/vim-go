@@ -115,7 +115,7 @@ function! go#fmt#Format(withGoimport)
 
     if fmt_command == "goimports"
         if !exists('b:goimports_vendor_compatible')
-            let out = go#util#system("goimports --help")
+            let out = go#util#System("goimports --help")
             if out !~ "-srcdir"
                 echohl WarningMsg
                 echomsg "vim-go: goimports does not support srcdir."
@@ -138,7 +138,7 @@ function! go#fmt#Format(withGoimport)
     if go#util#IsWin()
         let l:tmpname = tr(l:tmpname, '\', '/')
     endif
-    let out = go#util#system(command . " " . l:tmpname)
+    let out = go#util#System(command . " " . l:tmpname)
 
     if fmt_command != "gofmt"
         let $GOPATH = old_gopath
@@ -148,7 +148,7 @@ function! go#fmt#Format(withGoimport)
     "if there is no error on the temp file replace the output with the current
     "file (if this fails, we can always check the outputs first line with:
     "splitted =~ 'package \w\+')
-    if go#util#shell_error() == 0
+    if go#util#ShellError() == 0
         " remove undo point caused via BufWritePre
         try | silent undojoin | catch | endtry
 

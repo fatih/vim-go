@@ -13,8 +13,8 @@ function! go#def#Jump(mode)
 	let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
 	let command = printf("%s definition %s:#%s", bin_path, shellescape(fname), go#util#OffsetCursor())
 
-	let out = go#util#system(command)
-	if go#util#shell_error() != 0
+	let out = go#util#System(command)
+	if go#util#ShellError() != 0
 		call go#util#EchoError(out)
 		return
 	endif

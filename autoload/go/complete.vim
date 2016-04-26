@@ -37,11 +37,11 @@ fu! s:gocodeCommand(cmd, preargs, args)
     let old_gopath = $GOPATH
     let $GOPATH = go#path#Detect()
 
-    let result = go#util#system(printf('%s %s %s %s', go#util#Shellescape(bin_path), join(a:preargs), go#util#Shellescape(a:cmd), join(a:args)))
+    let result = go#util#System(printf('%s %s %s %s', go#util#Shellescape(bin_path), join(a:preargs), go#util#Shellescape(a:cmd), join(a:args)))
 
     let $GOPATH = old_gopath
 
-    if go#util#shell_error() != 0
+    if go#util#ShellError() != 0
         return "[\"0\", []]"
     else
         if &encoding != 'utf-8'

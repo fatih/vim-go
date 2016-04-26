@@ -87,8 +87,8 @@ function! ctrlp#decls#enter()
 		let command .= printf(" -dir %s", dir)
 	endif
 
-	let out = go#util#system(command)
-	if go#util#shell_error() != 0
+	let out = go#util#System(command)
+	if go#util#ShellError() != 0
 		call go#util#EchoError(out)
 		return
 	endif

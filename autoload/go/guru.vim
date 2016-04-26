@@ -85,11 +85,11 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     call go#util#EchoProgress("analysing ...")
 
     " run, forrest run!!!
-    let out = go#util#system(command)
+    let out = go#util#System(command)
 
     let $GOPATH = old_gopath
 
-    if go#util#shell_error() != 0
+    if go#util#ShellError() != 0
         " unfortunaly guru outputs a very long stack trace that is not
         " parsable to show the real error. But the main issue is usually the
         " package which doesn't build. 

@@ -33,8 +33,8 @@ function! go#package#Paths()
 
     if !exists("s:goroot")
         if executable('go')
-            let s:goroot = substitute(go#util#system('go env GOROOT'), '\n', '', 'g')
-            if go#util#shell_error() != 0
+            let s:goroot = substitute(go#util#System('go env GOROOT'), '\n', '', 'g')
+            if go#util#ShellError() != 0
                 echomsg '''go env GOROOT'' failed'
             endif
         else
@@ -95,8 +95,8 @@ function! go#package#FromPath(arg)
 endfunction
 
 function! go#package#CompleteMembers(package, member)
-    silent! let content = go#util#system('godoc ' . a:package)
-    if go#util#shell_error() || !len(content)
+    silent! let content = go#util#System('godoc ' . a:package)
+    if go#util#ShellError() || !len(content)
         return []
     endif
     let lines = filter(split(content, "\n"),"v:val !~ '^\\s\\+$'")

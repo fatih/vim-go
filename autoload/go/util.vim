@@ -65,11 +65,11 @@ else
     let s:vim_shell_error = ''
 endif
 
-function! go#util#system(str, ...)
+function! go#util#System(str, ...)
     return call(s:vim_system, [a:str] + a:000)
 endfunction
 
-function! go#util#shell_error()
+function! go#util#ShellError()
     if empty(s:vim_shell_error)
         return v:shell_error
     endif
