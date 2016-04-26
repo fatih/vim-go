@@ -10,8 +10,14 @@ function! go#def#Jump(mode)
 	let old_gopath = $GOPATH
 	let $GOPATH = go#path#Detect()
 
+	let flags = ""
+	if exists('g:go_guru_tags')
+		let tags = get(g:, 'go_guru_tags')
+		let flags = printf(" -tags %s", tags)
+	endif
+
 	let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
-	let command = printf("%s definition %s:#%s", bin_path, shellescape(fname), go#util#OffsetCursor())
+	let command = printf("%s %s definition %s:#%s", bin_path, flags, shellescape(fname), go#util#OffsetCursor())
 
 	let out = go#util#System(command)
 	if go#util#ShellError() != 0
