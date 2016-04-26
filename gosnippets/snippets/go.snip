@@ -323,3 +323,15 @@ abbr equals: test two identifiers with DeepEqual
   	fmt.Printf("%s:%d:\n\n\texp: %#v\n\n\tgot: %#v\n\n", filepath.Base(file), line, $1, $2)
   	t.FailNow()
   }
+
+snippet hf
+abbr http.HandlerFunc
+  func ${1:handler}(w ResponseWriter, r *Request) {
+    ${0:fmt.Fprintf(w, "hello world")}
+  }
+
+snippet hhf
+abbr mux.HandleFunc(...)
+  ${1:http}.HandleFunc("${2:/}", func(w ResponseWriter, r *Request) {
+    ${0:fmt.Fprintf(w, "hello world")}
+  })
