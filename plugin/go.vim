@@ -53,7 +53,7 @@ function! s:GoInstallBinaries(updateBinaries)
     let old_path = $PATH
 
     " vim's executable path is looking in PATH so add our go_bin path to it
-    let $PATH = $PATH . go#util#PathListSep() .go_bin_path
+    let $PATH = go_bin_path . go#util#PathListSep() . $PATH
 
     " when shellslash is set on MS-* systems, shellescape puts single quotes
     " around the output string. cmd on Windows does not handle single quotes

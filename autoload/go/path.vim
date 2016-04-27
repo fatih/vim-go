@@ -139,11 +139,6 @@ function! go#path#CheckBinPath(binpath)
     " remove whitespaces if user applied something like 'goimports   '
     let binpath = substitute(a:binpath, '^\s*\(.\{-}\)\s*$', '\1', '')
 
-    " if it's in PATH just return it
-    if executable(binpath) 
-        return binpath
-    endif
-
     " just get the basename
     let basename = fnamemodify(binpath, ":t")
 
@@ -157,7 +152,7 @@ function! go#path#CheckBinPath(binpath)
     " append our GOBIN and GOPATH paths and be sure they can be found there...
     " let us search in our GOBIN and GOPATH paths
     let old_path = $PATH
-    let $PATH = $PATH . go#util#PathListSep() .go_bin_path
+    let $PATH = go_bin_path . go#util#PathListSep() . $PATH
 
     if !executable(basename)
         echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
