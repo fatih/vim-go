@@ -2,6 +2,7 @@
 
 IMPROVEMENTS:
 
+* Pass `-tags` flag to `:GoDef` for the underlying guru tool.
 * Internal refactoring to use custom `system()` function that wraps both the standard `system()` call and `vimproc`. Now all system calls will take advantage and will use `vimproc` if installed. [gh-801]
 * Add new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [gh-816]
 
