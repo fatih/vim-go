@@ -63,7 +63,10 @@ endfunction
 
 " Clear clears and resets the buffer annotation matches
 function! go#coverage#Clear()
-    if exists("g:syntax_on") | syntax enable | endif
+    " only reset the syntax if the user has syntax enabled
+    if !empty(&syntax)
+        if exists("g:syntax_on") | syntax enable | endif
+    endif
 
     if exists("s:toggle") | let s:toggle = 0 | endif
 
