@@ -166,7 +166,7 @@ endfunction
 
 " Show 'implements' relation for selected package
 function! go#guru#Implements(selected)
-    let out = s:RunGuru('implements', 'plain', a:selected, 0)
+    let out = s:RunGuru('implements', 'plain', a:selected, 1)
     call s:loclistSecond(out)
 endfunction
 
