@@ -7,7 +7,7 @@ IMPROVEMENTS:
 * Add new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [gh-816]
 
 BUG FIXES:
-* All Guru commands now shows a more meaningful error message instead of just showing the exit status (-1)
+* Commands based on guru now shows a more meaningful error message instead of just showing the exit status (-1)
 * Fix `:GoCoverage` accidently enabling syntax highlighting for users who don't use syntax (i.e syntax off) [gh-827]
 * Fix commenting out block of texts for Go templates (filetype gothtmltmpl) [gh-813]
 * Fix `:GoImplements` failing because of an empty scope definition. Now we default to current package to make it usable.
