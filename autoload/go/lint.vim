@@ -64,7 +64,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let out = go#tool#ExecuteInDir(meta_command)
 
     let l:listtype = "quickfix"
-    if go#util#ShellError() != 0
+    if go#util#ShellError() == 0
         redraw | echo
         call go#list#Clean(l:listtype)
         call go#list#Window(l:listtype)

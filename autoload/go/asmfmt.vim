@@ -35,7 +35,7 @@ function! go#asmfmt#Format()
   let out = go#util#System(path . ' -w ' . l:tmpname)
 
   " If there's no error, replace the current file with the output.
-  if go#util#ShellError() != 0
+  if go#util#ShellError() == 0
     " Remove undo point caused by BufWritePre.
     try | silent undojoin | catch | endtry
 
