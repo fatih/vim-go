@@ -87,10 +87,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
 
     let $GOPATH = old_gopath
     if go#util#ShellError() != 0
-        " unfortunaly guru outputs a very long stack trace that is not
-        " parsable to show the real error. But the main issue is usually the
-        " package which doesn't build. 
-        redraw | echon "vim-go: " | echohl Statement | echon out | echohl None
+        " the output contains the error message
         return {'err' : out}
     endif
 
