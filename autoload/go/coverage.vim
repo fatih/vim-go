@@ -54,7 +54,7 @@ function! go#coverage#Buffer(bang, ...)
         return
     endif
 
-    if go#util#ShellError() != 0
+    if go#util#ShellError() == 0
         call go#coverage#overlay(l:tmpname)
     endif
 
@@ -90,7 +90,7 @@ function! go#coverage#Browser(bang, ...)
         let s:coverage_browser_handler_jobs[id] = l:tmpname
         return
     endif
-    if go#util#ShellError() != 0
+    if go#util#ShellError() == 0
         let openHTML = 'go tool cover -html='.l:tmpname
         call go#tool#ExecuteInDir(openHTML)
     endif
