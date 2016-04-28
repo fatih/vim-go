@@ -9,6 +9,7 @@ IMPROVEMENTS:
 BUG FIXES:
 * Fix `:GoCoverage` accidently enabling syntax highlighting for users who don't use syntax (i.e syntax off) [gh-827]
 * Fix commenting out block of texts for Go templates (filetype gothtmltmpl) [gh-813]
+* Fix `:GoImplements` failing because of an empty scope definition. Now we default to current package to make it usable.
 
 
 ## 1.6 (April 25, 2016)
