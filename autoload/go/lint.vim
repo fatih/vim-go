@@ -127,7 +127,7 @@ function! go#lint#Vet(bang, ...)
     endif
 
     let l:listtype = "quickfix"
-    if go#util#ShellError() != 0
+    if v:shell_error != 0
         let errors = go#tool#ParseErrors(split(out, '\n'))
         call go#list#Populate(l:listtype, errors)
         call go#list#Window(l:listtype, len(errors))
