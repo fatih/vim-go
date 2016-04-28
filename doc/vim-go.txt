@@ -70,6 +70,8 @@ easily.
   * Integrated with the neovim terminal, launch `:GoRun` and other go commands
     in their own new terminal.
   * Alternate between implementation and test code with `:GoAlternate`
+  * Generate table tests using [gotests](https://github.com/cweill/gotests)
+    with `:GoTableTests`
 
 ===============================================================================
 INSTALL                                                           *go-install*
@@ -618,6 +620,12 @@ CTRL-t
     changed via |g:go_decls_includes|, which accepts a comma delimited list of
     definitions. By default set to: `"func,type"`. Possible options are:
     `{func,type}`
+
+                                                              *:GoTableTests*
+:GoTableTests
+
+    Generates table driven tests in the corresponding _test.go file based on
+    the function under the cursor using gotests tool.
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -1282,8 +1290,8 @@ You'll see a more detailed error. If this works, vim-go will work too.
 CREDITS                                                         *go-credits*
 
 * Go Authors for official vim plugins
-* Gocode, Godef, Golint, Guru, Goimports, Errcheck projects and authors of
-  those projects.
+* Gocode, Godef, Golint, Guru, Goimports, Errcheck, Gotests projects and
+  authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
   vim-godef)
 * vim-go contributors: https://github.com/fatih/vim-go/graphs/contributors
