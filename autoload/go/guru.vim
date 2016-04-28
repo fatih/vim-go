@@ -4,7 +4,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     "return with a warning if the binary doesn't exist
     let bin_path = go#path#CheckBinPath("guru") 
     if empty(bin_path)
-        return 
+        return {'err': "bin path not found"}
     endif
 
     let filename = expand('%:p')
@@ -13,8 +13,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
 
     " this is important, check it!
     if pkg == -1 && a:needs_scope
-        call go#util#EchoError("current directory is not inside of a valid GOPATH")
-        return -1
+        return {'err': "current directory is not inside of a valid GOPATH"}
     endif
 
     " start constructing the 'command' variable
@@ -46,8 +45,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     if exists('g:go_guru_scope')
         " check that the setting is of type list
         if type(get(g:, 'go_guru_scope')) != type([])
-            call go#util#EchoError("go_guru_scope should of type list")
-            return -1
+            return {'err' : "go_guru_scope should of type list"}
         endif
 
         let scopes = get(g:, 'go_guru_scope')
@@ -88,16 +86,15 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     let out = go#util#System(command)
 
     let $GOPATH = old_gopath
-
     if go#util#ShellError() != 0
         " unfortunaly guru outputs a very long stack trace that is not
         " parsable to show the real error. But the main issue is usually the
         " package which doesn't build. 
         redraw | echon "vim-go: " | echohl Statement | echon out | echohl None
-        return -1
+        return {'err' : out}
     endif
 
-    return out
+    return {'out': out}
 endfunc
 
 " This uses Vim's errorformat to parse the output from Guru's 'plain output
@@ -167,34 +164,56 @@ endfunction
 " Show 'implements' relation for selected package
 function! go#guru#Implements(selected)
     let out = s:RunGuru('implements', 'plain', a:selected, 1)
-    call s:loclistSecond(out)
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
+    endif
+
+    call s:loclistSecond(out.out)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
 function! go#guru#Describe(selected)
     let out = s:RunGuru('describe', 'plain', a:selected, 0)
-    call s:loclistSecond(out)
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
+    endif
+
+    call s:loclistSecond(out.out)
 endfunction
 
 " Show possible targets of selected function call
 function! go#guru#Callees(selected)
     let out = s:RunGuru('callees', 'plain', a:selected, 1)
-    call s:loclistSecond(out)
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
+    endif
+
+    call s:loclistSecond(out.out)
 endfunction
 
 " Show possible callers of selected function
 function! go#guru#Callers(selected)
     let out = s:RunGuru('callers', 'plain', a:selected, 1)
-    if out == -1
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
         return
     endif
-    call s:loclistSecond(out)
+
+    call s:loclistSecond(out.out)
 endfunction
 
 " Show path from callgraph root to selected function
 function! go#guru#Callstack(selected)
     let out = s:RunGuru('callstack', 'plain', a:selected, 1)
-    call s:loclistSecond(out)
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
+    endif
+
+    call s:loclistSecond(out.out)
 endfunction
 
 " Show free variables of selection
@@ -206,59 +225,76 @@ function! go#guru#Freevars(selected)
     endif
 
     let out = s:RunGuru('freevars', 'plain', a:selected, 0)
-    call s:loclistSecond(out)
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
+    endif
+
+    call s:loclistSecond(out.out)
 endfunction
 
 " Show send/receive corresponding to selected channel op
 function! go#guru#ChannelPeers(selected)
     let out = s:RunGuru('peers', 'plain', a:selected, 1)
-    call s:loclistSecond(out)
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
+    endif
+
+    call s:loclistSecond(out.out)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
 function! go#guru#Referrers(selected)
     let out = s:RunGuru('referrers', 'plain', a:selected, 0)
-    call s:loclistSecond(out)
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
+    endif
+
+    call s:loclistSecond(out.out)
 endfunction
 
 function! go#guru#What(selected)
     " nvim doesn't have JSON support, though they work on it:
     " https://github.com/neovim/neovim/pull/4131
     if has('nvim')
-        call go#util#EchoError("GoWhat is not supported in Neovim")
-        return -1
+        return {'err': "GoWhat is not supported in Neovim"}
     endif
 
     " json_encode() and friends are introduced with this patch
     " https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
     if !has('patch-7.4.1304')
-        call go#util#EchoError("GoWhat is supported with Vim version 7.4-1304 or later")
-        return -1
+        return {'err': "GoWhat is supported with Vim version 7.4-1304 or later"}
     endif
 
     let out = s:RunGuru('what', 'json', a:selected, 0)
-    let result = json_decode(out)
+    if has_key(out, 'err')
+        return out.err
+    endif
+
+    call s:loclistSecond(out.out)
+    let result = json_decode(out.out)
 
     if type(result) != type({})
-        call go#util#EchoError("malformed output from guru")
-        return -1
+        return {'err': "malformed output from guru"}
     endif
 
     if !has_key(result, 'what')
-        call go#util#EchoError("no what query found for the given identifier")
-        return -1
+        return {'err': "no what query found for the given identifier"}
     endif
 
-    return result.what
+    return {'out': result.what}
 endfunction
 
 function! go#guru#SameIds(selected)
     let result = go#guru#What(a:selected)
-    if result == -1
-        return -1
+    if has_key(out, 'err')
+        call go#util#EchoError(out.err)
+        return
     endif
 
-    if !has_key(result, 'sameids')
+    if !has_key(result.out, 'sameids')
         call go#util#EchoError("no same_ids founds for the given identifier")
         return -1
     endif
