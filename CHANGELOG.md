@@ -8,6 +8,7 @@ IMPROVEMENTS:
 
 BUG FIXES:
 * Fix `:GoCoverage` accidently enabling syntax highlighting for users who don't use syntax (i.e syntax off) [gh-827]
+* Fix commenting out block of texts for Go templates (filetype gothtmltmpl) [gh-813]
 
 
 ## 1.6 (April 25, 2016)
