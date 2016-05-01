@@ -39,7 +39,7 @@ nnoremap <silent> <Plug>(go-callees) :<C-u>call go#guru#Callees(-1)<CR>
 nnoremap <silent> <Plug>(go-callers) :<C-u>call go#guru#Callers(-1)<CR>
 nnoremap <silent> <Plug>(go-describe) :<C-u>call go#guru#Describe(-1)<CR>
 nnoremap <silent> <Plug>(go-callstack) :<C-u>call go#guru#Callstack(-1)<CR>
-nnoremap <silent> <Plug>(go-freevars) :<C-u>call go#guru#Freevars(-1)<CR>
+xnoremap <silent> <Plug>(go-freevars) :<C-u>call go#guru#Freevars(0)<CR>
 nnoremap <silent> <Plug>(go-channelpeers) :<C-u>call go#guru#ChannelPeers(-1)<CR>
 nnoremap <silent> <Plug>(go-referrers) :<C-u>call go#guru#Referrers(-1)<CR>
 
