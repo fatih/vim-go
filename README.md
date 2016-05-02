@@ -258,7 +258,7 @@ let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 ```
 
 Another issue with `vim-go` and `syntastic` is that the location list window
-that the output of commands such as `:GoBuild` and `:GoTest` might not appear.
+that contains the output of commands such as `:GoBuild` and `:GoTest` might not appear.
 To resolve this:
 
 ```vim
