@@ -363,6 +363,19 @@ if err != nil {
 }
 endsnippet
 
+snippet example "func ExampleXYZ() { ... }"
+func Example${1:Method}() {
+	${0:${VISUAL}}
+	// Output:
+}
+endsnippet
+
+snippet benchmark "func BenchmarkXYZ() { ... }"
+func Benchmark${1:Method}() {
+	${0:${VISUAL}}
+}
+endsnippet
+
 # variable declaration
 snippet var "var x Type [= ...]"
 var ${1:x} ${2:Type}${3: = ${0:value}}
