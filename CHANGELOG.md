@@ -4,7 +4,8 @@ IMPROVEMENTS:
 
 * Enable passing the `-tags` flag to `:GoDef`. Now you can pass build tags to `:GoDef` via `:GoGuruTags` or `g:go_guru_tags`
 * Internal refactoring to use custom `system()` function that wraps both the standard `system()` call and `vimproc`. Now all system calls will take advantage and will use `vimproc` if installed. [gh-801]
-* Add new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [gh-816]
+* Added new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [gh-816]
+* Added new `Example` and `Benchmark` snippets with `example` and `benchmark` shortcuts [gh-836]
 
 BUG FIXES:
 * Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [gh-832]
