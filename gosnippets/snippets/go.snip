@@ -305,6 +305,19 @@ abbr if err != nil { t.Fatalf(...) }
   if err != nil {
     t.Fatalf("${1}")
   }
+# test example
+snippet example
+func Example${1:Method}() {
+	${0}
+	// Output:
+}
+endsnippet
+# test benchmark
+snippet benchmark
+func Benchmark${1:Method}() {
+	${0}
+}
+endsnippet
 # variable declaration
 snippet var
 abbr var x Type [= ...]
