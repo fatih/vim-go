@@ -6,7 +6,7 @@ IMPROVEMENTS:
 * Internal refactoring to use custom `system()` function that wraps both the standard `system()` call and `vimproc`. Now all system calls will take advantage and will use `vimproc` if installed. [gh-801]
 * Added new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [gh-816]
 * Added new `Example` and `Benchmark` snippets with `example` and `benchmark` shortcuts [gh-836]
-* Search tool binaries first in GOBIN instead of GOPATH as most of vim-go users installs it there mostly [gh-823]
+* Search tool binaries first in `GOBIN` and then in `PATH` as most of vim-go users installs it to `GOBIN` mostly [gh-823]
 
 BUG FIXES:
 * Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [gh-832]
