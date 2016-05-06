@@ -143,7 +143,7 @@ function! go#path#CheckBinPath(binpath)
 
     " check if we have an appropriate bin_path
     let go_bin_path = go#path#BinPath()
-    if empty(go_bin_path)
+    if !empty(go_bin_path)
         " append our GOBIN and GOPATH paths and be sure they can be found there...
         " let us search in our GOBIN and GOPATH paths
         let $PATH = go_bin_path . go#util#PathListSep() . $PATH
