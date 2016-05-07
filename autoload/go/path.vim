@@ -152,7 +152,7 @@ function! go#path#CheckBinPath(binpath)
     " if it's in PATH just return it
     if executable(binpath)
         let $PATH = old_path
-        return exepath(binpath)
+        return binpath
     endif
 
     " just get the basename
