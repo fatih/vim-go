@@ -370,9 +370,11 @@ func Example${1:Method}() {
 }
 endsnippet
 
-snippet benchmark "func BenchmarkXYZ() { ... }"
-func Benchmark${1:Method}() {
-	${0:${VISUAL}}
+snippet benchmark "func BenchmarkXYZ(b *testing.B) { ... }"
+func Benchmark${1:Method}(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		${0:${VISUAL}}
+	}
 }
 endsnippet
 
