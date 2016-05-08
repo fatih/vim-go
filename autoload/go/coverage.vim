@@ -46,7 +46,6 @@ function! go#coverage#Buffer(bang, ...)
 
     if has('job')
         call go#util#EchoProgress("checking coverage ...")
-        " let s:coverage_handler_jobs[id] = l:tmpname
         call go#job#Spawn(a:bang, {
                     \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
                     \ 'external_cb': function('s:coverage_callback', [l:tmpname]),
