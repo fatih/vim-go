@@ -20,8 +20,8 @@ function! go#job#Spawn(bang, args)
                 \ }
 
     " add external callback to be called if async job is finished
-    if has_key(a:args, 'callback')
-        let opts.callback = a:args.callback
+    if has_key(a:args, 'external_cb')
+        let opts.external_cb = a:args.external_cb
     endif
 
     func opts.callbackHandler(chan, msg) dict
@@ -38,8 +38,8 @@ function! go#job#Spawn(bang, args)
     endfunc
 
     func opts.exitHandler(job, exit_status) dict
-        if has_key(self, 'callback')
-            call self.callback(a:job, a:exit_status, self.combined)
+        if has_key(self, 'external_cb')
+            call self.external_cb(a:job, a:exit_status, self.combined)
         endif
 
         if a:exit_status == 0
