@@ -19,6 +19,11 @@ function! go#job#Spawn(bang, args)
                 \ 'combined' : [],
                 \ }
 
+    " add external callback to be called if async job is finished
+    if has_key(a:args, 'callback')
+        let opts.callback = a:args.callback
+    endif
+
     func opts.callbackHandler(chan, msg) dict
         " contains both stderr and stdout
         call add(self.combined, a:msg)
@@ -33,6 +38,10 @@ function! go#job#Spawn(bang, args)
     endfunc
 
     func opts.exitHandler(job, exit_status) dict
+        if has_key(self, 'callback')
+            call self.callback(a:job, a:exit_status, self.combined)
+        endif
+
         if a:exit_status == 0
             call go#list#Clean(0)
             call go#list#Window(0)

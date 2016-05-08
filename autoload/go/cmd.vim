@@ -8,7 +8,6 @@ function! go#cmd#autowrite()
     endif
 endfunction
 
-
 " Build builds the source code without producting any output binary. We live in
 " an editor so the best is to build it to catch errors and fix them. By
 " default it tries to call simply 'go build', but it first tries to get all
@@ -25,15 +24,15 @@ function! go#cmd#Build(bang, ...)
     " placeholder with the current folder (indicated with '.')
     let args = ["build"]  + goargs + [".", "errors"]
 
-    if has('nvim')
+    if has('job')
+        " use vim's job functionality to call it asynchronously
+        call go#util#EchoProgress("building dispatched ...")
+        call go#job#Spawn(a:bang, {'cmd': ['go'] + args})
+        return
+    elseif has('nvim')
         " if we have nvim, call it asynchronously and return early ;)
         call go#util#EchoProgress("building dispatched ...")
         call go#jobcontrol#Spawn(a:bang, "build", args)
-        return
-    elseif has('job')
-        " use vim's job functionality
-        call go#util#EchoProgress("building dispatched ...")
-        call go#job#Spawn(a:bang, {'cmd': ['go'] + args})
         return
     endif
 
@@ -143,9 +142,23 @@ function! go#cmd#Run(bang, ...)
 endfunction
 
 " Install installs the package by simple calling 'go install'. If any argument
-" is given(which are passed directly to 'go install') it tries to install those
-" packages. Errors are populated in the location window.
+" is given(which are passed directly to 'go install') it tries to install
+" those packages. Errors are populated in the location window.
 function! go#cmd#Install(bang, ...)
+    " use vim's job functionality to call it asynchronously
+    if has('job')
+        " expand all wildcards(i.e: '%' to the current file name)
+        let goargs = map(copy(a:000), "expand(v:val)")
+
+        " escape all shell arguments before we pass it to make
+        let goargs = go#util#Shelllist(goargs, 1)
+
+        " use vim's job functionality to call it asynchronously
+        call go#util#EchoProgress("installing dispatched ...")
+        call go#job#Spawn(a:bang, {'cmd': ['go', 'install'] + goargs})
+        return
+    endif
+
     let default_makeprg = &makeprg
 
     " :make expands '%' and '#' wildcards, so they must also be escaped
@@ -174,12 +187,10 @@ function! go#cmd#Install(bang, ...)
 
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
-    if !empty(errors)
-        if !a:bang
-            call go#list#JumpToFirst(l:listtype)
-        endif
+    if !empty(errors) && !a:bang
+        call go#list#JumpToFirst(l:listtype)
     else
-        redraws! | echon "vim-go: " | echohl Function | echon "installed to ". $GOPATH | echohl None
+        call go#util#EchoSuccess("installed to ". $GOPATH)
     endif
 
     let &makeprg = default_makeprg
@@ -216,7 +227,13 @@ function! go#cmd#Test(bang, compile, ...)
         echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
     endif
 
-    if has('nvim')
+    if has('job')
+        " use vim's job functionality to call it asynchronously
+        call go#util#EchoProgress("testing dispatched ...")
+        call go#job#Spawn(a:bang, {'cmd': ['go'] + args})
+        return
+    elseif has('nvim')
+        " use nvims's job functionality
         if get(g:, 'go_term_enabled', 0)
             let id = go#term#new(a:bang, ["go"] + args)
         else
