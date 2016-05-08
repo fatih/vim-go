@@ -314,8 +314,10 @@ func Example${1:Method}() {
 endsnippet
 # test benchmark
 snippet benchmark
-func Benchmark${1:Method}() {
-	${0}
+func Benchmark${1:Method}(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		${0}
+	}
 }
 endsnippet
 # variable declaration
