@@ -33,7 +33,7 @@ function! go#cmd#Build(bang, ...)
     elseif has('job')
         " use vim's job functionality
         call go#util#EchoProgress("building dispatched ...")
-        call go#job#Spawn(a:bang, ['go'] + args)
+        call go#job#Spawn(a:bang, {'cmd': ['go'] + args})
         return
     endif
 
@@ -65,10 +65,8 @@ function! go#cmd#Build(bang, ...)
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
 
-    if !empty(errors)
-        if !a:bang
-            call go#list#JumpToFirst(l:listtype)
-        endif
+    if !empty(errors) && !a:bang
+        call go#list#JumpToFirst(l:listtype)
     else
         call go#util#EchoSuccess("[build] SUCCESS")
     endif
