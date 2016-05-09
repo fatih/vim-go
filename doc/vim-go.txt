@@ -619,6 +619,18 @@ CTRL-t
     definitions. By default set to: `"func,type"`. Possible options are:
     `{func,type}`
 
+                                                              *:GoImpl*
+:GoImpl [receiver] [interface]
+
+    Generates method stubs for implementing an interface. If no arguments is
+    passed it takes the identifier under the cursor to be the receiver and
+    asks for the interface type to be generated. If used with arguments, the
+    receiver and the interface needs to be specified. Example usages:
+>
+      :GoImpl f *Foo io.Writer
+      :GoImpl T io.ReadWriteCloser
+<
+
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
 
