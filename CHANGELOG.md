@@ -1,5 +1,9 @@
 ## 1.7 (unreleased)
 
+FEATURES:
+
+* New `<C-w><C-]>` and `<C-w>]>` shortcuts to split current window and jumpt to the identifier under cursor. [gh-838]
+
 IMPROVEMENTS:
 
 * Enable passing the `-tags` flag to `:GoDef`. Now you can pass build tags to `:GoDef` via `:GoGuruTags` or `g:go_guru_tags`
