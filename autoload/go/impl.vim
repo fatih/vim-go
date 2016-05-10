@@ -11,7 +11,7 @@ function! go#impl#Impl(...)
         " user didn't passed anything,  just called ':GoImpl'
         let receiveType = expand("<cword>")
         let recv = printf("%s *%s", tolower(receiveType)[0], receiveType)
-        let iface = input("vim-go: interface to be generated: ")
+        let iface = input("vim-go: generating method stubs for interface: ")
         redraw!
         if empty(iface)
             call go#util#EchoError('usage: interface type is not provided')
