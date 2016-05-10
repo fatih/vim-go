@@ -1,7 +1,7 @@
-" gorename
+" -- gorename
 command! -nargs=? GoRename call go#rename#Rename(<bang>0,<f-args>)
 
-" guru
+" -- guru
 command! -nargs=* -complete=customlist,go#package#Complete GoGuruScope call go#guru#Scope(<f-args>)
 command! -range=% GoImplements call go#guru#Implements(<count>)
 command! -range=% GoCallees call go#guru#Callees(<count>)
@@ -16,12 +16,12 @@ command! -nargs=? GoGuruTags call go#guru#Tags(<f-args>)
 " TODO(arslan): enable this once the function is implemented
 " command! -range=% GoSameIds call go#guru#SameIds(<count>)
 
-" tool
+" -- tool
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
 command! -nargs=* GoInfo call go#complete#Info(0)
 
-" cmd
+" -- cmd
 command! -nargs=* -bang GoBuild call go#cmd#Build(<bang>0,<f-args>)
 command! -nargs=* -bang GoGenerate call go#cmd#Generate(<bang>0,<f-args>)
 command! -nargs=* -bang -complete=file GoRun call go#cmd#Run(<bang>0,<f-args>)
@@ -72,5 +72,8 @@ if globpath(&rtp, 'plugin/ctrlp.vim') != ""
   command! -nargs=? -complete=file GoDecls call ctrlp#init(ctrlp#decls#cmd(0, <q-args>))
   command! -nargs=? -complete=dir GoDeclsDir call ctrlp#init(ctrlp#decls#cmd(1, <q-args>))
 endif
+
+" -- impl
+command! -nargs=* -buffer -complete=customlist,go#impl#Complete GoImpl call go#impl#Impl(<f-args>)
 
 " vim:ts=4:sw=4:et

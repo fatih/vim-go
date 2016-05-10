@@ -37,6 +37,27 @@ function! go#util#IsWin()
     return 0
 endfunction
 
+function! go#util#GOARCH()
+    return substitute(go#util#System('go env GOARCH'), '\n', '', 'g')
+endfunction
+
+function! go#util#GOOS()
+    return substitute(go#util#System('go env GOOS'), '\n', '', 'g')
+endfunction
+
+function! go#util#GOROOT()
+    return substitute(go#util#System('go env GOROOT'), '\n', '', 'g')
+endfunction
+
+function! go#util#GOPATH()
+    return substitute(go#util#System('go env GOPATH'), '\n', '', 'g')
+endfunction
+
+function! go#util#OSARCH()
+    return go#util#GOOS() . '_' . go#util#GOARCH()
+endfunction
+
+
 "Check if has vimproc
 function! s:has_vimproc()
     if !exists('g:go#use_vimproc')
