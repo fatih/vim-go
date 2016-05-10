@@ -13,7 +13,7 @@ function! go#play#Share(count, line1, line2)
     let share_file = tempname()
     call writefile(split(content, "\n"), share_file, "b")
 
-    let command = "curl -s -X POST http://play.golang.org/share --data-binary '@".share_file."'"
+    let command = "curl -s -X POST https://play.golang.org/share --data-binary '@".share_file."'"
     let snippet_id = go#util#System(command)
 
     " we can remove the temp file because it's now posted.
