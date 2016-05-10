@@ -328,13 +328,13 @@ func Test${1:Function}(t *testing.T) {
 endsnippet
 
 snippet hf "http.HandlerFunc" !b
-func ${1:handler}(w ResponseWriter, r *Request) {
+func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 }
 endsnippet
 
 snippet hhf "mux.HandleFunc" !b
-${1:http}.HandleFunc("${2:/}", func(w ResponseWriter, r *Request) {
+${1:http}.HandleFunc("${2:/}", func(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 })
 endsnippet
