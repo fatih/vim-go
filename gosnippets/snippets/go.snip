@@ -341,12 +341,12 @@ abbr equals: test two identifiers with DeepEqual
 
 snippet hf
 abbr http.HandlerFunc
-  func ${1:handler}(w ResponseWriter, r *Request) {
+  func ${1:handler}(w http.ResponseWriter, r *http.Request) {
     ${0:fmt.Fprintf(w, "hello world")}
   }
 
 snippet hhf
 abbr mux.HandleFunc(...)
-  ${1:http}.HandleFunc("${2:/}", func(w ResponseWriter, r *Request) {
+  ${1:http}.HandleFunc("${2:/}", func(w http.ResponseWriter, r *http.Request) {
     ${0:fmt.Fprintf(w, "hello world")}
   })
