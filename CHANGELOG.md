@@ -14,6 +14,7 @@ IMPROVEMENTS:
 * Search tool binaries first in `GOBIN` and then in `PATH` as most of vim-go users installs it to `GOBIN` mostly [gh-823]
 
 BUG FIXES:
+* Invoking `:GoRename` now reloads all files to reflect new changes automatically [gh-855]
 * Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [gh-832]
 * Commands based on guru now shows a more meaningful error message instead of just showing the exit status (-1)
 * Fix `:GoCoverage` accidently enabling syntax highlighting for users who don't use syntax (i.e syntax off) [gh-827]
