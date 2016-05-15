@@ -63,7 +63,7 @@ function! go#job#Spawn(bang, args)
 
         if !len(errors)
             " failed to parse errors, output the original content
-            call go#util#EchoError(join(self.combined, "\n"))
+            call go#util#EchoError(self.combined[0])
             return
         endif
 
