@@ -630,6 +630,7 @@ CTRL-t
       :GoImpl f *Foo io.Writer
       :GoImpl T io.ReadWriteCloser
 <
+  
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -1243,10 +1244,24 @@ By default it is set to edit.
                                                        *g:go_gorename_prefill*
 
 Specifies whether |:GoRename| prefills the new identifier name with the
-word under the cursor. By default is is enabled.
+word under the cursor. By default it is enabled.
 >
   let g:go_gorename_prefill = 1
 <
+                                                       *g:go_gocode_autobuild*
+
+Specifies whether `gocode` should automatically build out-of-date packages
+when their source fiels are modified, in order to obtahin the freshes
+autocomplete results for them.  By default it is enabled.
+>
+  let g:go_gocode_autobuild = 1
+<
+                                                *g:go_gocode_propose_builtins*
+
+Specifies whether `gocode` should add built-in types, functions and constants
+to an autocompletion proposals. By default it is enabled.
+>
+  let g:go_gocode_propose_builtins = 1
 
 
 ===============================================================================
