@@ -7,6 +7,7 @@ FEATURES:
 
 IMPROVEMENTS:
 
+* Invoking `:GoRename` now reloads all files to reflect new changes automatically [gh-855]
 * Enable passing the `-tags` flag to `:GoDef`. Now you can pass build tags to `:GoDef` via `:GoGuruTags` or `g:go_guru_tags`
 * Internal refactoring to use custom `system()` function that wraps both the standard `system()` call and `vimproc`. Now all system calls will take advantage and will use `vimproc` if installed. [gh-801]
 * Completion enables now `gocode`'s `autobuild` and `propose-builtins` flags automatically. With these settings packages will be automatically build to get the freshest completion candidates and builtin keywords will be showed as well. By defaults these settings are enabled. Settings can be disabled/enabled via `g:go_gocode_autobuild` and `g:go_gocode_propose_builtins`. [gh-815]
@@ -15,7 +16,6 @@ IMPROVEMENTS:
 * Search tool binaries first in `GOBIN` and then in `PATH` as most of vim-go users installs it to `GOBIN` mostly [gh-823]
 
 BUG FIXES:
-* Invoking `:GoRename` now reloads all files to reflect new changes automatically [gh-855]
 * Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [gh-832]
 * Commands based on guru now shows a more meaningful error message instead of just showing the exit status (-1)
 * Fix `:GoCoverage` accidently enabling syntax highlighting for users who don't use syntax (i.e syntax off) [gh-827]
