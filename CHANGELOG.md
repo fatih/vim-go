@@ -14,6 +14,7 @@ IMPROVEMENTS:
 * Added new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [gh-816]
 * Added new `Example` and `Benchmark` snippets with `example` and `benchmark` shortcuts [gh-836]
 * Search tool binaries first in `GOBIN` and then in `PATH` as most of vim-go users installs it to `GOBIN` mostly [gh-823]
+* Improve `guru` based commands by providing automatically detected GOPATHS, such as `gb`, `godep` to be used if possible [gh-861]
 
 BUG FIXES:
 * Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [gh-832]
