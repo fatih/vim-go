@@ -151,6 +151,7 @@ function! go#path#CheckBinPath(binpath)
 
     " if it's in PATH just return it
     if executable(binpath)
+        let binpath = exepath(binpath)
         let $PATH = old_path
         return binpath
     endif

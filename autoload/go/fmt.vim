@@ -115,7 +115,8 @@ function! go#fmt#Format(withGoimport)
 
     if fmt_command == "goimports"
         if !exists('b:goimports_vendor_compatible')
-            let out = go#util#System("goimports --help")
+            let binpath = go#path#CheckBinPath("goimports")
+            let out = go#util#System(binpath . " --help")
             if out !~ "-srcdir"
                 echohl WarningMsg
                 echomsg "vim-go: goimports does not support srcdir."
