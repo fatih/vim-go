@@ -17,7 +17,8 @@ function! go#def#Jump(mode)
 	endif
 
 	let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
-	let command = printf("%s %s definition %s:#%s", bin_path, flags, shellescape(fname), go#util#OffsetCursor())
+	let fname = shellescape(fname.':#'.go#util#OffsetCursor())
+	let command = printf("%s %s definition %s", bin_path, flags, fname)
 
 	let out = go#util#System(command)
 	if go#util#ShellError() != 0
