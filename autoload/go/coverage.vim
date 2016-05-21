@@ -221,9 +221,9 @@ function! go#coverage#overlay(file)
     endfor
 
     syntax manual
-    highlight normaltext term=bold ctermfg=59 guifg=#75715E
-    highlight covered term=bold ctermfg=118 guifg=#A6E22E
-    highlight uncover term=bold ctermfg=197 guifg=#F92672
+    highlight normaltext term=bold ctermfg=darkgrey guifg=#75715E
+    highlight covered term=bold ctermfg=green guifg=#A6E22E
+    highlight uncover term=bold ctermfg=red guifg=#F92672
 
     " clear the matches if we leave the buffer
     autocmd BufWinLeave <buffer> call go#coverage#Clear()
