@@ -196,7 +196,7 @@ function! go#cmd#Test(bang, compile, ...)
 
     if a:0
         " expand all wildcards(i.e: '%' to the current file name)
-        let goargs = map(copy(a:000), "expand(v:val)")
+        let goargs = map(copy(a:000), "shellescape(expand(v:val))")
 
         call extend(args, goargs, 1)
     else

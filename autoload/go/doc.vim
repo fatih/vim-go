@@ -85,8 +85,9 @@ function! go#doc#Open(newmode, mode, ...)
 
     let offset = go#util#OffsetCursor()
     let fname = expand("%:p")
+    let pos = shellescape(fname.':#'.offset)
 
-    let command = printf("%s -pos %s:#%s", bin_path, fname, offset)
+    let command = printf("%s -pos %s", bin_path, pos)
 
     let out = go#util#System(command)
     if go#util#ShellError() != 0
