@@ -117,10 +117,7 @@ function! go#fmt#Format(withGoimport)
         if !exists('b:goimports_vendor_compatible')
             let out = go#util#System("goimports --help")
             if out !~ "-srcdir"
-                echohl WarningMsg
-                echomsg "vim-go: goimports does not support srcdir."
-                echomsg "  update with: :GoUpdateBinaries"
-                echohl None
+                call go#util#EchoWarning("vim-go: goimports does not support srcdir. update with: :GoUpdateBinaries")
             else
                let b:goimports_vendor_compatible = 1
             endif
