@@ -8,6 +8,7 @@ FEATURES:
 IMPROVEMENTS:
 
 * Invoking `:GoRename` now reloads all files to reflect new changes automatically [gh-855]
+* Calling `:GoTestCompile` does not create any temporary binary file anymore [gh-879]
 * Enable passing the `-tags` flag to `:GoDef`. Now you can pass build tags to `:GoDef` via `:GoGuruTags` or `g:go_guru_tags`
 * Internal refactoring to use custom `system()` function that wraps both the standard `system()` call and `vimproc`. Now all system calls will take advantage and will use `vimproc` if installed. [gh-801]
 * Completion enables now `gocode`'s `autobuild` and `propose-builtins` flags automatically. With these settings packages will be automatically build to get the freshest completion candidates and builtin keywords will be showed as well. By defaults these settings are enabled. Settings can be disabled/enabled via `g:go_gocode_autobuild` and `g:go_gocode_propose_builtins`. [gh-815]
