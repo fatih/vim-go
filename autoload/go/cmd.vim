@@ -188,18 +188,6 @@ endfunction
 function! go#cmd#Test(bang, compile, ...)
     let args = ["test"]
 
-    " only run if the file exists
-    let test_file = expand('%')
-    if test_file =~# '^\f\+\.go$'
-        let l:root = split(test_file, ".go$")[0]
-        let l:alt_file = l:root . '_test.go'
-
-        if !filereadable(alt_file) && !bufexists(alt_file)
-            call go#util#EchoError("couldn't find ".alt_file)
-            return
-        endif
-    endif
-
     " don't run the test, only compile it. Useful to capture and fix errors or
     " to create a test binary.
     if a:compile
