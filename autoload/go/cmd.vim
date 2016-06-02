@@ -219,8 +219,10 @@ function! go#cmd#Test(bang, compile, ...)
             let id = go#jobcontrol#Spawn(a:bang, "test", args)
         endif
 
-        call go#jobcontrol#AddHandler(function('s:test_compile_handler'))
-        let s:test_compile_handlers[id] = compile_file
+        if a:compile
+            call go#jobcontrol#AddHandler(function('s:test_compile_handler'))
+            let s:test_compile_handlers[id] = compile_file
+        endif
         return id
     endif
 
