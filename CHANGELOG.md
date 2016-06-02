@@ -28,6 +28,7 @@ BUG FIXES:
 * Fix `:GoPlay` posting to non HTTPS url. [gh-847]
 * Fix escaping the filenames for lint and motion commands [gh-862]
 * Fix escaping the filename to `:GoDef` completely for tcsh [gh-868]
+* Fix showing SUCCESS for `go test` related commands if no test files are available [gh-859]
 
 
 
