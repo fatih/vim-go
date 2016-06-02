@@ -673,16 +673,13 @@ Calls `go build` for the current package
 
 Calls `go generate` for the current package
 
-
                                                                  *(go-info)*
 
 Shows type information for the word under the cursor
 
-
                                                               *(go-install)*
 
 Calls `go install` for the current package
-
 
                                                                  *(go-test)*
 
@@ -710,6 +707,10 @@ Clears the coverage annotation
 Calls `go test -coverprofile-temp.out` for the current package and shows the
 coverage annotation. If run agains it acts as a toggle and clears the
 annotation.
+
+                                                                *(go-imports)*
+
+Calls `goimports` for the current package
 
                                                                   *(go-vet)*
 
@@ -834,6 +835,11 @@ Alternates between the implementation and test code in a new horizontal split
                                                     *(go-alternate-vertical)*
 
 Alternates between the implementation and test code in a new vertical split
+
+                                                                *(go-import)*
+
+Calls `:GoImport` for the current package
+
 
 ===============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
