@@ -49,7 +49,7 @@ disabled/enabled easily.
 * Integrated with the Neovim terminal, launch `:GoRun` and other go commands
   in their own new terminal. (beta)
 * Alternate between implementation and test code with `:GoAlternate`
-* * **New** * **`:GoImpl`** command that generates method stubs for implementing an interface. Checkout the [demo](https://twitter.com/fatih/status/729991365581545472) to see how it works.
+* **New** **`:GoImpl`** command that generates method stubs for implementing an interface. Checkout the [demo](https://twitter.com/fatih/status/729991365581545472) to see how it works.
 
 ## Install
 
