@@ -203,6 +203,7 @@ function! go#cmd#Test(bang, compile, ...)
     if a:0
         " expand all wildcards(i.e: '%' to the current file name)
         let goargs = map(copy(a:000), "expand(v:val)")
+        let goargs = go#util#Shelllist(goargs, 1)
 
         call extend(args, goargs, 1)
     else
