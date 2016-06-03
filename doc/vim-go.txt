@@ -439,7 +439,8 @@ CTRL-t
 :GoInstallBinaries
 
     Download and Install all necessary Go tool binaries such as `godef`,
-    `goimports`, `gocode`, etc.. under `g:go_bin_path`
+    `goimports`, `gocode`, etc.. under `g:go_bin_path`. Set |g:go_get_update|
+    to disable updating dependencies.
 
                                                           *:GoUpdateBinaries*
 :GoUpdateBinaries
@@ -1014,6 +1015,14 @@ Use this option to define the default snippet engine.  By default "ultisnips"
 is used. Use "neosnippet" for neosnippet.vim: >
 
   let g:go_snippet_engine = "ultisnips"
+<
+
+                                                         *'g:go_get_update'*
+
+Use this option to disable updating dependencies with |GoInstallBinaries|. By
+default this is enabled.
+>
+  let g:go_get_update = 1
 <
 
                                                          *'g:go_guru_scope'*
