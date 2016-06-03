@@ -18,6 +18,8 @@ IMPROVEMENTS:
 * Improve `guru` based commands by providing automatically detected GOPATHS, such as `gb`, `godep` to be used if possible [gh-861]
 * Add `<Plug>(go-imports)` mapping to make it assignable to other keys [gh-878]
 * Increase compatibility with tcsh [gh-869]
+* Improve `:GoInstallBinaries` for GOPATH's which don't have packages that work well with `go get -u`. We have a new `g:go_get_update` setting to disable it. By default it's enabled. [gh-883]
+
 
 
 BUG FIXES:
