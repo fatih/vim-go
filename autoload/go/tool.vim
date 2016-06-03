@@ -13,7 +13,7 @@ function! go#tool#Deps()
     if go#util#IsWin()
         let format = '{{range $f := .Deps}}{{$f}}{{printf \"\n\"}}{{end}}'
     else
-        let format = "${{range $f := .Deps}}{{$f}}\n{{end}}"
+        let format = "{{range $f := .Deps}}{{$f}}\n{{end}}"
     endif
     let command = 'go list -f '.shellescape(format)
     let out = go#tool#ExecuteInDir(command)
@@ -25,7 +25,7 @@ function! go#tool#Imports()
     if go#util#IsWin()
         let format = '{{range $f := .Imports}}{{$f}}{{printf \"\n\"}}{{end}}'
     else
-        let format = "${{range $f := .Imports}}{{$f}}\n{{end}}"
+        let format = "{{range $f := .Imports}}{{$f}}{{printf \"\\n\"}}{{end}}"
     endif
     let command = 'go list -f '.shellescape(format)
     let out = go#tool#ExecuteInDir(command)
@@ -35,7 +35,7 @@ function! go#tool#Imports()
     endif
 
     for package_path in split(out, '\n')
-        let cmd = "go list -f {{.Name}} " . shellescape(package_path)
+        let cmd = "go list -f '{{.Name}}' " . shellescape(package_path)
         let package_name = substitute(go#tool#ExecuteInDir(cmd), '\n$', '', '')
         let imports[package_name] = package_path
     endfor
