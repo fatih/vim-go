@@ -17,6 +17,8 @@ IMPROVEMENTS:
 * Search tool binaries first in `GOBIN` and then in `PATH` as most of vim-go users installs it to `GOBIN` mostly [gh-823]
 * Improve `guru` based commands by providing automatically detected GOPATHS, such as `gb`, `godep` to be used if possible [gh-861]
 * Add `<Plug>(go-imports)` mapping to make it assignable to other keys [gh-878]
+* Increase compatibility with tcsh [gh-869]
+
 
 BUG FIXES:
 * Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [gh-832]
