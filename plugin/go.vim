@@ -13,6 +13,7 @@ let s:packages = [
             \ "golang.org/x/tools/cmd/guru",
             \ "golang.org/x/tools/cmd/gorename",
             \ "github.com/golang/lint/golint",
+            \ "github.com/rogpeppe/godef",
             \ "github.com/kisielk/errcheck",
             \ "github.com/jstemmer/gotags",
             \ "github.com/klauspost/asmfmt/cmd/asmfmt",
