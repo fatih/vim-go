@@ -1,4 +1,4 @@
-## 1.7 (unreleased)
+## 1.7 (June 7, 2016)
 
 FEATURES:
 
