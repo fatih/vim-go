@@ -982,6 +982,14 @@ In Go, using `godoc` is more idiomatic. Default is enabled. >
 
   let g:go_doc_keywordprg_enabled = 1
 <
+                                                            *'g:go_def_mode'*
+
+Use this option to define the command to be used for |:GoDef|. By default
+`guru` is being used as it covers all edge cases. But one might also use
+`godef` as it's more faster. Current valid options are: `[guru, godef]` >
+
+  let g:go_def_mode = 'guru'
+<
                                                  *'g:go_def_mapping_enabled'*
 
 Use this option to enable/disable the default mapping of CTRL-] and (`gd`) for
