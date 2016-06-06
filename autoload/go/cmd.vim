@@ -230,7 +230,13 @@ function! go#cmd#Test(bang, compile, ...)
     if has('job')
         " use vim's job functionality to call it asynchronously
         call go#util#EchoProgress("testing dispatched ...")
-        call go#job#Spawn(a:bang, {'cmd': ['go'] + args})
+
+        let spawn_args = {'cmd': ['go'] + args}
+        if a:compile
+            let spawn_args['external_cb'] = function('s:test_compile', [compile_file])
+        endif
+
+        call go#job#Spawn(a:bang, spawn_args)
         return
     elseif has('nvim')
         " use nvims's job functionality
@@ -363,6 +369,15 @@ function! go#cmd#Generate(bang, ...)
     let $GOPATH = old_gopath
 endfunction
 
+
+" ---------------------
+" | Vim job callbacks |
+" ---------------------
+
+" test_compile is called when a GoTestCompile is called
+function! s:test_compile(test_file, job, exit_status, data)
+    call delete(a:test_file)
+endfunction
 
 " -----------------------
 " | Neovim job handlers |
