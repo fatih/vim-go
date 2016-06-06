@@ -188,11 +188,6 @@ endfunction
 function! go#cmd#Test(bang, compile, ...)
     let args = ["test"]
 
-    if empty(glob("*_test.go"))
-        call go#util#EchoError("no tests files available")
-        return
-    endif
-
     " don't run the test, only compile it. Useful to capture and fix errors or
     " to create a test binary.
     if a:compile
