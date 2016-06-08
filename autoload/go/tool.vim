@@ -171,10 +171,10 @@ function! go#tool#OpenBrowser(url)
         return
     endif
     if cmd =~ '^!'
-        let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
+        let cmd = substitute(cmd, '%URL%', '\=escape(shellescape(a:url),"#")', 'g')
         silent! exec cmd
     elseif cmd =~ '^:[A-Z]'
-        let cmd = substitute(cmd, '%URL%', '\=a:url', 'g')
+        let cmd = substitute(cmd, '%URL%', '\=escape(a:url,"#")', 'g')
         exec cmd
     else
         let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
