@@ -1122,13 +1122,13 @@ Highlights method names. By default it's disabled. >
 
 Highlights struct names. By default it's disabled. >
 
-  let go:go_highlight_fields = 0
+  let g:go_highlight_structs = 0
 <
                                                   *'g:go_highlight_fields'*
 
 Highlights field names. By default it's disabled. >
 
-  let g:go_highlight_structs = 0
+  let g:go_highlight_fields = 0
 <
                                                *'g:go_highlight_interfaces'*
 
