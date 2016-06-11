@@ -1,3 +1,9 @@
+## 1.8 (unplanned)
+
+IMPROVEMENTS:
+
+* `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions [gh-894]
+
 ## 1.7.1 (June 7, 2016)
 
 BUG FIXES:
