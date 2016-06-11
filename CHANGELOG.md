@@ -1,11 +1,29 @@
-## 1.7 (unreleased)
+## 1.8 (unplanned)
+
+IMPROVEMENTS:
+
+* `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions [gh-894]
+
+
+BUG FIXES:
+
+* Escape `#` characters when opening URL's, as it's handled as alternative file in vim [gh-895]
+* Fix typos in `doc/vim-go.txt` about usages of syntax highglightings [gh-897]
+* Fix `:GoCoverage` not running for Neovim [gh-899]
+
+## 1.7.1 (June 7, 2016)
+
+BUG FIXES:
+* Fixed typo in `syntax/go.vim` file from `go:go_highlight_fields` to `g:go_highlight_fields`
+
+## 1.7 (June 7, 2016)
 
 FEATURES:
 
 * New **`:GoImpl`** command that generates method stubs for implementing an interface. Checkout the [demo](https://twitter.com/fatih/status/729991365581545472) to see how it works. [gh-846]
 * `godef` support is added back as an optional setting.  By default `:GoDef` still uses `guru`, but can be changed to `godef` by adding the option: `let g:go_def_mode = 'godef'` [gh-888]
 * New `<C-w><C-]>` and `<C-w>]>` shortcuts to split current window and jumpt to the identifier under cursor. [gh-838]
-* New syntax setting" `go:go_highlight_fields` that highlights struct field references [gh-854]
+* New syntax setting" `g:go_highlight_fields` that highlights struct field references [gh-854]
 
 IMPROVEMENTS:
 

@@ -67,7 +67,7 @@ if !exists("g:go_highlight_methods")
   let g:go_highlight_methods = 0
 endif
 
-if !exists("go:go_highlight_fields")
+if !exists("g:go_highlight_fields")
 	let g:go_highlight_fields = 0
 endif
 
