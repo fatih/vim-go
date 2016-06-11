@@ -8,6 +8,7 @@ IMPROVEMENTS:
 BUG FIXES:
 
 * Escape `#` characters when opening URL's, as it's handled as alternative file in vim [gh-895]
+* Fix typos in `doc/vim-go.txt` about usages of syntax highglightings [gh-897]
 
 ## 1.7.1 (June 7, 2016)
 
