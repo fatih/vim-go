@@ -4,6 +4,11 @@ IMPROVEMENTS:
 
 * `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions [gh-894]
 
+
+BUG FIXES:
+
+* Escape `#` characters when opening URL's, as it's handled as alternative file in vim [gh-895]
+
 ## 1.7.1 (June 7, 2016)
 
 BUG FIXES:
