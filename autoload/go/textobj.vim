@@ -84,6 +84,61 @@ function! go#textobj#Function(mode)
   call cursor(info.rbrace.line-1, 1)
 endfunction
 
+function! go#textobj#Block(mode)
+  let offset = go#util#OffsetCursor()
+
+  let fname = expand("%:p")
+  if &modified
+    " Write current unsaved buffer to a temp file and use the modified content
+    let l:tmpname = tempname()
+    call writefile(getline(1, '$'), l:tmpname)
+    let fname = l:tmpname
+  endif
+
+  let bin_path = go#path#CheckBinPath('motion')
+  if empty(bin_path)
+    return
+  endif
+
+  let command = printf("%s -format vim -file %s -offset %s", bin_path, fname, offset)
+  let command .= " -mode benclosing"
+
+  if g:go_textobj_include_function_doc
+    let command .= " -parse-comments"
+  endif
+
+  let out = system(command)
+  if v:shell_error != 0
+    call go#util#EchoError(out)
+    return
+  endif
+
+  " if exists, delete it as we don't need it anymore
+  if exists("l:tmpname")
+    call delete(l:tmpname)
+  endif
+
+  " convert our string dict representation into native Vim dictionary type
+  let result = eval(out)
+  if type(result) != 4 || !has_key(result, 'block')
+    return
+  endif
+
+  let info = result.block
+
+  if a:mode == 'a'
+    call cursor(info.block.line, info.block.col)
+    normal! v
+    call cursor(info.rbrace.line, info.rbrace.col)
+    return
+  endif 
+  " rest is inner mode, a:mode == 'i'
+
+  call cursor(info.lbrace.line+1, 1)
+  normal! V
+  call cursor(info.rbrace.line-1, 1)
+endfunction
+
 function! go#textobj#FunctionJump(mode, direction)
   " get count of the motion. This should be done before all the normal
   " expressions below as those reset this value(because they have zero
