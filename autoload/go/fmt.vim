@@ -119,14 +119,22 @@ function! go#fmt#Format(withGoimport)
             if out !~ "-srcdir"
                 call go#util#EchoWarning("vim-go: goimports does not support srcdir. update with: :GoUpdateBinaries")
             else
-               let b:goimports_vendor_compatible = 1
+                let b:goimports_vendor_compatible = 1
             endif
         endif
 
         if exists('b:goimports_vendor_compatible') && b:goimports_vendor_compatible
+            "resolve and follow the file if it's a link
+            let fname  = expand('%')
+            if getftype(fname) == "link"
+                let fname = resolve(fname)
+            endif
+
+            let dir = fnamemodify(fname, ":p:h")
+
             let ssl_save = &shellslash
             set noshellslash
-            let command  = command . '-srcdir ' . shellescape(expand("%:p:h"))
+            let command  = command . '-srcdir ' . fnameescape(dir)
             let &shellslash = ssl_save
         endif
     endif
@@ -151,7 +159,15 @@ function! go#fmt#Format(withGoimport)
 
         " Replace current file with temp file, then reload buffer
         let old_fileformat = &fileformat
-        call rename(l:tmpname, expand('%'))
+
+        "resolve and follow the file if it's a link
+        let fname  = expand('%')
+        if getftype(fname) == "link"
+            let fname = resolve(fname)
+        endif
+
+        call rename(l:tmpname, fname)
+
         silent edit!
         let &fileformat = old_fileformat
         let &syntax = &syntax
