@@ -50,32 +50,7 @@ function! go#job#Spawn(bang, args)
             return
         endif
 
-        call go#util#EchoError("FAILED")
-
-        let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-        let dir = getcwd()
-        try
-            execute cd self.dir
-            let errors = go#tool#ParseErrors(self.combined)
-            let errors = go#tool#FilterValids(errors)
-        finally
-            execute cd . fnameescape(dir)
-        endtry
-
-        if !len(errors)
-            " failed to parse errors, output the original content
-            call go#util#EchoError(self.combined[0])
-            return
-        endif
-
-        if self.winnr == winnr()
-            let l:listtype = "locationlist"
-            call go#list#Populate(l:listtype, errors)
-            call go#list#Window(l:listtype, len(errors))
-            if !empty(errors) && !self.bang
-                call go#list#JumpToFirst(l:listtype)
-            endif
-        endif
+        call s:show_errors(self.bang, self.errs, self.dir, self.winnr)
     endfunc
 
     let s:job = job_start(a:args.cmd, {
@@ -140,34 +115,9 @@ function! go#job#Buffer(bang, args)
             return
         endif
 
-        call go#util#EchoError("FAILED")
-
         exe 'bdelete! '.self.bufnr
 
-        let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-        let dir = getcwd()
-        try
-            execute cd self.dir
-            let errors = go#tool#ParseErrors(self.errs)
-            let errors = go#tool#FilterValids(errors)
-        finally
-            execute cd . fnameescape(dir)
-        endtry
-
-        if !len(errors)
-            " failed to parse errors, output the original content
-            call go#util#EchoError(self.errs[0])
-            return
-        endif
-
-        if self.winnr == winnr()
-            let l:listtype = "locationlist"
-            call go#list#Populate(l:listtype, errors)
-            call go#list#Window(l:listtype, len(errors))
-            if !empty(errors) && !self.bang
-                call go#list#JumpToFirst(l:listtype)
-            endif
-        endif
+        call s:show_errors(self.bang, self.errs, self.dir, self.winnr)
     endfunc
 
     " NOTE(arslan): the job buffer first line still has an empty line, not
@@ -188,6 +138,35 @@ function! go#job#Buffer(bang, args)
 
     " restore back GOPATH
     let $GOPATH = old_gopath
+endfunction
+
+function! s:show_errors(bang, errs, dir, winnr)
+    call go#util#EchoError("FAILED")
+
+    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    let dir = getcwd()
+    try
+        execute cd a:dir
+        let errors = go#tool#ParseErrors(a:errs)
+        let errors = go#tool#FilterValids(errors)
+    finally
+        execute cd . fnameescape(dir)
+    endtry
+
+    if !len(errors)
+        " failed to parse errors, output the original content
+        call go#util#EchoError(a:errs[0])
+        return
+    endif
+
+    if a:winnr == winnr()
+        let l:listtype = "locationlist"
+        call go#list#Populate(l:listtype, errors)
+        call go#list#Window(l:listtype, len(errors))
+        if !empty(errors) && !a:bang
+            call go#list#JumpToFirst(l:listtype)
+        endif
+    endif
 endfunction
 
 function! s:create_buffer()
