@@ -30,11 +30,12 @@ function! go#job#Spawn(bang, args)
     endfunc
 
     func opts.closeHandler(chan) dict
-        if exists('s:job')
-            call job_status(s:job) "trigger exitHandler
-            call job_stop(s:job)
-            unlet s:job
+        if !exists('s:job')
         endif
+
+        call job_status(s:job) "trigger exitHandler
+        call job_stop(s:job)
+        unlet s:job
     endfunc
 
     func opts.exitHandler(job, exit_status) dict
@@ -108,32 +109,30 @@ function! go#job#Buffer(bang, args)
                 \ 'dir': dir,
                 \ 'bang': a:bang, 
                 \ 'winnr': winnr(),
-                \ 'combined' : [],
+                \ 'errs' : [],
+                \ 'bufnr' : s:create_buffer(),
                 \ }
 
-    " add external callback to be called if async job is finished
-    if has_key(a:args, 'external_cb')
-        let opts.external_cb = a:args.external_cb
-    endif
-
-    func opts.callbackHandler(chan, msg) dict
-        " contains both stderr and stdout
-        call add(self.combined, a:msg)
+    func opts.errorHandler(chan, msg) dict
+        " contains stderr
+        call add(self.errs, a:msg)
     endfunc
 
     func opts.closeHandler(chan) dict
-        if exists('s:job')
-            call job_status(s:job) "trigger exitHandler
-            call job_stop(s:job)
-            unlet s:job
+        if !exists('s:job')
+            return
         endif
+
+        if exists("#BufWinLeave#<buffer>") 
+            autocmd! BufWinLeave <buffer>
+        endif
+
+        call job_status(s:job) "trigger exitHandler
+        call job_stop(s:job)
+        unlet s:job
     endfunc
 
     func opts.exitHandler(job, exit_status) dict
-        if has_key(self, 'external_cb')
-            call self.external_cb(a:job, a:exit_status, self.combined)
-        endif
-
         if a:exit_status == 0
             call go#list#Clean(0)
             call go#list#Window(0)
@@ -143,11 +142,13 @@ function! go#job#Buffer(bang, args)
 
         call go#util#EchoError("FAILED")
 
+        exe 'bdelete! '.self.bufnr
+
         let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
         let dir = getcwd()
         try
             execute cd self.dir
-            let errors = go#tool#ParseErrors(self.combined)
+            let errors = go#tool#ParseErrors(self.errs)
             let errors = go#tool#FilterValids(errors)
         finally
             execute cd . fnameescape(dir)
@@ -155,7 +156,7 @@ function! go#job#Buffer(bang, args)
 
         if !len(errors)
             " failed to parse errors, output the original content
-            call go#util#EchoError(self.combined[0])
+            call go#util#EchoError(self.errs[0])
             return
         endif
 
@@ -169,36 +170,29 @@ function! go#job#Buffer(bang, args)
         endif
     endfunc
 
-    let l:buf_nr = s:create_buffer()
-
+    " NOTE(arslan): the job buffer first line still has an empty line, not
+    " sure how to remove it
     let s:job = job_start(a:args.cmd, {
                 \	"out_io": "buffer",
-                \	"err_io": "buffer",
-                \	"out_buf": l:buf_nr,
-                \	"err_buf": l:buf_nr,
+                \	"out_buf": opts.bufnr,
+                \	"exit_cb": opts.exitHandler,
+                \	"err_cb": opts.errorHandler,
+                \	"close_cb": opts.closeHandler,
                 \ })
 
     call job_status(s:job)
     execute cd . fnameescape(dir)
 
-    autocmd BufWinLeave <buffer> call s:stop_job(s:job)
+
+    autocmd BufWinLeave <buffer> call opts.closeHandler()
 
     " restore back GOPATH
     let $GOPATH = old_gopath
 endfunction
 
-function! s:stop_job(id)
-    if exists("#BufWinLeave#<buffer>") 
-        autocmd! BufWinLeave <buffer>
-    endif
-
-    call job_stop(a:id)
-endfunction
-
 function! s:create_buffer()
     execute 'new __go_job__'
     let l:buf_nr = bufnr('%')
-    1delete _ 
 
     setlocal filetype=gojob
     setlocal bufhidden=delete
@@ -208,6 +202,10 @@ function! s:create_buffer()
     setlocal nobuflisted
     setlocal nocursorline
     setlocal nocursorcolumn
+
+    " close easily with <esc> or enter
+    noremap <buffer> <silent> <CR> :<C-U>close<CR>
+    noremap <buffer> <silent> <Esc> :<C-U>close<CR>
 
     return l:buf_nr
 endfunction
