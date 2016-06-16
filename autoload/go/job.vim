@@ -31,6 +31,7 @@ function! go#job#Spawn(bang, args)
 
     func opts.closeHandler(chan) dict
         if !exists('s:job')
+            return
         endif
 
         call job_status(s:job) "trigger exitHandler
@@ -50,7 +51,7 @@ function! go#job#Spawn(bang, args)
             return
         endif
 
-        call s:show_errors(self.bang, self.errs, self.dir, self.winnr)
+        call s:show_errors(self.bang, self.combined, self.dir, self.winnr)
     endfunc
 
     let s:job = job_start(a:args.cmd, {
@@ -85,7 +86,7 @@ function! go#job#Buffer(bang, args)
                 \ 'bang': a:bang, 
                 \ 'winnr': winnr(),
                 \ 'errs' : [],
-                \ 'bufnr' : s:create_buffer(),
+                \ 'bufnr' : s:create_new_buffer(),
                 \ }
 
     func opts.errorHandler(chan, msg) dict
@@ -94,17 +95,7 @@ function! go#job#Buffer(bang, args)
     endfunc
 
     func opts.closeHandler(chan) dict
-        if !exists('s:job')
-            return
-        endif
-
-        if exists("#BufWinLeave#<buffer>") 
-            autocmd! BufWinLeave <buffer>
-        endif
-
-        call job_status(s:job) "trigger exitHandler
-        call job_stop(s:job)
-        unlet s:job
+        call s:stop_job()
     endfunc
 
     func opts.exitHandler(job, exit_status) dict
@@ -115,14 +106,28 @@ function! go#job#Buffer(bang, args)
             return
         endif
 
-        exe 'bdelete! '.self.bufnr
+        if bufloaded(self.bufnr)
+            sil exe 'bdelete! '.self.bufnr
+        endif
+
+        if empty(self.errs) 
+            return
+        endif
 
         call s:show_errors(self.bang, self.errs, self.dir, self.winnr)
     endfunc
 
+    " stop previous job before we continue
+    if exists('s:job_buffer')
+        call job_stop(s:job_buffer)
+        let status = job_status(s:job_buffer)
+        echo status
+        unlet s:job_buffer
+    endif
+
     " NOTE(arslan): the job buffer first line still has an empty line, not
     " sure how to remove it
-    let s:job = job_start(a:args.cmd, {
+    let s:job_buffer = job_start(a:args.cmd, {
                 \	"out_io": "buffer",
                 \	"out_buf": opts.bufnr,
                 \	"exit_cb": opts.exitHandler,
@@ -130,15 +135,28 @@ function! go#job#Buffer(bang, args)
                 \	"close_cb": opts.closeHandler,
                 \ })
 
-    call job_status(s:job)
+    call job_status(s:job_buffer)
     execute cd . fnameescape(dir)
 
-
-    autocmd BufWinLeave <buffer> call opts.closeHandler()
+    autocmd BufWinLeave <buffer> call s:stop_job()
 
     " restore back GOPATH
     let $GOPATH = old_gopath
 endfunction
+
+func s:stop_job()
+    if !exists('s:job_buffer')
+        return
+    endif
+
+    if exists("#BufWinLeave#<buffer>") 
+        autocmd! BufWinLeave <buffer>
+    endif
+
+    call job_status(s:job_buffer) "trigger exitHandler
+    call job_stop(s:job_buffer)
+    unlet s:job_buffer
+endfunc
 
 function! s:show_errors(bang, errs, dir, winnr)
     call go#util#EchoError("FAILED")
@@ -169,9 +187,13 @@ function! s:show_errors(bang, errs, dir, winnr)
     endif
 endfunction
 
-function! s:create_buffer()
+function! s:create_new_buffer()
     execute 'new __go_job__'
     let l:buf_nr = bufnr('%')
+
+    " cap buffer height to 10
+    let max_height = 10
+    exe 'resize ' . max_height
 
     setlocal filetype=gojob
     setlocal bufhidden=delete
