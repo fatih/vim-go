@@ -6,6 +6,12 @@ function! go#def#Jump(mode)
     let $GOPATH = go#path#Detect()
 
     let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
+    if &modified
+        " Write current unsaved buffer to a temp file and use the modified content
+        let l:tmpname = tempname()
+        call writefile(getline(1, '$'), l:tmpname)
+        let fname = l:tmpname
+    endif
 
     " so guru right now is slow for some people. previously we were using
     " godef which also has it's own quirks. But this issue come up so many
@@ -44,6 +50,10 @@ function! go#def#Jump(mode)
     else
         call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, guru]')
         return
+    endif
+
+    if exists("l:tmpname")
+        call delete(l:tmpname)
     endif
 
     if go#util#ShellError() != 0
