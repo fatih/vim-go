@@ -3,7 +3,7 @@
 IMPROVEMENTS:
 
 * `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions [gh-894]
-
+* `:GoDef` works now for modified files as well [gh-910]
 
 BUG FIXES:
 
