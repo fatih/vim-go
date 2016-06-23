@@ -11,6 +11,7 @@ BUG FIXES:
 * Fix typos in `doc/vim-go.txt` about usages of syntax highglightings [gh-897]
 * Fix `:GoCoverage` not running for Neovim [gh-899]
 * Fix `:GoFmt` not picking up `-srcdir` if the command was set to use `goimports` [gh-904]
+* Fix `:GoTestCompile` to not leave behind artifacts if the cwd and the test files's directory do not match [gh-909]
 
 ## 1.7.1 (June 7, 2016)
 
