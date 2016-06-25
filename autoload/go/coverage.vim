@@ -41,19 +41,6 @@ function! go#coverage#Buffer(bang, ...)
     execute cd . fnameescape(dir)
   endtry
 
-  " check if there is any test file, if not we just return
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
-  try
-    execute cd . fnameescape(expand("%:p:h"))
-    if empty(glob("*_test.go"))
-      call go#util#EchoError("no tests files available")
-      return
-    endif
-  finally
-    execute cd . fnameescape(dir)
-  endtry
-
   let s:toggle = 1
   let l:tmpname = tempname()
 
@@ -117,8 +104,16 @@ endfunction
 " a new HTML coverage page from that profile in a new browser
 function! go#coverage#Browser(bang, ...)
   let l:tmpname = tempname()
-  let args = [a:bang, 0, "-coverprofile", l:tmpname]
+  if has('job')
+    call go#util#EchoProgress("opening coverage in browser...")
+    call go#job#Spawn(a:bang, {
+          \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
+          \ 'external_cb': function('s:coverage_browser_callback', [l:tmpname]),
+          \ })
+    return
+  endif
 
+  let args = [a:bang, 0, "-coverprofile", l:tmpname]
   if a:0
     call extend(args, a:000)
   endif
@@ -129,6 +124,7 @@ function! go#coverage#Browser(bang, ...)
     let s:coverage_browser_handler_jobs[id] = l:tmpname
     return
   endif
+
 
   if go#util#ShellError() == 0
     let openHTML = 'go tool cover -html='.l:tmpname
@@ -277,11 +273,20 @@ endfunction
 
 " coverage_callback is called when the coverage execution is finished
 function! s:coverage_callback(coverfile, job, exit_status, data)
-    if a:exit_status == 0
-        call go#coverage#overlay(a:coverfile)
-    endif
+  if a:exit_status == 0
+    call go#coverage#overlay(a:coverfile)
+  endif
 
-    call delete(a:coverfile)
+  call delete(a:coverfile)
+endfunction
+
+function! s:coverage_browser_callback(coverfile, job, exit_status, data)
+  if a:exit_status == 0
+    let openHTML = 'go tool cover -html='.a:coverfile
+    call go#tool#ExecuteInDir(openHTML)
+  endif
+
+  call delete(a:coverfile)
 endfunction
 
 " -----------------------
