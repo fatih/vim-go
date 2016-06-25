@@ -181,4 +181,4 @@ function! s:on_stderr(job_id, data)
   call extend(self.stderr, a:data)
 endfunction
 
-" vim:ts=2:sw=2:et
+" vim: sw=2 ts=2 et
