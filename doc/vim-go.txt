@@ -1118,23 +1118,17 @@ Highlights method names. By default it's disabled. >
 
 	let g:go_highlight_methods = 0
 <
-                                                  *'g:go_highlight_structs'*
+                                                  *'g:go_highlight_types'*
 
-Highlights struct names. By default it's disabled. >
+Highlights struct and interface names. By default it's disabled. >
 
-  let g:go_highlight_structs = 0
+  let g:go_highlight_types = 0
 <
                                                   *'g:go_highlight_fields'*
 
 Highlights field names. By default it's disabled. >
 
   let g:go_highlight_fields = 0
-<
-                                               *'g:go_highlight_interfaces'*
-
-Highlights interface names. By default it's disabled. >
-
-  let g:go_highlight_interfaces = 0
 <
                                         *'g:go_highlight_build_constraints'*
 
