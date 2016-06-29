@@ -315,7 +315,7 @@ hi def link    goField              Identifier
 
 " Structs & Interfaces;
 if g:go_highlight_types != 0
-  syn match goTypeConstructor      /\W\w\+{/hs=s+1,he=e-1
+  syn match goTypeConstructor      /\<\w\+{/he=e-1
   syn match goTypeDecl             /\<type\>/ nextgroup=goTypeName skipwhite skipnl
   syn match goTypeName             /\w\+/ contained nextgroup=goDeclType skipwhite skipnl
   syn match goDeclType             /\<interface\|struct\>/ contained skipwhite skipnl
