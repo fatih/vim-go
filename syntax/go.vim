@@ -296,7 +296,7 @@ if g:go_highlight_functions != 0
   syn match goReceiverType /\(\s\|*\)\w\+)/hs=s+1,he=e-1 contained
   syn match goFunction /\w\+/ contained
 else
-  syn match       goDeclaration       /\<func\>/
+  syn keyword goDeclaration func
 endif
 hi def link     goReceiverType      Type
 hi def link     goFunction          Function
@@ -322,6 +322,7 @@ if g:go_highlight_types != 0
   syn match goDeclType             /\<interface\|struct\>/ contained skipwhite skipnl
 else
   syn keyword goDeclType           struct interface
+  syn keyword goDeclaration        type
 endif
 hi def link     goTypeConstructor   Type
 hi def link     goTypeName          Type
