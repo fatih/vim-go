@@ -173,7 +173,7 @@ augroup vim-go
   endif
 
   " create new template from scratch
-  if get(g:, "go_template_enabled", 1)
+  if get(g:, "go_template_autocreate", 1)
     autocmd BufNewFile *.go call go#template#create()
   endif
 augroup END
