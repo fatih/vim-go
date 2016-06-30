@@ -1,5 +1,9 @@
 ## 1.8 (unplanned)
 
+FEATURES:
+
+* If you open a new buffer with a Go filename it get automatically populated based on the directory. If there are no Go files a simple main package is created, otherwise the file will include the package declaration line based on the package in the current directory. Checkout the demo to see it in action: https://twitter.com/fatih/status/748333086643994624. This is enabled by default. Can be disabled with `let g:go_template_enabled = 0`. You can use your own template with `let g:go_template_file = "foo.go"` and putting the file under the `templates/` folder. [gh-918]
+
 IMPROVEMENTS:
 
 * `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions [gh-894]
@@ -14,6 +18,7 @@ BUG FIXES:
 * Fix `:GoCoverage` not running for Neovim [gh-899]
 * Fix `:GoFmt` not picking up `-srcdir` if the command was set to use `goimports` [gh-904]
 * Fix `:GoTestCompile` to not leave behind artifacts if the cwd and the test files's directory do not match [gh-909]
+* Fix `:GoDocBrowser` to not fail if godoc doesn't exist [gh-920]
 
 BACKWARDS INCOMPATIBILITIES:
 
