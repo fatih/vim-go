@@ -186,7 +186,7 @@ endsnippet
 
 # json field tag
 snippet json "\`json:key\`"
-\`json:"${1:`!v  tolower(matchstr(getline("."), '\w\+'))`}"\`
+\`json:"${1:`!v  go#util#snippetcase(matchstr(getline("."), '\w\+'))`}"\`
 endsnippet
 
 # fallthrough
