@@ -184,8 +184,9 @@ if err != nil {
 ${0}
 endsnippet
 
+# json field tag
 snippet json "\`json:key\`"
-\`json:"${1:keyName}"\`
+\`json:"${1:`!v  tolower(matchstr(getline("."), '\w\+'))`}"\`
 endsnippet
 
 # fallthrough
