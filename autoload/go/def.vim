@@ -100,22 +100,18 @@ function! s:jump_to_declaration(out, mode)
 
   " jump to existing buffer if, 1. we have enabled it, 2. the buffer is loaded
   " and 3. there is buffer window number we switch to
-  if get(g:, 'go_def_reuse_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
-    " jumpt to existing buffer if it exists
-    execute bufwinnr(filename) . 'wincmd w'
-  elseif a:mode == "tab"
-    let &switchbuf = "usetab"
-    if bufloaded(filename) == 0
-      tab split
-    endif
+  if a:mode == "tab"
+    exec 'tab drop '.filename
+  elseif get(g:, 'go_def_reuse_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
+    exec 'drop '.filename
   elseif a:mode == "split"
-    split
+    split 
+    exec 'edit '.filename
   elseif a:mode == "vsplit"
     vsplit
+    exec 'edit '.filename
   endif
 
-  " open the file and jump to line and column
-  exec 'edit '.filename
   call cursor(line, col)
 
   " also align the line to middle of the view
