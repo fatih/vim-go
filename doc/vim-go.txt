@@ -1158,14 +1158,14 @@ Highlights build constraints. By default it's disabled. >
 
 	let g:go_highlight_build_constraints = 0
 <
-                                        *'g:go_highlight_string_spellcheck*
+                                        *'g:go_highlight_string_spellcheck'*
 
 Use this option to highlight spelling errors in strings when |spell| is
 also enabled. By default it's enabled. >
 
 	let g:go_highlight_string_spellcheck = 1
 <
-                                        *'g:go_highlight_format_strings*
+                                        *'g:go_highlight_format_strings'*
 
 Use this option to highlight printf-style operators inside string literals.
 By default it's enabled. >
@@ -1248,7 +1248,7 @@ Use this option to auto |:AsmFmt| on save. By default it's enabled. >
 
   let g:go_asmfmt_autosave = 1
 <
-                                                       *g:go_term_mode*
+                                                       *'g:go_term_mode'*
 
 This option is Neovim only. Use it to change the default command used to
 open a new terminal for go commands such as |:GoRun|.
@@ -1256,8 +1256,8 @@ The default is vsplit.
 >
   let g:go_term_mode = "vsplit"
 <
-                                                       *g:go_term_height*
-                                                        *g:go_term_width*
+                                                       *'g:go_term_height'*
+                                                        *'g:go_term_width'*
 
 These options are Neovim only. Use them to control the height and width of
 a terminal split. By default these are not set, meaning that the height and
@@ -1269,7 +1269,7 @@ For example here is how to set each to 30.
   let g:go_term_height = 30
   let g:go_term_width = 30
 <
-                                                       *g:go_term_enabled*
+                                                       *'g:go_term_enabled'*
 
 This option is Neovim only. Use it to change the behavior of the test
 commands. If set to 1 it opens the test commands inside a new terminal
@@ -1279,36 +1279,36 @@ By default it is disabled.
 >
   let g:go_term_enabled = 0
 <
-                                                        *g:go_alternate_mode*
+                                                        *'g:go_alternate_mode'*
 
 Specifies the command that |:GoAlternate| uses to open the alternate file.
 By default it is set to edit.
 >
   let g:go_alternate_mode = "edit"
 <
-                                                       *g:go_gorename_prefill*
+                                                       *'g:go_gorename_prefill'*
 
 Specifies whether |:GoRename| prefills the new identifier name with the
 word under the cursor. By default it is enabled.
 >
   let g:go_gorename_prefill = 1
 <
-                                                       *g:go_gocode_autobuild*
+                                                       *'g:go_gocode_autobuild'*
 
 Specifies whether `gocode` should automatically build out-of-date packages
-when their source fiels are modified, in order to obtahin the freshes
+when their source fields are modified, in order to obtain the freshest
 autocomplete results for them.  By default it is enabled.
 >
   let g:go_gocode_autobuild = 1
 <
-                                                *g:go_gocode_propose_builtins*
+                                                *'g:go_gocode_propose_builtins'*
 
 Specifies whether `gocode` should add built-in types, functions and constants
 to an autocompletion proposals. By default it is enabled.
 >
   let g:go_gocode_propose_builtins = 1
 <
-                                                      *g:go_template_autocreate*
+                                                      *'g:go_template_autocreate'*
 
 When a new Go file is created, vim-go automatically fills the buffer content
 with a Go code template. By default the template under
@@ -1323,7 +1323,7 @@ By default it is enabled.
 >
   let g:go_template_autocreate = 1
 <
-                                                      *g:go_template_file*
+                                                      *'g:go_template_file'*
 
 Specifies the file under the `templates` folder that is used if a new Go file
 is created. Checkout |g:go_template_autocreate| for more info. By default the
