@@ -80,8 +80,10 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
 
-  " the query might take time, let us give some feedback
-  call go#util#EchoProgress("analysing ...")
+  if a:mode !=# 'what'
+    " the query might take time, let us give some feedback
+    call go#util#EchoProgress("analysing ...")
+  endif
 
   " run, forrest run!!!
   let out = go#util#System(command)
@@ -290,8 +292,10 @@ function! go#guru#SameIds(selected)
   endif
 
   if !has_key(result, 'sameids')
-    call go#util#EchoError("no same_ids founds for the given identifier")
-    return -1
+    if !get(g:, 'go_auto_sameids', 0)
+      call go#util#EchoError("no same_ids founds for the given identifier")
+    endif
+    return
   endif
 
   let poslen = 0

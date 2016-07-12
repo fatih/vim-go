@@ -926,10 +926,16 @@ with |:GoPlay|. By default it's enabled. >
 
 Use this option to show the type info (|:GoInfo|) for the word under the cursor
 automatically. Whenever the cursor changes the type info will be updated.
-By default it's disabled >
+By default it's disabled.
 
   let g:go_auto_type_info = 0
-<
+
+                                                      *'g:go_auto_sameids'*
+
+use this option to highlight all uses of the identifier under the cursor
+(:GoSameIds) automatically. By defult it's disabled.
+
+  let g:go_auto_sameids = 0
 
                                                       *'g:go_jump_to_error'*
 
