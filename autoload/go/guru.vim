@@ -7,7 +7,13 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     return {'err': "bin path not found"}
   endif
 
-  let filename = expand('%:p')
+  let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
+  if &modified
+    " Write current unsaved buffer to a temp file and use the modified content
+    let l:tmpname = tempname()
+    call writefile(getline(1, '$'), l:tmpname)
+    let filename = l:tmpname
+  endif
   let dirname = expand('%:p:h')
   let pkg = go#package#ImportPath(dirname)
 
@@ -87,6 +93,10 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
 
   " run, forrest run!!!
   let out = go#util#System(command)
+
+  if exists("l:tmpname")
+    call delete(l:tmpname)
+  endif
 
   let $GOPATH = old_gopath
   if go#util#ShellError() != 0
