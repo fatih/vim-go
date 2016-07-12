@@ -366,6 +366,7 @@ if g:go_highlight_build_constraints != 0
   hi def link goPackageComment    Comment
 endif
 
+hi def link goSameId IncSearch
 
 " Search backwards for a global declaration to start processing the syntax.
 "syn sync match goSync grouphere NONE /^\(const\|var\|type\|func\)\>/
