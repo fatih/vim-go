@@ -552,6 +552,12 @@ CTRL-t
     object as does the selected identifier, within any package in the analysis
     scope.
 
+                                                              *:GoSameIds*
+:GoSameIds
+
+    Highlights all identifiers that are equivalent to the identifier under the
+    cursor.
+
                                                               *:GoMetaLinter*
 :GoMetaLinter [path]
 

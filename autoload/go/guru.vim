@@ -271,34 +271,57 @@ function! go#guru#What(selected)
     return out.err
   endif
 
-  call s:loclistSecond(out.out)
   let result = json_decode(out.out)
 
   if type(result) != type({})
     return {'err': "malformed output from guru"}
   endif
 
-  if !has_key(result, 'what')
-    return {'err': "no what query found for the given identifier"}
-  endif
-
-  return {'out': result.what}
+  return result
 endfunction
 
 function! go#guru#SameIds(selected)
+  call go#guru#ClearSameIds()
+
   let result = go#guru#What(a:selected)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
+  if has_key(result, 'err')
+    call go#util#EchoError(result.err)
     return
   endif
 
-  if !has_key(result.out, 'sameids')
+  if !has_key(result, 'sameids')
     call go#util#EchoError("no same_ids founds for the given identifier")
     return -1
   endif
 
-  let same_ids = result.what.sameids
-  echo same_ids
+  let poslen = 0
+  for enclosing in result['enclosing']
+    if enclosing['desc'] == 'identifier'
+      let poslen = enclosing['end'] - enclosing['start']
+      break
+    endif
+  endfor
+
+  " return when there's no identifier to highlight.
+  if poslen == 0
+    return
+  endif
+
+  let same_ids = result['sameids']
+  " highlight the lines
+  for item in same_ids
+    let pos = split(item, ':')
+    call matchaddpos('goSameId', [[str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)]])
+  endfor
+endfunction
+
+function! go#guru#ClearSameIds()
+  let m = getmatches()
+  for item in m
+    if item['group'] == 'goSameId'
+      call matchdelete(item['id'])
+    endif
+  endfor
 endfunction
 
 " vim: sw=2 ts=2 et
