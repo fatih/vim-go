@@ -252,7 +252,7 @@ CTRL-]
     otherwise a noop.
 
                                                             *:GoDefStackClear*
-:GoDefStackClear 
+:GoDefStackClear
 
     Clears the current stack list and resets it.
 
@@ -470,7 +470,7 @@ CTRL-t
     Changes the custom |g:go_guru_scope| setting and overrides it with the
     given package patterns. The custom scope is cleared (unset) if `""` is
     given as the only path. If no arguments is given it prints the current
-    custom scope. Example patterns are: 
+    custom scope. Example patterns are:
 >
       golang.org/x/tools/cmd/guru # a single package
       golang.org/x/tools/...      # all packages beneath dir
@@ -600,10 +600,10 @@ CTRL-t
 <
                                                               *:GoDecls*
 :GoDecls [file]
-  
+
     Only enabled if `ctrlp.vim` is installed. If run shows all function and
     type declarations for the current file. If [file] is non empty it parses
-    the given file. 
+    the given file.
     By default `type` and `func` declarations are being showed. This can be
     changed via |g:go_decls_includes|, which accepts a comma delimited list of
     definitions. By default set to: `"func,type"`. Possible options are:
@@ -611,7 +611,7 @@ CTRL-t
 
                                                               *:GoDeclsDir*
 :GoDeclsDir [dir]
-  
+
     Only enabled if `ctrlp.vim` is installed. If run shows all function and
     type declarations for the current directory. If [dir] is given it parses
     the given directory.
@@ -631,7 +631,7 @@ CTRL-t
       :GoImpl f *Foo io.Writer
       :GoImpl T io.ReadWriteCloser
 <
-  
+
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -759,7 +759,7 @@ Goto declaration/definition. Results are shown in the current buffer.
 
                                                             *(go-def-split)*
 
-Goto declaration/definition. Results are shown in a split window. 
+Goto declaration/definition. Results are shown in a split window.
 Jumps to an existing buffer if |g:go_def_reuse_buffer| is enabled.
 
                                                          *(go-def-vertical)*
@@ -849,7 +849,7 @@ vim-go comes with several custom |text-objects| that can be used to operate
 upon regions of text. vim-go currently defines the following text objects:
 
                                                *go-v_af* *go-af*
-af			      "a function", select contents from a function definition to the
+af            "a function", select contents from a function definition to the
                closing bracket. If |g:go_textobj_include_function_doc| is
                enabled it also includes the comment doc for a function
                declaration. This text-object also supports literal functions.
@@ -863,9 +863,9 @@ if            "inside a function", select contents of a function,
 vim-go also defines the following text motion objects:
 
                                                *go-v_]]* *go-]]*
-]]			      [count] forward to next function declaration. If 
-              |g:go_textobj_include_function_doc| is enabled and if your 
-              on a comment, it skips the function which the comment 
+]]            [count] forward to next function declaration. If
+              |g:go_textobj_include_function_doc| is enabled and if your
+              on a comment, it skips the function which the comment
               belongs and forwards to the next function declaration.
 
                                                *go-v_[[* *go-[[*
@@ -1081,7 +1081,7 @@ related commands, such as |GoImplements|, |GoCallers|, etc.You can change it
 on-the-fly with |GoGuruScope|. The input should be a a list of package
 pattern. An example input might be:
 `["github.com/fatih/color","github.com/fatih/structs"]` By default it's not set,
-so the relevant commands defaults are being used. 
+so the relevant commands defaults are being used.
 >
   let g:go_guru_scope = []
 <
@@ -1126,19 +1126,19 @@ Highlights trailing white space. >
 Highlights operators such as `:=` , `==`, `-=`, etc. By default it's
 disabled. >
 
-	let g:go_highlight_operators = 0
+  let g:go_highlight_operators = 0
 <
                                                 *'g:go_highlight_functions'*
 
 Highlights function names. By default it's disabled. >
 
-	let g:go_highlight_functions = 0
+  let g:go_highlight_functions = 0
 <
                                                   *'g:go_highlight_methods'*
 
 Highlights method names. By default it's disabled. >
 
-	let g:go_highlight_methods = 0
+  let g:go_highlight_methods = 0
 <
                                                   *'g:go_highlight_types'*
 
@@ -1156,21 +1156,21 @@ Highlights field names. By default it's disabled. >
 
 Highlights build constraints. By default it's disabled. >
 
-	let g:go_highlight_build_constraints = 0
+  let g:go_highlight_build_constraints = 0
 <
                                         *'g:go_highlight_string_spellcheck'*
 
 Use this option to highlight spelling errors in strings when |spell| is
 also enabled. By default it's enabled. >
 
-	let g:go_highlight_string_spellcheck = 1
+  let g:go_highlight_string_spellcheck = 1
 <
                                         *'g:go_highlight_format_strings'*
 
 Use this option to highlight printf-style operators inside string literals.
 By default it's enabled. >
 
-	let g:go_highlight_format_strings = 1
+  let g:go_highlight_format_strings = 1
 <
                                                 *'g:go_autodetect_gopath'*
 
@@ -1181,13 +1181,13 @@ So |GoDef| for example jumps to the source inside the `Godeps` (vendored)
 source. Currently `godep` and `gb` is supported, in the near future more tool
 supports will be added. By default it's enabled. >
 
-	let g:go_autodetect_gopath = 1
+  let g:go_autodetect_gopath = 1
 <
                                                   *'g:go_textobj_enabled'*
 
 Adds custom text objects. By default it's enabled. >
 
-	let g:go_textobj_enabled = 1
+  let g:go_textobj_enabled = 1
 <
                                                  *'g:go_metalinter_autosave'*
 
@@ -1313,7 +1313,7 @@ to an autocompletion proposals. By default it is enabled.
 When a new Go file is created, vim-go automatically fills the buffer content
 with a Go code template. By default the template under
 `templates/hello_world.go` is used. This can be changed with the
-|g:go_template_file| setting. 
+|g:go_template_file| setting.
 
 If the new file is created in an already prepopulated package (with other Go
 files), in this case a Go code template with only the Go package declaration
@@ -1338,7 +1338,7 @@ I'm using Fish shell but have some problems using vim-go~
 
 First environment variables in Fish are applied differently, it should be like:
 >
-	set -x GOPATH /your/own/gopath
+  set -x GOPATH /your/own/gopath
 <
 Second, Vim needs a POSIX compatible shell (more info here:
 https://github.com/dag/vim-fish#teach-a-vim-to-fish). If you use Fish to open
@@ -1346,13 +1346,13 @@ Vim, it will make certain shell based commands fail (means vim-go will fail
 too). To overcome this problem change the default shell by adding the
 following into your .vimrc (on the top of the file):
 >
-	if $SHELL =~ 'fish'
-	  set shell='/bin/sh'
-	endif
+  if $SHELL =~ 'fish'
+    set shell='/bin/sh'
+  endif
 <
 or
 >
-	set shell='/bin/sh'
+  set shell='/bin/sh'
 >
 
 I'm seeing weird errors during installation of binaries with
@@ -1361,14 +1361,14 @@ GoInstallBinaries:
 If you see errors like this:
 >
   Error installing code.google.com/p/go.tools/cmd/goimports:
-	Error installing code.google.com/p/rog-go/exp/cmd/godef:
+  Error installing code.google.com/p/rog-go/exp/cmd/godef:
 <
 that means your local Go setup is broken or the remote website is down.  For
 example sometimes code.google.com times out. To test, just execute a simple go
 get:
 
 >
-	go get code.google.com/p/go.tools/cmd/goimports
+  go get code.google.com/p/go.tools/cmd/goimports
 <
 You'll see a more detailed error. If this works, vim-go will work too.
 
