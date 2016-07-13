@@ -8,6 +8,11 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   endif
 
   let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
+  if !filereadable(filename)
+    " this might happen for new buffers which are not written yet
+    return {'err': "file does not exist"}
+  endif
+
   if &modified
     " Write current unsaved buffer to a temp file and use the modified content
     let l:tmpname = tempname()
@@ -280,7 +285,7 @@ function! go#guru#What(selected)
 
   let out = s:RunGuru('what', 'json', a:selected, 0)
   if has_key(out, 'err')
-    return out.err
+    return {'err': out.err}
   endif
 
   let result = json_decode(out.out)
@@ -296,7 +301,8 @@ function! go#guru#SameIds(selected)
   call go#guru#ClearSameIds()
 
   let result = go#guru#What(a:selected)
-  if has_key(result, 'err')
+  if has_key(result, 'err') && !get(g:, 'go_auto_sameids', 0)
+    " only echo if it's called via `:GoSameIds, but not if it's in automode
     call go#util#EchoError(result.err)
     return
   endif
@@ -320,6 +326,8 @@ function! go#guru#SameIds(selected)
   if poslen == 0
     return
   endif
+
+  hi goSameId term=bold cterm=bold ctermbg=white ctermfg=black
 
   let same_ids = result['sameids']
   " highlight the lines
