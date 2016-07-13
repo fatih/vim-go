@@ -7,7 +7,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     return {'err': "bin path not found"}
   endif
 
-  let filename = expand('%:p')
+  let filename = fnamemodify(expand('%:p'), ':p:gs?\\?/?')
   let dirname = expand('%:p:h')
   let pkg = go#package#ImportPath(dirname)
 
