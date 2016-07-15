@@ -298,9 +298,9 @@ function! go#guru#What(selected)
 endfunction
 
 function! go#guru#SameIds(selected)
-  call go#guru#ClearSameIds()
-
   let result = go#guru#What(a:selected)
+
+  call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
   if has_key(result, 'err') && !get(g:, 'go_auto_sameids', 0)
     " only echo if it's called via `:GoSameIds, but not if it's in automode
     call go#util#EchoError(result.err)
