@@ -327,8 +327,6 @@ function! go#guru#SameIds(selected)
     return
   endif
 
-  hi goSameId term=bold cterm=bold ctermbg=white ctermfg=black
-
   let same_ids = result['sameids']
   " highlight the lines
   for item in same_ids
