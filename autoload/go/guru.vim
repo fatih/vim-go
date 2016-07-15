@@ -271,12 +271,6 @@ function! go#guru#Referrers(selected)
 endfunction
 
 function! go#guru#What(selected)
-  " nvim doesn't have JSON support, though they work on it:
-  " https://github.com/neovim/neovim/pull/4131
-  if has('nvim')
-    return {'err': "GoWhat is not supported in Neovim"}
-  endif
-
   " json_encode() and friends are introduced with this patch
   " https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
   if !has('patch-7.4.1304')
