@@ -641,6 +641,7 @@ CTRL-t
 >
       :GoImpl f *Foo io.Writer
       :GoImpl T io.ReadWriteCloser
+<
 
                                                               *:GoToggleAutoTypeInfo*
 :GoToggleAutoTypeInfo
