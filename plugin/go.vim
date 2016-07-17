@@ -27,7 +27,6 @@ command! GoInstallBinaries call s:GoInstallBinaries(-1)
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
 command! -nargs=? -complete=dir GoPath call go#path#GoPath(<f-args>)
 
-
 " GoInstallBinaries downloads and install all necessary binaries stated in the
 " packages variable. It uses by default $GOBIN or $GOPATH/bin as the binary
 " target install directory. GoInstallBinaries doesn't install binaries if they
@@ -143,17 +142,17 @@ function! s:echo_go_info()
   redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
 endfunction
 
-function! s:auto_sameids()
-  " GoSameId automatic update
-  if get(g:, "go_auto_sameids", 0)
-    call go#guru#SameIds(-1)
-  endif
-endfunction
-
 function! s:auto_type_info()
   " GoInfo automatic update
   if get(g:, "go_auto_type_info", 0)
     call go#complete#Info(1)
+  endif
+endfunction
+
+function! s:auto_sameids()
+  " GoSameId automatic update
+  if get(g:, "go_auto_sameids", 0)
+    call go#guru#SameIds(-1)
   endif
 endfunction
 
@@ -184,6 +183,32 @@ function! s:template_autocreate()
     call go#template#create()
   endif
 endfunction
+
+function! s:toggle_auto_type_info()
+  let g:go_auto_type_info = !get(g:, "go_auto_type_info, 0)
+endfunction
+function! s:toggle_auto_sameids()
+  let g:go_auto_sameids = !get(g:, "go_auto_sameids", 0)
+endfunction
+function! s:toggle_fmt_autosave()
+  let g:go_fmt_autosave = !get(g:, "go_fmt_autosave", 1)
+endfunction
+function! s:toggle_asmfmt_autosave()
+  let g:go_asmfmt_autosave = !get(g:, "go_asmfmt_autosave", 1)
+endfunction
+function! s:toggle_metalinter_autosave()
+  let g:go_metalinter_autosave = !get(g:, "go_metalinter_autosave", 0)
+endfunction
+function! s:toggle_template_autocreate()
+  let go:go_template_autocreate = !get(g:, "go_template_autocreate", 1)
+endfunction
+
+command! -nargs=0 GoToggleAutoTypeInfo call s:toggle_auto_type_info()
+command! -nargs=0 GoToggleAutoSameIds call s:toggle_auto_sameids()
+command! -nargs=0 GoToggleFmtAutoSave call s:toggle_fmt_autosave()
+command! -nargs=0 GoToggleAsmFmtAutoSave call s:toggle_asmfmt_autosave()
+command! -nargs=0 GoToggleMetalinterAutoSave call s:toggle_metalinter_autosave()
+command! -nargs=0 GoToggleTemplateAutoCreate call s:toggle_template_autocreate()
 
 augroup vim-go
   autocmd!
