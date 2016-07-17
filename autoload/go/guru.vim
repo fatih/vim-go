@@ -271,10 +271,11 @@ function! go#guru#Referrers(selected)
 endfunction
 
 function! go#guru#What(selected)
-  " json_encode() and friends are introduced with this patch
-  " https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  if !has('patch-7.4.1304')
-    return {'err': "GoWhat is supported with Vim version 7.4-1304 or later"}
+  " json_encode() and friends are introduced with this patch (7.4.1304)
+  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
+  " nvim: https://github.com/neovim/neovim/pull/4131        
+  if !exists("*json_decode")
+    return {'err': "GoWhat is not supported due old version of Vim/Neovim"}
   endif
 
   let out = s:RunGuru('what', 'json', a:selected, 0)
