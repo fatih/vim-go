@@ -641,8 +641,36 @@ CTRL-t
 >
       :GoImpl f *Foo io.Writer
       :GoImpl T io.ReadWriteCloser
-<
+
+                                                              *:GoToggleAutoTypeInfo*
+:GoToggleAutoTypeInfo
+
+    Toggles |g:go_auto_type_info|.
+
+                                                              *:GoToggleAutoSameIds*
+:GoToggleAutoSameIds
+
+    Toggles |g:go_auto_sameids|.
   
+                                                              *:GoToggleFmtAutoSave*
+:GoToggleFmtAutoSave
+
+    Toggles |g:go_fmt_autosave|.
+
+                                                              *:GoToggleAsmFmtAutoSave*
+:GoToggleAsmFmtAutoSave
+
+    Toggles |g:go_asmfmt_autosave|.
+
+                                                              *:GoToggleMetalinterAutoSave*
+:GoToggleMetalinterAutoSave
+
+    Toggles |g:go_metalinter_autosave|.
+
+                                                              *:GoToggleTemplateAutoCreate*
+:GoToggleTemplateAutoCreate
+
+    Toggles |g:go_template_autocreate|.
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
