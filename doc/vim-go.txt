@@ -609,6 +609,12 @@ CTRL-t
       autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
     augroup END
 <
+                                                              *:GoWhicherrs*
+:GoWhicherrs
+
+    Show the list of possible constants, global variables, and concrete types
+    for the error type under the cursor in a location list.
+
                                                               *:GoDecls*
 :GoDecls [file]
   
