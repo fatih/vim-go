@@ -306,7 +306,7 @@ hi def link     goFunction          Function
 
 " Methods;
 if g:go_highlight_methods != 0
-  syn match goMethod                /\.\w\+(/hs=s+1,he=e-1
+  syn match goMethod                /\.\w\+\ze(/hs=s+1
 endif
 hi def link     goMethod            Type
 
