@@ -21,6 +21,7 @@ BUG FIXES:
 * Fix `:GoFmt` not picking up `-srcdir` if the command was set to use `goimports` [gh-904]
 * Fix `:GoTestCompile` to not leave behind artifacts if the cwd and the test files's directory do not match [gh-909]
 * Fix `:GoDocBrowser` to not fail if godoc doesn't exist [gh-920]
+* Fix `:GoFmt` to not change the permissions of saved file. Now original file permissions are restored [gh-922]
 
 BACKWARDS INCOMPATIBILITIES:
 
