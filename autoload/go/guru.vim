@@ -72,8 +72,8 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     let scopes = go#util#Shelllist(scopes)
 
     " guru expect a comma-separated list of patterns, construct it
-    let scope = join(scopes, ",")
-    let command .= printf(" -scope %s", scope)
+    let l:scope = join(scopes, ",")
+    let command .= printf(" -scope %s", l:scope)
   endif
 
   let pos = printf("#%s", go#util#OffsetCursor())
@@ -91,7 +91,9 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
 
-  if a:mode !=# 'what'
+  if a:needs_scope
+    call go#util#EchoProgress("analysing with scope ". l:scope . " ...")
+  elseif a:mode !=# 'what'
     " the query might take time, let us give some feedback
     call go#util#EchoProgress("analysing ...")
   endif
@@ -182,6 +184,11 @@ function! go#guru#Whicherrs(selected)
   let out = s:RunGuru('whicherrs', 'plain', a:selected, 1)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
+    return
+  endif
+
+  if empty(out.out)
+    call go#util#EchoSuccess("no error variables found. Try to change the scope with :GoGuruScope")
     return
   endif
 
