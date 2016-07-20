@@ -4,6 +4,7 @@ command! -nargs=? GoRename call go#rename#Rename(<bang>0,<f-args>)
 " -- guru
 command! -nargs=* -complete=customlist,go#package#Complete GoGuruScope call go#guru#Scope(<f-args>)
 command! -range=% GoImplements call go#guru#Implements(<count>)
+command! -range=% GoWhicherrs call go#guru#Whicherrs(<count>)
 command! -range=% GoCallees call go#guru#Callees(<count>)
 command! -range=% GoDescribe call go#guru#Describe(<count>)
 command! -range=% GoCallers call go#guru#Callers(<count>)

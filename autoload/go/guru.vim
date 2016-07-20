@@ -176,6 +176,18 @@ function! go#guru#Tags(...)
   endif
 endfunction
 
+" Report the possible constants, global variables, and concrete types that may
+" appear in a value of type error
+function! go#guru#Whicherrs(selected)
+  let out = s:RunGuru('whicherrs', 'plain', a:selected, 1)
+  if has_key(out, 'err')
+    call go#util#EchoError(out.err)
+    return
+  endif
+
+  call s:loclistSecond(out.out)
+endfunction
+
 " Show 'implements' relation for selected package
 function! go#guru#Implements(selected)
   let out = s:RunGuru('implements', 'plain', a:selected, 1)
