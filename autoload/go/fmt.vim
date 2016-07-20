@@ -149,7 +149,11 @@ function! go#fmt#Format(withGoimport)
 
     " Replace current file with temp file, then reload buffer
     let old_fileformat = &fileformat
+    " save old file permissions
+    let original_fperm = getfperm(expand('%'))
     call rename(l:tmpname, expand('%'))
+    " restore old file permissions
+    call setfperm(expand('%'), original_fperm)
     silent edit!
     let &fileformat = old_fileformat
     let &syntax = &syntax
