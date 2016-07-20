@@ -43,7 +43,7 @@ if !exists("g:go_fmt_experimental")
   let g:go_fmt_experimental = 0
 endif
 
-"  we have those problems : 
+"  we have those problems :
 "  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
 "  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
 "
@@ -149,11 +149,15 @@ function! go#fmt#Format(withGoimport)
 
     " Replace current file with temp file, then reload buffer
     let old_fileformat = &fileformat
-    " save old file permissions
-    let original_fperm = getfperm(expand('%'))
+    if exists("*getfperm")
+      " save old file permissions
+      let original_fperm = getfperm(expand('%'))
+    endif
     call rename(l:tmpname, expand('%'))
     " restore old file permissions
-    call setfperm(expand('%'), original_fperm)
+    if exists("*setfperm")
+      call setfperm(expand('%'), original_fperm)
+    endif
     silent edit!
     let &fileformat = old_fileformat
     let &syntax = &syntax
