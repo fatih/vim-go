@@ -32,7 +32,9 @@ function! s:gocodeCommand(cmd, preargs, args)
   " we might hit cache problems, as gocode doesn't handle well different
   " GOPATHS: https://github.com/nsf/gocode/issues/239
   let old_gopath = $GOPATH
+  let old_goroot = $GOROOT
   let $GOPATH = go#path#Detect()
+  let $GOROOT = go#util#env("goroot")
 
   let socket_type = get(g:, 'go_gocode_socket_type', s:sock_type)
   let cmd = printf('%s -sock %s %s %s %s', 
@@ -45,6 +47,8 @@ function! s:gocodeCommand(cmd, preargs, args)
 
   let result = go#util#System(cmd)
   let $GOPATH = old_gopath
+  let $GOROOT = old_goroot
+
   if go#util#ShellError() != 0
     return "[\"0\", []]"
   else
