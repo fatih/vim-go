@@ -155,7 +155,7 @@ function! go#fmt#Format(withGoimport)
     endif
     call rename(l:tmpname, expand('%'))
     " restore old file permissions
-    if exists("*setfperm")
+    if exists("*setfperm") && original_fperm != ''
       call setfperm(expand('%'), original_fperm)
     endif
     silent edit!
