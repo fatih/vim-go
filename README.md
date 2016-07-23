@@ -50,7 +50,13 @@ disabled/enabled easily.
   in their own new terminal. (beta)
 * Alternate between implementation and test code with `:GoAlternate`
 
+Checkout the official [tutorial](https://github.com/fatih/vim-go-tutorial) 
+that goes literally over all features and shows many tips and tricks. It shows 
+how to install vim-go and explains many unknown use cases. Recommended for 
+beginners as well as advanced users: https://github.com/fatih/vim-go-tutorial
+
 ## Install
+
 
 Master branch is supposed to be a development branch. So stuff here can break and change.
 Please try use always the [latest release](https://github.com/fatih/vim-go/releases/latest)
