@@ -11,6 +11,7 @@ FEATURES:
 IMPROVEMENTS:
 * `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions [gh-894]
 * `:GoDef` works now for modified files as well [gh-910]
+* Internal: pass filename to the `--srcdir` flag to enable upcoming `goimports` features [gh-957]
 * Internal: fix indentations on all files to **2-spaces/no tabs**. This is now the default vim-go style across all VimL files [gh-915]
 * Syntax: improved syntax highglighting performance for methods, fields, structs and interface type declarations [gh-917]
 
