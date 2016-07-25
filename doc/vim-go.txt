@@ -648,7 +648,13 @@ CTRL-t
       :GoImpl f *Foo io.Writer
       :GoImpl T io.ReadWriteCloser
 <
+                                                              *:GoAvailImports*
+:GoAvailImports
   
+    Only enabled if `ctrlp.vim` is installed. Shows a list of all available
+    packages in your environment. The selected package is imported in the
+    current buffer. If the package is already being imported, an error will be
+    displayed and the buffer will be untouched.
 
 ===============================================================================
 MAPPINGS                                                        *go-mappings*
