@@ -14,6 +14,8 @@ IMPROVEMENTS:
 * Internal: pass filename to the `--srcdir` flag to enable upcoming `goimports` features [gh-957]
 * Internal: fix indentations on all files to **2-spaces/no tabs**. This is now the default vim-go style across all VimL files [gh-915]
 * Syntax: improved syntax highglighting performance for methods, fields, structs and interface type declarations [gh-917]
+* Syntax: moved `:GoCoverage` highlight definition into go's syntax file for more customizability [gh-962]
+
 
 BUG FIXES:
 
