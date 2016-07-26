@@ -366,7 +366,13 @@ if g:go_highlight_build_constraints != 0
   hi def link goPackageComment    Comment
 endif
 
+" :GoSameIds
 hi def goSameId term=bold cterm=bold ctermbg=white ctermfg=black
+
+" :GoCoverage commands
+hi def link goCoverageNormalText Comment
+hi def      goCoverageCovered    ctermfg=green 
+hi def      goCoverageUncover    ctermfg=red 
 
 " Search backwards for a global declaration to start processing the syntax.
 "syn sync match goSync grouphere NONE /^\(const\|var\|type\|func\)\>/
