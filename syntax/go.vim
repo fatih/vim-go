@@ -371,8 +371,8 @@ hi def goSameId term=bold cterm=bold ctermbg=white ctermfg=black
 
 " :GoCoverage commands
 hi def link goCoverageNormalText Comment
-hi def      goCoverageCovered    ctermfg=green 
-hi def      goCoverageUncover    ctermfg=red 
+hi def      goCoverageCovered    ctermfg=green guifg=#A6E22E
+hi def      goCoverageUncover    ctermfg=red guifg=#F92672
 
 " Search backwards for a global declaration to start processing the syntax.
 "syn sync match goSync grouphere NONE /^\(const\|var\|type\|func\)\>/
