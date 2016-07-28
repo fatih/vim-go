@@ -358,4 +358,12 @@ function! go#guru#ClearSameIds()
   endfor
 endfunction
 
+function! go#guru#ToggleSameIds(selected)
+  if len(getmatches()) != 0 
+    call go#guru#ClearSameIds()
+  else
+    call go#guru#SameIds(a:selected)
+  endif
+endfunction
+
 " vim: sw=2 ts=2 et
