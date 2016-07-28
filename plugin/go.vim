@@ -189,7 +189,7 @@ augroup vim-go
   autocmd!
 
   autocmd CursorHold *.go call s:auto_type_info()
-  autocmd CursorMoved *.go call s:auto_sameids()
+  autocmd CursorHold *.go call s:auto_sameids()
 
   " Echo the identifier information when completion is done. Useful to see
   " the signature of a function, etc...
