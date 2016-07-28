@@ -17,7 +17,7 @@ command! -nargs=? GoGuruTags call go#guru#Tags(<f-args>)
 
 command! -range=% GoSameIds call go#guru#SameIds(<count>)
 command! -range=0 GoSameIdsClear call go#guru#ClearSameIds()
-command! -range=% GoToggleSameIds call go#guru#ToggleSameIds(<count>)
+command! -range=% GoSameIdsToggle call go#guru#ToggleSameIds(<count>)
 command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToogleSameIds()
 
 " -- tool
