@@ -643,33 +643,28 @@ CTRL-t
       :GoImpl T io.ReadWriteCloser
 <
 
-                                                              *:GoToggleAutoTypeInfo*
-:GoToggleAutoTypeInfo
+                                                              *:GoAutoTypeInfoToggle*
+:GoAutoTypeInfoToggle
 
     Toggles |g:go_auto_type_info|.
 
-                                                              *:GoToggleAutoSameIds*
-:GoToggleAutoSameIds
-
-    Toggles |g:go_auto_sameids|.
-  
-                                                              *:GoToggleFmtAutoSave*
-:GoToggleFmtAutoSave
+                                                              *:GoFmtAutoSaveToggle*
+:GoFmtAutoSaveToggle
 
     Toggles |g:go_fmt_autosave|.
 
-                                                              *:GoToggleAsmFmtAutoSave*
-:GoToggleAsmFmtAutoSave
+                                                              *:GoAsmFmtAutoSaveToggle*
+:GoAsmFmtAutoSaveToggle
 
     Toggles |g:go_asmfmt_autosave|.
 
-                                                              *:GoToggleMetalinterAutoSave*
-:GoToggleMetalinterAutoSave
+                                                              *:GoMetalinterAutoSaveToggle*
+:GoMetalinterAutoSaveToggle
 
     Toggles |g:go_metalinter_autosave|.
 
-                                                              *:GoToggleTemplateAutoCreate*
-:GoToggleTemplateAutoCreate
+                                                              *:GoTemplateAutoCreateToggle*
+:GoTemplateAutoCreateToggle
 
     Toggles |g:go_template_autocreate|.
 
