@@ -563,11 +563,18 @@ CTRL-t
 
     Clears all SameIds highlights from a |:GoSameIds| call.
 
+                                                          *:GoSameIdsToggle*
+:GoSameIdsToggle
+
+    Toggle between |:GoSameIds| and |:GoSameIdsClear|. 
+
                                                           *:GoSameIdsAutoToggle*
 :GoSameIdsAutoToggle
 
-    Enables automatic highlighting of |:GoSameIds| while moving the cursor.
-    This basically toggles the option |g:go_auto_sameids| on/off.
+    Enables or disables automatic highlighting of |:GoSameIds| while moving
+    the cursor. This basically toggles the option |g:go_auto_sameids| on/off.
+    If enabled it starts highlighting whenever your cursor is. If disabled it
+    clears and stops automatic highlighting.
 
                                                               *:GoMetaLinter*
 :GoMetaLinter [path]
