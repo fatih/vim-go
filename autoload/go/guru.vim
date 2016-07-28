@@ -311,6 +311,18 @@ function! go#guru#What(selected)
   return result
 endfunction
 
+function! go#guru#AutoToogleSameIds()
+  if get(g:, "go_auto_sameids", 0)
+    call go#util#EchoProgress("sameids auto highlighting disabled")
+    call go#guru#ClearSameIds()
+    let g:go_auto_sameids = 0
+    return
+  endif
+
+  call go#util#EchoSuccess("sameids auto highlighting enabled")
+  let g:go_auto_sameids = 1
+endfunction
+
 function! go#guru#SameIds(selected)
   let result = go#guru#What(a:selected)
 
@@ -357,5 +369,6 @@ function! go#guru#ClearSameIds()
     endif
   endfor
 endfunction
+
 
 " vim: sw=2 ts=2 et
