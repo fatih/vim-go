@@ -15,6 +15,8 @@ command! -range=% GoReferrers call go#guru#Referrers(<count>)
 command! -nargs=? GoGuruTags call go#guru#Tags(<f-args>)
 
 
+command! -nargs=* -range GoAddTags call go#util#AddTags(<line1>, <line2>, <f-args>)
+
 command! -range=% GoSameIds call go#guru#SameIds(<count>)
 command! -range=0 GoSameIdsClear call go#guru#ClearSameIds()
 command! -range=% GoSameIdsToggle call go#guru#ToggleSameIds(<count>)

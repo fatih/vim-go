@@ -661,7 +661,21 @@ CTRL-t
       :GoImpl f *Foo io.Writer
       :GoImpl T io.ReadWriteCloser
 <
+                                                              *:GoAddTags*
+:[range]GoAddTags [key] [key1] ...
 
+    Adds field tags for the fields of a struct. If called inside a struct it
+    automatically add field tags with the `json` key and the value
+    automatically generated based on the field name. An error message is given
+    if it's called outside a struct definition.
+
+    If [range] is given, only the selected fields will be changed.
+
+    The default `json` can be changed by providing one or more [key]
+    arguments. An example of adding `xml` and `db` would be:
+>
+      :GoAddTags xml db
+<
                                                               *:GoAutoTypeInfoToggle*
 :GoAutoTypeInfoToggle
 
