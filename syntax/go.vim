@@ -287,8 +287,8 @@ if g:go_highlight_operators != 0
   syn match goOperator /:=\|||\|<-\|++\|--/
   " match ...
 
-  hi def link     goPointerOperator   Operator
-  hi def link     goVarArgs           Operator
+  hi def link     goPointerOperator   goOperator
+  hi def link     goVarArgs           goOperator
 endif
 hi def link     goOperator          Operator
 
