@@ -72,6 +72,8 @@ function! go#rename#Rename(bang, ...)
   " we need a way to get the list of changes from gorename upon an success
   " change.
   silent execute ":e"
+
+  call go#guru#SameIdRenamed()
 endfunction
 
 " vim: sw=2 ts=2 et
