@@ -271,6 +271,7 @@ hi def link     goSpaceError        Error
 syn keyword     goTodo              contained NOTE
 hi def link     goTodo              Todo
 
+syn match goVarArgs /\.\.\./
 
 " Operators;
 if g:go_highlight_operators != 0
@@ -285,9 +286,9 @@ if g:go_highlight_operators != 0
   " match remaining two-char operators: := && || <- ++ --
   syn match goOperator /:=\|||\|<-\|++\|--/
   " match ...
-  syn match goOperator /\.\.\./
 
   hi def link     goPointerOperator   Operator
+  hi def link     goVarArgs           Operator
 endif
 hi def link     goOperator          Operator
 
@@ -312,7 +313,6 @@ hi def link     goMethod            Type
 
 " Fields;
 if g:go_highlight_fields != 0
-  syn match goVarArgs               /\.\.\.\w\+\>/
   syn match goField                 /\.\a\+\([\ \n\r\:\)\[]\)\@=/hs=s+1
 endif
 hi def link    goField              Identifier
