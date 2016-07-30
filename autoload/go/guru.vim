@@ -312,6 +312,13 @@ function! go#guru#What(selected)
 endfunction
 
 function! go#guru#SameIds(selected)
+  " we use matchaddpos() which was introduce with 7.4.330, be sure we have
+  " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
+  if !exists("*matchaddpos")
+    call go#util#EchoError("GoSameIds is supported with Vim version 7.4-330 or later")
+    return
+  endif
+
   let result = go#guru#What(a:selected)
 
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
