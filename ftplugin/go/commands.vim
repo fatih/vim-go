@@ -85,6 +85,12 @@ if globpath(&rtp, 'plugin/ctrlp.vim') != ""
   command! -nargs=? -complete=dir GoDeclsDir call ctrlp#init(ctrlp#decls#cmd(1, <q-args>))
 endif
 
+" -- fzf
+if globpath(&rtp, 'plugin/fzf.vim') != ""
+  command! -nargs=? -complete=file GoDecls call fzf#decls#cmd(0, <q-args>)
+  command! -nargs=? -complete=dir GoDeclsDir call fzf#decls#cmd(1, <q-args>)
+endif
+
 " -- impl
 command! -nargs=* -buffer -complete=customlist,go#impl#Complete GoImpl call go#impl#Impl(<f-args>)
 

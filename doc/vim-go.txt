@@ -641,8 +641,8 @@ CTRL-t
                                                                     *:GoDecls*
 :GoDecls [file]
 
-    Only enabled if `ctrlp.vim` is installed. If run shows all function and
-    type declarations for the current file. If [file] is non empty it parses
+    Only enabled if `ctrlp.vim` or 'fzf' is installed. If run shows all function
+    and type declarations for the current file. If [file] is non empty it parses
     the given file.
     By default `type` and `func` declarations are shown. This can be changed
     via |'g:go_decls_includes'|.
@@ -650,8 +650,8 @@ CTRL-t
                                                                  *:GoDeclsDir*
 :GoDeclsDir [dir]
 
-    Only enabled if `ctrlp.vim` is installed. If run shows all function and
-    type declarations for the current directory. If [dir] is given it parses
+    Only enabled if `ctrlp.vim` or 'fzf' is installed. If run shows all function
+    and type declarations for the current directory. If [dir] is given it parses
     the given directory.
 
                                                                      *:GoImpl*
