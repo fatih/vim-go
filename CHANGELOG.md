@@ -1,4 +1,4 @@
-## 1.8 (unplanned)
+## 1.8 (July 31, 2016)
 
 FEATURES:
 * New **`:GoAddTags`** command that adds field tags for the fields of a struct automatically based on the field names. Checkout the demo to see it in action: https://twitter.com/fatih/status/759822857773907968 [gh-971]
