@@ -313,7 +313,7 @@ hi def link     goMethod            Type
 
 " Fields;
 if g:go_highlight_fields != 0
-  syn match goField                 /\.\a\+\([\ \n\r\:\)\[]\)\@=/hs=s+1
+  syn match goField                 /\.\w\+\([\ \n\r\:\)\[,]\)\@=/hs=s+1
 endif
 hi def link    goField              Identifier
 
