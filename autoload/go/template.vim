@@ -28,4 +28,15 @@ function! go#template#create()
   execute cd . fnameescape(dir)
 endfunction
 
+function! go#template#ToggleAutoCreate()
+  if get(g:, "go_template_autocreate", 1)
+    let g:go_template_autocreate = 0
+    call go#util#EchoProgress("auto template create disabled")
+    return
+  end
+
+  let g:go_template_autocreate = 1
+  call go#util#EchoProgress("auto template create enabled")
+endfunction
+
 " vim: sw=2 ts=2 et

@@ -24,6 +24,7 @@ command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToogleSameIds()
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
 command! -nargs=* GoInfo call go#complete#Info(0)
+command! -nargs=0 GoAutoTypeInfoToggle call go#complete#ToggleAutoTypeInfo()
 
 " -- cmd
 command! -nargs=* -bang GoBuild call go#cmd#Build(<bang>0,<f-args>)
@@ -55,7 +56,11 @@ command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser c
 
 " -- fmt
 command! -nargs=0 GoFmt call go#fmt#Format(-1)
+command! -nargs=0 GoFmtAutoSaveToggle call go#fmt#ToggleFmtAutoSave()
 command! -nargs=0 GoImports call go#fmt#Format(1)
+
+" -- asmfmt
+command! -nargs=0 GoAsmFmtAutoSaveToggle call go#asmfmt#ToggleAsmFmtAutoSave()
 
 " -- import
 command! -nargs=? -complete=customlist,go#package#Complete GoDrop call go#import#SwitchImport(0, '', <f-args>, '')
@@ -64,6 +69,7 @@ command! -nargs=* -bang -complete=customlist,go#package#Complete GoImportAs call
 
 " -- linters
 command! -nargs=* GoMetaLinter call go#lint#Gometa(0, <f-args>)
+command! -nargs=0 GoMetalinterAutoSaveToggle call go#lint#ToggleMetaLinterAutoSave()
 command! -nargs=* GoLint call go#lint#Golint(<f-args>)
 command! -nargs=* -bang GoVet call go#lint#Vet(<bang>0, <f-args>)
 command! -nargs=* -complete=customlist,go#package#Complete GoErrCheck call go#lint#Errcheck(<f-args>)
@@ -79,5 +85,8 @@ endif
 
 " -- impl
 command! -nargs=* -buffer -complete=customlist,go#impl#Complete GoImpl call go#impl#Impl(<f-args>)
+
+" -- template
+command! -nargs=0 GoTemplateAutoCreateToggle call go#template#ToggleAutoCreate()
 
 " vim: sw=2 ts=2 et
