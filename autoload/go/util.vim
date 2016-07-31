@@ -231,6 +231,50 @@ function! go#util#camelcase(word)
   endif
 endfunction
 
+function! go#util#AddTags(line1, line2, ...)
+  " default is json
+  let l:keys = ["json"]
+  if a:0
+    let l:keys = a:000
+  endif
+
+  let l:line1 = a:line1
+  let l:line2 = a:line2
+
+  " If we're inside a struct and just call this function let us add the tags
+  " to all fields
+  " TODO(arslan): I don't like using patterns. Check if we can move it to
+  " `motion` and do it via AST based position
+  let ln1 = searchpair('struct {', '', '}', 'bcnW')
+  if ln1 == 0
+    echon "vim-go: " | echohl ErrorMsg | echon "cursor is outside the struct" | echohl None
+    return
+  endif
+
+  " searchpair only returns a single position
+  let ln2 = search('}', "cnW")
+
+  " if no range is given we apply for the whole struct
+  if l:line1 == l:line2
+    let l:line1 = ln1 + 1
+    let l:line2 = ln2 - 1
+  endif
+
+  for line in range(l:line1, l:line2)
+    " get the field name (word) that are not part of a commented line
+    let l:matched = matchstr(getline(line), '\(\/\/.*\)\@<!\w\+')
+    if empty(l:matched)
+      continue
+    endif
+
+    let word = go#util#snippetcase(l:matched)
+    let tags = map(copy(l:keys), 'printf("%s:%s", v:val,"\"'. word .'\"")')
+    let updated_line = printf("%s `%s`", getline(line), join(tags, " "))
+
+    " finally, update the line inplace
+    call setline(line, updated_line)
+  endfor
+endfunction
 
 " TODO(arslan): I couldn't parameterize the highlight types. Check if we can
 " simplify the following functions
