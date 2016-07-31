@@ -92,7 +92,11 @@ else
 endif
 
 function! go#util#System(str, ...)
-  return call(s:vim_system, [a:str] + a:000)
+  let l:shell = &shell
+  let &shell = '/bin/sh'
+  let l:output = call(s:vim_system, [a:str] + a:000)
+  let &shell = l:shell
+  return l:output
 endfunction
 
 function! go#util#ShellError()
