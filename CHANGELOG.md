@@ -15,6 +15,7 @@ IMPROVEMENTS:
 * Internal: fix indentations on all files to **2-spaces/no tabs**. This is now the default vim-go style across all VimL files [gh-915]
 * Internal: autocmd settings can be now dynamically enabled/disabled [gh-939]
 * Internal: automatically detect `GOPATH`  for :GoInstall [gh-980]
+* Internal: shell executions uses now by default `sh` and then resets it back to the user preference. [gh-967]
 * Syntax: improved syntax highglighting performance for methods, fields, structs and interface type declarations [gh-917]
 * Syntax: moved `:GoCoverage` highlight definition into go's syntax file for more customizability [gh-962]
 
