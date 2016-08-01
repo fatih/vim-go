@@ -83,21 +83,21 @@ add the appropriate lines and execute the plugin's install command.
 
     git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
 <
-
 *  https://github.com/junegunn/vim-plug >
 
     Plug 'fatih/vim-go'
 
-<
 *  https://github.com/Shougo/neobundle.vim >
 
     NeoBundle 'fatih/vim-go'
 <
-
 *  https://github.com/gmarik/vundle >
 
     Plugin 'fatih/vim-go'
 
+*  Vim |packages| (since Vim 7.4.1528)
+>
+    git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
 <
 *  Manual >
 
