@@ -1392,43 +1392,51 @@ is created. Checkout |g:go_template_autocreate| for more info. By default the
 ===============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
 
-I'm using Fish shell but have some problems using vim-go~
+I get "not an editor command" error when I invoke :GoXXX~
 
-First environment variables in Fish are applied differently, it should be like:
+This happens if vim-go is not installed properly. Be sure you have added this
+line into your vimrc:
 >
-  set -x GOPATH /your/own/gopath
+  filetype plugin indent on
 <
-Second, Vim needs a POSIX compatible shell (more info here:
-https://github.com/dag/vim-fish#teach-a-vim-to-fish). If you use Fish to open
-Vim, it will make certain shell based commands fail (means vim-go will fail
-too). To overcome this problem change the default shell by adding the
-following into your .vimrc (on the top of the file):
->
-  if $SHELL =~ 'fish'
-    set shell='/bin/sh'
-  endif
-<
-or
->
-  set shell='/bin/sh'
->
 
-I'm seeing weird errors during installation of binaries with
-GoInstallBinaries:
+I get a "command not found" error when I invoke :GoXXX~
+
+If you try to call |:GoDef|, |:GoInfo| and get a command not found, check that you
+have the binaries installed by using |:GoInstallBinaries|.
+
+Before opening vim, check your current $PATH:
+>
+  echo $PATH
+<
+After opening vim, run `:echo $PATH`, the output must be your current `$PATH`
+plus `$GOPATH/bin` (the location where |:GoInstallBinaries| installed the
+binaries).
+
+
+Vim becomes slow while editing Go files~
+
+Don't enable these options:
+>
+  let g:go_highlight_structs = 0
+  let g:go_highlight_interfaces = 0
+  let g:go_highlight_operators = 0
+<
+
+I'm seeing weird errors during installation of binaries with GoInstallBinaries~
 
 If you see errors like this:
 >
-  Error installing code.google.com/p/go.tools/cmd/goimports:
-  Error installing code.google.com/p/rog-go/exp/cmd/godef:
+  Error installing golang.org/x/tools/cmd/goimports
 <
 that means your local Go setup is broken or the remote website is down.  For
 example sometimes code.google.com times out. To test, just execute a simple go
 get:
 
->
-  go get code.google.com/p/go.tools/cmd/goimports
+  go get golang.org/x/tools/cmd/goimports
 <
 You'll see a more detailed error. If this works, vim-go will work too.
+
 
 ===============================================================================
 CREDITS                                                         *go-credits*
