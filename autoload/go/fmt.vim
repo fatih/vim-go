@@ -215,4 +215,14 @@ function! go#fmt#Format(withGoimport)
   endif
 endfunction
 
+function! go#fmt#ToggleFmtAutoSave()
+  if get(g:, "go_fmt_autosave", 1)
+    let g:go_fmt_autosave = 0
+    call go#util#EchoProgress("auto fmt disabled")
+    return
+  end
+
+  let g:go_fmt_autosave = 1
+  call go#util#EchoProgress("auto fmt enabled")
+endfunction
 " vim: sw=2 ts=2 et

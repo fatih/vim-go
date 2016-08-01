@@ -311,7 +311,26 @@ function! go#guru#What(selected)
   return result
 endfunction
 
+function! go#guru#AutoToogleSameIds()
+  if get(g:, "go_auto_sameids", 0)
+    call go#util#EchoProgress("sameids auto highlighting disabled")
+    call go#guru#ClearSameIds()
+    let g:go_auto_sameids = 0
+    return
+  endif
+
+  call go#util#EchoSuccess("sameids auto highlighting enabled")
+  let g:go_auto_sameids = 1
+endfunction
+
 function! go#guru#SameIds(selected)
+  " we use matchaddpos() which was introduce with 7.4.330, be sure we have
+  " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
+  if !exists("*matchaddpos")
+    call go#util#EchoError("GoSameIds is supported with Vim version 7.4-330 or later")
+    return
+  endif
+
   let result = go#guru#What(a:selected)
 
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
@@ -356,6 +375,14 @@ function! go#guru#ClearSameIds()
       call matchdelete(item['id'])
     endif
   endfor
+endfunction
+
+function! go#guru#ToggleSameIds(selected)
+  if len(getmatches()) != 0 
+    call go#guru#ClearSameIds()
+  else
+    call go#guru#SameIds(a:selected)
+  endif
 endfunction
 
 " vim: sw=2 ts=2 et

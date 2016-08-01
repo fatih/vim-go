@@ -27,7 +27,6 @@ command! GoInstallBinaries call s:GoInstallBinaries(-1)
 command! GoUpdateBinaries call s:GoInstallBinaries(1)
 command! -nargs=? -complete=dir GoPath call go#path#GoPath(<f-args>)
 
-
 " GoInstallBinaries downloads and install all necessary binaries stated in the
 " packages variable. It uses by default $GOBIN or $GOPATH/bin as the binary
 " target install directory. GoInstallBinaries doesn't install binaries if they
@@ -143,17 +142,17 @@ function! s:echo_go_info()
   redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
 endfunction
 
-function! s:auto_sameids()
-  " GoSameId automatic update
-  if get(g:, "go_auto_sameids", 0)
-    call go#guru#SameIds(-1)
-  endif
-endfunction
-
 function! s:auto_type_info()
   " GoInfo automatic update
   if get(g:, "go_auto_type_info", 0)
     call go#complete#Info(1)
+  endif
+endfunction
+
+function! s:auto_sameids()
+  " GoSameId automatic update
+  if get(g:, "go_auto_sameids", 0)
+    call go#guru#SameIds(-1)
   endif
 endfunction
 
@@ -189,7 +188,7 @@ augroup vim-go
   autocmd!
 
   autocmd CursorHold *.go call s:auto_type_info()
-  autocmd CursorMoved *.go call s:auto_sameids()
+  autocmd CursorHold *.go call s:auto_sameids()
 
   " Echo the identifier information when completion is done. Useful to see
   " the signature of a function, etc...

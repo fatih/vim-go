@@ -163,6 +163,8 @@ function! go#cmd#Install(bang, ...)
     return
   endif
 
+  let old_gopath = $GOPATH
+  let $GOPATH = go#path#Detect()
   let default_makeprg = &makeprg
 
   " :make expands '%' and '#' wildcards, so they must also be escaped
@@ -197,6 +199,7 @@ function! go#cmd#Install(bang, ...)
     call go#util#EchoSuccess("installed to ". $GOPATH)
   endif
 
+  let $GOPATH = old_gopath
   let &makeprg = default_makeprg
 endfunction
 

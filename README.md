@@ -90,7 +90,8 @@ installed binaries.
 completion (completion by type) install:
 [neocomplete](https://github.com/Shougo/neocomplete.vim) for Vim or
 [deoplete](https://github.com/Shougo/deoplete.nvim) and
-[deoplete-go](https://github.com/zchee/deoplete-go) for NeoVim
+[deoplete-go](https://github.com/zchee/deoplete-go) for NeoVim or
+[SimpleAutoCmplPop](https://github.com/roxma/SimpleAutoComplPop)
 * To display source code tag information on a sidebar install
 [tagbar](https://github.com/majutsushi/tagbar).
 * For snippet features install:
