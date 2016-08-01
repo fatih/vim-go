@@ -95,7 +95,7 @@ endif
 " systems if it is executable.
 function! go#util#System(str, ...)
   let l:shell = &shell
-  if !(has('win32') || has('win64')) && executable('/bin/sh')
+  if !go#util#IsWin() && executable('/bin/sh')
     let &shell = '/bin/sh'
   endif
 
