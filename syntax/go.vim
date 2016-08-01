@@ -372,9 +372,9 @@ hi def link goCoverageNormalText Comment
 function! s:hi()
   " :GoSameIds
   if &background == 'dark'
-    hi def goSameId term=bold cterm=bold ctermbg=white ctermfg=black
+    hi def goSameId term=bold cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
   else
-    hi def goSameId term=bold cterm=bold ctermbg=lightgreen ctermfg=black
+    hi def goSameId term=bold cterm=bold ctermbg=14 guibg=Cyan
   endif
 
   " :GoCoverage commands
