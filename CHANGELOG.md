@@ -1,5 +1,9 @@
 ## Unplanned
 
+IMPROVEMENTS:
+
+* Cleanup and improve documentation [gh-987]
+
 BUG FIXES:
 
 * Fix system calls on Windows [gh-988]
