@@ -1,3 +1,17 @@
+## Unplanned
+
+IMPROVEMENTS:
+
+* **guru** uses now the `-modified` flag, which allows us use guru on modified
+  buffers as well. This affects all commands where `guru` is used. Such as
+  `:GoDef`, `:GoReferrers`, etc.. [gh-944]
+* Cleanup and improve documentation [gh-987]
+
+BUG FIXES:
+
+* Fix system calls on Windows [gh-988]
+
+
 ## 1.8 (July 31, 2016)
 
 FEATURES:

@@ -91,12 +91,20 @@ else
   let s:vim_shell_error = ''
 endif
 
+" System runs a shell command. It will reset the shell to /bin/sh for Unix-like
+" systems if it is executable.
 function! go#util#System(str, ...)
   let l:shell = &shell
-  let &shell = '/bin/sh'
-  let l:output = call(s:vim_system, [a:str] + a:000)
-  let &shell = l:shell
-  return l:output
+  if !go#util#IsWin() && executable('/bin/sh')
+    let &shell = '/bin/sh'
+  endif
+
+  try
+    let l:output = call(s:vim_system, [a:str] + a:000)
+    return l:output
+  finally
+    let &shell = l:shell
+  endtry
 endfunction
 
 function! go#util#ShellError()
