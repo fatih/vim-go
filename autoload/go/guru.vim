@@ -1,5 +1,6 @@
 "  guru.vim -- Vim integration for the Go guru.
 
+
 func! s:RunGuru(mode, format, selected, needs_scope) range abort
   "return with a warning if the binary doesn't exist
   let bin_path = go#path#CheckBinPath("guru") 
@@ -7,18 +8,6 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     return {'err': "bin path not found"}
   endif
 
-  let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
-  if !filereadable(filename)
-    " this might happen for new buffers which are not written yet
-    return {'err': "file does not exist"}
-  endif
-
-  if &modified
-    " Write current unsaved buffer to a temp file and use the modified content
-    let l:tmpname = tempname()
-    call writefile(getline(1, '$'), l:tmpname)
-    let filename = l:tmpname
-  endif
   let dirname = expand('%:p:h')
   let pkg = go#package#ImportPath(dirname)
 
@@ -29,6 +18,15 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
 
   " start constructing the 'command' variable
   let command = bin_path
+
+  let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
+  let in = ""
+  if &modified
+    let sep = go#util#LineEnding()
+    let content  = join(getline(1, '$'), sep )
+    let in = filename . "\n" . strlen(content) . "\n" . content
+    let command .= " -modified"
+  endif
 
   " enable outputting in json format
   if a:format == "json"
@@ -99,10 +97,10 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   endif
 
   " run, forrest run!!!
-  let out = go#util#System(command)
-
-  if exists("l:tmpname")
-    call delete(l:tmpname)
+  if &modified
+    let out = go#util#System(command, in)
+  else
+    let out = go#util#System(command)
   endif
 
   let $GOPATH = old_gopath
