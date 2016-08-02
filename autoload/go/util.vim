@@ -288,19 +288,19 @@ endfunction
 " simplify the following functions
 
 function! go#util#EchoSuccess(msg)
-  redraw! | echon "vim-go: " | echohl Function | echon a:msg | echohl None
+  redraw | echon "vim-go: " | echohl Function | echon a:msg | echohl None
 endfunction
 
 function! go#util#EchoError(msg)
-  redraw! | echon "vim-go: " | echohl ErrorMsg | echon a:msg | echohl None
+  redraw | echon "vim-go: " | echohl ErrorMsg | echon a:msg | echohl None
 endfunction
 
 function! go#util#EchoWarning(msg)
-  redraw! | echon "vim-go: " | echohl WarningMsg | echon a:msg | echohl None
+  redraw | echon "vim-go: " | echohl WarningMsg | echon a:msg | echohl None
 endfunction
 
 function! go#util#EchoProgress(msg)
-  redraw! | echon "vim-go: " | echohl Identifier | echon a:msg | echohl None
+  redraw | echon "vim-go: " | echohl Identifier | echon a:msg | echohl None
 endfunction
 
 " vim: sw=2 ts=2 et
