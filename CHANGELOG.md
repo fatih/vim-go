@@ -10,6 +10,7 @@ IMPROVEMENTS:
 BUG FIXES:
 
 * Fix system calls on Windows [gh-988]
+* Fix :GoSameDis and :GoCoverage for light background and after changing color schemes [gh-983]
 
 
 ## 1.8 (July 31, 2016)
