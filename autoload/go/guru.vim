@@ -1,5 +1,6 @@
 "  guru.vim -- Vim integration for the Go guru.
 
+let s:sameid = 0
 
 func! s:RunGuru(mode, format, selected, needs_scope) range abort
   "return with a warning if the binary doesn't exist
@@ -364,15 +365,28 @@ function! go#guru#SameIds(selected)
     let pos = split(item, ':')
     call matchaddpos('goSameId', [[str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)]])
   endfor
+
+  let s:sameid = 1
+endfunction
+
+function! go#guru#SameIdRenamed()
+  if s:sameid
+    call go#guru#SameIds(-1)
+  endif
 endfunction
 
 function! go#guru#ClearSameIds()
+  if !s:sameid
+    return
+  endif
+
   let m = getmatches()
   for item in m
     if item['group'] == 'goSameId'
       call matchdelete(item['id'])
     endif
   endfor
+  let s:sameid = 0
 endfunction
 
 function! go#guru#ToggleSameIds(selected)
