@@ -106,7 +106,7 @@ function! s:guru_cmd(args) range abort
 endfunction
 
 " sync_guru runs guru in sync mode with the given arguments
-function! s:sync_guru(args) abort
+function! s:sync_guru(args, title) abort
   let result = s:guru_cmd(a:args)
   if has_key(result, 'err')
     call go#util#EchoError(result.err)
@@ -136,16 +136,16 @@ function! s:sync_guru(args) abort
   let $GOPATH = old_gopath
 
   if has_key(a:args, 'custom_parse')
-    call a:args.custom_parse(go#util#ShellError(), out)
+    call a:args.custom_parse(go#util#ShellError(), out, a:title)
   else
-    call s:parse_guru_output(go#util#ShellError(), out)
+    call s:parse_guru_output(go#util#ShellError(), out, a:title)
   endif
 
   return out
 endfunc
 
 " async_guru runs guru in async mode with the given arguments
-function! s:async_guru(args) abort
+function! s:async_guru(args, title) abort
   let result = s:guru_cmd(a:args)
   if has_key(result, 'err')
     call go#util#EchoError(result.err)
@@ -154,6 +154,7 @@ function! s:async_guru(args) abort
 
   let status_dir =  expand('%:p:h')
   let statusline_type = printf("%s", a:args.mode)
+  let title = a:title
 
   if !has_key(a:args, 'disable_progress')
     if a:args.needs_scope
@@ -191,9 +192,9 @@ function! s:async_guru(args) abort
     call go#statusline#Update(status_dir, status)
 
     if has_key(a:args, 'custom_parse')
-      call a:args.custom_parse(l:info.exitval, out)
+      call a:args.custom_parse(l:info.exitval, out, title)
     else
-      call s:parse_guru_output(l:info.exitval, out)
+      call s:parse_guru_output(l:info.exitval, out, title)
     endif
   endfunction
 
@@ -218,12 +219,12 @@ function! s:async_guru(args) abort
 endfunc
 
 " run_guru runs the given guru argument
-function! s:run_guru(args) abort
+function! s:run_guru(args, title) abort
   if go#util#has_job()
-    return s:async_guru(a:args)
+    return s:async_guru(a:args, a:title)
   endif
 
-  return s:sync_guru(a:args)
+  return s:sync_guru(a:args, a:title)
 endfunction
 
 " Show 'implements' relation for selected package
@@ -235,7 +236,7 @@ function! go#guru#Implements(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'Implements')
 endfunction
 
 " Report the possible constants, global variables, and concrete types that may
@@ -254,7 +255,7 @@ function! go#guru#Whicherrs(selected) abort
   "   call go#util#EchoSuccess("no error variables found. Try to change the scope with :GoGuruScope")
   "   return
   " endif
-  call s:run_guru(args)
+  call s:run_guru(args, 'Whicherrs')
 endfunction
 
 " Describe selected syntax: definition, methods, etc
@@ -266,7 +267,7 @@ function! go#guru#Describe(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'Describe')
 endfunction
 
 function! go#guru#DescribeInfo() abort
@@ -278,7 +279,7 @@ function! go#guru#DescribeInfo() abort
     return
   endif
 
-  function! s:info(exit_val, output)
+  function! s:info(exit_val, output, title)
     if a:exit_val != 0
       return
     endif
@@ -372,7 +373,7 @@ function! go#guru#DescribeInfo() abort
         \ 'disable_progress': 1,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'DescribeInfo')
 endfunction
 
 " Show possible targets of selected function call
@@ -384,7 +385,7 @@ function! go#guru#Callees(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'Callees')
 endfunction
 
 " Show possible callers of selected function
@@ -396,7 +397,7 @@ function! go#guru#Callers(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'Callers')
 endfunction
 
 " Show path from callgraph root to selected function
@@ -408,7 +409,7 @@ function! go#guru#Callstack(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'Callstack')
 endfunction
 
 " Show free variables of selection
@@ -426,7 +427,7 @@ function! go#guru#Freevars(selected) abort
         \ 'needs_scope': 0,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'Freevars')
 endfunction
 
 " Show send/receive corresponding to selected channel op
@@ -438,7 +439,7 @@ function! go#guru#ChannelPeers(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'ChannelPeers')
 endfunction
 
 " Show all refs to entity denoted by selected identifier
@@ -450,7 +451,7 @@ function! go#guru#Referrers(selected) abort
         \ 'needs_scope': 0,
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'Referrers')
 endfunction
 
 function! go#guru#SameIdsTimer() abort
@@ -481,10 +482,10 @@ function! go#guru#SameIds() abort
         \ 'custom_parse': function('s:same_ids_highlight'),
         \ }
 
-  call s:run_guru(args)
+  call s:run_guru(args, 'SameIds')
 endfunction
 
-function! s:same_ids_highlight(exit_val, output) abort
+function! s:same_ids_highlight(exit_val, output, title) abort
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
   if a:output[0] !=# '{'
@@ -584,7 +585,7 @@ endfunction
 " We discard line2 and col2 for the first errorformat, because it's not
 " useful and location only has the ability to show one line and column
 " number
-function! s:parse_guru_output(exit_val, output) abort
+function! s:parse_guru_output(exit_val, output, title) abort
   if a:exit_val
     call go#util#EchoError(a:output)
     return
@@ -592,7 +593,7 @@ function! s:parse_guru_output(exit_val, output) abort
 
   let old_errorformat = &errorformat
   let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-  call go#list#ParseFormat("locationlist", errformat, a:output)
+  call go#list#ParseFormat("locationlist", errformat, a:output, a:title)
   let &errorformat = old_errorformat
 
   let errors = go#list#Get("locationlist")

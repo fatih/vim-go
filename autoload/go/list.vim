@@ -50,12 +50,14 @@ function! go#list#Get(listtype) abort
 endfunction
 
 " Populate populate the location list with the given items
-function! go#list#Populate(listtype, items) abort
+function! go#list#Populate(listtype, items, title) abort
   let l:listtype = go#list#Type(a:listtype)
   if l:listtype == "locationlist"
     call setloclist(0, a:items, 'r')
+    call setloclist(0, [], 'a', {'title': a:title})
   else
     call setqflist(a:items, 'r')
+    call setqflist([], 'a', {'title': a:title})
   endif
 endfunction
 
@@ -65,7 +67,7 @@ endfunction
 
 " Parse parses the given items based on the specified errorformat nad
 " populates the location list.
-function! go#list#ParseFormat(listtype, errformat, items) abort
+function! go#list#ParseFormat(listtype, errformat, items, title) abort
   let l:listtype = go#list#Type(a:listtype)
   " backup users errorformat, will be restored once we are finished
   let old_errorformat = &errorformat
@@ -74,8 +76,10 @@ function! go#list#ParseFormat(listtype, errformat, items) abort
   let &errorformat = a:errformat
   if l:listtype == "locationlist"
     lgetexpr a:items
+    call setloclist(0, [], 'a', {'title': a:title})
   else
     cgetexpr a:items
+    call setqflist([], 'a', {'title': a:title})
   endif
 
   "restore back

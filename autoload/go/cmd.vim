@@ -133,7 +133,7 @@ function! go#cmd#Run(bang, ...) abort
   let items = go#list#Get(l:listtype)
   let errors = go#tool#FilterValids(items)
 
-  call go#list#Populate(l:listtype, errors)
+  call go#list#Populate(l:listtype, errors, &makeprg)
   call go#list#Window(l:listtype, len(errors))
   if !empty(errors) && !a:bang
     call go#list#JumpToFirst(l:listtype)
@@ -285,7 +285,7 @@ function! go#cmd#Test(bang, compile, ...) abort
     let errors = go#tool#ParseErrors(split(out, '\n'))
     let errors = go#tool#FilterValids(errors)
 
-    call go#list#Populate(l:listtype, errors)
+    call go#list#Populate(l:listtype, errors, command)
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !a:bang
       call go#list#JumpToFirst(l:listtype)

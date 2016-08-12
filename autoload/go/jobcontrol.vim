@@ -127,7 +127,7 @@ function! s:on_exit(job_id, exit_status) abort
 
   " if we are still in the same windows show the list
   if self.winnr == winnr()
-    call go#list#Populate(l:listtype, errors)
+    call go#list#Populate(l:listtype, errors, self.desc)
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !self.bang
       call go#list#JumpToFirst(l:listtype)
