@@ -276,6 +276,13 @@ function! go#util#AddTags(line1, line2, ...)
     endif
 
     let word = go#util#snippetcase(l:matched)
+    if l:keys == ["jsonapi"]
+      let prefix = "attr"
+      if word == "id"
+        let prefix = "primary"
+      endif
+      let word = printf('%s,%s', prefix, word)
+    endif
     let tags = map(copy(l:keys), 'printf("%s:%s", v:val,"\"'. word .'\"")')
     let updated_line = printf("%s `%s`", getline(line), join(tags, " "))
 
