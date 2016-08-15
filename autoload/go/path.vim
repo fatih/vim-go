@@ -138,6 +138,15 @@ endfunction
 function! go#path#CheckBinPath(binpath)
     " remove whitespaces if user applied something like 'goimports   '
     let binpath = substitute(a:binpath, '^\s*\(.\{-}\)\s*$', '\1', '')
+
+    " if it's in PATH just return it
+    if executable(binpath)
+        if v:version == 704 && has('patch235')
+            let binpath = exepath(binpath)
+        endif
+        return binpath
+    endif
+
     " save off original path
     let old_path = $PATH
 
@@ -149,14 +158,6 @@ function! go#path#CheckBinPath(binpath)
         let $PATH = go_bin_path . go#util#PathListSep() . $PATH
     endif
 
-    " if it's in PATH just return it
-    if executable(binpath)
-        if v:version == 704 && has('patch235')
-            let binpath = exepath(binpath)
-        endif
-        let $PATH = old_path
-        return binpath
-    endif
 
     " just get the basename
     let basename = fnamemodify(binpath, ":t")
