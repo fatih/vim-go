@@ -14,6 +14,7 @@ BUG FIXES:
 * Fix system calls on Windows [gh-988]
 * Fix :GoSameIds and :GoCoverage for light background and after changing color schemes [gh-983]
 * Fix TagBar and `GoCallers` for Windows user [gh-999]
+* Set updatetime for for `auto_sameids` feature as well [gh-1016]
 
 
 ## 1.8 (July 31, 2016)
