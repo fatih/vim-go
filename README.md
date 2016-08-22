@@ -18,19 +18,19 @@ disabled/enabled easily.
 * Go to symbol/declaration with `:GoDef`
 * Look up documentation with `:GoDoc` inside Vim or open it in browser
 * Automatically import packages via `:GoImport` or plug it into autosave
-* Compile your package with `:GoBuild`, install it with `:GoInstall`
+* Compile your package with `:GoBuild`, install it with `:GoInstall` or test
+  them with `:GoTest` (also supports running single tests via `:GoTestFunc`)
 * Quickly execute your current file/files with `:GoRun`
-* Run `:GoTest` and see any errors in the quickfix window
 * Automatic `GOPATH` detection based on the directory structure (i.e. `gb`
   projects, `godep` vendored projects)
 * Change or display `GOPATH` with `:GoPath`
-* Create a coverage profile and display annotated source code in browser to see
-  which functions are covered with `:GoCoverage`
-* Call `gometalinter`, which is a tool that invokes all possible linters
+* Create a coverage profile and display annotated source code to see which
+  functions are covered with `:GoCoverage`
+* Call `gometalinter` with `:GoMetaLinter`, which invokes all possible linters
   (golint, vet, errcheck, deadcode, etc..) and shows the warnings/errors
 * Lint your code with `:GoLint`
 * Run your code through `:GoVet` to catch static errors
-* Advanced source analysis tools utilizing oracle, such as `:GoImplements`,
+* Advanced source analysis tools utilizing guru, such as `:GoImplements`,
   `:GoCallees`, and `:GoReferrers`
 * Precise type-safe renaming of identifiers with `:GoRename`
 * List all source files and dependencies
@@ -39,15 +39,33 @@ disabled/enabled easily.
 * Share your current code to [play.golang.org](http://play.golang.org) with `:GoPlay`
 * On-the-fly type information about the word under the cursor. Plug it into
   your custom vim function.
+* Go asm formatting on save
 * Tagbar support to show tags of the source code in a sidebar with `gotags`
 * Custom vim text objects such as `a function` or `inner function`
+  list.
+* Jump to function or type declarations with `:GoDecls` or `:GoDeclsDir`
+* A async launcher for the go command is implemented for Neovim, fully async
+  building and testing (beta).
+* Integrated with the Neovim terminal, launch `:GoRun` and other go commands
+  in their own new terminal. (beta)
+* Alternate between implementation and test code with `:GoAlternate`
+
+Checkout the official [tutorial](https://github.com/fatih/vim-go-tutorial) 
+that goes literally over all features and shows many tips and tricks. It shows 
+how to install vim-go and explains many unknown use cases. Recommended for 
+beginners as well as advanced users: https://github.com/fatih/vim-go-tutorial
 
 ## Install
 
-Vim-go follows the standard runtime path structure, so I highly recommend to use
-a common and well known plugin manager to install vim-go. Do not use vim-go with
-other Go oriented vim plugins. For Pathogen just clone the repo. For other plugin managers
-add the appropriate lines and execute the plugin's install command.
+Master branch is supposed to be a development branch. So stuff here can break
+and change.  Please try use always the [latest
+release](https://github.com/fatih/vim-go/releases/latest)
+
+Vim-go follows the standard runtime path structure, so I highly recommend to
+use a common and well known plugin manager to install vim-go. Do not use vim-go
+with other Go oriented vim plugins. For Pathogen just clone the repo. For other
+plugin managers add the appropriate lines and execute the plugin's install
+command.
 
 *  [Pathogen](https://github.com/tpope/vim-pathogen)
   * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
@@ -57,27 +75,34 @@ add the appropriate lines and execute the plugin's install command.
   * `NeoBundle 'fatih/vim-go'`
 *  [Vundle](https://github.com/gmarik/vundle)
   * `Plugin 'fatih/vim-go'`
+*  [Vim packages](http://vimhelp.appspot.com/repeat.txt.html#packages) (since Vim 7.4.1528)
+  * `git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go`
 
 Please be sure all necessary binaries are installed (such as `gocode`, `godef`,
 `goimports`, etc.). You can easily install them with the included
 `:GoInstallBinaries` command. If invoked, all necessary binaries will be
 automatically downloaded and installed to your `$GOBIN` environment (if not set
-it will use `$GOPATH/bin`). Note that this command requires `git` for fetching the individual Go
-packages.
+it will use `$GOPATH/bin`). Note that this command requires `git` for fetching
+the individual Go packages. Additionally, use `:GoUpdateBinaries` to update the
+installed binaries.
 
 ### Optional
 
 * Autocompletion is enabled by default via `<C-x><C-o>`. To get real-time
 completion (completion by type) install:
-[YCM](https://github.com/Valloric/YouCompleteMe) or
-[neocomplete](https://github.com/Shougo/neocomplete.vim).
+[neocomplete](https://github.com/Shougo/neocomplete.vim) for Vim or
+[deoplete](https://github.com/Shougo/deoplete.nvim) and
+[deoplete-go](https://github.com/zchee/deoplete-go) for NeoVim or
+[SimpleAutoCmplPop](https://github.com/roxma/SimpleAutoComplPop)
 * To display source code tag information on a sidebar install
 [tagbar](https://github.com/majutsushi/tagbar).
 * For snippet features install:
-[ultisnips](https://github.com/SirVer/ultisnips) or
-[neosnippet](https://github.com/Shougo/neosnippet.vim).
-* Screenshot color scheme is a slightly modified molokai: [fatih/molokai](https://github.com/fatih/molokai).
-* For a better documentation viewer checkout: [go-explorer](https://github.com/garyburd/go-explorer).
+[neosnippet](https://github.com/Shougo/neosnippet.vim) or
+[ultisnips](https://github.com/SirVer/ultisnips).
+* Screenshot color scheme is a slightly modified molokai:
+  [fatih/molokai](https://github.com/fatih/molokai).
+* For a better documentation viewer checkout:
+  [go-explorer](https://github.com/garyburd/go-explorer).
 
 ## Usage
 
@@ -89,15 +114,16 @@ After that just open the help page to see all commands:
 
     :help vim-go
 
-## Mappings
+## Example Mappings
 
 vim-go has several `<Plug>` mappings which can be used to create custom
-mappings. Below are some examples you might find useful:
+mappings. Unless otherwise specified, none of these mappings are enabled
+by default. Here some examples you might find useful:
 
 Run commands such as `go run` for the current file with `<leader>r` or `go
-build` and `go test` for the current package with `<leader>b` and `<leader>t` respectively.
-Display beautifully annotated source code to see which functions are covered
-with `<leader>c`.
+build` and `go test` for the current package with `<leader>b` and `<leader>t`
+respectively. Display beautifully annotated source code to see which functions
+are covered with `<leader>c`.
 
 ```vim
 au FileType go nmap <leader>r <Plug>(go-run)
@@ -155,14 +181,16 @@ recommendations, you are free to create more advanced mappings or functions
 based on `:he go-commands`.
 
 ## Settings
-Below are some settings you might find useful. For the full list see `:he go-settings`.
+Below are some settings you might find useful. For the full list see `:he
+go-settings`.
 
 By default syntax-highlighting for Functions, Methods and Structs is disabled.
 To change it:
 ```vim
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 ```
@@ -199,16 +227,83 @@ let g:go_bin_path = expand("~/.gotools")
 let g:go_bin_path = "/home/fatih/.mypath"      "or give absolute path
 ```
 
+Disable updating dependencies when installing/updating binaries:
+```vim
+let g:go_get_update = 0
+```
+
+### Using with Neovim (beta)
+
+Note: Neovim currently is not a first class citizen for vim-go. You are free
+to open bugs but I'm not going to look at them. Even though I'm using Neovim
+myself, Neovim itself is still alpha. So vim-go might not work well as good as
+in Vim. I'm happy to accept pull requests or very detailed bug reports.
+
+
+Run `:GoRun` in a new tab, horizontal split or vertical split terminal
+
+```vim
+au FileType go nmap <leader>rt <Plug>(go-run-tab)
+au FileType go nmap <Leader>rs <Plug>(go-run-split)
+au FileType go nmap <Leader>rv <Plug>(go-run-vertical)
+```
+
+By default new terminals are opened in a vertical split. To change it
+
+```vim
+let g:go_term_mode = "split"
+```
+
+By default the testing commands run asynchronously in the background and
+display results with `go#jobcontrol#Statusline()`. To make them run in a new
+terminal
+
+```vim
+let g:go_term_enabled = 1
+```
+
+### Using with Syntastic
+Sometimes when using both `vim-go` and `syntastic` Vim will start lagging while
+saving and opening files. The following fixes this:
+
+```vim
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+```
+
+Another issue with `vim-go` and `syntastic` is that the location list window
+that contains the output of commands such as `:GoBuild` and `:GoTest` might not appear.
+To resolve this:
+
+```vim
+let g:go_list_type = "quickfix"
+```
 
 ## More info
 
-Check out the [Wiki](https://github.com/fatih/vim-go/wiki) page for more information. It includes [Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
-section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
+Check out the [Wiki](https://github.com/fatih/vim-go/wiki) page for more
+information. It includes
+[Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
+section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many
+other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
+
+## Donation
+
+People have asked for this for a long time, now you can be a fully supporter by
+[being a patron](https://www.patreon.com/fatih)! 
+
+By being a patron, you are enabling vim-go to grow and mature, helping me to
+invest in bug fixes, new documentation, and improving both current and future
+features. It's completely optional and is just a direct way to support Vim-go's
+ongoing development. Thanks!
+
+[https://www.patreon.com/fatih](https://www.patreon.com/fatih)
 
 ## Credits
 
 * Go Authors for official vim plugins
-* Gocode, Godef, Golint, Oracle, Goimports, Gotags, Errcheck projects and authors of those projects.
+* Gocode, Godef, Golint, Guru, Goimports, Gotags, Errcheck projects and
+  authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
   vim-godef)
 * [Contributors](https://github.com/fatih/vim-go/graphs/contributors) of vim-go
