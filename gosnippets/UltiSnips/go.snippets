@@ -159,6 +159,19 @@ if err != nil {
 ${0}
 endsnippet
 
+# formatted error snippet
+snippet errf "Formatted error return " !b
+if err != nil {
+	return fmt.Errorf("${1:description}%v", err)
+}
+${0}
+endsnippet
+
+# Fmt Errorf
+snippet fe "fmt.Errorf(...)"
+	fmt.Errorf("${1:description}%v", err)${0}
+endsnippet
+
 # error panic
 snippet errp "Error panic" !b
 if err != nil {
