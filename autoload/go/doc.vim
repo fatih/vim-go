@@ -93,16 +93,22 @@ function! go#doc#Open(newmode, mode, ...)
       return
     endif
 
-
     let offset = go#util#OffsetCursor()
     let fname = expand("%:p:gs!\\!/!")
     let pos = shellescape(fname.':#'.offset)
     let command = printf("%s -pos %s", bin_path, pos)
-    let in = ""
 
     if &modified
+      " gogetdoc supports the same archive format as guru for dealing with
+      " modified buffers.
+      "   use the -modified flag
+      "   write each archive entry on stdin as:
+      "     filename followed by newline
+      "     file size followed by newline
+      "     file contents
+      let in = ""
       let sep = go#util#LineEnding()
-      let content  = join(getline(1, '$'), sep )
+      let content = join(getline(1, '$'), sep)
       let in = fname . "\n" . strlen(content) . "\n" . content
       let command .= " -modified"
       let out = go#util#System(command, in)
