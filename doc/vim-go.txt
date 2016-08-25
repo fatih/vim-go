@@ -1231,6 +1231,12 @@ Highlights build constraints. By default it's disabled. >
 
   let g:go_highlight_build_constraints = 0
 <
+                                          *'g:go_highlight_generate_tags'*
+
+Highlights go:generate directives. By default it's disabled. >
+
+  let g:go_highlight_generate_tags = 0
+<
                                           *'g:go_highlight_string_spellcheck'*
 
 Use this option to highlight spelling errors in strings when |spell| is
