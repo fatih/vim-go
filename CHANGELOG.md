@@ -8,6 +8,7 @@ IMPROVEMENTS:
 * Cleanup and improve documentation [gh-987]
 * Add new `g:go_gocode_socket_type` setting to change the underlying socket type passed to `gocode`. Usefull to fallback to `tcp` on cases such as Bash on Windows [gh-1000]
 * `:GoSameIds` is now automatically re-evaluated in cases of buffer reloads (such as `:GoRename`) [gh-998]
+* Improve docs about `go_auto_sameids` [gh-1017]
 
 BUG FIXES:
 
