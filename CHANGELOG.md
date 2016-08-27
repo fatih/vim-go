@@ -5,6 +5,7 @@ IMPROVEMENTS:
 * **guru** uses now the `-modified` flag, which allows us use guru on modified
   buffers as well. This affects all commands where `guru` is used. Such as
   `:GoDef`, `:GoReferrers`, etc.. [gh-944]
+* **:GoDoc** uses now the `-modified` flag under the hood (for `gogetdoc), which allows us to get documentation for the identifier under the cursor ina modified buffer. [gh-1014]
 * Cleanup and improve documentation [gh-987]
 * Add new `g:go_gocode_socket_type` setting to change the underlying socket type passed to `gocode`. Usefull to fallback to `tcp` on cases such as Bash on Windows [gh-1000]
 * `:GoSameIds` is now automatically re-evaluated in cases of buffer reloads (such as `:GoRename`) [gh-998]
