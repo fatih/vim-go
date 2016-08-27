@@ -696,8 +696,8 @@ CTRL-t
 
     Toggles |'g:go_asmfmt_autosave'|.
 
-                                                 *:GoMetalinterAutoSaveToggle*
-:GoMetalinterAutoSaveToggle
+                                                 *:GoMetaLinterAutoSaveToggle*
+:GoMetaLinterAutoSaveToggle
 
     Toggles |'g:go_metalinter_autosave'|.
 
