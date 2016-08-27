@@ -15,6 +15,7 @@ BUG FIXES:
 * Fix :GoSameIds and :GoCoverage for light background and after changing color schemes [gh-983]
 * Fix TagBar and `GoCallers` for Windows user [gh-999]
 * Set updatetime for for `auto_sameids` feature as well [gh-1016]
+* Update docs about missing `go_highlight_generate_tags` setting [gh-1023]
 
 
 ## 1.8 (July 31, 2016)
