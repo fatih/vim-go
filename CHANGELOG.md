@@ -21,6 +21,9 @@ BUG FIXES:
 * Fix updating the jumplist if `:GoDef` is used [gh-1029]
 * Fix highlighting literal percent sign (`%%`) in strings [gh-1011]
 
+BACKWARDS INCOMPATIBILITIES:
+
+* Rename `GoMetalinterAutoSaveToggle` to `GoMetaLinterAutoSaveToggle` to make it compatible with the existing `:GoMetaLinter` command [gh-1020]
 
 ## 1.8 (July 31, 2016)
 
