@@ -175,7 +175,7 @@ else
 endif
 
 if g:go_highlight_format_strings != 0
-  syn match       goFormatSpecifier   /%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
+  syn match       goFormatSpecifier   /\([^%]\(%%\)*\)\@<=%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
   hi def link     goFormatSpecifier   goSpecialString
 endif
 
@@ -313,7 +313,7 @@ hi def link     goMethod            Type
 
 " Fields;
 if g:go_highlight_fields != 0
-  syn match goField                 /\.\w\+\([\ \n\r\:\)\[,]\)\@=/hs=s+1
+  syn match goField                 /\.\w\+\([.\ \n\r\:\)\[,]\)\@=/hs=s+1
 endif
 hi def link    goField              Identifier
 
