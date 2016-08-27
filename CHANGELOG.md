@@ -20,6 +20,7 @@ BUG FIXES:
 * Update docs about missing `go_highlight_generate_tags` setting [gh-1023]
 * Fix updating the jumplist if `:GoDef` is used [gh-1029]
 * Fix highlighting literal percent sign (`%%`) in strings [gh-1011]
+* Fix highlighting of nested fields [gh-1007]
 
 BACKWARDS INCOMPATIBILITIES:
 
