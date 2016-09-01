@@ -681,6 +681,8 @@ CTRL-t
 >
       :GoAddTags xml db
 <
+    If the key `jsonapi` is used, the values generated will be compatible with
+    the  https://godoc.org/github.com/google/jsonapi tags.                                              
                                                        *:GoAutoTypeInfoToggle*
 :GoAutoTypeInfoToggle
 
