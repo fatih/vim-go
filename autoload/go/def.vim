@@ -27,42 +27,53 @@ function! go#def#Jump(mode)
     endif
     let command = printf("%s -f=%s -o=%s -t", bin_path, fname, go#util#OffsetCursor())
     let out = go#util#System(command)
-
-    " append the type information to the same line so our
-    " jump_to_declaration() function can parse it. This makes it
-    " compatible with guru definition as well too
-    let out = join(split(out, '\n'), ':')
     if exists("l:tmpname")
       call delete(l:tmpname)
     endif
-
   elseif bin_name == 'guru'
-    let flags = ""
-    let in = ""
-
-    if &modified
-      let sep = go#util#LineEnding()
-      let content  = join(getline(1, '$'), sep)
-      let in = fname . "\n" . strlen(content) . "\n" . content
-      let flags .= " -modified"
-    endif
-
     let bin_path = go#path#CheckBinPath("guru")
     if empty(bin_path)
       let $GOPATH = old_gopath
       return
     endif
 
-    if exists('g:go_guru_tags')
-      let tags = get(g:, 'go_guru_tags')
-      let flags .= printf(" -tags %s", tags)
-    endif
-
-    let fname = shellescape(fname.':#'.go#util#OffsetCursor())
-    let command = printf("%s %s definition %s", bin_path, flags, fname)
+    let cmd = [bin_path]
+    let stdin_content = ""
 
     if &modified
-      let out = go#util#System(command, in)
+      let sep = go#util#LineEnding()
+      let content  = join(getline(1, '$'), sep)
+      let stdin_content = fname . "\n" . strlen(content) . "\n" . content
+      call add(cmd, "-modified")
+    endif
+
+    if exists('g:go_guru_tags')
+      let tags = get(g:, 'go_guru_tags')
+      call extend(cmd, ["-tags", tags])
+    endif
+
+    let fname = fname.':#'.go#util#OffsetCursor()
+    call extend(cmd, ["definition", fname])
+
+    if has('job')
+      let l:spawn_args = {
+            \ 'cmd': cmd,
+            \ 'external_cb': function('s:jump_to_declaration_cb', [a:mode, bin_name]),
+            \ }
+
+      if &modified
+        let l:spawn_args.input = stdin_content
+      endif
+
+      call go#util#EchoProgress("searching declaration ...")
+      call go#job#Spawn(1, l:spawn_args)
+      let $GOPATH = old_gopath
+      return
+    endif
+
+    let command = join(cmd, " ")
+    if &modified
+      let out = go#util#System(command, stdin_content)
     else
       let out = go#util#System(command)
     endif
@@ -76,13 +87,28 @@ function! go#def#Jump(mode)
     return
   endif
 
-  call s:jump_to_declaration(out, a:mode)
+  call s:jump_to_declaration(out, a:mode, bin_name)
   let $GOPATH = old_gopath
 endfunction
 
-function! s:jump_to_declaration(out, mode)
+function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data)
+  if a:exit_status != 0
+    return
+  endif
+
+  call s:jump_to_declaration(a:data[0], a:mode, a:bin_name)
+endfunction
+
+function! s:jump_to_declaration(out, mode, bin_name)
+  let final_out = a:out
+  if a:bin_name == "godef"
+    " append the type information to the same line so our we can parse it.
+    " This makes it compatible with guru output.
+    let final_out = join(split(a:out, '\n'), ':')
+  endif
+
   " strip line ending
-  let out = split(a:out, go#util#LineEnding())[0]
+  let out = split(final_out, go#util#LineEnding())[0]
   if go#util#IsWin()
     let parts = split(out, '\(^[a-zA-Z]\)\@<!:')
   else

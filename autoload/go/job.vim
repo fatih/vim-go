@@ -54,11 +54,25 @@ function! go#job#Spawn(bang, args)
     call s:show_errors(self.bang, self.combined, self.dir, self.winnr)
   endfunc
 
-  let s:job = job_start(a:args.cmd, {
+  let l:start_args = {
         \	"callback": opts.callbackHandler,
         \	"exit_cb": opts.exitHandler,
         \	"close_cb": opts.closeHandler,
-        \ })
+        \ }
+
+  " Emulate the 'input' arg to the system() call:
+  " When {input} is given and is a string this string is written 
+  " to a file and passed as stdin to the command.  The string is 
+  " written as-is, you need to take care of using the correct line 
+  " separators yourself.
+  if has_key(a:args, 'input')
+    let l:tmpname = tempname()
+    call writefile(split(a:args.input, "\n"), l:tmpname, "b")
+    let l:start_args.in_io = "file"
+    let l:start_args.in_name = l:tmpname
+  endif
+
+  let s:job = job_start(a:args.cmd, l:start_args)
 
   call job_status(s:job)
   execute cd . fnameescape(dir)
