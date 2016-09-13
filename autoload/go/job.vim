@@ -139,8 +139,6 @@ function! go#job#Buffer(bang, args)
     unlet s:job_buffer
   endif
 
-  " NOTE(arslan): the job buffer first line still has an empty line, not
-  " sure how to remove it
   let s:job_buffer = job_start(a:args.cmd, {
         \	"out_io": "buffer",
         \	"out_buf": opts.bufnr,

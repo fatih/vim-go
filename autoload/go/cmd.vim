@@ -94,6 +94,16 @@ function! go#cmd#Run(bang, ...)
     return
   endif
 
+  if has('job') && get(g:, 'go_async_run', 0)
+    " 'term': 'open' case is not implement for +jobs. This means executions
+    " waiting for stdin will not work. That's why we put this behind a flag.
+    " Most of the time people people use :GoRun just like they use
+    " play.golang.org. So this case is good enough for those case. Once 'term'
+    " is implemented we're going to change the flag to `go_term_enabled`.
+    call go#job#Buffer(a:bang, {'cmd': ['go', 'run'] + go#tool#Files()})
+    return
+  endif
+
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
 
