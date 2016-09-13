@@ -80,10 +80,7 @@ function! go#util#System(str, ...)
 endfunction
 
 function! go#util#ShellError()
-  if empty(s:vim_shell_error)
-    return v:shell_error
-  endif
-  return call(s:vim_shell_error, [])
+  return v:shell_error
 endfunction
 
 
