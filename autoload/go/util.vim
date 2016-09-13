@@ -63,34 +63,6 @@ function! go#util#osarch()
   return go#util#goos() . '_' . go#util#goarch()
 endfunction
 
-"Check if has vimproc
-function! s:has_vimproc()
-  if !exists('g:go#use_vimproc')
-    if go#util#IsWin()
-      try
-        call vimproc#version()
-        let exists_vimproc = 1
-      catch
-        let exists_vimproc = 0
-      endtry
-    else
-      let exists_vimproc = 0
-    endif
-
-    let g:go#use_vimproc = exists_vimproc
-  endif
-
-  return g:go#use_vimproc
-endfunction
-
-if s:has_vimproc()
-  let s:vim_system = get(g:, 'gocomplete#system_function', 'vimproc#system2')
-  let s:vim_shell_error = get(g:, 'gocomplete#shell_error_function', 'vimproc#get_last_status')
-else
-  let s:vim_system = get(g:, 'gocomplete#system_function', 'system')
-  let s:vim_shell_error = ''
-endif
-
 " System runs a shell command. It will reset the shell to /bin/sh for Unix-like
 " systems if it is executable.
 function! go#util#System(str, ...)
@@ -100,7 +72,7 @@ function! go#util#System(str, ...)
   endif
 
   try
-    let l:output = call(s:vim_system, [a:str] + a:000)
+    let l:output = call('system', [a:str] + a:000)
     return l:output
   finally
     let &shell = l:shell
@@ -149,9 +121,6 @@ function! go#util#Shelljoin(arglist, ...)
 endfunction
 
 fu! go#util#Shellescape(arg)
-  if s:has_vimproc()
-    return vimproc#shellescape(a:arg)
-  endif
   try
     let ssl_save = &shellslash
     set noshellslash

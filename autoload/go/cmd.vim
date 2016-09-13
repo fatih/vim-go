@@ -1,7 +1,3 @@
-if !exists("g:go_dispatch_enabled")
-  let g:go_dispatch_enabled = 0
-endif
-
 function! go#cmd#autowrite()
   if &autowrite == 1
     silent wall
@@ -48,10 +44,7 @@ function! go#cmd#Build(bang, ...)
   let dir = getcwd()
   try
     execute cd . fnameescape(expand("%:p:h"))
-    if g:go_dispatch_enabled && exists(':Make') == 2
-      call go#util#EchoProgress("building dispatched ...")
-      silent! exe 'Make'
-    elseif l:listtype == "locationlist"
+    if l:listtype == "locationlist"
       silent! exe 'lmake!'
     else
       silent! exe 'make!'
@@ -100,6 +93,7 @@ function! go#cmd#Run(bang, ...)
     " Most of the time people people use :GoRun just like they use
     " play.golang.org. So this case is good enough for those case. Once 'term'
     " is implemented we're going to change the flag to `go_term_enabled`.
+    call go#util#EchoProgress("running dispatched ...")
     call go#job#Buffer(a:bang, {'cmd': ['go', 'run'] + go#tool#Files()})
     return
   endif
@@ -129,9 +123,7 @@ function! go#cmd#Run(bang, ...)
 
   let l:listtype = go#list#Type("quickfix")
 
-  if g:go_dispatch_enabled && exists(':Make') == 2
-    silent! exe 'Make'
-  elseif l:listtype == "locationlist"
+  if l:listtype == "locationlist"
     exe 'lmake!'
   else
     exe 'make!'
@@ -183,10 +175,7 @@ function! go#cmd#Install(bang, ...)
   let dir = getcwd()
   try
     execute cd . fnameescape(expand("%:p:h"))
-    if g:go_dispatch_enabled && exists(':Make') == 2
-      call go#util#EchoProgress("building dispatched ...")
-      silent! exe 'Make'
-    elseif l:listtype == "locationlist"
+    if l:listtype == "locationlist"
       silent! exe 'lmake!'
     else
       silent! exe 'make!'
@@ -356,9 +345,7 @@ function! go#cmd#Generate(bang, ...)
   let l:listtype = go#list#Type("quickfix")
 
   echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None
-  if g:go_dispatch_enabled && exists(':Make') == 2
-    silent! exe 'Make'
-  elseif l:listtype == "locationlist"
+  if l:listtype == "locationlist"
     silent! exe 'lmake!'
   else
     silent! exe 'make!'

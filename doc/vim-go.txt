@@ -1079,14 +1079,6 @@ mappings of |:GoDef|. By default it's disabled. >
 
   let g:go_def_reuse_buffer = 0
 <
-                                                     *'g:go_dispatch_enabled'*
-
-Use this option to enable/disable the use of Dispatch to execute the `:GoRun`,
-`:GoBuild` and `:GoGenerate` commands. More information about Dispatch is
-available at https://github.com/tpope/vim-dispatch. Default is disabled. >
-
-  let g:go_dispatch_enabled = 0
-<
                                                           *'g:go_doc_command'*
 
 Use this option to define which tool is used to godoc. By default `godoc` is
