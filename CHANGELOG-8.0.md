@@ -10,7 +10,8 @@ FEATURES:
 
 * coverage.vim: async :GoCoverage
 * coverage.vim: async :GoCoverageBrowser
-* def.vim: async :GoDef
+
+* def.vim: async :GoDef (only if 'guru' is used)
 
 BACKWARDS INCOMPATIBILITIES:
 

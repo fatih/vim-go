@@ -83,7 +83,6 @@ function! go#util#ShellError()
   return v:shell_error
 endfunction
 
-
 " StripPath strips the path's last character if it's a path separator.
 " example: '/foo/bar/'  -> '/foo/bar'
 function! go#util#StripPathSep(path)

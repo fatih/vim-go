@@ -29,33 +29,37 @@ function! go#lint#Gometa(autosave, ...) abort
     let goargs = go#util#Shelljoin(a:000)
   endif
 
-  let meta_command = "gometalinter --disable-all"
-  if a:autosave || empty(g:go_metalinter_command)
-    let bin_path = go#path#CheckBinPath("gometalinter")
-    if empty(bin_path)
-      return
-    endif
+  let bin_path = go#path#CheckBinPath("gometalinter")
+  if empty(bin_path)
+    return
+  endif
 
+  let cmd = [bin_path]
+  let cmd += ["--disable-all"]
+
+  if a:autosave || empty(g:go_metalinter_command)
     if a:autosave
       " include only messages for the active buffer
-      let meta_command .= " --include='^" . expand('%:p') . ".*$'"
+      let cmd += ["--include='^" . expand('%:p') . ".*$'"]
     endif
 
     " linters
     let linters = a:autosave ? g:go_metalinter_autosave_enabled : g:go_metalinter_enabled
     for linter in linters
-      let meta_command .= " --enable=".linter
+      let cmd += ["--enable=".linter]
     endfor
 
     " deadline
-    let meta_command .= " --deadline=" . g:go_metalinter_deadline
+    let cmd += ["--deadline=" . g:go_metalinter_deadline]
 
     " path
-    let meta_command .=  " " . goargs
+    let cmd += [goargs]
   else
     " the user wants something else, let us use it.
-    let meta_command = g:go_metalinter_command
+    let cmd += [split(g:go_metalinter_command, " ")]
   endif
+
+  let meta_command = join(cmd, " ")
 
   " comment out the following two lines for debugging
   " echo meta_command
