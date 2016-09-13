@@ -23,6 +23,7 @@ BUG FIXES:
 * Fix updating the jumplist if `:GoDef` is used [gh-1029]
 * Fix highlighting literal percent sign (`%%`) in strings [gh-1011]
 * Fix highlighting of nested fields [gh-1007]
+* Fix checking for `exepath` feature for the upcoming vim 8.0 release [gh-1046]
 
 BACKWARDS INCOMPATIBILITIES:
 
