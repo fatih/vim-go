@@ -1,4 +1,4 @@
-## Unplanned
+## 1.9 (September 13, 2016)
 
 IMPROVEMENTS:
 
@@ -11,6 +11,7 @@ IMPROVEMENTS:
 * `:GoSameIds` is now automatically re-evaluated in cases of buffer reloads (such as `:GoRename`) [gh-998]
 * Improve docs about `go_auto_sameids` [gh-1017]
 * Improve error message by printing the full path if an incompatible `goimports` is being used [gh-1006]
+* `iota` and `nil` are now highlighted correctly and are not treated as booleans [gh-1030]
 
 BUG FIXES:
 
@@ -22,6 +23,7 @@ BUG FIXES:
 * Fix updating the jumplist if `:GoDef` is used [gh-1029]
 * Fix highlighting literal percent sign (`%%`) in strings [gh-1011]
 * Fix highlighting of nested fields [gh-1007]
+* Fix checking for `exepath` feature for the upcoming vim 8.0 release [gh-1046]
 
 BACKWARDS INCOMPATIBILITIES:
 
