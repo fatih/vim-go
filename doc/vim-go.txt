@@ -1464,8 +1464,7 @@ Vim becomes slow while editing Go files~
 
 Don't enable these options:
 >
-  let g:go_highlight_structs = 0
-  let g:go_highlight_interfaces = 0
+  let g:go_highlight_types = 0
   let g:go_highlight_operators = 0
 <
 
