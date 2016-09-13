@@ -192,7 +192,7 @@ function! s:show_errors(bang, errs, dir, winnr)
   endif
 
   if a:winnr == winnr()
-    let l:listtype = "locationlist"
+    let l:listtype = "quickfix"
     call go#list#Populate(l:listtype, errors)
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !a:bang
