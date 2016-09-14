@@ -50,10 +50,10 @@ function! go#lint#Gometa(autosave, ...) abort
     endfor
 
     " deadline
-    let cmd += ["--deadline=" . g:go_metalinter_deadline]
+    " let cmd += ["--deadline=" . g:go_metalinter_deadline]
 
     " path
-    let cmd += [goargs]
+    let cmd += [expand('%:p:h')]
   else
     " the user wants something else, let us use it.
     let cmd += [split(g:go_metalinter_command, " ")]
@@ -64,6 +64,16 @@ function! go#lint#Gometa(autosave, ...) abort
   " comment out the following two lines for debugging
   " echo meta_command
   " return
+  
+  if has('job')
+    let l:spawn_args = {
+          \ 'cmd': cmd,
+          \ }
+
+    call go#util#EchoProgress("linting started ...")
+    call go#job#SpawnContinous(1, l:spawn_args)
+    return
+  endif
 
   let out = go#tool#ExecuteInDir(meta_command)
 
