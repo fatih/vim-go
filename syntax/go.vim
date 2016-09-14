@@ -302,10 +302,12 @@ if g:go_highlight_functions != 0
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
   syn match goFunction          /\w\+/ contained
+  syn match goFunctionCall      /\w\+\ze(/
 else
   syn keyword goDeclaration func
 endif
 hi def link     goFunction          Function
+hi def link     goFunctionCall      Type
 
 " Methods;
 if g:go_highlight_methods != 0
