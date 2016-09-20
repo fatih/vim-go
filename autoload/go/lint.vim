@@ -38,11 +38,6 @@ function! go#lint#Gometa(autosave, ...) abort
   let cmd += ["--disable-all"]
 
   if a:autosave || empty(g:go_metalinter_command)
-    if a:autosave
-      " include only messages for the active buffer
-      let cmd += ["--include='^" . expand('%:p') . ".*$'"]
-    endif
-
     " linters
     let linters = a:autosave ? g:go_metalinter_autosave_enabled : g:go_metalinter_enabled
     for linter in linters
@@ -58,15 +53,16 @@ function! go#lint#Gometa(autosave, ...) abort
 
   if has('job') && has('lambda')
     let l:listtype = go#list#Type("quickfix")
+    let l:errformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
 
     function! s:callback(chan, msg) closure
-      let errformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
       let old_errorformat = &errorformat
-
-      let &errorformat = errformat
+      let &errorformat = l:errformat
       caddexpr a:msg
       let &errorformat = old_errorformat
 
+      " TODO(arslan): cursor still jumps to first error even If I don't want
+      " it. Seems like there is a regression somewhere, but not sure where.
       copen
     endfunction
 
@@ -74,11 +70,10 @@ function! go#lint#Gometa(autosave, ...) abort
       let errors = go#list#Get(l:listtype)
       if empty(errors) 
         call go#list#Window(l:listtype, len(errors))
-      else
-        cbottom
       endif
 
-      call go#util#EchoSuccess("linting finished")
+      " clean 'linting started ...' msg
+      echo 
     endfunction
 
     let l:spawn_args = {
@@ -88,8 +83,6 @@ function! go#lint#Gometa(autosave, ...) abort
           \ }
 
     call go#list#Clean(l:listtype)
-    call setqflist([], 'r', {'title': 'GoMetaLinter'})
-
     call go#util#EchoProgress("linting started ...")
     call go#job#Spawn(1, l:spawn_args)
     return
@@ -97,6 +90,11 @@ function! go#lint#Gometa(autosave, ...) abort
 
   " we add deadline only for sync mode
   let cmd += ["--deadline=" . g:go_metalinter_deadline]
+  if a:autosave
+    " include only messages for the active buffer
+    let cmd += ["--include='^" . expand('%:p') . ".*$'"]
+  endif
+
 
   let meta_command = join(cmd, " ")
 
