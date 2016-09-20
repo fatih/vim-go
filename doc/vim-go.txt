@@ -989,7 +989,8 @@ with |:GoPlay|. By default it's enabled. >
 
 Use this option to show the type info (|:GoInfo|) for the word under the
 cursor automatically. Whenever the cursor changes the type info will be
-updated. By default it's disabled.
+updated. By default it's disabled. The delay can be configured with the
+'g:go_updatetime' setting.
 >
   let g:go_auto_type_info = 0
 <
@@ -997,9 +998,16 @@ updated. By default it's disabled.
 
 Use this option to highlight all uses of the identifier under the cursor
 (:GoSameIds) automatically. By default it's disabled. The delay can be
-configured with the 'updatetime' setting.
+configured with the 'g:go_updatetime' setting.
 >
   let g:go_auto_sameids = 0
+<
+                                                           *'g:go_updatetime'*
+
+Use this option to configure the a custom 'updatetime' for Go source files. If
+set to 0, no custom time will be configured. By default it's set to 800ms.
+>
+  let g:go_updatetime = 800
 <
                                                         *'g:go_jump_to_error'*
 
