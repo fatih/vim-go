@@ -66,6 +66,8 @@ function! go#lint#Gometa(autosave, ...) abort
       let &errorformat = errformat
       caddexpr a:msg
       let &errorformat = old_errorformat
+
+      copen
     endfunction
 
     function! s:exit_callback(job, exit_status) closure
