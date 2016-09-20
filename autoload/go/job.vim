@@ -19,15 +19,21 @@ function! go#job#Spawn(bang, args)
         \ 'combined' : [],
         \ }
 
-  " add external callback to be called if async job is finished
-  if has_key(a:args, 'external_cb')
-    let opts.external_cb = a:args.external_cb
-  endif
 
   func opts.callbackHandler(chan, msg) dict
     " contains both stderr and stdout
     call add(self.combined, a:msg)
   endfunc
+
+  " add external callback to be called if async job is finished
+  if has_key(a:args, 'external_cb')
+    let opts.external_cb = a:args.external_cb
+  endif
+
+  " override callback handler if user provided it
+  if has_key(a:args, 'callback')
+    let opts.callbackHandler = a:args.callback
+  endif
 
   func opts.closeHandler(chan) dict
     if !exists('s:job')
@@ -54,100 +60,10 @@ function! go#job#Spawn(bang, args)
     call s:show_errors(self.bang, self.combined, self.dir, self.winnr)
   endfunc
 
-  let l:start_args = {
-        \	"callback": opts.callbackHandler,
-        \	"exit_cb": opts.exitHandler,
-        \	"close_cb": opts.closeHandler,
-        \ }
-
-  " Emulate the 'input' arg to the system() call:
-  " When {input} is given and is a string this string is written 
-  " to a file and passed as stdin to the command.  The string is 
-  " written as-is, you need to take care of using the correct line 
-  " separators yourself.
-  if has_key(a:args, 'input')
-    let l:tmpname = tempname()
-    call writefile(split(a:args.input, "\n"), l:tmpname, "b")
-    let l:start_args.in_io = "file"
-    let l:start_args.in_name = l:tmpname
+  " override exit callback handler if user provided it
+  if has_key(a:args, 'exit_callback')
+    let opts.exitHandler = a:args.exit_callback
   endif
-
-  let s:job = job_start(a:args.cmd, l:start_args)
-
-  call job_status(s:job)
-  execute cd . fnameescape(dir)
-
-  " restore back GOPATH
-  let $GOPATH = old_gopath
-endfunction
-
-function! go#job#SpawnContinous(bang, args)
-  " autowrite is not enabled for jobs
-  call go#cmd#autowrite()
-
-  " modify GOPATH if needed
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
-
-  " execute go build in the files directory
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
-  let jobdir = fnameescape(expand("%:p:h"))
-  execute cd . jobdir
-
-  let opts = {
-        \ 'dir': dir,
-        \ 'bang': a:bang, 
-        \ 'winnr': winnr(),
-        \ 'combined' : [],
-        \ }
-
-  " add external callback to be called if async job is finished
-  if has_key(a:args, 'external_cb')
-    let opts.external_cb = a:args.external_cb
-  endif
-
-  func opts.callbackHandler(chan, msg) dict
-    " contains both stderr and stdout
-    let errformat = "%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
-
-    " backup users errorformat, will be restored once we are finished
-    let old_errorformat = &errorformat
-    " parse and populate the location list
-    let &errorformat = errformat
-
-    caddexpr a:msg
-
-    let &errorformat = old_errorformat
-
-    " call add(self.combined, a:msg)
-  endfunc
-
-  func opts.closeHandler(chan) dict
-    if !exists('s:job')
-      return
-    endif
-
-    call job_status(s:job) "trigger exitHandler
-    call job_stop(s:job)
-    unlet s:job
-  endfunc
-
-  func opts.exitHandler(job, exit_status) dict
-    if has_key(self, 'external_cb')
-      call self.external_cb(a:job, a:exit_status, self.combined)
-    endif
-
-    cbottom
-    if a:exit_status == 0
-      call go#list#Clean(0)
-      call go#list#Window(0)
-      call go#util#EchoSuccess("SUCCESS")
-      return
-    endif
-
-    " call s:show_errors(self.bang, self.combined, self.dir, self.winnr)
-  endfunc
 
   let l:start_args = {
         \	"callback": opts.callbackHandler,
@@ -169,8 +85,6 @@ function! go#job#SpawnContinous(bang, args)
 
   let s:job = job_start(a:args.cmd, l:start_args)
 
-  copen
-  call setqflist([], 'r', {'title': 'GoMetaLinter'})
   call job_status(s:job)
   execute cd . fnameescape(dir)
 

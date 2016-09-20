@@ -49,9 +49,6 @@ function! go#lint#Gometa(autosave, ...) abort
       let cmd += ["--enable=".linter]
     endfor
 
-    " deadline
-    " let cmd += ["--deadline=" . g:go_metalinter_deadline]
-
     " path
     let cmd += [expand('%:p:h')]
   else
@@ -59,21 +56,47 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += [split(g:go_metalinter_command, " ")]
   endif
 
-  let meta_command = join(cmd, " ")
+  if has('job') && has('lambda')
+    let l:listtype = go#list#Type("quickfix")
 
-  " comment out the following two lines for debugging
-  " echo meta_command
-  " return
-  
-  if has('job')
+    function! s:callback(chan, msg) closure
+      let errformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
+      let old_errorformat = &errorformat
+
+      let &errorformat = errformat
+      caddexpr a:msg
+      let &errorformat = old_errorformat
+    endfunction
+
+    function! s:exit_callback(job, exit_status) closure
+      let errors = go#list#Get(l:listtype)
+      if empty(errors) 
+        call go#list#Window(l:listtype, len(errors))
+      else
+        cbottom
+      endif
+
+      call go#util#EchoSuccess("linting finished")
+    endfunction
+
     let l:spawn_args = {
           \ 'cmd': cmd,
+          \ 'callback': function("s:callback"),
+          \ 'exit_callback': function("s:exit_callback"),
           \ }
 
+    call go#list#Clean(l:listtype)
+    call setqflist([], 'r', {'title': 'GoMetaLinter'})
+
     call go#util#EchoProgress("linting started ...")
-    call go#job#SpawnContinous(1, l:spawn_args)
+    call go#job#Spawn(1, l:spawn_args)
     return
   endif
+
+  " we add deadline only for sync mode
+  let cmd += ["--deadline=" . g:go_metalinter_deadline]
+
+  let meta_command = join(cmd, " ")
 
   let out = go#tool#ExecuteInDir(meta_command)
 
