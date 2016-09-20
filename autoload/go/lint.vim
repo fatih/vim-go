@@ -66,7 +66,7 @@ function! go#lint#Gometa(autosave, ...) abort
       copen
     endfunction
 
-    function! s:exit_callback(job, exit_status) closure
+    function! s:close_cb(chan) closure
       let errors = go#list#Get(l:listtype)
       if empty(errors) 
         call go#list#Window(l:listtype, len(errors))
@@ -79,7 +79,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let l:spawn_args = {
           \ 'cmd': cmd,
           \ 'callback': function("s:callback"),
-          \ 'exit_callback': function("s:exit_callback"),
+          \ 'close_cb': function("s:close_cb"),
           \ }
 
     call go#list#Clean(l:listtype)

@@ -36,21 +36,24 @@ function! go#job#Spawn(bang, args)
   endif
 
   func opts.closeHandler(chan) dict
-    if !exists('s:job')
+    if ch_status(a:chan) == "fail"
+      call go#util#EchoError("internal!!! failed to open vim channel")
       return
     endif
 
-    call job_status(s:job) "trigger exitHandler
-    call job_stop(s:job)
-    unlet s:job
-  endfunc
+	  while ch_status(a:chan) == 'buffered'
+	    let l:msg = ch_read(a:chan)
+      call add(self.combined, l:msg)
+	  endwhile
 
-  func opts.exitHandler(job, exit_status) dict
+    let l:job = ch_getjob(a:chan)
+    let l:info = job_info(l:job)
+
     if has_key(self, 'external_cb')
-      call self.external_cb(a:job, a:exit_status, self.combined)
+      call self.external_cb(l:job, l:info.exitval, self.combined)
     endif
 
-    if a:exit_status == 0
+    if l:info.exitval == 0
       call go#list#Clean(0)
       call go#list#Window(0)
       call go#util#EchoSuccess("SUCCESS")
@@ -61,13 +64,13 @@ function! go#job#Spawn(bang, args)
   endfunc
 
   " override exit callback handler if user provided it
-  if has_key(a:args, 'exit_callback')
-    let opts.exitHandler = a:args.exit_callback
+  if has_key(a:args, 'close_cb')
+    let opts.closeHandler = a:args.close_cb
   endif
+
 
   let l:start_args = {
         \	"callback": opts.callbackHandler,
-        \	"exit_cb": opts.exitHandler,
         \	"close_cb": opts.closeHandler,
         \ }
 
@@ -83,9 +86,8 @@ function! go#job#Spawn(bang, args)
     let l:start_args.in_name = l:tmpname
   endif
 
-  let s:job = job_start(a:args.cmd, l:start_args)
+  call job_start(a:args.cmd, l:start_args)
 
-  call job_status(s:job)
   execute cd . fnameescape(dir)
 
   " restore back GOPATH
