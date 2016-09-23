@@ -46,9 +46,11 @@ function! go#coverage#Buffer(bang, ...)
 
   if has('job')
     call go#util#EchoProgress("checking coverage ...")
-    call go#job#Spawn(a:bang, {
+
+    call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
-          \ 'external_cb': function('s:coverage_callback', [l:tmpname]),
+          \ 'custom_cb': function('s:coverage_callback', [l:tmpname]),
+          \ 'bang': a:bang,
           \ })
     return
   endif
@@ -106,9 +108,10 @@ function! go#coverage#Browser(bang, ...)
   let l:tmpname = tempname()
   if has('job')
     call go#util#EchoProgress("opening coverage in browser...")
-    call go#job#Spawn(a:bang, {
+    call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
-          \ 'external_cb': function('s:coverage_browser_callback', [l:tmpname]),
+          \ 'custom_cb': function('s:coverage_browser_callback', [l:tmpname]),
+          \ 'bang': a:bang,
           \ })
     return
   endif
@@ -267,6 +270,34 @@ endfunction
 " ---------------------
 " | Vim job callbacks |
 " ---------------------
+"
+function s:coverage_job(args)
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
+  let callbacks = go#job#Spawn(a:args)
+
+  let start_options = {
+        \ 'callback': callbacks.callback,
+        \ 'close_cb': callbacks.close_cb,
+        \ }
+
+  " modify GOPATH if needed
+  let old_gopath = $GOPATH
+  let $GOPATH = go#path#Detect()
+
+  " pre start
+  let dir = getcwd()
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let jobdir = fnameescape(expand("%:p:h"))
+  execute cd . jobdir
+
+  call job_start(a:args.cmd, start_options)
+
+  " post start
+  execute cd . fnameescape(dir)
+  let $GOPATH = old_gopath
+endfunction
 
 " coverage_callback is called when the coverage execution is finished
 function! s:coverage_callback(coverfile, job, exit_status, data)
@@ -320,5 +351,6 @@ function! s:coverage_browser_handler(job, exit_status, data)
   call delete(l:tmpname)
   unlet s:coverage_browser_handler_jobs[a:job.id]
 endfunction
+
 
 " vim: sw=2 ts=2 et

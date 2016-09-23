@@ -52,39 +52,8 @@ function! go#lint#Gometa(autosave, ...) abort
   endif
 
   if has('job') && has('lambda')
-    let l:listtype = go#list#Type("quickfix")
-    let l:errformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
-
-    function! s:callback(chan, msg) closure
-      let old_errorformat = &errorformat
-      let &errorformat = l:errformat
-      caddexpr a:msg
-      let &errorformat = old_errorformat
-
-      " TODO(arslan): cursor still jumps to first error even If I don't want
-      " it. Seems like there is a regression somewhere, but not sure where.
-      copen
-    endfunction
-
-    function! s:close_cb(chan) closure
-      let errors = go#list#Get(l:listtype)
-      if empty(errors) 
-        call go#list#Window(l:listtype, len(errors))
-      endif
-
-      " clean 'linting started ...' msg
-      echo 
-    endfunction
-
-    let l:spawn_args = {
-          \ 'cmd': cmd,
-          \ 'callback': function("s:callback"),
-          \ 'close_cb': function("s:close_cb"),
-          \ }
-
-    call go#list#Clean(l:listtype)
     call go#util#EchoProgress("linting started ...")
-    call go#job#Spawn(1, l:spawn_args)
+    call s:lint_job({'cmd': cmd})
     return
   endif
 
@@ -242,6 +211,45 @@ function! go#lint#ToggleMetaLinterAutoSave()
 
   let g:go_metalinter_autosave = 1
   call go#util#EchoProgress("auto metalinter enabled")
+endfunction
+
+function s:lint_job(args)
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
+  let l:listtype = go#list#Type("quickfix")
+  let l:errformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
+
+  function! s:callback(chan, msg) closure
+    let old_errorformat = &errorformat
+    let &errorformat = l:errformat
+    caddexpr a:msg
+    let &errorformat = old_errorformat
+
+    " TODO(arslan): cursor still jumps to first error even If I don't want
+    " it. Seems like there is a regression somewhere, but not sure where.
+    copen
+  endfunction
+
+  function! s:close_cb(chan) closure
+    let errors = go#list#Get(l:listtype)
+    if empty(errors) 
+      call go#list#Window(l:listtype, len(errors))
+    endif
+
+  call go#util#EchoSuccess("linting finished")
+  endfunction
+
+  let start_options = {
+        \ 'callback': function("s:callback"),
+        \ 'close_cb': function("s:close_cb"),
+        \ }
+
+  call job_start(a:args.cmd, start_options)
+
+  call go#list#Clean(l:listtype)
+  call go#util#EchoProgress("linting started ...")
+
 endfunction
 
 " vim: sw=2 ts=2 et

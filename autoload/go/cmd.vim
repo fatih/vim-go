@@ -21,9 +21,11 @@ function! go#cmd#Build(bang, ...)
   let args = ["build"]  + goargs + [".", "errors"]
 
   if has('job')
-    " use vim's job functionality to call it asynchronously
     call go#util#EchoProgress("building dispatched ...")
-    call go#job#Spawn(a:bang, {'cmd': ['go'] + args})
+    call s:cmd_job({
+          \ 'cmd': ['go'] + args,
+          \ 'bang': a:bang,
+          \})
     return
   elseif has('nvim')
     " if we have nvim, call it asynchronously and return early ;)
@@ -154,9 +156,11 @@ function! go#cmd#Install(bang, ...)
     " escape all shell arguments before we pass it to make
     let goargs = go#util#Shelllist(goargs, 1)
 
-    " use vim's job functionality to call it asynchronously
     call go#util#EchoProgress("installing dispatched ...")
-    call go#job#Spawn(a:bang, {'cmd': ['go', 'install'] + goargs})
+    call s:cmd_job({
+          \ 'cmd': ['go', 'install'] + goargs,
+          \ 'bang': a:bang,
+          \})
     return
   endif
 
@@ -233,12 +237,16 @@ function! go#cmd#Test(bang, compile, ...)
     " use vim's job functionality to call it asynchronously
     call go#util#EchoProgress("testing dispatched ...")
 
-    let spawn_args = {'cmd': ['go'] + args}
+    let job_args = {
+          \ 'cmd': ['go'] + args,
+          \ 'bang': a:bang,
+          \ }
+
     if a:compile
-      let spawn_args['external_cb'] = function('s:test_compile', [compile_file])
+      let job_args['custom_cb'] = function('s:test_compile', [compile_file])
     endif
 
-    call go#job#Spawn(a:bang, spawn_args)
+    call s:cmd_job(job_args)
     return
   elseif has('nvim')
     " use nvims's job functionality
@@ -371,7 +379,36 @@ endfunction
 " | Vim job callbacks |
 " ---------------------
 
-" test_compile is called when a GoTestCompile is called
+function s:cmd_job(args)
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
+  let callbacks = go#job#Spawn(a:args)
+
+  let start_options = {
+        \ 'callback': callbacks.callback,
+        \ 'close_cb': callbacks.close_cb,
+        \ }
+
+  " modify GOPATH if needed
+  let old_gopath = $GOPATH
+  let $GOPATH = go#path#Detect()
+
+  " pre start
+  let dir = getcwd()
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let jobdir = fnameescape(expand("%:p:h"))
+  execute cd . jobdir
+
+  call job_start(a:args.cmd, start_options)
+
+  " post start
+  execute cd . fnameescape(dir)
+  let $GOPATH = old_gopath
+endfunction
+
+
+" test_compile is called when a GoTestCompile call is finished
 function! s:test_compile(test_file, job, exit_status, data)
   call delete(a:test_file)
 endfunction

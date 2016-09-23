@@ -58,7 +58,7 @@ function! go#def#Jump(mode)
     if has('job')
       let l:spawn_args = {
             \ 'cmd': cmd,
-            \ 'external_cb': function('s:jump_to_declaration_cb', [a:mode, bin_name]),
+            \ 'custom_cb': function('s:jump_to_declaration_cb', [a:mode, bin_name]),
             \ }
 
       if &modified
@@ -66,8 +66,8 @@ function! go#def#Jump(mode)
       endif
 
       call go#util#EchoProgress("searching declaration ...")
-      call go#job#Spawn(1, l:spawn_args)
-      let $GOPATH = old_gopath
+
+      call s:def_job(spawn_args)
       return
     endif
 
@@ -280,6 +280,24 @@ function! go#def#Stack(...)
   else
     call go#util#EchoError("invalid location. Try :GoDefStack to see the list of valid entries")
   endif
+endfunction
+
+function s:def_job(args)
+  let callbacks = go#job#Spawn(a:args)
+
+  let start_options = {
+        \ 'callback': callbacks.callback,
+        \ 'close_cb': callbacks.close_cb,
+        \ }
+
+  if &modified
+    let l:tmpname = tempname()
+    call writefile(split(a:args.input, "\n"), l:tmpname, "b")
+    let l:start_options.in_io = "file"
+    let l:start_options.in_name = l:tmpname
+  endif
+
+  call job_start(a:args.cmd, start_options)
 endfunction
 
 " vim: sw=2 ts=2 et

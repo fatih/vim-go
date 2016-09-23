@@ -1,56 +1,35 @@
-function! go#job#Spawn(bang, args)
-  " autowrite is not enabled for jobs
-  call go#cmd#autowrite()
-
-  " modify GOPATH if needed
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
-
-  " execute go build in the files directory
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
-  let jobdir = fnameescape(expand("%:p:h"))
-  execute cd . jobdir
-
-  let opts = {
-        \ 'dir': dir,
-        \ 'bang': a:bang, 
+" Spawn returns callbacks to be used with job_start.  It's abstracted to be
+" used with various go command, such as build, test, install, etc.. This avoid
+" us to write the same callback over and over for some commands. It's fully
+" customizable so each command can change it to it's own logic.
+function go#job#Spawn(args)
+  let cbs = {
         \ 'winnr': winnr(),
-        \ 'combined' : [],
+        \ 'dir': getcwd(),
+        \ 'jobdir': fnameescape(expand("%:p:h")),
+        \ 'messages': [],
         \ }
 
-
-  func opts.callbackHandler(chan, msg) dict
-    " contains both stderr and stdout
-    call add(self.combined, a:msg)
-  endfunc
-
-  " add external callback to be called if async job is finished
-  if has_key(a:args, 'external_cb')
-    let opts.external_cb = a:args.external_cb
+  if has_key(a:args, 'bang')
+    let cbs.bang = a:args.bang
   endif
 
-  " override callback handler if user provided it
-  if has_key(a:args, 'callback')
-    let opts.callbackHandler = a:args.callback
+  " add final callback to be called if async job is finished
+  " The signature should be in form: func(job, exit_status, messages)
+  if has_key(a:args, 'custom_cb')
+    let cbs.custom_cb = a:args.custom_cb
   endif
 
-  func opts.closeHandler(chan) dict
-    if ch_status(a:chan) == "fail"
-      call go#util#EchoError("internal!!! failed to open vim channel")
-      return
-    endif
+  function cbs.callback(chan, msg) dict
+    call add(self.messages, a:msg)
+  endfunction
 
-	  while ch_status(a:chan) == 'buffered'
-	    let l:msg = ch_read(a:chan)
-      call add(self.combined, l:msg)
-	  endwhile
-
+  function cbs.close_cb(chan) dict
     let l:job = ch_getjob(a:chan)
     let l:info = job_info(l:job)
 
-    if has_key(self, 'external_cb')
-      call self.external_cb(l:job, l:info.exitval, self.combined)
+    if has_key(self, 'custom_cb')
+      call self.custom_cb(l:job, l:info.exitval, self.messages)
     endif
 
     if l:info.exitval == 0
@@ -60,38 +39,49 @@ function! go#job#Spawn(bang, args)
       return
     endif
 
-    call s:show_errors(self.bang, self.combined, self.dir, self.winnr)
-  endfunc
+    call self.show_errors()
+  endfunction
 
-  " override exit callback handler if user provided it
+  function cbs.show_errors() dict
+    call go#util#EchoError("FAILED")
+
+    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    try
+      execute cd self.jobdir
+      let errors = go#tool#ParseErrors(self.messages)
+      let errors = go#tool#FilterValids(errors)
+    finally
+      execute cd . fnameescape(self.dir)
+    endtry
+
+    if !len(errors)
+      " failed to parse errors, output the original content
+      call go#util#EchoError(join(self.messages, " "))
+      call go#util#EchoError(self.dir)
+      return
+    endif
+
+    if self.winnr == winnr()
+      let l:listtype = "quickfix"
+      call go#list#Populate(l:listtype, errors)
+      call go#list#Window(l:listtype, len(errors))
+      if !empty(errors) && !self.bang
+        call go#list#JumpToFirst(l:listtype)
+      endif
+    endif
+  endfunction
+
+  " override callback handler if user provided it
+  if has_key(a:args, 'callback')
+    let cbs.callback = a:args.callback
+  endif
+
+  " override close callback handler if user provided it
   if has_key(a:args, 'close_cb')
-    let opts.closeHandler = a:args.close_cb
+    let cbs.close_cb = a:args.close_cb
   endif
 
-
-  let l:start_args = {
-        \	"callback": opts.callbackHandler,
-        \	"close_cb": opts.closeHandler,
-        \ }
-
-  " Emulate the 'input' arg to the system() call:
-  " When {input} is given and is a string this string is written 
-  " to a file and passed as stdin to the command.  The string is 
-  " written as-is, you need to take care of using the correct line 
-  " separators yourself.
-  if has_key(a:args, 'input')
-    let l:tmpname = tempname()
-    call writefile(split(a:args.input, "\n"), l:tmpname, "b")
-    let l:start_args.in_io = "file"
-    let l:start_args.in_name = l:tmpname
-  endif
-
-  call job_start(a:args.cmd, l:start_args)
-
-  execute cd . fnameescape(dir)
-
-  " restore back GOPATH
-  let $GOPATH = old_gopath
+  return cbs
 endfunction
 
 function! go#job#Buffer(bang, args)
