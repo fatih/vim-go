@@ -1,6 +1,6 @@
 ## Unplanned
 
-* We have now a [logo for vim-go](https://cloud.githubusercontent.com/assets/438920/18828017/99cc7a34-83de-11e6-8e45-c741c98e368e.png?raw=true)! Thanks to @egonelbre for his work on this. 
+* We have now a [logo for vim-go](https://github.com/fatih/vim-go/blob/master/assets/vim-go.png)! Thanks to @egonelbre for his work on this. 
 
 BUG FIXES:
 
