@@ -1,7 +1,7 @@
 # vim-go
 
 <p align="center">
-  <img style="float: right;" src="https://cloud.githubusercontent.com/assets/438920/18828017/99cc7a34-83de-11e6-8e45-c741c98e368e.png?raw=true" alt="Vim-go logo"/>
+  <img style="float: right;" src="assets/vim-go.png" alt="Vim-go logo"/>
 </p>
 
 Go (golang) support for Vim, which comes with pre-defined sensible settings (like
@@ -52,9 +52,9 @@ disabled/enabled easily.
   in their own new terminal. (beta)
 * Alternate between implementation and test code with `:GoAlternate`
 
-Checkout the official [tutorial](https://github.com/fatih/vim-go-tutorial) 
-that goes literally over all features and shows many tips and tricks. It shows 
-how to install vim-go and explains many unknown use cases. Recommended for 
+Checkout the official [tutorial](https://github.com/fatih/vim-go-tutorial)
+that goes literally over all features and shows many tips and tricks. It shows
+how to install vim-go and explains many unknown use cases. Recommended for
 beginners as well as advanced users: https://github.com/fatih/vim-go-tutorial
 
 ## Install
@@ -292,7 +292,7 @@ other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
 ## Donation
 
 People have asked for this for a long time, now you can be a fully supporter by
-[being a patron](https://www.patreon.com/fatih)! 
+[being a patron](https://www.patreon.com/fatih)!
 
 By being a patron, you are enabling vim-go to grow and mature, helping me to
 invest in bug fixes, new documentation, and improving both current and future
