@@ -1,5 +1,7 @@
 ## Unplanned
 
+* We have now a [logo for vim-go](https://cloud.githubusercontent.com/assets/438920/18828017/99cc7a34-83de-11e6-8e45-c741c98e368e.png?raw=true)! Thanks to @egonelbre for his work on this. 
+
 BUG FIXES:
 
 * Change back nil and iota highlighting color to the old type [gh-1049]
