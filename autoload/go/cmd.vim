@@ -19,7 +19,7 @@ function! go#cmd#Build(bang, ...)
 
   " escape all shell arguments before we pass it to make
   if !has('nvim')
-  let goargs = go#util#Shelllist(goargs, 1)
+    let goargs = go#util#Shelllist(goargs, 1)
   endif
   " create our command arguments. go build discards any results when it
   " compiles multiple packages. So we pass the `errors` package just as an
