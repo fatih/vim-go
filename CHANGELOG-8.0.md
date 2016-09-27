@@ -18,6 +18,9 @@ FEATURES:
   `:GoMetaLinterAutoSaveToggle` (temporary) or add `let
   g:go_metalinter_autosave = 1` (persistent) to your virmc).
 
+* doc.vim: :GoDocBrowser is now capable to to understand the identifier under
+  the cursor
+
 BACKWARDS INCOMPATIBILITIES:
 
 * remove vim-dispatch and vimproc.vim support. vim 8.0 has now the necessary
