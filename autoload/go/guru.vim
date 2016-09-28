@@ -136,7 +136,7 @@ func! s:sync_guru(args) abort
   if has_key(a:args, 'custom_parse')
     call a:args.custom_parse(go#util#ShellError(), out)
   else
-    call s:loclistSecond(go#util#ShellError(), out)
+    call s:parse_guru_output(go#util#ShellError(), out)
   endif
 
   return out
@@ -171,7 +171,7 @@ func! s:async_guru(args) abort
     if has_key(a:args, 'custom_parse')
       call a:args.custom_parse(l:info.exitval, out)
     else
-      call s:loclistSecond(l:info.exitval, out)
+      call s:parse_guru_output(l:info.exitval, out)
     endif
   endfunction
 
@@ -263,13 +263,7 @@ function! go#guru#Callers(selected)
         \ 'needs_scope': 1,
         \ }
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show path from callgraph root to selected function
@@ -450,7 +444,7 @@ endfunction
 " We discard line2 and col2 for the first errorformat, because it's not
 " useful and location only has the ability to show one line and column
 " number
-func! s:loclistSecond(exit_val, output)
+func! s:parse_guru_output(exit_val, output)
   if a:exit_val && len(a:output) == 1
     call go#util#EchoError(a:output[0])
     return
