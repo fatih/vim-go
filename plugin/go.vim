@@ -152,7 +152,7 @@ endfunction
 function! s:auto_sameids()
   " GoSameId automatic update
   if get(g:, "go_auto_sameids", 0)
-    call go#guru#SameIds(-1)
+    call go#guru#SameIds()
   endif
 endfunction
 

@@ -1,7 +1,7 @@
 "  guru.vim -- Vim integration for the Go guru.
 
-" guru_cmd returns a dict that contains the command to execute guru. Function
-" arguments are
+" guru_cmd returns a dict that contains the command to execute guru. option
+" is dict with following options:
 "  mode        : guru mode, such as 'implements'
 "  format      : output format, either 'plain' or 'json'
 "  needs_scope : if 1, adds the current package to the scope
@@ -9,13 +9,18 @@
 "                offset under the cursor
 " example output:
 "  {'cmd' : ['guru', '-json', 'implements', 'demo/demo.go:#66']}
-func! s:guru_cmd(mode, format, selected, needs_scope) range abort
+func! s:guru_cmd(args) range abort
+  let mode = a:args.mode
+  let format = a:args.format
+  let needs_scope = a:args.needs_scope
+  let selected = a:args.selected
+
   let result = {}
   let dirname = expand('%:p:h')
   let pkg = go#package#ImportPath(dirname)
 
   " this is important, check it!
-  if pkg == -1 && a:needs_scope
+  if pkg == -1 && needs_scope
     return {'err': "current directory is not inside of a valid GOPATH"}
   endif
 
@@ -33,12 +38,12 @@ func! s:guru_cmd(mode, format, selected, needs_scope) range abort
   if &modified
     let sep = go#util#LineEnding()
     let content  = join(getline(1, '$'), sep )
-    let stdin_content = filename . "\n" . strlen(content) . "\n" . content
+    let result.stdin_content = filename . "\n" . strlen(content) . "\n" . content
     call add(cmd, "-modified")
   endif
 
   " enable outputting in json format
-  if a:format == "json" 
+  if format == "json" 
     call add(cmd, "-json")
   endif
 
@@ -52,7 +57,7 @@ func! s:guru_cmd(mode, format, selected, needs_scope) range abort
   " some modes require scope to be defined (such as callers). For these we
   " choose a sensible setting, which is using the current file's package
   let scopes = []
-  if a:needs_scope
+  if needs_scope
     let scopes = [pkg]
   endif
 
@@ -86,7 +91,7 @@ func! s:guru_cmd(mode, format, selected, needs_scope) range abort
   endif
 
   let pos = printf("#%s", go#util#OffsetCursor())
-  if a:selected != -1
+  if selected != -1
     " means we have a range, get it
     let pos1 = go#util#Offset(line("'<"), col("'<"))
     let pos2 = go#util#Offset(line("'>"), col("'>"))
@@ -94,36 +99,24 @@ func! s:guru_cmd(mode, format, selected, needs_scope) range abort
   endif
 
   let filename .= ':'.pos
-  call extend(cmd, [a:mode, filename])
+  call extend(cmd, [mode, filename])
 
   let result.cmd = cmd
   return result
 endfunction
 
-func! s:RunGuru(mode, format, selected, needs_scope) abort
-  let result = s:guru_cmd(a:mode, a:format, a:selected, a:needs_scope)
+" run_guru runs guru in sync mode with the given arguments
+func! s:run_guru(args) abort
+  let result = s:guru_cmd(a:args)
   if has_key(result, 'err')
     return result
   endif
 
-  if a:needs_scope
+  if a:args.needs_scope
     call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
-  elseif a:mode !=# 'what'
+  elseif a:args.mode !=# 'what'
     " the query might take time, let us give some feedback
     call go#util#EchoProgress("analysing ...")
-  endif
-
-  if has('job')
-    let l:spawn_args = {
-          \ 'cmd': result.cmd,
-          \ }
-
-    if &modified
-      let l:spawn_args.input = stdin_content
-    endif
-
-    let job = s:guru_job(spawn_args)
-    return {'job': job}
   endif
 
   let old_gopath = $GOPATH
@@ -132,7 +125,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) abort
   " run, forrest run!!!
   let command = join(result.cmd, " ")
   if &modified
-    let out = go#util#System(command, stdin_content)
+    let out = go#util#System(command, result.stdin_content)
   else
     let out = go#util#System(command)
   endif
@@ -146,14 +139,78 @@ func! s:RunGuru(mode, format, selected, needs_scope) abort
   return {'out': out}
 endfunc
 
+" run_guru_job runs guru in async mode with the given arguments
+func! s:run_guru_job(args) abort
+  if !has('job')
+    return {'err': "job feature is not available"}
+  endif
+
+  let result = s:guru_cmd(a:args)
+  if has_key(result, 'err')
+    return result
+  endif
+
+  if a:args.needs_scope
+    call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
+  elseif a:args.mode !=# 'what'
+    " the query might take time, let us give some feedback
+    call go#util#EchoProgress("analysing ...")
+  endif
+
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
+  let messages = []
+  function! s:callback(chan, msg) closure
+    call add(messages, a:msg)
+  endfunction
+
+  function! s:close_cb(chan) closure
+    let l:job = ch_getjob(a:chan)
+    let l:info = job_info(l:job)
+
+    " only print guru call errors, not build errors. Build errors are parsed
+    " below and showed in the quickfix window
+    if l:info.exitval != 0 && len(messages) == 1
+      call go#util#EchoError(messages[0])
+      return
+    endif
+
+    let old_errorformat = &errorformat
+    let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
+    call go#list#ParseFormat("locationlist", errformat, messages)
+
+    let errors = go#list#Get("locationlist")
+    call go#list#Window("locationlist", len(errors))
+  endfunction
+
+  let start_options = {
+        \ 'callback': function("s:callback"),
+        \ 'close_cb': function("s:close_cb"),
+        \ }
+
+  if &modified
+    let l:tmpname = tempname()
+    call writefile(split(result.stdin_content, "\n"), l:tmpname, "b")
+    let l:start_options.in_io = "file"
+    let l:start_options.in_name = l:tmpname
+  endif
+
+  let job = job_start(result.cmd, start_options)
+  return {'job': job}
+endfunc
+
 " Report the possible constants, global variables, and concrete types that may
 " appear in a value of type error
 function! go#guru#Whicherrs(selected)
-  let out = s:RunGuru('whicherrs', 'plain', a:selected, 1)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'whicherrs',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -169,11 +226,16 @@ endfunction
 
 " Show 'implements' relation for selected package
 function! go#guru#Implements(selected)
-  let out = s:RunGuru('implements', 'plain', a:selected, 1)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'implements',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
+  if has('job') | return s:run_guru_job(args) | endif
+
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -184,11 +246,14 @@ endfunction
 
 " Describe selected syntax: definition, methods, etc
 function! go#guru#Describe(selected)
-  let out = s:RunGuru('describe', 'plain', a:selected, 0)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'describe',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -199,11 +264,14 @@ endfunction
 
 " Show possible targets of selected function call
 function! go#guru#Callees(selected)
-  let out = s:RunGuru('callees', 'plain', a:selected, 1)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'callees',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -214,11 +282,14 @@ endfunction
 
 " Show possible callers of selected function
 function! go#guru#Callers(selected)
-  let out = s:RunGuru('callers', 'plain', a:selected, 1)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'callers',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -229,11 +300,14 @@ endfunction
 
 " Show path from callgraph root to selected function
 function! go#guru#Callstack(selected)
-  let out = s:RunGuru('callstack', 'plain', a:selected, 1)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'callstack',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -250,11 +324,14 @@ function! go#guru#Freevars(selected)
     return
   endif
 
-  let out = s:RunGuru('freevars', 'plain', a:selected, 0)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'freevars',
+        \ 'format': 'plain',
+        \ 'selected': 1,
+        \ 'needs_scope': 0,
+        \ }
 
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -265,11 +342,13 @@ endfunction
 
 " Show send/receive corresponding to selected channel op
 function! go#guru#ChannelPeers(selected)
-  let out = s:RunGuru('peers', 'plain', a:selected, 1)
-  if has_key(out, 'job')
-    return 
-  endif
-
+  let args = {
+        \ 'mode': 'peers',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -280,11 +359,14 @@ endfunction
 
 " Show all refs to entity denoted by selected identifier
 function! go#guru#Referrers(selected)
-  let out = s:RunGuru('referrers', 'plain', a:selected, 0)
-  if has_key(out, 'job')
-    return 
-  endif
+  let args = {
+        \ 'mode': 'referrers',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 0,
+        \ }
 
+  let out = s:run_guru(args)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -293,41 +375,11 @@ function! go#guru#Referrers(selected)
   call s:loclistSecond(out.out)
 endfunction
 
-function! go#guru#What(selected)
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131        
-  if !exists("*json_decode")
-    return {'err': "GoWhat is not supported due old version of Vim/Neovim"}
-  endif
-
-  let out = s:RunGuru('what', 'json', a:selected, 0)
-  if has_key(out, 'err')
-    return {'err': out.err}
-  endif
-
-  let result = json_decode(out.out)
-
-  if type(result) != type({})
-    return {'err': "malformed output from guru"}
-  endif
-
-  return result
+function! go#guru#SameIdsTimer()
+  call timer_start(200, function('go#guru#SameIds'), {'repeat': -1})
 endfunction
 
-function! go#guru#AutoToogleSameIds()
-  if get(g:, "go_auto_sameids", 0)
-    call go#util#EchoProgress("sameids auto highlighting disabled")
-    call go#guru#ClearSameIds()
-    let g:go_auto_sameids = 0
-    return
-  endif
-
-  call go#util#EchoSuccess("sameids auto highlighting enabled")
-  let g:go_auto_sameids = 1
-endfunction
-
-function! go#guru#SameIds(selected)
+function! go#guru#SameIds()
   " we use matchaddpos() which was introduce with 7.4.330, be sure we have
   " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
   if !exists("*matchaddpos")
@@ -335,12 +387,37 @@ function! go#guru#SameIds(selected)
     return
   endif
 
-  let result = go#guru#What(a:selected)
+  " json_encode() and friends are introduced with this patch (7.4.1304)
+  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
+  " nvim: https://github.com/neovim/neovim/pull/4131        
+  if !exists("*json_decode")
+    call go#util#EchoError("GoSameIds is not supported due old version of Vim/Neovim")
+    return
+  endif
 
+  let args = {
+        \ 'mode': 'what',
+        \ 'format': 'json',
+        \ 'selected': -1,
+        \ 'needs_scope': 0,
+        \ }
+
+  let out = s:run_guru(args)
+  if has_key(out, 'err')
+    call go#util#EchoError(out.err)
+    return
+  endif
+
+  call s:same_ids_highlight(out.out)
+  return
+endfunction
+
+function! s:same_ids_highlight(output)
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
-  if has_key(result, 'err') && !get(g:, 'go_auto_sameids', 0)
-    " only echo if it's called via `:GoSameIds, but not if it's in automode
-    call go#util#EchoError(result.err)
+
+  let result = json_decode(a:output)
+  if type(result) != v:t_dict && !get(g:, 'go_auto_sameids', 0)
+    call go#util#EchoError("malformed output from guru")
     return
   endif
 
@@ -400,6 +477,22 @@ function! go#guru#ToggleSameIds(selected)
   endif
 endfunction
 
+function! go#guru#AutoToogleSameIds()
+  if get(g:, "go_auto_sameids", 0)
+    call go#util#EchoProgress("sameids auto highlighting disabled")
+    call go#guru#ClearSameIds()
+    let g:go_auto_sameids = 0
+    return
+  endif
+
+  call go#util#EchoSuccess("sameids auto highlighting enabled")
+  let g:go_auto_sameids = 1
+endfunction
+
+
+""""""""""""""""""""""""""""""""""""""""
+"" HELPER FUNCTIONS
+""""""""""""""""""""""""""""""""""""""""
 
 " This uses Vim's errorformat to parse the output from Guru's 'plain output
 " and put it into location list. I believe using errorformat is much more
@@ -463,50 +556,5 @@ function! go#guru#Tags(...)
     call go#util#EchoSuccess("current guru tags: ". a:1)
   endif
 endfunction
-
-function s:guru_job(args)
-  " autowrite is not enabled for jobs
-  call go#cmd#autowrite()
-
-  let messages = []
-  function! s:callback(chan, msg) closure
-    call add(messages, a:msg)
-  endfunction
-
-  function! s:close_cb(chan) closure
-    let l:job = ch_getjob(a:chan)
-    let l:info = job_info(l:job)
-
-    " only print guru call errors, not build errors. Build errors are parsed
-    " below and showed in the quickfix window
-    if l:info.exitval != 0 && len(messages) == 1
-      call go#util#EchoError(messages[0])
-      return
-    endif
-
-    let old_errorformat = &errorformat
-    let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-    call go#list#ParseFormat("locationlist", errformat, messages)
-
-    let errors = go#list#Get("locationlist")
-    call go#list#Window("locationlist", len(errors))
-  endfunction
-
-  let start_options = {
-        \ 'callback': function("s:callback"),
-        \ 'close_cb': function("s:close_cb"),
-        \ }
-
-  if &modified
-    let l:tmpname = tempname()
-    call writefile(split(a:args.input, "\n"), l:tmpname, "b")
-    let l:start_options.in_io = "file"
-    let l:start_options.in_name = l:tmpname
-  endif
-
-  let job = job_start(a:args.cmd, start_options)
-  return job
-endfunction
-
 
 " vim: sw=2 ts=2 et
