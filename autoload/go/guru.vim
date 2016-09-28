@@ -390,7 +390,7 @@ function! s:same_ids_highlight(exit_val, output)
   if get(g:, "go_auto_sameids", 0)
     " re-apply SameIds at the current cursor position at the time the buffer
     " is redisplayed: e.g. :edit, :GoRename, etc.
-    autocmd BufWinEnter <buffer> nested call go#guru#SameIds(-1)
+    autocmd BufWinEnter <buffer> nested call go#guru#SameIds()
   endif
 endfunction
 
@@ -408,11 +408,11 @@ function! go#guru#ClearSameIds()
   endif
 endfunction
 
-function! go#guru#ToggleSameIds(selected)
+function! go#guru#ToggleSameIds()
   if len(getmatches()) != 0 
     call go#guru#ClearSameIds()
   else
-    call go#guru#SameIds(a:selected)
+    call go#guru#SameIds()
   endif
 endfunction
 
