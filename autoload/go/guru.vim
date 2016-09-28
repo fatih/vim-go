@@ -105,11 +105,12 @@ func! s:guru_cmd(args) range abort
   return result
 endfunction
 
-" run_guru runs guru in sync mode with the given arguments
-func! s:run_guru(args) abort
+" sync_guru runs guru in sync mode with the given arguments
+func! s:sync_guru(args) abort
   let result = s:guru_cmd(a:args)
   if has_key(result, 'err')
-    return result
+    call go#util#EchoError(result.err)
+    return -1
   endif
 
   if a:args.needs_scope
@@ -131,23 +132,22 @@ func! s:run_guru(args) abort
   endif
 
   let $GOPATH = old_gopath
-  if go#util#ShellError() != 0
-    " the output contains the error message
-    return {'err' : out}
+
+  if has_key(a:args, 'custom_parse')
+    call a:args.custom_parse(go#util#ShellError(), out)
+  else
+    call s:loclistSecond(go#util#ShellError(), out)
   endif
 
-  return {'out': out}
+  return out
 endfunc
 
-" run_guru_job runs guru in async mode with the given arguments
-func! s:run_guru_job(args) abort
-  if !has('job')
-    return {'err': "job feature is not available"}
-  endif
-
+" async_guru runs guru in async mode with the given arguments
+func! s:async_guru(args) abort
   let result = s:guru_cmd(a:args)
   if has_key(result, 'err')
-    return result
+    call go#util#EchoError(result.err)
+    return
   endif
 
   if a:args.needs_scope
@@ -156,9 +156,6 @@ func! s:run_guru_job(args) abort
     " the query might take time, let us give some feedback
     call go#util#EchoProgress("analysing ...")
   endif
-
-  " autowrite is not enabled for jobs
-  call go#cmd#autowrite()
 
   let messages = []
   function! s:callback(chan, msg) closure
@@ -169,19 +166,13 @@ func! s:run_guru_job(args) abort
     let l:job = ch_getjob(a:chan)
     let l:info = job_info(l:job)
 
-    " only print guru call errors, not build errors. Build errors are parsed
-    " below and showed in the quickfix window
-    if l:info.exitval != 0 && len(messages) == 1
-      call go#util#EchoError(messages[0])
-      return
+    let out = join(messages, "\n")
+
+    if has_key(a:args, 'custom_parse')
+      call a:args.custom_parse(l:info.exitval, out)
+    else
+      call s:loclistSecond(l:info.exitval, out)
     endif
-
-    let old_errorformat = &errorformat
-    let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-    call go#list#ParseFormat("locationlist", errformat, messages)
-
-    let errors = go#list#Get("locationlist")
-    call go#list#Window("locationlist", len(errors))
   endfunction
 
   let start_options = {
@@ -196,32 +187,16 @@ func! s:run_guru_job(args) abort
     let l:start_options.in_name = l:tmpname
   endif
 
-  let job = job_start(result.cmd, start_options)
-  return {'job': job}
+  return job_start(result.cmd, start_options)
 endfunc
 
-" Report the possible constants, global variables, and concrete types that may
-" appear in a value of type error
-function! go#guru#Whicherrs(selected)
-  let args = {
-        \ 'mode': 'whicherrs',
-        \ 'format': 'plain',
-        \ 'selected': a:selected,
-        \ 'needs_scope': 1,
-        \ }
-
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
+" run_guru runs the given guru argument
+function! s:run_guru(args)
+  if has('job')
+    return s:async_guru(a:args)
   endif
 
-  if empty(out.out)
-    call go#util#EchoSuccess("no error variables found. Try to change the scope with :GoGuruScope")
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  return s:sync_guru(a:args)
 endfunction
 
 " Show 'implements' relation for selected package
@@ -233,15 +208,26 @@ function! go#guru#Implements(selected)
         \ 'needs_scope': 1,
         \ }
 
-  if has('job') | return s:run_guru_job(args) | endif
+  call s:run_guru(args)
+endfunction
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+" Report the possible constants, global variables, and concrete types that may
+" appear in a value of type error
+function! go#guru#Whicherrs(selected)
+  let args = {
+        \ 'mode': 'whicherrs',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
-  call s:loclistSecond(out.out)
+
+  " TODO(arslan): handle empty case for both sync/async
+  " if empty(out.out)
+  "   call go#util#EchoSuccess("no error variables found. Try to change the scope with :GoGuruScope")
+  "   return
+  " endif
+  call s:run_guru(args)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
@@ -253,13 +239,7 @@ function! go#guru#Describe(selected)
         \ 'needs_scope': 1,
         \ }
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show possible targets of selected function call
@@ -271,13 +251,7 @@ function! go#guru#Callees(selected)
         \ 'needs_scope': 1,
         \ }
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show possible callers of selected function
@@ -307,13 +281,7 @@ function! go#guru#Callstack(selected)
         \ 'needs_scope': 1,
         \ }
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show free variables of selection
@@ -331,13 +299,7 @@ function! go#guru#Freevars(selected)
         \ 'needs_scope': 0,
         \ }
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show send/receive corresponding to selected channel op
@@ -348,13 +310,8 @@ function! go#guru#ChannelPeers(selected)
         \ 'selected': a:selected,
         \ 'needs_scope': 1,
         \ }
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
 
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
@@ -366,13 +323,7 @@ function! go#guru#Referrers(selected)
         \ 'needs_scope': 0,
         \ }
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 function! go#guru#SameIdsTimer()
@@ -383,7 +334,7 @@ function! go#guru#SameIds()
   " we use matchaddpos() which was introduce with 7.4.330, be sure we have
   " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
   if !exists("*matchaddpos")
-    call go#util#EchoError("GoSameIds is supported with Vim version 7.4-330 or later")
+    call go#util#EchoError("GoSameIds requires 'matchaddpos'. Update your Vim/Neovim version.")
     return
   endif
 
@@ -391,7 +342,7 @@ function! go#guru#SameIds()
   " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
   " nvim: https://github.com/neovim/neovim/pull/4131        
   if !exists("*json_decode")
-    call go#util#EchoError("GoSameIds is not supported due old version of Vim/Neovim")
+    call go#util#EchoError("GoSameIds requires 'json_decode'. Update your Vim/Neovim version.")
     return
   endif
 
@@ -400,18 +351,13 @@ function! go#guru#SameIds()
         \ 'format': 'json',
         \ 'selected': -1,
         \ 'needs_scope': 0,
+        \ 'custom_parse': function('s:same_ids_highlight'),
         \ }
 
-  let out = s:run_guru(args)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:same_ids_highlight(out.out)
+  call s:run_guru(args)
 endfunction
 
-function! s:same_ids_highlight(output)
+function! s:same_ids_highlight(exit_val, output)
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
   let result = json_decode(a:output)
@@ -496,21 +442,24 @@ endfunction
 " This uses Vim's errorformat to parse the output from Guru's 'plain output
 " and put it into location list. I believe using errorformat is much more
 " easier to use. If we need more power we can always switch back to parse it
-" via regex.
-func! s:loclistSecond(output)
-  " backup users errorformat, will be restored once we are finished
-  let old_errorformat = &errorformat
+" via regex. Match two possible styles of errorformats:
+"
+"   'file:line.col-line2.col2: message'
+"   'file:line:col: message'
+"
+" We discard line2 and col2 for the first errorformat, because it's not
+" useful and location only has the ability to show one line and column
+" number
+func! s:loclistSecond(exit_val, output)
+  if a:exit_val && len(a:output) == 1
+    call go#util#EchoError(a:output[0])
+    return
+  endif
 
-  " match two possible styles of errorformats:
-  "
-  "   'file:line.col-line2.col2: message'
-  "   'file:line:col: message'
-  "
-  " We discard line2 and col2 for the first errorformat, because it's not
-  " useful and location only has the ability to show one line and column
-  " number
+  let old_errorformat = &errorformat
   let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-  call go#list#ParseFormat("locationlist", errformat, split(a:output, "\n"))
+  call go#list#ParseFormat("locationlist", errformat, a:output)
+  let &errorformat = old_errorformat
 
   let errors = go#list#Get("locationlist")
   call go#list#Window("locationlist", len(errors))
