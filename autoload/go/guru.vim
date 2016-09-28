@@ -1,12 +1,6 @@
 "  guru.vim -- Vim integration for the Go guru.
 
 func! s:RunGuru(mode, format, selected, needs_scope) range abort
-  "return with a warning if the binary doesn't exist
-  let bin_path = go#path#CheckBinPath("guru") 
-  if empty(bin_path)
-    return {'err': "bin path not found"}
-  endif
-
   let dirname = expand('%:p:h')
   let pkg = go#package#ImportPath(dirname)
 
@@ -15,8 +9,15 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     return {'err': "current directory is not inside of a valid GOPATH"}
   endif
 
-  " start constructing the 'command' variable
-  let command = bin_path
+  "return with a warning if the binary doesn't exist
+  let bin_path = go#path#CheckBinPath("guru") 
+  if empty(bin_path)
+    return {'err': "bin path not found"}
+  endif
+
+
+  " start constructing the command
+  let cmd = [bin_path]
 
   let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
   let in = ""
@@ -24,18 +25,18 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     let sep = go#util#LineEnding()
     let content  = join(getline(1, '$'), sep )
     let in = filename . "\n" . strlen(content) . "\n" . content
-    let command .= " -modified"
+    call add(cmd, "-modified")
   endif
 
   " enable outputting in json format
   if a:format == "json"
-    let command .= " -json"
+    call add(cmd, "-json")
   endif
 
   " check for any tags
   if exists('g:go_guru_tags')
     let tags = get(g:, 'go_guru_tags')
-    let command .= printf(" -tags %s", tags)
+    call extend(cmd, ["-tags", tags])
   endif
 
   " some modes require scope to be defined (such as callers). For these we
@@ -70,7 +71,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
 
     " guru expect a comma-separated list of patterns, construct it
     let l:scope = join(scopes, ",")
-    let command .= printf(" -scope %s", l:scope)
+    call extend(cmd, ["-scope", l:scope])
   endif
 
   let pos = printf("#%s", go#util#OffsetCursor())
@@ -81,9 +82,9 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     let pos = printf("#%s,#%s", pos1, pos2)
   endif
 
-  " this is our final command
   let filename .= ':'.pos
-  let command .= printf(' %s %s', a:mode, shellescape(filename))
+  call extend(cmd, [a:mode, shellescape(filename)])
+  let command = join(cmd, " ")
 
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
