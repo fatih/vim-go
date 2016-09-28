@@ -251,21 +251,23 @@ endfunction
 
 " TODO(arslan): I couldn't parameterize the highlight types. Check if we can
 " simplify the following functions
-
+"
+" NOTE(arslan): echon doesn't work well with redraw, thus echo doesn't print
+" even though we order it. However echom seems to be work fine.
 function! go#util#EchoSuccess(msg)
-  redraw | echon "vim-go: " | echohl Function | echon a:msg | echohl None
+  redraw | echohl Function | echom "vim-go: " . a:msg | echohl None
 endfunction
 
 function! go#util#EchoError(msg)
-  redraw | echon "vim-go: " | echohl ErrorMsg | echon a:msg | echohl None
+  redraw | echohl ErrorMsg | echom "vim-go: " . a:msg | echohl None
 endfunction
 
 function! go#util#EchoWarning(msg)
-  redraw | echon "vim-go: " | echohl WarningMsg | echon a:msg | echohl None
+  redraw | echohl WarningMsg | echom "vim-go: " . a:msg | echohl None
 endfunction
 
 function! go#util#EchoProgress(msg)
-  redraw | echon "vim-go: " | echohl Identifier | echon a:msg | echohl None
+  redraw | echohl Identifier | echom "vim-go: " . a:msg | echohl None
 endfunction
 
 " vim: sw=2 ts=2 et
