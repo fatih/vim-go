@@ -445,8 +445,8 @@ endfunction
 " useful and location only has the ability to show one line and column
 " number
 func! s:parse_guru_output(exit_val, output)
-  if a:exit_val && len(a:output) == 1
-    call go#util#EchoError(a:output[0])
+  if a:exit_val
+    call go#util#EchoError(a:output)
     return
   endif
 
