@@ -1,6 +1,16 @@
 "  guru.vim -- Vim integration for the Go guru.
 
-func! s:RunGuru(mode, format, selected, needs_scope) range abort
+" guru_cmd returns a dict that contains the command to execute guru. Function
+" arguments are
+"  mode        : guru mode, such as 'implements'
+"  format      : output format, either 'plain' or 'json'
+"  needs_scope : if 1, adds the current package to the scope
+"  selected    : if 1, means it's a range of selection, otherwise it picks up the
+"                offset under the cursor
+" example output:
+"  {'cmd' : ['guru', '-json', 'implements', 'demo/demo.go:#66']}
+func! s:guru_cmd(mode, format, selected, needs_scope) range abort
+  let result = {}
   let dirname = expand('%:p:h')
   let pkg = go#package#ImportPath(dirname)
 
@@ -36,6 +46,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   if exists('g:go_guru_tags')
     let tags = get(g:, 'go_guru_tags')
     call extend(cmd, ["-tags", tags])
+    call result.tags = tags
   endif
 
   " some modes require scope to be defined (such as callers). For these we
@@ -70,6 +81,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
 
     " guru expect a comma-separated list of patterns, construct it
     let l:scope = join(scopes, ",")
+    let result.scope = l:scope
     call extend(cmd, ["-scope", l:scope])
   endif
 
@@ -84,20 +96,26 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   let filename .= ':'.pos
   call extend(cmd, [a:mode, filename])
 
+  let result.cmd = cmd
+  return result
+endfunction
+
+func! s:RunGuru(mode, format, selected, needs_scope) abort
+  let result = s:guru_cmd(a:mode, a:format, a:selected, a:needs_scope)
+  if has_key(result, 'err')
+    return result
+  endif
+
   if a:needs_scope
-    call go#util#EchoProgress("analysing with scope ". l:scope . " ...")
+    call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
   elseif a:mode !=# 'what'
     " the query might take time, let us give some feedback
     call go#util#EchoProgress("analysing ...")
   endif
 
   if has('job')
-    " let command = join(cmd, " ")
-    " echo command
-    " return
-
     let l:spawn_args = {
-          \ 'cmd': cmd,
+          \ 'cmd': result.cmd,
           \ }
 
     if &modified
@@ -112,7 +130,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   let $GOPATH = go#path#Detect()
 
   " run, forrest run!!!
-  let command = join(cmd, " ")
+  let command = join(result.cmd, " ")
   if &modified
     let out = go#util#System(command, stdin_content)
   else
