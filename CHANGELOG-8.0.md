@@ -21,6 +21,19 @@ FEATURES:
 * doc.vim: :GoDocBrowser is now capable to to understand the identifier under
   the cursor
 
+* guru.vim: All `guru` commands run asynchronously if Vim 8.0 is being used.
+  Commands:
+	* GoSameIds
+	* GoImplements
+	* GoWhicherrs
+	* GoCallees
+	* GoDescribe
+	* GoCallers
+	* GoCallstack
+	* GoFreevars
+	* GoChannelPeers
+	* GoReferrers
+
 BACKWARDS INCOMPATIBILITIES:
 
 * remove vim-dispatch and vimproc.vim support. vim 8.0 has now the necessary
