@@ -409,7 +409,6 @@ function! go#guru#SameIds()
   endif
 
   call s:same_ids_highlight(out.out)
-  return
 endfunction
 
 function! s:same_ids_highlight(output)
