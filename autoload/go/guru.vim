@@ -15,21 +15,20 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     return {'err': "bin path not found"}
   endif
 
-
   " start constructing the command
   let cmd = [bin_path]
 
   let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
-  let in = ""
+  let stdin_content = ""
   if &modified
     let sep = go#util#LineEnding()
     let content  = join(getline(1, '$'), sep )
-    let in = filename . "\n" . strlen(content) . "\n" . content
+    let stdin_content = filename . "\n" . strlen(content) . "\n" . content
     call add(cmd, "-modified")
   endif
 
   " enable outputting in json format
-  if a:format == "json"
+  if a:format == "json" 
     call add(cmd, "-json")
   endif
 
@@ -67,7 +66,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     let scopes = go#util#StripTrailingSlash(scopes)
 
     " create shell-safe entries of the list
-    let scopes = go#util#Shelllist(scopes)
+    if !has('job') | let scopes = go#util#Shelllist(scopes) | endif
 
     " guru expect a comma-separated list of patterns, construct it
     let l:scope = join(scopes, ",")
@@ -83,11 +82,7 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   endif
 
   let filename .= ':'.pos
-  call extend(cmd, [a:mode, shellescape(filename)])
-  let command = join(cmd, " ")
-
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
+  call extend(cmd, [a:mode, filename])
 
   if a:needs_scope
     call go#util#EchoProgress("analysing with scope ". l:scope . " ...")
@@ -96,9 +91,30 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
     call go#util#EchoProgress("analysing ...")
   endif
 
+  if has('job')
+    " let command = join(cmd, " ")
+    " echo command
+    " return
+
+    let l:spawn_args = {
+          \ 'cmd': cmd,
+          \ }
+
+    if &modified
+      let l:spawn_args.input = stdin_content
+    endif
+
+    let job = s:guru_job(spawn_args)
+    return {'job': job}
+  endif
+
+  let old_gopath = $GOPATH
+  let $GOPATH = go#path#Detect()
+
   " run, forrest run!!!
+  let command = join(cmd, " ")
   if &modified
-    let out = go#util#System(command, in)
+    let out = go#util#System(command, stdin_content)
   else
     let out = go#util#System(command)
   endif
@@ -112,74 +128,14 @@ func! s:RunGuru(mode, format, selected, needs_scope) range abort
   return {'out': out}
 endfunc
 
-" This uses Vim's errorformat to parse the output from Guru's 'plain output
-" and put it into location list. I believe using errorformat is much more
-" easier to use. If we need more power we can always switch back to parse it
-" via regex.
-func! s:loclistSecond(output)
-  " backup users errorformat, will be restored once we are finished
-  let old_errorformat = &errorformat
-
-  " match two possible styles of errorformats:
-  "
-  "   'file:line.col-line2.col2: message'
-  "   'file:line:col: message'
-  "
-  " We discard line2 and col2 for the first errorformat, because it's not
-  " useful and location only has the ability to show one line and column
-  " number
-  let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-  call go#list#ParseFormat("locationlist", errformat, split(a:output, "\n"))
-
-  let errors = go#list#Get("locationlist")
-  call go#list#Window("locationlist", len(errors))
-endfun
-
-
-function! go#guru#Scope(...)
-  if a:0
-    if a:0 == 1 && a:1 == '""'
-      unlet g:go_guru_scope
-      call go#util#EchoSuccess("guru scope is cleared")
-    else
-      let g:go_guru_scope = a:000
-      call go#util#EchoSuccess("guru scope changed to: ". join(a:000, ","))
-    endif
-
-    return
-  endif
-
-  if !exists('g:go_guru_scope')
-    call go#util#EchoError("guru scope is not set")
-  else
-    call go#util#EchoSuccess("current guru scope: ". join(g:go_guru_scope, ","))
-  endif
-endfunction
-
-function! go#guru#Tags(...)
-  if a:0
-    if a:0 == 1 && a:1 == '""'
-      unlet g:go_guru_tags
-      call go#util#EchoSuccess("guru tags is cleared")
-    else
-      let g:go_guru_tags = a:1
-      call go#util#EchoSuccess("guru tags changed to: ". a:1)
-    endif
-
-    return
-  endif
-
-  if !exists('g:go_guru_tags')
-    call go#util#EchoSuccess("guru tags is not set")
-  else
-    call go#util#EchoSuccess("current guru tags: ". a:1)
-  endif
-endfunction
-
 " Report the possible constants, global variables, and concrete types that may
 " appear in a value of type error
 function! go#guru#Whicherrs(selected)
   let out = s:RunGuru('whicherrs', 'plain', a:selected, 1)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -196,6 +152,10 @@ endfunction
 " Show 'implements' relation for selected package
 function! go#guru#Implements(selected)
   let out = s:RunGuru('implements', 'plain', a:selected, 1)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -207,6 +167,10 @@ endfunction
 " Describe selected syntax: definition, methods, etc
 function! go#guru#Describe(selected)
   let out = s:RunGuru('describe', 'plain', a:selected, 0)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -218,6 +182,10 @@ endfunction
 " Show possible targets of selected function call
 function! go#guru#Callees(selected)
   let out = s:RunGuru('callees', 'plain', a:selected, 1)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -229,6 +197,10 @@ endfunction
 " Show possible callers of selected function
 function! go#guru#Callers(selected)
   let out = s:RunGuru('callers', 'plain', a:selected, 1)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -240,6 +212,10 @@ endfunction
 " Show path from callgraph root to selected function
 function! go#guru#Callstack(selected)
   let out = s:RunGuru('callstack', 'plain', a:selected, 1)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -257,6 +233,10 @@ function! go#guru#Freevars(selected)
   endif
 
   let out = s:RunGuru('freevars', 'plain', a:selected, 0)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -268,6 +248,10 @@ endfunction
 " Show send/receive corresponding to selected channel op
 function! go#guru#ChannelPeers(selected)
   let out = s:RunGuru('peers', 'plain', a:selected, 1)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -279,6 +263,10 @@ endfunction
 " Show all refs to entity denoted by selected identifier
 function! go#guru#Referrers(selected)
   let out = s:RunGuru('referrers', 'plain', a:selected, 0)
+  if has_key(out, 'job')
+    return 
+  endif
+
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
     return
@@ -393,5 +381,114 @@ function! go#guru#ToggleSameIds(selected)
     call go#guru#SameIds(a:selected)
   endif
 endfunction
+
+
+" This uses Vim's errorformat to parse the output from Guru's 'plain output
+" and put it into location list. I believe using errorformat is much more
+" easier to use. If we need more power we can always switch back to parse it
+" via regex.
+func! s:loclistSecond(output)
+  " backup users errorformat, will be restored once we are finished
+  let old_errorformat = &errorformat
+
+  " match two possible styles of errorformats:
+  "
+  "   'file:line.col-line2.col2: message'
+  "   'file:line:col: message'
+  "
+  " We discard line2 and col2 for the first errorformat, because it's not
+  " useful and location only has the ability to show one line and column
+  " number
+  let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
+  call go#list#ParseFormat("locationlist", errformat, split(a:output, "\n"))
+
+  let errors = go#list#Get("locationlist")
+  call go#list#Window("locationlist", len(errors))
+endfun
+
+function! go#guru#Scope(...)
+  if a:0
+    if a:0 == 1 && a:1 == '""'
+      unlet g:go_guru_scope
+      call go#util#EchoSuccess("guru scope is cleared")
+    else
+      let g:go_guru_scope = a:000
+      call go#util#EchoSuccess("guru scope changed to: ". join(a:000, ","))
+    endif
+
+    return
+  endif
+
+  if !exists('g:go_guru_scope')
+    call go#util#EchoError("guru scope is not set")
+  else
+    call go#util#EchoSuccess("current guru scope: ". join(g:go_guru_scope, ","))
+  endif
+endfunction
+
+function! go#guru#Tags(...)
+  if a:0
+    if a:0 == 1 && a:1 == '""'
+      unlet g:go_guru_tags
+      call go#util#EchoSuccess("guru tags is cleared")
+    else
+      let g:go_guru_tags = a:1
+      call go#util#EchoSuccess("guru tags changed to: ". a:1)
+    endif
+
+    return
+  endif
+
+  if !exists('g:go_guru_tags')
+    call go#util#EchoSuccess("guru tags is not set")
+  else
+    call go#util#EchoSuccess("current guru tags: ". a:1)
+  endif
+endfunction
+
+function s:guru_job(args)
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
+  let messages = []
+  function! s:callback(chan, msg) closure
+    call add(messages, a:msg)
+  endfunction
+
+  function! s:close_cb(chan) closure
+    let l:job = ch_getjob(a:chan)
+    let l:info = job_info(l:job)
+
+    " only print guru call errors, not build errors. Build errors are parsed
+    " below and showed in the quickfix window
+    if l:info.exitval != 0 && len(messages) == 1
+      call go#util#EchoError(messages[0])
+      return
+    endif
+
+    let old_errorformat = &errorformat
+    let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
+    call go#list#ParseFormat("locationlist", errformat, messages)
+
+    let errors = go#list#Get("locationlist")
+    call go#list#Window("locationlist", len(errors))
+  endfunction
+
+  let start_options = {
+        \ 'callback': function("s:callback"),
+        \ 'close_cb': function("s:close_cb"),
+        \ }
+
+  if &modified
+    let l:tmpname = tempname()
+    call writefile(split(a:args.input, "\n"), l:tmpname, "b")
+    let l:start_options.in_io = "file"
+    let l:start_options.in_name = l:tmpname
+  endif
+
+  let job = job_start(a:args.cmd, start_options)
+  return job
+endfunction
+
 
 " vim: sw=2 ts=2 et
