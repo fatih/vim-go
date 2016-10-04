@@ -2,6 +2,10 @@
 
 * We have now a [logo for vim-go](https://github.com/fatih/vim-go/blob/master/assets/vim-go.png)! Thanks to @egonelbre for his work on this. 
 
+IMPROVEMENTS:
+
+* Function calls are now highligted as wel when `g:go_highlight_functions` is enabled [gh-1048]
+
 BUG FIXES:
 
 * Change back nil and iota highlighting color to the old type [gh-1049]
