@@ -302,7 +302,7 @@ if g:go_highlight_functions != 0
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
   syn match goFunction          /\w\+/ contained
-  syn match goFunctionCall      /\w\+\ze(/
+  syn match goFunctionCall      /\w\+\ze(/ contains=GoBuiltins,goDeclaration
 else
   syn keyword goDeclaration func
 endif
@@ -311,9 +311,9 @@ hi def link     goFunctionCall      Type
 
 " Methods;
 if g:go_highlight_methods != 0
-  syn match goMethod                /\.\w\+\ze(/hs=s+1
+  syn match goMethodCall            /\.\w\+\ze(/hs=s+1
 endif
-hi def link     goMethod            Type
+hi def link     goMethodCall        Type
 
 " Fields;
 if g:go_highlight_fields != 0
