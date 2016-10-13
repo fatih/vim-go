@@ -237,7 +237,7 @@ function s:lint_job(args)
       call go#list#Window(l:listtype, len(errors))
     endif
 
-  call go#util#EchoSuccess("linting finished")
+    call go#util#EchoSuccess("linting finished")
   endfunction
 
   let start_options = {
