@@ -163,6 +163,21 @@ func! s:async_guru(args) abort
   endfunction
 
   function! s:close_cb(chan) closure
+    " NOTE(arslan): This works but was introduced with 8.0.0015, 
+    " let's keep an eye on it. The job API is still WIP evne though Vim 8.0 is
+    " released.
+    "
+    " let messages = []
+    " while ch_status(a:chan, {'part': 'out'}) == 'buffered'
+    "   let msg = ch_read(a:chan, {'part': 'out'})
+    "   call add(messages, msg)
+    " endwhile
+
+    " while ch_status(a:chan, {'part': 'err'}) == 'buffered'
+    "   let msg = ch_read(a:chan, {'part': 'err'})
+    "   call add(messages, msg)
+    " endwhile
+
     let l:job = ch_getjob(a:chan)
     let l:info = job_info(l:job)
 
