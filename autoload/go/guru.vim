@@ -354,6 +354,13 @@ endfunction
 function! s:same_ids_highlight(exit_val, output)
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
+  if a:output[0] !=# '{'
+    if !get(g:, 'go_auto_sameids', 0)
+      call go#util#EchoError(a:output)
+    endif
+    return
+  endif
+
   let result = json_decode(a:output)
   if type(result) != v:t_dict && !get(g:, 'go_auto_sameids', 0)
     call go#util#EchoError("malformed output from guru")
