@@ -13,6 +13,8 @@ FEATURES:
 
 * def.vim: async :GoDef (only if 'guru' is used)
 
+* rename.vim: async :GoRename
+
 * lint.vim: async :GoMetaLinter. Also works with the current autosave linting
   feature. As a reminder, to enable auto linting on save either call 
   `:GoMetaLinterAutoSaveToggle` (temporary) or add `let
