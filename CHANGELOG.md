@@ -10,6 +10,7 @@ BUG FIXES:
 
 * Change back nil and iota highlighting color to the old type [gh-1049]
 * Fix passing arguments to `:GoBuild` while using NeoVim [gh-1062]
+* Do not open a split if `:GoDef` is used on a modified file [gh-1083]
 
 ## 1.9 (September 13, 2016)
 
