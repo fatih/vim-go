@@ -257,6 +257,97 @@ function! go#guru#Describe(selected)
   call s:run_guru(args)
 endfunction
 
+function! go#guru#DescribeInfo()
+  " json_encode() and friends are introduced with this patch (7.4.1304)
+  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
+  " nvim: https://github.com/neovim/neovim/pull/4131        
+  if !exists("*json_decode")
+    call go#util#EchoError("requires 'json_decode'. Update your Vim/Neovim version.")
+    return
+  endif
+
+  function! s:info(exit_val, output)
+    let result = json_decode(a:output)
+    if type(result) != v:t_dict
+      call go#util#EchoError("malformed output from guru")
+      return
+    endif
+
+    if !has_key(result, 'detail')
+      " if there is no detail check if there is a description and print it
+      if has_key(result, "desc")
+        call go#util#EchoSuccess(result["desc"])
+        return
+      endif
+
+      call go#util#EchoError("detail key is missing. Please open a bug report on vim-go repo.")
+      return
+    endif
+
+    let detail = result['detail']
+    let info = ""
+
+    " guru gives different information based on the detail mode. Let try to
+    " extract the most useful information
+
+    if detail == "value"
+      if !has_key(result, 'value')
+        call go#util#EchoError("value key is missing. Please open a bug report on vim-go repo.")
+        return
+      endif
+
+      let val = result["value"]
+      if !has_key(val, 'type')
+        call go#util#EchoError("type key is missing (value.type). Please open a bug report on vim-go repo.")
+        return
+      endif
+
+      let info  = val["type"]
+    elseif detail == "type"
+      if !has_key(result, 'type')
+        call go#util#EchoError("type key is missing. Please open a bug report on vim-go repo.")
+        return
+      endif
+
+      let type = result["type"]
+      if !has_key(type, 'type')
+        call go#util#EchoError("type key is missing (type.type). Please open a bug report on vim-go repo.")
+        return
+      endif
+
+      let info  = type["type"]
+    elseif detail == "package"
+      if !has_key(result, 'package')
+        call go#util#EchoError("package key is missing. Please open a bug report on vim-go repo.")
+        return
+      endif
+
+      let package = result["package"]
+      if !has_key(package, 'path')
+        call go#util#EchoError("path key is missing (package.path). Please open a bug report on vim-go repo.")
+        return
+      endif
+
+      let info = printf("package %s", package["path"])
+    else
+      call go#util#EchoError(printf("unknown detail mode found '%s'. Please open a bug report on vim-go repo", detail))
+      return
+    endif
+
+    call go#util#EchoSuccess(info)
+  endfunction
+
+  let args = {
+        \ 'mode': 'describe',
+        \ 'format': 'json',
+        \ 'selected': -1,
+        \ 'needs_scope': 1,
+        \ 'custom_parse': function('s:info'),
+        \ }
+
+  call s:run_guru(args)
+endfunction
+
 " Show possible targets of selected function call
 function! go#guru#Callees(selected)
   let args = {
