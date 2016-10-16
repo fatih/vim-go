@@ -21,11 +21,10 @@ FEATURES:
   g:go_metalinter_autosave = 1` (persistent) to your virmc).
 
 * doc.vim: :GoDocBrowser is now capable to to understand the identifier under
-  the cursor
+  the cursor (just like :GoDoc)
 
 * guru.vim: All `guru` commands run asynchronously if Vim 8.0 is being used.
   Commands:
-	* GoSameIds
 	* GoImplements
 	* GoWhicherrs
 	* GoCallees
@@ -35,6 +34,25 @@ FEATURES:
 	* GoFreevars
 	* GoChannelPeers
 	* GoReferrers
+
+* :GoSameIds also runs asynchronously. This makes it useful especially for
+  auto sameids mode. In this mode it constantly evaluates the identifier under the
+  cursor whenever it's in hold position and then calls :GoSameIds. As a
+  reminder, to enable auto info either call `:GoSameIdsAutoToggle`(temporary)
+  or add `let g:go_auto_sameids = 1` (persistent) to your vimrc. 
+
+* :GoInfo is now non blocking and works in async mode. This makes it useful
+  especially for autoinfo mode. In this mode it constantly evaluates the
+  identifier under the cursor whenever it's in hold position and then calls
+  :GoInfo. As a reminder, to enable auto info either call
+  `:GoAutoTypeInfoToggle`(temporary) or add `let g:go_auto_type_info = 1`
+  (persistent) to your vimrc. 
+  
+  Second, it's now much more reliable due the usage of 'guru describe'.
+  Previously it was using `gocode` which wouldn't return sufficient
+  information. This makes it a little bit slower than `gocode` for certain Go
+  code, but with time the speed of guru will improve.
+
 
 BACKWARDS INCOMPATIBILITIES:
 
