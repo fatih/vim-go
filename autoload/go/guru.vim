@@ -113,12 +113,15 @@ func! s:sync_guru(args) abort
     return -1
   endif
 
-  if a:args.needs_scope
-    call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
-  elseif a:args.mode !=# 'what'
-    " the query might take time, let us give some feedback
-    call go#util#EchoProgress("analysing ...")
+  if !has_key(a:args, 'disable_progress')
+    if a:args.needs_scope
+      call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
+    elseif a:args.mode !=# 'what'
+      " the query might take time, let us give some feedback
+      call go#util#EchoProgress("analysing ...")
+    endif
   endif
+
 
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
@@ -150,33 +153,26 @@ func! s:async_guru(args) abort
     return
   endif
 
-  if a:args.needs_scope
-    call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
-  elseif a:args.mode !=# 'what'
-    " the query might take time, let us give some feedback
-    call go#util#EchoProgress("analysing ...")
+  if !has_key(a:args, 'disable_progress')
+    if a:args.needs_scope
+      call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
+    elseif a:args.mode !=# 'what'
+      " the query might take time, let us give some feedback
+      call go#util#EchoProgress("analysing ...")
+    endif
   endif
 
-  let messages = []
-  function! s:callback(chan, msg) closure
-    call add(messages, a:msg)
-  endfunction
-
   function! s:close_cb(chan) closure
-    " NOTE(arslan): This works but was introduced with 8.0.0015, 
-    " let's keep an eye on it. The job API is still WIP evne though Vim 8.0 is
-    " released.
-    "
-    " let messages = []
-    " while ch_status(a:chan, {'part': 'out'}) == 'buffered'
-    "   let msg = ch_read(a:chan, {'part': 'out'})
-    "   call add(messages, msg)
-    " endwhile
+    let messages = []
+    while ch_status(a:chan, {'part': 'out'}) == 'buffered'
+      let msg = ch_read(a:chan, {'part': 'out'})
+      call add(messages, msg)
+    endwhile
 
-    " while ch_status(a:chan, {'part': 'err'}) == 'buffered'
-    "   let msg = ch_read(a:chan, {'part': 'err'})
-    "   call add(messages, msg)
-    " endwhile
+    while ch_status(a:chan, {'part': 'err'}) == 'buffered'
+      let msg = ch_read(a:chan, {'part': 'err'})
+      call add(messages, msg)
+    endwhile
 
     let l:job = ch_getjob(a:chan)
     let l:info = job_info(l:job)
@@ -191,7 +187,6 @@ func! s:async_guru(args) abort
   endfunction
 
   let start_options = {
-        \ 'callback': function("s:callback"),
         \ 'close_cb': function("s:close_cb"),
         \ }
 
@@ -207,7 +202,10 @@ endfunc
 
 " run_guru runs the given guru argument
 function! s:run_guru(args)
-  if has('job')
+  " NOTE(arslan): Having just 'job' is not sufficient as there are still many
+  " fixes after vim8 was released. Therefor we also need at minimum the patch
+  " 15 which has some core fixes we need (8.0.0015). 
+  if has('job') && has("patch15")
     return s:async_guru(a:args)
   endif
 
@@ -267,9 +265,21 @@ function! go#guru#DescribeInfo()
   endif
 
   function! s:info(exit_val, output)
+    if a:exit_val != 0
+      return
+    endif
+
+    if a:output[0] !=# '{'
+      return
+    endif
+
+    if empty(a:output) || type(a:output) != v:t_string
+      return
+    endif
+
     let result = json_decode(a:output)
     if type(result) != v:t_dict
-      call go#util#EchoError("malformed output from guru")
+      call go#util#EchoError(printf("malformed output from guru: %s", a:output))
       return
     endif
 
@@ -329,6 +339,8 @@ function! go#guru#DescribeInfo()
       endif
 
       let info = printf("package %s", package["path"])
+    elseif detail == "unknown"
+      let info = result["desc"]
     else
       call go#util#EchoError(printf("unknown detail mode found '%s'. Please open a bug report on vim-go repo", detail))
       return
@@ -343,6 +355,7 @@ function! go#guru#DescribeInfo()
         \ 'selected': -1,
         \ 'needs_scope': 1,
         \ 'custom_parse': function('s:info'),
+        \ 'disable_progress': 1,
         \ }
 
   call s:run_guru(args)
