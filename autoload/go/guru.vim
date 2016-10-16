@@ -286,7 +286,7 @@ function! go#guru#DescribeInfo()
     if !has_key(result, 'detail')
       " if there is no detail check if there is a description and print it
       if has_key(result, "desc")
-        call go#util#EchoSuccess(result["desc"])
+        call go#util#EchoInfo(result["desc"])
         return
       endif
 
@@ -346,7 +346,7 @@ function! go#guru#DescribeInfo()
       return
     endif
 
-    call go#util#EchoSuccess(info)
+    call go#util#EchoInfo(info)
   endfunction
 
   let args = {

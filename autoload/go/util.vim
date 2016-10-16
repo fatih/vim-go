@@ -270,4 +270,8 @@ function! go#util#EchoProgress(msg)
   redraw | echohl Identifier | echom "vim-go: " . a:msg | echohl None
 endfunction
 
+function! go#util#EchoInfo(msg)
+  redraw | echohl Debug | echom "vim-go: " . a:msg | echohl None
+endfunction
+
 " vim: sw=2 ts=2 et
