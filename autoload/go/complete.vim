@@ -74,6 +74,7 @@ function! s:gocodeEnableOptions()
 
   call go#util#System(printf('%s set propose-builtins %s', go#util#Shellescape(bin_path), s:toBool(get(g:, 'go_gocode_propose_builtins', 1))))
   call go#util#System(printf('%s set autobuild %s', go#util#Shellescape(bin_path), s:toBool(get(g:, 'go_gocode_autobuild', 1))))
+  call go#util#System(printf('%s set unimported-packages %s', go#util#Shellescape(bin_path), s:toBool(get(g:, 'go_gocode_unimported_packages', 1))))
 endfunction
 
 function! s:toBool(val)
