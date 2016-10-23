@@ -946,7 +946,7 @@ vim-go also defines the following text motion objects:
 ==============================================================================
 FUNCTIONS                                                       *go-functions*
 
-                                                  *go#jobcontrol#Statusline()*
+                                                        *go#statusline#Show()*
 
 Shows the status of a job running asynchronously. Can be used to plug into the
 statusline. It works to show the status per package instead of per

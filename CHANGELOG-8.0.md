@@ -53,9 +53,16 @@ FEATURES:
   information. This makes it a little bit slower than `gocode` for certain Go
   code, but with time the speed of guru will improve.
 
+* new Statusline function: `go#statusline#Show()` which can be plugged into the
+  statusline bar. It shows all asyncronously called functions status real time.
+  Checkout it in action:  TODO: insert demo here
+
 
 BACKWARDS INCOMPATIBILITIES:
 
 * remove vim-dispatch and vimproc.vim support. vim 8.0 has now the necessary
   API to invoke async jobs and timers. Going forward we should use those. Also
   this will remove the burden to maintain compatibility with those plugins.
+
+* `go#jobcontrol#Statusline()` is removed in favor of the new, global and
+  extensible `go#statusline#Show()`
