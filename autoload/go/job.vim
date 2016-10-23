@@ -8,6 +8,8 @@ function go#job#Spawn(args)
         \ 'dir': getcwd(),
         \ 'jobdir': fnameescape(expand("%:p:h")),
         \ 'messages': [],
+        \ 'import_path': go#package#ImportPath(expand('%:p:h')),
+        \ 'args': a:args.cmd,
         \ }
 
   if has_key(a:args, 'bang')
@@ -32,12 +34,23 @@ function go#job#Spawn(args)
       call self.custom_cb(l:job, l:info.exitval, self.messages)
     endif
 
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': self.args[1],
+          \ }
+
     if l:info.exitval == 0
+      let status.state = "success"
+      call go#statusline#Update(self.import_path, status)
+
       call go#list#Clean(0)
       call go#list#Window(0)
       call go#util#EchoSuccess("SUCCESS")
       return
     endif
+
+    let status.state = "failed"
+    call go#statusline#Update(self.import_path, status)
 
     call self.show_errors()
   endfunction
@@ -225,5 +238,6 @@ function! s:create_new_buffer()
 
   return l:buf_nr
 endfunction
+
 
 " vim: sw=2 ts=2 et

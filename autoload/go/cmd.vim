@@ -401,6 +401,12 @@ function s:cmd_job(args)
   let jobdir = fnameescape(expand("%:p:h"))
   execute cd . jobdir
 
+  call go#statusline#Update(callbacks.import_path, {
+        \ 'desc': "current",
+        \ 'type': a:args.cmd[1],
+        \ 'state': "started",
+        \})
+
   call job_start(a:args.cmd, start_options)
 
   " post start
