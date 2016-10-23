@@ -13,6 +13,7 @@ BUG FIXES:
 * Fix passing arguments to `:GoBuild` while using NeoVim [gh-1062]
 * Do not open a split if `:GoDef` is used on a modified file [gh-1083]
 * Highlight nested structs correctly [gh-1075]
+* Highlight builtin functions correctly if `g:go_highlight_functions` is enabled [gh-1070]
 
 ## 1.9 (September 13, 2016)
 
