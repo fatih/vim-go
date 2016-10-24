@@ -402,7 +402,7 @@ function s:cmd_job(args)
   execute cd . jobdir
 
   call go#statusline#Update(callbacks.import_path, {
-        \ 'desc': "current",
+        \ 'desc': "current status",
         \ 'type': a:args.cmd[1],
         \ 'state': "started",
         \})
