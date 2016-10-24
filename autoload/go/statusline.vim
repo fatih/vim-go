@@ -13,6 +13,8 @@ let s:statuses = {}
 " timer_id for cleaner
 let s:timer_id = 0
 
+let s:last_text = ""
+
 " Show returns the current status of the job for 20 seconds (configurable). It
 " displays it in form of 'desc: [type|state]' if there is any state available,
 " if not it returns an empty string.
@@ -39,7 +41,21 @@ function! go#statusline#Show() abort
     return ''
   endif
 
-  return printf("%s: [%s|%s]", status.desc, status.type, status.state)
+  let text = printf("vim-go %s: [%s:%s]", status.desc, status.type, status.state)
+
+  " only update highlight if status has changed.
+  if text != s:last_text 
+    if status.state == "success"
+      hi goStatusLineColor cterm=bold ctermbg=76 ctermfg=22
+    elseif status.state == "started"
+      hi goStatusLineColor cterm=bold ctermbg=208 ctermfg=88
+    elseif status.state == "failed"
+      hi goStatusLineColor cterm=bold ctermbg=196 ctermfg=52
+    endif
+  endif
+
+  let s:last_text = text
+  return text
 endfunction
 
 " Update updates (adds) the statusline for the given import_path with the
