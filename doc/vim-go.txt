@@ -786,6 +786,10 @@ annotation.
 
 Calls `goimports` for the current package
 
+                                                                   *(go-lint)*
+
+Calls `golint` for the current package
+
                                                                     *(go-vet)*
 
 Calls `go vet` for the current package
