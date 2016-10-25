@@ -13,11 +13,13 @@ let s:statuses = {}
 " timer_id for cleaner
 let s:timer_id = 0
 
+" last_text is the last generated text
 let s:last_text = ""
 
 " Show returns the current status of the job for 20 seconds (configurable). It
 " displays it in form of 'desc: [type|state]' if there is any state available,
-" if not it returns an empty string.
+" if not it returns an empty string. This function should be plugged directly
+" into the statusline.
 function! go#statusline#Show() abort
   " lazy initialiation of the cleaner
   if !s:timer_id
@@ -63,6 +65,11 @@ endfunction
 function! go#statusline#Update(import_path, status) abort
   let s:statuses[a:import_path] = a:status
 
+  " force to update the statusline, otherwise the user needs to move the
+  " cursor
+  exe 'let &ro = &ro'
+
+
   " also reset the timer, so the user has time to see it in the statusline.
   " Setting the timer_id to 0 will trigger a new cleaner routine.
   call timer_stop(s:timer_id)
@@ -73,4 +80,8 @@ endfunction
 " just a placeholder so we can pass it to a timer_start() function if needed.
 function! go#statusline#Clear(timer_id) abort
   let s:statuses = {}
+
+  " force to update the statusline, otherwise the user needs to move the
+  " cursor
+  exe 'let &ro = &ro'
 endfunction
