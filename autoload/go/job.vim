@@ -45,7 +45,8 @@ function go#job#Spawn(args)
 
       call go#list#Clean(0)
       call go#list#Window(0)
-      call go#util#EchoSuccess("SUCCESS")
+      " TODO(arslan): remove echo's
+      " call go#util#EchoSuccess("SUCCESS")
       return
     endif
 
@@ -56,7 +57,8 @@ function go#job#Spawn(args)
   endfunction
 
   function cbs.show_errors() dict
-    call go#util#EchoError("FAILED")
+    " TODO(arslan): remove echo's
+    " call go#util#EchoError("FAILED")
 
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     try
@@ -187,7 +189,8 @@ func s:stop_job()
 endfunc
 
 function! s:show_errors(bang, errs, dir, winnr)
-  call go#util#EchoError("FAILED")
+  " TODO(arslan): remove echo's
+  " call go#util#EchoError("FAILED")
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()

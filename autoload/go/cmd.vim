@@ -22,7 +22,8 @@ function! go#cmd#Build(bang, ...)
   let args = ["build"]  + goargs + [".", "errors"]
 
   if has('job')
-    call go#util#EchoProgress("building dispatched ...")
+    " TODO(arslan): remove echo's
+    " call go#util#EchoProgress("building dispatched ...")
     call s:cmd_job({
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
