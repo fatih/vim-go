@@ -43,7 +43,8 @@ function! go#statusline#Show() abort
     return ''
   endif
 
-  let text = printf("vim-go %s: [%s:%s]", status.desc, status.type, status.state)
+  " let text = printf("vim-go %s: [%s|%s]", status.desc, status.type, status.state)
+  let text = printf("[%s|%s]", status.type, status.state)
 
   " only update highlight if status has changed.
   if text != s:last_text 
