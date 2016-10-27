@@ -45,8 +45,6 @@ function! go#coverage#Buffer(bang, ...)
   let l:tmpname = tempname()
 
   if has('job')
-    call go#util#EchoProgress("checking coverage ...")
-
     call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
           \ 'custom_cb': function('s:coverage_callback', [l:tmpname]),
@@ -107,7 +105,6 @@ endfunction
 function! go#coverage#Browser(bang, ...)
   let l:tmpname = tempname()
   if has('job')
-    call go#util#EchoProgress("opening coverage in browser...")
     call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
           \ 'custom_cb': function('s:coverage_browser_callback', [l:tmpname]),
@@ -275,7 +272,24 @@ function s:coverage_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
+  let import_path =  go#package#ImportPath(expand('%:p:h'))
+  function! s:error_info_cb(job, exit_status, data) closure
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': "coverage",
+          \ 'state': "finished",
+          \ }
+
+    if a:exit_status
+      let status.state = "failed"
+    endif
+
+    call go#statusline#Update(import_path, status)
+  endfunction
+
+  let a:args.error_info_cb = function('s:error_info_cb')
   let callbacks = go#job#Spawn(a:args)
+
 
   let start_options = {
         \ 'callback': callbacks.callback,
@@ -291,6 +305,12 @@ function s:coverage_job(args)
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let jobdir = fnameescape(expand("%:p:h"))
   execute cd . jobdir
+
+  call go#statusline#Update(import_path, {
+        \ 'desc': "current status",
+        \ 'type': "coverage",
+        \ 'state': "started",
+        \})
 
   call job_start(a:args.cmd, start_options)
 

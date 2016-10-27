@@ -48,7 +48,7 @@ function! go#statusline#Show() abort
 
   " only update highlight if status has changed.
   if text != s:last_text 
-    if status.state == "success"
+    if status.state == "success" || status.state == "finished"
       hi goStatusLineColor cterm=bold ctermbg=76 ctermfg=22
     elseif status.state == "started"
       hi goStatusLineColor cterm=bold ctermbg=208 ctermfg=88

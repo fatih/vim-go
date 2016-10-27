@@ -8,7 +8,6 @@ function go#job#Spawn(args)
         \ 'dir': getcwd(),
         \ 'jobdir': fnameescape(expand("%:p:h")),
         \ 'messages': [],
-        \ 'import_path': go#package#ImportPath(expand('%:p:h')),
         \ 'args': a:args.cmd,
         \ }
 
@@ -20,6 +19,10 @@ function go#job#Spawn(args)
   " The signature should be in form: func(job, exit_status, messages)
   if has_key(a:args, 'custom_cb')
     let cbs.custom_cb = a:args.custom_cb
+  endif
+
+  if has_key(a:args, 'error_info_cb')
+    let cbs.error_info_cb = a:args.error_info_cb
   endif
 
   function cbs.callback(chan, msg) dict
@@ -34,32 +37,26 @@ function go#job#Spawn(args)
       call self.custom_cb(l:job, l:info.exitval, self.messages)
     endif
 
-    let status = {
-          \ 'desc': 'last status',
-          \ 'type': self.args[1],
-          \ }
-
-    if l:info.exitval == 0
-      let status.state = "success"
-      call go#statusline#Update(self.import_path, status)
-
-      call go#list#Clean(0)
-      call go#list#Window(0)
-      " TODO(arslan): remove echo's
-      " call go#util#EchoSuccess("SUCCESS")
-      return
+    if has_key(self, 'error_info_cb')
+      call self.error_info_cb(l:job, l:info.exitval, self.messages)
+    else
+      if l:info.exitval == 0
+        call go#util#EchoSuccess("SUCCESS")
+      else
+        call go#util#EchoError("FAILED")
+      endif
     endif
 
-    let status.state = "failed"
-    call go#statusline#Update(self.import_path, status)
+    if l:info.exitval == 0
+      call go#list#Clean(0)
+      call go#list#Window(0)
+      return
+    endif
 
     call self.show_errors()
   endfunction
 
   function cbs.show_errors() dict
-    " TODO(arslan): remove echo's
-    " call go#util#EchoError("FAILED")
-
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     try
       execute cd self.jobdir
@@ -98,149 +95,4 @@ function go#job#Spawn(args)
 
   return cbs
 endfunction
-
-function! go#job#Buffer(bang, args)
-  " autowrite is not enabled for jobs
-  call go#cmd#autowrite()
-
-  " modify GOPATH if needed
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
-
-  " execute go build in the files directory
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
-  let jobdir = fnameescape(expand("%:p:h"))
-  execute cd . jobdir
-
-  let opts = {
-        \ 'dir': dir,
-        \ 'bang': a:bang, 
-        \ 'winnr': winnr(),
-        \ 'errs' : [],
-        \ 'bufnr' : s:create_new_buffer(),
-        \ }
-
-  func opts.errorHandler(chan, msg) dict
-    " contains stderr
-    call add(self.errs, a:msg)
-  endfunc
-
-  func opts.closeHandler(chan) dict
-    call s:stop_job()
-  endfunc
-
-  func opts.exitHandler(job, exit_status) dict
-    if a:exit_status == 0
-      call go#list#Clean(0)
-      call go#list#Window(0)
-      call go#util#EchoSuccess("SUCCESS")
-      return
-    endif
-
-    if bufloaded(self.bufnr)
-      sil exe 'bdelete! '.self.bufnr
-    endif
-
-    if empty(self.errs) 
-      return
-    endif
-
-    call s:show_errors(self.bang, self.errs, self.dir, self.winnr)
-  endfunc
-
-  " stop previous job before we continue
-  if exists('s:job_buffer')
-    call job_stop(s:job_buffer)
-    let status = job_status(s:job_buffer)
-    echo status
-    unlet s:job_buffer
-  endif
-
-  let s:job_buffer = job_start(a:args.cmd, {
-        \	"out_io": "buffer",
-        \	"out_buf": opts.bufnr,
-        \	"exit_cb": opts.exitHandler,
-        \	"err_cb": opts.errorHandler,
-        \	"close_cb": opts.closeHandler,
-        \ })
-
-  call job_status(s:job_buffer)
-  execute cd . fnameescape(dir)
-
-  autocmd BufWinLeave <buffer> call s:stop_job()
-
-  " restore back GOPATH
-  let $GOPATH = old_gopath
-endfunction
-
-func s:stop_job()
-  if !exists('s:job_buffer')
-    return
-  endif
-
-  if exists("#BufWinLeave#<buffer>") 
-    autocmd! BufWinLeave <buffer>
-  endif
-
-  call job_status(s:job_buffer) "trigger exitHandler
-  call job_stop(s:job_buffer)
-  unlet s:job_buffer
-endfunc
-
-function! s:show_errors(bang, errs, dir, winnr)
-  " TODO(arslan): remove echo's
-  " call go#util#EchoError("FAILED")
-
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
-  try
-    execute cd a:dir
-    let errors = go#tool#ParseErrors(a:errs)
-    let errors = go#tool#FilterValids(errors)
-  finally
-    execute cd . fnameescape(dir)
-  endtry
-
-  if !len(errors)
-    " failed to parse errors, output the original content
-    call go#util#EchoError(a:errs[0])
-    return
-  endif
-
-  if a:winnr == winnr()
-    let l:listtype = "quickfix"
-    call go#list#Populate(l:listtype, errors)
-    call go#list#Window(l:listtype, len(errors))
-    if !empty(errors) && !a:bang
-      call go#list#JumpToFirst(l:listtype)
-    endif
-  endif
-endfunction
-
-function! s:create_new_buffer()
-  execute 'new __go_job__'
-  let l:buf_nr = bufnr('%')
-
-  " cap buffer height to 10
-  let max_height = 10
-  exe 'resize ' . max_height
-
-  setlocal filetype=gojob
-  setlocal bufhidden=delete
-  setlocal buftype=nofile
-  setlocal winfixheight
-  setlocal noswapfile
-  setlocal nobuflisted
-  setlocal nocursorline
-  setlocal nocursorcolumn
-
-  " close easily with <esc> or enter
-  noremap <buffer> <silent> <CR> :<C-U>close<CR>
-  noremap <buffer> <silent> <Esc> :<C-U>close<CR>
-
-  return l:buf_nr
-endfunction
-
-
 " vim: sw=2 ts=2 et

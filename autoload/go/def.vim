@@ -281,6 +281,11 @@ function! go#def#Stack(...)
 endfunction
 
 function s:def_job(args)
+  function! s:error_info_cb(job, exit_status, data) closure
+    " do not print anything during async definition search&jump
+  endfunction
+
+  let a:args.error_info_cb = function('s:error_info_cb')
   let callbacks = go#job#Spawn(a:args)
 
   let start_options = {

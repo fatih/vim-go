@@ -91,15 +91,13 @@ function! go#cmd#Run(bang, ...)
     return
   endif
 
-  if has('job') && get(g:, 'go_async_run', 0)
+  if has('job')
     " 'term': 'open' case is not implement for +jobs. This means executions
-    " waiting for stdin will not work. That's why we put this behind a flag.
-    " Most of the time people people use :GoRun just like they use
-    " play.golang.org. So this case is good enough for those case. Once 'term'
-    " is implemented we're going to change the flag to `go_term_enabled`.
-    call go#util#EchoProgress("running dispatched ...")
-    call go#job#Buffer(a:bang, {'cmd': ['go', 'run'] + go#tool#Files()})
-    return
+    " waiting for stdin will not work. That's why we don't do anything. Once
+    " this is implemented we're going to make :GoRun async
+    " call go#util#EchoProgress("running dispatched ...")
+    " call go#job#Buffer(a:bang, {'cmd': ['go', 'run'] + go#tool#Files()})
+    " return
   endif
 
   let old_gopath = $GOPATH
@@ -385,6 +383,23 @@ function s:cmd_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
+  let import_path =  go#package#ImportPath(expand('%:p:h'))
+
+  function! s:error_info_cb(job, exit_status, data) closure
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': a:args.cmd[1],
+          \ 'state': "success",
+          \ }
+
+    if a:exit_status
+      let status.state = "failed"
+    endif
+
+    call go#statusline#Update(import_path, status)
+  endfunction
+
+  let a:args.error_info_cb = function('s:error_info_cb')
   let callbacks = go#job#Spawn(a:args)
 
   let start_options = {
@@ -402,7 +417,7 @@ function s:cmd_job(args)
   let jobdir = fnameescape(expand("%:p:h"))
   execute cd . jobdir
 
-  call go#statusline#Update(callbacks.import_path, {
+  call go#statusline#Update(import_path, {
         \ 'desc': "current status",
         \ 'type': a:args.cmd[1],
         \ 'state': "started",
