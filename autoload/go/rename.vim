@@ -63,9 +63,23 @@ function s:rename_job(args)
     call add(messages, a:msg)
   endfunction
 
+  let import_path =  go#package#ImportPath(expand('%:p:h'))
+
   function! s:close_cb(chan) closure
     let l:job = ch_getjob(a:chan)
     let l:info = job_info(l:job)
+
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': "gorename",
+          \ 'state': "finished",
+          \ }
+
+    if l:info.exitval
+      let status.state = "failed"
+    endif
+
+    call go#statusline#Update(import_path, status)
 
     call s:parse_errors(l:info.exitval, a:args.bang, messages)
   endfunction
@@ -78,6 +92,12 @@ function s:rename_job(args)
   " modify GOPATH if needed
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
+
+  call go#statusline#Update(import_path, {
+        \ 'desc': "current status",
+        \ 'type': "gorename",
+        \ 'state': "started",
+        \})
 
   call job_start(a:args.cmd, start_options)
 

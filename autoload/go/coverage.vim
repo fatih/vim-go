@@ -290,7 +290,6 @@ function s:coverage_job(args)
   let a:args.error_info_cb = function('s:error_info_cb')
   let callbacks = go#job#Spawn(a:args)
 
-
   let start_options = {
         \ 'callback': callbacks.callback,
         \ 'close_cb': callbacks.close_cb,

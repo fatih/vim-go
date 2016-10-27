@@ -122,7 +122,6 @@ func! s:sync_guru(args) abort
     endif
   endif
 
-
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
 
@@ -153,12 +152,12 @@ func! s:async_guru(args) abort
     return
   endif
 
+  let import_path =  go#package#ImportPath(expand('%:p:h'))
+  let statusline_type = printf("%s", a:args.mode)
+
   if !has_key(a:args, 'disable_progress')
     if a:args.needs_scope
       call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
-    elseif a:args.mode !=# 'what'
-      " the query might take time, let us give some feedback
-      call go#util#EchoProgress("analysing ...")
     endif
   endif
 
@@ -179,6 +178,18 @@ func! s:async_guru(args) abort
 
     let out = join(messages, "\n")
 
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': statusline_type,
+          \ 'state': "finished",
+          \ }
+
+    if l:info.exitval
+      let status.state = "failed"
+    endif
+
+    call go#statusline#Update(import_path, status)
+
     if has_key(a:args, 'custom_parse')
       call a:args.custom_parse(l:info.exitval, out)
     else
@@ -196,6 +207,12 @@ func! s:async_guru(args) abort
     let l:start_options.in_io = "file"
     let l:start_options.in_name = l:tmpname
   endif
+
+  call go#statusline#Update(import_path, {
+        \ 'desc': "current status",
+        \ 'type': statusline_type,
+        \ 'state': "analysing",
+        \})
 
   return job_start(result.cmd, start_options)
 endfunc

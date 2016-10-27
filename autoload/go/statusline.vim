@@ -50,7 +50,7 @@ function! go#statusline#Show() abort
   if text != s:last_text 
     if status.state == "success" || status.state == "finished"
       hi goStatusLineColor cterm=bold ctermbg=76 ctermfg=22
-    elseif status.state == "started"
+    elseif status.state == "started" || status.state == "analysing"
       hi goStatusLineColor cterm=bold ctermbg=208 ctermfg=88
     elseif status.state == "failed"
       hi goStatusLineColor cterm=bold ctermbg=196 ctermfg=52
