@@ -227,16 +227,8 @@ function! go#cmd#Test(bang, compile, ...)
     call add(args, printf("-timeout=%s", timeout))
   endif
 
-  if a:compile
-    echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
-  else
-    echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
-  endif
-
   if has('job')
     " use vim's job functionality to call it asynchronously
-    call go#util#EchoProgress("testing dispatched ...")
-
     let job_args = {
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
@@ -262,6 +254,13 @@ function! go#cmd#Test(bang, compile, ...)
     endif
     return id
   endif
+
+  if a:compile
+    echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
+  else
+    echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
+  endif
+
 
   call go#cmd#autowrite()
   redraw
@@ -380,10 +379,16 @@ endfunction
 " ---------------------
 
 function s:cmd_job(args)
+  let import_path =  go#package#ImportPath(expand('%:p:h'))
+  call go#statusline#Update(import_path, {
+        \ 'desc': "current status",
+        \ 'type': a:args.cmd[1],
+        \ 'state': "started",
+        \})
+
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let import_path =  go#package#ImportPath(expand('%:p:h'))
 
   function! s:error_info_cb(job, exit_status, data) closure
     let status = {
@@ -416,12 +421,6 @@ function s:cmd_job(args)
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let jobdir = fnameescape(expand("%:p:h"))
   execute cd . jobdir
-
-  call go#statusline#Update(import_path, {
-        \ 'desc': "current status",
-        \ 'type': a:args.cmd[1],
-        \ 'state': "started",
-        \})
 
   call job_start(a:args.cmd, start_options)
 
