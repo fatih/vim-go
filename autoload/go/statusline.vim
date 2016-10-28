@@ -1,12 +1,13 @@
 " Statusline
 """"""""""""""""""""""""""""""""
 
-" s:statuses is a global reference to all statuses. It stores the job per import path.
-" Current stored status dict is in form:
+" s:statuses is a global reference to all statuses. It stores the statuses
+" per import paths (map[string][]status).  Current status dict is in form:
 " { 
-"   'desc'  : 'Job description',
-"   'state' : 'Job state, such as success, failure, etc..',
-"   'type'  : 'Job type, such as build, test, etc..'
+"   'desc'        : 'Job description',
+"   'state'       : 'Job state, such as success, failure, etc..',
+"   'type'        : 'Job type, such as build, test, etc..'
+"   'created_at'  : 'Time it was created as seconds since 1st Jan 1970'
 " }
 let s:statuses = {}
 
@@ -24,7 +25,7 @@ function! go#statusline#Show() abort
   " lazy initialiation of the cleaner
   if !s:timer_id
     " clean every 20 seconds all statuses
-    let interval = get(g:, 'go_statusline_duration', 20000)
+    let interval = get(g:, 'go_statusline_duration', 1000)
     let s:timer_id = timer_start(interval, function('go#statusline#Clear'), {'repeat': -1})
   endif
   
@@ -38,16 +39,18 @@ function! go#statusline#Show() abort
     return ''
   endif
 
-  let status = s:statuses[import_path]
+  let statuses = s:statuses[import_path]
+  let status = statuses[0]
+
   if !has_key(status, 'desc') || !has_key(status, 'state') || !has_key(status, 'type')
     return ''
   endif
 
-  " let text = printf("vim-go %s: [%s|%s]", status.desc, status.type, status.state)
-  let text = printf("[%s|%s]", status.type, status.state)
+  let text = printf("[%s|%s] %d", status.type, status.state, len(statuses))
 
   " only update highlight if status has changed.
   if text != s:last_text 
+    hi User1 guifg=#ffffff  guibg=#094afe
     if status.state == "success" || status.state == "finished"
       hi goStatusLineColor cterm=bold ctermbg=76 ctermfg=22
     elseif status.state == "started" || status.state == "analysing"
@@ -64,7 +67,33 @@ endfunction
 " Update updates (adds) the statusline for the given import_path with the
 " given status dict. It overrides any previously set status.
 function! go#statusline#Update(import_path, status) abort
-  let s:statuses[a:import_path] = a:status
+  let a:status.created_at = reltime()
+
+  let pkg_statuses = [a:status]
+  if has_key(s:statuses, a:import_path)
+    let pkg_statuses = s:statuses[a:import_path]
+    let found = 0
+	  let index = 0
+
+    " search for an existing status, if yes override it. If there is none, it
+    " means we have a new status that we want to append to the statuses list
+    for status in pkg_statuses
+      if status.type == a:status.type
+        let found = 1
+
+        " override it
+        let pkg_statuses[index] = a:status
+      endif
+
+	    let index += 1
+    endfor
+
+    if !found
+      call add(pkg_statuses, a:status)
+    endif
+  endif
+
+  let s:statuses[a:import_path] = pkg_statuses
 
   " force to update the statusline, otherwise the user needs to move the
   " cursor
@@ -80,7 +109,32 @@ endfunction
 " Clear clears all currently stored statusline data. The timer_id argument is
 " just a placeholder so we can pass it to a timer_start() function if needed.
 function! go#statusline#Clear(timer_id) abort
-  let s:statuses = {}
+  for [import_path, statuses] in items(s:statuses)
+      " if there is just one status, remove it entirely
+      if len(statuses) == 1
+        call remove(s:statuses, import_path)
+        continue
+      endif
+        
+      " if we have multiple status items for a given pkg, remove only 20
+      " seconds old ones
+	    let index = 0
+      for status in statuses 
+        let elapsed_time = reltimestr(reltime(status.created_at))
+        echom elapsed_time
+        if elapsed_time > 5
+          call remove(statuses, index)
+        endif
+
+        let index += 1
+      endfor
+
+      let s:statuses[import_path] = statuses
+  endfor
+
+  if len(s:statuses) == 0
+    let s:statuses = {}
+  endif
 
   " force to update the statusline, otherwise the user needs to move the
   " cursor
