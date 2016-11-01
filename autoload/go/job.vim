@@ -31,23 +31,31 @@ function go#job#Spawn(args)
 
   function cbs.close_cb(chan) dict
     let l:job = ch_getjob(a:chan)
-    let l:info = job_info(l:job)
+    let l:status = job_status(l:job)
+
+    " the job might be in fail status, we assume by default it's failed.
+    " However if it's dead, we can use the real exitval
+    let exitval = 1
+    if l:status == "dead"
+      let l:info = job_info(l:job)
+      let exitval = l:info.exitval
+    endif
 
     if has_key(self, 'custom_cb')
-      call self.custom_cb(l:job, l:info.exitval, self.messages)
+      call self.custom_cb(l:job, exitval, self.messages)
     endif
 
     if has_key(self, 'error_info_cb')
-      call self.error_info_cb(l:job, l:info.exitval, self.messages)
+      call self.error_info_cb(l:job, exitval, self.messages)
     else
-      if l:info.exitval == 0
+      if exitval == 0
         call go#util#EchoSuccess("SUCCESS")
       else
         call go#util#EchoError("FAILED")
       endif
     endif
 
-    if l:info.exitval == 0
+    if exitval == 0
       call go#list#Clean(0)
       call go#list#Window(0)
       return
