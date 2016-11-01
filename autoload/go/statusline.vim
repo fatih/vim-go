@@ -26,10 +26,10 @@ function! go#statusline#Show() abort
   " lazy initialiation of the cleaner
   if !s:timer_id
     " clean every 10 seconds all statuses
-    let interval = get(g:, 'go_statusline_duration', 10000)
+    let interval = get(g:, 'go_statusline_duration', 2000)
     let s:timer_id = timer_start(interval, function('go#statusline#Clear'), {'repeat': -1})
   endif
-  
+
   " nothing to show
   if empty(s:statuses)
     return ''
@@ -92,28 +92,31 @@ endfunction
 " just a placeholder so we can pass it to a timer_start() function if needed.
 function! go#statusline#Clear(timer_id) abort
   for [import_path, statuses] in items(s:statuses)
-      " if there is just one status, remove it entirely
-      if len(statuses) == 1
-        call remove(s:statuses, import_path)
-        continue
-      endif
-        
-      " if we have multiple status items for a given pkg, remove only 20
-      " seconds old ones
-	    let index = 0
-      for status in statuses 
-        let elapsed_time = reltimestr(reltime(status.created_at))
+    " if there is just one status, remove it entirely
+    if len(statuses) == 1
+      call remove(s:statuses, import_path)
+      continue
+    endif
 
-        "strip whitespace
-        let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
-        if str2nr(elapsed_time) > 10
-          call remove(statuses, index)
-        endif
+    " if we have multiple status items for a given pkg, remove only 20
+    " seconds old ones
+    let index = 0
+    for status in statuses 
+      let elapsed_time = reltimestr(reltime(status.created_at))
 
+      "strip whitespace
+      let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
+      if str2nr(elapsed_time) > 5 && (status.state != "started" || status.state != "analysing")
+        call remove(statuses, index)
+      else
+        " only increase when we don't remove. Because removing decreases the
+        " index by one, we don't increase it.
         let index += 1
-      endfor
+      endif
 
-      let s:statuses[import_path] = statuses
+    endfor
+
+    let s:statuses[import_path] = statuses
   endfor
 
   if len(s:statuses) == 0
@@ -143,7 +146,7 @@ function! s:add_status(import_path, status)
   let pkg_statuses = s:statuses[a:import_path]
 
   let found = 0
-	let index = 0
+  let index = 0
   for status in pkg_statuses
     if status.type == a:status.type
       let found = 1
@@ -152,7 +155,7 @@ function! s:add_status(import_path, status)
       let pkg_statuses[index] = a:status
     endif
 
-	  let index += 1
+    let index += 1
   endfor
 
   " append the existing status
