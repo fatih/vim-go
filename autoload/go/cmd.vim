@@ -389,7 +389,6 @@ function s:cmd_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-
   function! s:error_info_cb(job, exit_status, data) closure
     let status = {
           \ 'desc': 'last status',

@@ -56,6 +56,8 @@ function! go#statusline#Show() abort
     return ''
   endif
 
+  " TODO(arslan): look how to make individual statuses to be highlighted
+  " independently
   " only update highlight if status has changed.
   if status_text != s:last_text 
     if status.state == "success" || status.state == "finished"
