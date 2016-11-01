@@ -25,8 +25,8 @@ let s:last_text = ""
 function! go#statusline#Show() abort
   " lazy initialiation of the cleaner
   if !s:timer_id
-    " clean every 10 seconds all statuses
-    let interval = get(g:, 'go_statusline_duration', 10000)
+    " clean every 20 seconds all statuses
+    let interval = get(g:, 'go_statusline_duration', 20000)
     let s:timer_id = timer_start(interval, function('go#statusline#Clear'), {'repeat': -1})
   endif
 
@@ -68,11 +68,17 @@ endfunction
 " Update updates (adds) the statusline for the given import_path with the
 " given status dict. It overrides any previously set status.
 function! go#statusline#Update(import_path, status) abort
-  call s:add_status(a:import_path, a:status)
+  let a:status.created_at = reltime()
+  let s:statuses[a:import_path] = a:status
 
   " force to update the statusline, otherwise the user needs to move the
   " cursor
   exe 'let &ro = &ro'
+
+  " before we stop the timer, check if we have any previous jobs to be cleaned
+  " up. Otherwise every job will reset the timer when this function is called
+  " and thus old jobs will never be cleaned
+  call go#statusline#Clear(0)
 
   " also reset the timer, so the user has time to see it in the statusline.
   " Setting the timer_id to 0 will trigger a new cleaner routine.
@@ -85,11 +91,10 @@ endfunction
 function! go#statusline#Clear(timer_id) abort
   for [import_path, status] in items(s:statuses)
     let elapsed_time = reltimestr(reltime(status.created_at))
-
     " strip whitespace
     let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
 
-    if str2nr(elapsed_time) > 30 && (status.state != "started" || status.state != "analysing")
+    if str2nr(elapsed_time) > 10
       call remove(s:statuses, import_path)
     endif
   endfor
@@ -101,14 +106,6 @@ function! go#statusline#Clear(timer_id) abort
   " force to update the statusline, otherwise the user needs to move the
   " cursor
   exe 'let &ro = &ro'
-endfunction
-
-" add_status adds the given status for the given import_path. It appends the
-" status if there are more than one status. If there is already a status with
-" the same status type, the given status will be overriden.
-function! s:add_status(import_path, status)
-  let a:status.created_at = reltime()
-  let s:statuses[a:import_path] = a:status
 endfunction
 
 " vim: sw=2 ts=2 et
