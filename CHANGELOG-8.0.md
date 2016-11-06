@@ -54,6 +54,11 @@ FEATURES:
   statusline bar. It shows all asyncronously called functions status real time.
   Checkout it in action:  TODO: insert demo here
 
+Improvements:
+
+* goSameId highlighting is now linked to `Search`, which is much more better as
+  it changes according to the users colorscheme
+
 
 BACKWARDS INCOMPATIBILITIES:
 
