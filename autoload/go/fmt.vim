@@ -161,6 +161,9 @@ function! go#fmt#Format(withGoimport)
     silent edit!
     let &fileformat = old_fileformat
     let &syntax = &syntax
+    if exists("g:syntax_on")
+      syntax enable
+    endif
 
     " clean up previous location list, but only if it's due to fmt
     if exists('b:got_fmt_error') && b:got_fmt_error
