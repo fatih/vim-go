@@ -1,5 +1,5 @@
 " PathSep returns the appropriate OS specific path separator.
-function! go#util#PathSep()
+function! go#util#PathSep() abort
   if go#util#IsWin()
     return '\'
   endif
@@ -7,7 +7,7 @@ function! go#util#PathSep()
 endfunction
 
 " PathListSep returns the appropriate OS specific path list separator.
-function! go#util#PathListSep()
+function! go#util#PathListSep() abort
   if go#util#IsWin()
     return ";"
   endif
@@ -15,7 +15,7 @@ function! go#util#PathListSep()
 endfunction
 
 " LineEnding returns the correct line ending, based on the current fileformat
-function! go#util#LineEnding()
+function! go#util#LineEnding() abort
   if &fileformat == 'dos'
     return "\r\n"
   elseif &fileformat == 'mac'
@@ -27,12 +27,12 @@ endfunction
 
 " Join joins any number of path elements into a single path, adding a
 " Separator if necessary and returns the result
-function! go#util#Join(...)
+function! go#util#Join(...) abort
   return join(a:000, go#util#PathSep())
 endfunction
 
 " IsWin returns 1 if current OS is Windows or 0 otherwise
-function! go#util#IsWin()
+function! go#util#IsWin() abort
   let win = ['win16', 'win32', 'win64', 'win95']
   for w in win
     if (has(w))
@@ -48,7 +48,7 @@ let s:env_cache = {}
 " env returns the go environment variable for the given key. Where key can be
 " GOARCH, GOOS, GOROOT, etc... It caches the result and returns the cached
 " version. 
-function! go#util#env(key)
+function! go#util#env(key) abort
   let l:key = tolower(a:key)
   if has_key(s:env_cache, l:key)
     return s:env_cache[l:key]
@@ -68,28 +68,28 @@ function! go#util#env(key)
   return l:var
 endfunction
 
-function! go#util#goarch()
+function! go#util#goarch() abort
   return substitute(go#util#System('go env GOARCH'), '\n', '', 'g')
 endfunction
 
-function! go#util#goos()
+function! go#util#goos() abort
   return substitute(go#util#System('go env GOOS'), '\n', '', 'g')
 endfunction
 
-function! go#util#goroot()
+function! go#util#goroot() abort
   return substitute(go#util#System('go env GOROOT'), '\n', '', 'g')
 endfunction
 
-function! go#util#gopath()
+function! go#util#gopath() abort
   return substitute(go#util#System('go env GOPATH'), '\n', '', 'g')
 endfunction
 
-function! go#util#osarch()
+function! go#util#osarch() abort
   return go#util#goos() . '_' . go#util#goarch()
 endfunction
 
 "Check if has vimproc
-function! s:has_vimproc()
+function! s:has_vimproc() abort
   if !exists('g:go#use_vimproc')
     if go#util#IsWin()
       try
@@ -118,7 +118,7 @@ endif
 
 " System runs a shell command. It will reset the shell to /bin/sh for Unix-like
 " systems if it is executable.
-function! go#util#System(str, ...)
+function! go#util#System(str, ...) abort
   let l:shell = &shell
   if !go#util#IsWin() && executable('/bin/sh')
     let &shell = '/bin/sh'
@@ -132,7 +132,7 @@ function! go#util#System(str, ...)
   endtry
 endfunction
 
-function! go#util#ShellError()
+function! go#util#ShellError() abort
   if empty(s:vim_shell_error)
     return v:shell_error
   endif
@@ -142,7 +142,7 @@ endfunction
 
 " StripPath strips the path's last character if it's a path separator.
 " example: '/foo/bar/'  -> '/foo/bar'
-function! go#util#StripPathSep(path)
+function! go#util#StripPathSep(path) abort
   let last_char = strlen(a:path) - 1
   if a:path[last_char] == go#util#PathSep()
     return strpart(a:path, 0, last_char)
@@ -153,13 +153,13 @@ endfunction
 
 " StripTrailingSlash strips the trailing slash from the given path list.
 " example: ['/foo/bar/']  -> ['/foo/bar']
-function! go#util#StripTrailingSlash(paths)
+function! go#util#StripTrailingSlash(paths) abort
   return map(copy(a:paths), 'go#util#StripPathSep(v:val)')
 endfunction
 
 " Shelljoin returns a shell-safe string representation of arglist. The
 " {special} argument of shellescape() may optionally be passed.
-function! go#util#Shelljoin(arglist, ...)
+function! go#util#Shelljoin(arglist, ...) abort
   try
     let ssl_save = &shellslash
     set noshellslash
@@ -188,7 +188,7 @@ endf
 
 " Shelllist returns a shell-safe representation of the items in the given
 " arglist. The {special} argument of shellescape() may optionally be passed.
-function! go#util#Shelllist(arglist, ...)
+function! go#util#Shelllist(arglist, ...) abort
   try
     let ssl_save = &shellslash
     set noshellslash
@@ -202,7 +202,7 @@ function! go#util#Shelllist(arglist, ...)
 endfunction
 
 " Returns the byte offset for line and column
-function! go#util#Offset(line, col)
+function! go#util#Offset(line, col) abort
   if &encoding != 'utf-8'
     let sep = go#util#LineEnding()
     let buf = a:line == 1 ? '' : (join(getline(1, a:line-1), sep) . sep)
@@ -213,13 +213,13 @@ function! go#util#Offset(line, col)
 endfunction
 "
 " Returns the byte offset for the cursor
-function! go#util#OffsetCursor()
+function! go#util#OffsetCursor() abort
   return go#util#Offset(line('.'), col('.'))
 endfunction
 
 " Windo is like the built-in :windo, only it returns to the window the command
 " was issued from
-function! go#util#Windo(command)
+function! go#util#Windo(command) abort
   let s:currentWindow = winnr()
   try
     execute "windo " . a:command
@@ -231,7 +231,7 @@ endfunction
 
 " snippetcase converts the given word to given preferred snippet setting type
 " case.
-function! go#util#snippetcase(word)
+function! go#util#snippetcase(word) abort
   let l:snippet_case = get(g:, 'go_snippet_case_type', "snakecase")
   if l:snippet_case == "snakecase"
     return go#util#snakecase(a:word)
@@ -244,7 +244,7 @@ endfunction
 
 " snakecase converts a string to snake case. i.e: FooBar -> foo_bar
 " Copied from tpope/vim-abolish
-function! go#util#snakecase(word)
+function! go#util#snakecase(word) abort
   let word = substitute(a:word,'::','/','g')
   let word = substitute(word,'\(\u\+\)\(\u\l\)','\1_\2','g')
   let word = substitute(word,'\(\l\|\d\)\(\u\)','\1_\2','g')
@@ -255,7 +255,7 @@ endfunction
 
 " camelcase converts a string to camel case. i.e: FooBar -> fooBar
 " Copied from tpope/vim-abolish
-function! go#util#camelcase(word)
+function! go#util#camelcase(word) abort
   let word = substitute(a:word, '-', '_', 'g')
   if word !~# '_' && word =~# '\l'
     return substitute(word,'^.','\l&','')
@@ -264,7 +264,7 @@ function! go#util#camelcase(word)
   endif
 endfunction
 
-function! go#util#AddTags(line1, line2, ...)
+function! go#util#AddTags(line1, line2, ...) abort
   " default is json
   let l:keys = ["json"]
   if a:0
@@ -312,19 +312,19 @@ endfunction
 " TODO(arslan): I couldn't parameterize the highlight types. Check if we can
 " simplify the following functions
 
-function! go#util#EchoSuccess(msg)
+function! go#util#EchoSuccess(msg) abort
   redraw | echon "vim-go: " | echohl Function | echon a:msg | echohl None
 endfunction
 
-function! go#util#EchoError(msg)
+function! go#util#EchoError(msg) abort
   redraw | echon "vim-go: " | echohl ErrorMsg | echon a:msg | echohl None
 endfunction
 
-function! go#util#EchoWarning(msg)
+function! go#util#EchoWarning(msg) abort
   redraw | echon "vim-go: " | echohl WarningMsg | echon a:msg | echohl None
 endfunction
 
-function! go#util#EchoProgress(msg)
+function! go#util#EchoProgress(msg) abort
   redraw | echon "vim-go: " | echohl Identifier | echon a:msg | echohl None
 endfunction
 

@@ -3,7 +3,7 @@ let s:toggle = 0
 " Buffer creates a new cover profile with 'go test -coverprofile' and changes
 " the current buffers highlighting to show covered and uncovered sections of
 " the code. If run again it clears the annotation.
-function! go#coverage#BufferToggle(bang, ...)
+function! go#coverage#BufferToggle(bang, ...) abort
   if s:toggle
     call go#coverage#Clear()
     return
@@ -20,7 +20,7 @@ endfunction
 " teh current buffers highlighting to show covered and uncovered sections of
 " the code. Calling it again reruns the tests and shows the last updated
 " coverage.
-function! go#coverage#Buffer(bang, ...)
+function! go#coverage#Buffer(bang, ...) abort
   " we use matchaddpos() which was introduce with 7.4.330, be sure we have
   " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
   if !exists("*matchaddpos")
@@ -75,7 +75,7 @@ function! go#coverage#Buffer(bang, ...)
 endfunction
 
 " Clear clears and resets the buffer annotation matches
-function! go#coverage#Clear()
+function! go#coverage#Clear() abort
   " only reset the syntax if the user has syntax enabled
   if !empty(&syntax)
     if exists("g:syntax_on") | syntax enable | endif
@@ -93,7 +93,7 @@ endfunction
 
 " Browser creates a new cover profile with 'go test -coverprofile' and opens
 " a new HTML coverage page from that profile in a new browser
-function! go#coverage#Browser(bang, ...)
+function! go#coverage#Browser(bang, ...) abort
   let l:tmpname = tempname()
   let args = [a:bang, 0, "-coverprofile", l:tmpname]
 
@@ -116,7 +116,7 @@ endfunction
 
 " Parses a single line from the cover file generated via go test -coverprofile
 " and returns a single coverage profile block.
-function! go#coverage#parsegocoverline(line)
+function! go#coverage#parsegocoverline(line) abort
   " file:startline.col,endline.col numstmt count
   let mx = '\([^:]\+\):\(\d\+\)\.\(\d\+\),\(\d\+\)\.\(\d\+\)\s\(\d\+\)\s\(\d\+\)'
   let tokens = matchlist(a:line, mx)
@@ -133,7 +133,7 @@ endfunction
 
 " Generates matches to be added to matchaddpos for the given coverage profile
 " block
-function! go#coverage#genmatch(cov)
+function! go#coverage#genmatch(cov) abort
   let color = 'goCoverageCovered'
   if a:cov.cnt == 0
     let color = 'goCoverageUncover'
@@ -183,7 +183,7 @@ function! go#coverage#genmatch(cov)
 endfunction
 
 " Reads the given coverprofile file and annotates the current buffer
-function! go#coverage#overlay(file)
+function! go#coverage#overlay(file) abort
   if !filereadable(a:file)
     return
   endif
@@ -251,7 +251,7 @@ endfunction
 let s:coverage_handler_jobs = {}
 let s:coverage_browser_handler_jobs = {}
 
-function! s:coverage_handler(job, exit_status, data)
+function! s:coverage_handler(job, exit_status, data) abort
   if !has_key(s:coverage_handler_jobs, a:job.id)
     return
   endif
@@ -264,7 +264,7 @@ function! s:coverage_handler(job, exit_status, data)
   unlet s:coverage_handler_jobs[a:job.id]
 endfunction
 
-function! s:coverage_browser_handler(job, exit_status, data)
+function! s:coverage_browser_handler(job, exit_status, data) abort
   if !has_key(s:coverage_browser_handler_jobs, a:job.id)
     return
   endif

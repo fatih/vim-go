@@ -1,6 +1,6 @@
 let s:current_file = expand("<sfile>")
 
-function! go#template#create()
+function! go#template#create() abort
   let l:root_dir = fnamemodify(s:current_file, ':h:h:h')
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -28,7 +28,7 @@ function! go#template#create()
   execute cd . fnameescape(dir)
 endfunction
 
-function! go#template#ToggleAutoCreate()
+function! go#template#ToggleAutoCreate() abort
   if get(g:, "go_template_autocreate", 1)
     let g:go_template_autocreate = 0
     call go#util#EchoProgress("auto template create disabled")

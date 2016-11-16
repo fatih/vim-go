@@ -6,7 +6,7 @@ if !exists("g:go_gorename_prefill")
   let g:go_gorename_prefill = 1
 endif
 
-function! go#rename#Rename(bang, ...)
+function! go#rename#Rename(bang, ...) abort
   let to = ""
   if a:0 == 0
     let from = expand("<cword>")

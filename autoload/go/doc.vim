@@ -15,7 +15,7 @@ endif
 " returns the package and exported name. exported name might be empty.
 " ie: fmt and Println
 " ie: github.com/fatih/set and New
-function! s:godocWord(args)
+function! s:godocWord(args) abort
   if !executable('godoc')
     let msg = "godoc command not found."
     let msg .= "  install with: go get golang.org/x/tools/cmd/godoc"
@@ -54,7 +54,7 @@ function! s:godocWord(args)
   return [pkg, exported_name]
 endfunction
 
-function! s:godocNotFound(content)
+function! s:godocNotFound(content) abort
   if len(a:content) == 0
     return 1
   endif
@@ -62,7 +62,7 @@ function! s:godocNotFound(content)
   return a:content =~# '^.*: no such file or directory\n$'
 endfunction
 
-function! go#doc#OpenBrowser(...)
+function! go#doc#OpenBrowser(...) abort
   let pkgs = s:godocWord(a:000)
   if empty(pkgs)
     return
@@ -76,7 +76,7 @@ function! go#doc#OpenBrowser(...)
   call go#tool#OpenBrowser(godoc_url)
 endfunction
 
-function! go#doc#Open(newmode, mode, ...)
+function! go#doc#Open(newmode, mode, ...) abort
   if len(a:000)
     " check if we have 'godoc' and use it automatically
     let bin_path = go#path#CheckBinPath('godoc')
@@ -125,7 +125,7 @@ function! go#doc#Open(newmode, mode, ...)
   call s:GodocView(a:newmode, a:mode, out)
 endfunction
 
-function! s:GodocView(newposition, position, content)
+function! s:GodocView(newposition, position, content) abort
   " reuse existing buffer window if it exists otherwise create a new one
   if !bufexists(s:buf_nr)
     execute a:newposition

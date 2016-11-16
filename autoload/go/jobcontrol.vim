@@ -9,7 +9,7 @@ let s:handlers = {}
 " Spawn is a wrapper around s:spawn. It can be executed by other files and
 " scripts if needed. Desc defines the description for printing the status
 " during the job execution (useful for statusline integration).
-function! go#jobcontrol#Spawn(bang, desc, args)
+function! go#jobcontrol#Spawn(bang, desc, args) abort
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
@@ -41,7 +41,7 @@ function! go#jobcontrol#Statusline() abort
 endfunction
 
 " AddHandler adds a on_exit callback handler and returns the id.
-function! go#jobcontrol#AddHandler(handler)
+function! go#jobcontrol#AddHandler(handler) abort
   let i = len(s:handlers)
   while has_key(s:handlers, string(i))
     let i += 1
@@ -52,7 +52,7 @@ function! go#jobcontrol#AddHandler(handler)
 endfunction
 
 " RemoveHandler removes a callback handler by id.
-function! go#jobcontrol#RemoveHandler(id)
+function! go#jobcontrol#RemoveHandler(id) abort
   unlet s:handlers[a:id]
 endfunction
 
@@ -60,7 +60,7 @@ endfunction
 " a job is started a reference will be stored inside s:jobs. spawn changes the
 " GOPATH when g:go_autodetect_gopath is enabled. The job is started inside the
 " current files folder.
-function! s:spawn(bang, desc, args)
+function! s:spawn(bang, desc, args) abort
   let job = { 
         \ 'desc': a:desc, 
         \ 'bang': a:bang, 
@@ -113,7 +113,7 @@ endfunction
 " references and also displaying errors in the quickfix window collected by
 " on_stderr handler. If there are no errors and a quickfix window is open,
 " it'll be closed.
-function! s:on_exit(job_id, exit_status)
+function! s:on_exit(job_id, exit_status) abort
   let std_combined = self.stderr + self.stdout
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -159,7 +159,7 @@ function! s:on_exit(job_id, exit_status)
 endfunction
 
 " callback_handlers_on_exit runs all handlers for job on exit event.
-function! s:callback_handlers_on_exit(job, exit_status, data)
+function! s:callback_handlers_on_exit(job, exit_status, data) abort
   if empty(s:handlers)
     return
   endif
@@ -171,18 +171,18 @@ endfunction
 
 " on_stdout is the stdout handler for jobstart(). It collects the output of
 " stderr and stores them to the jobs internal stdout list. 
-function! s:on_stdout(job_id, data)
+function! s:on_stdout(job_id, data) abort
   call extend(self.stdout, a:data)
 endfunction
 
 " on_stderr is the stderr handler for jobstart(). It collects the output of
 " stderr and stores them to the jobs internal stderr list.
-function! s:on_stderr(job_id, data)
+function! s:on_stderr(job_id, data) abort
   call extend(self.stderr, a:data)
 endfunction
 
 " abort_all aborts all current jobs created with s:spawn()
-function! s:abort_all()
+function! s:abort_all() abort
   if empty(s:jobs)
     return
   endif
@@ -198,7 +198,7 @@ endfunction
 
 " abort aborts the job with the given name, where name is the first argument
 " passed to s:spawn()
-function! s:abort(path)
+function! s:abort(path) abort
   if empty(s:jobs)
     return
   endif
