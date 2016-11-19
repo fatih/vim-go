@@ -126,6 +126,10 @@ endfunction
 " ============================================================================
 "
 function! s:echo_go_info()
+  if !get(g:, "go_echo_go_info", 1)
+    return
+  endif
+
   if !exists('v:completed_item') || empty(v:completed_item)
     return
   endif
