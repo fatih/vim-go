@@ -58,7 +58,16 @@ FEATURES:
 * *New*: Statusline function: `go#statusline#Show()` which can be plugged into
   the statusline bar. Works only with vim 8.0. It shows all asynchronously
   called functions status real time.  Checkout it in action:
-  https://twitter.com/fatih/status/800473735467847680
+  https://twitter.com/fatih/status/800473735467847680. To enable it add the
+  following to your `vimrc`. If you use lightline, airline, .. check out their
+  respective documentation on how to add a custom function.:
+
+```viml
+" go command status (requires vim-go)
+set statusline+=%#goStatuslineColor#
+set statusline+=%{go#statusline#Show()}
+set statusline+=%*
+```
 
 IMPROVEMENTS:
 
