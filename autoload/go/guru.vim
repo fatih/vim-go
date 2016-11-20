@@ -9,7 +9,7 @@
 "                offset under the cursor
 " example output:
 "  {'cmd' : ['guru', '-json', 'implements', 'demo/demo.go:#66']}
-func! s:guru_cmd(args) range abort
+function! s:guru_cmd(args) range abort
   let mode = a:args.mode
   let format = a:args.format
   let needs_scope = a:args.needs_scope
@@ -106,7 +106,7 @@ func! s:guru_cmd(args) range abort
 endfunction
 
 " sync_guru runs guru in sync mode with the given arguments
-func! s:sync_guru(args) abort
+function! s:sync_guru(args) abort
   let result = s:guru_cmd(a:args)
   if has_key(result, 'err')
     call go#util#EchoError(result.err)
@@ -145,7 +145,7 @@ func! s:sync_guru(args) abort
 endfunc
 
 " async_guru runs guru in async mode with the given arguments
-func! s:async_guru(args) abort
+function! s:async_guru(args) abort
   let result = s:guru_cmd(a:args)
   if has_key(result, 'err')
     call go#util#EchoError(result.err)
@@ -218,7 +218,7 @@ func! s:async_guru(args) abort
 endfunc
 
 " run_guru runs the given guru argument
-function! s:run_guru(args)
+function! s:run_guru(args) abort
   " NOTE(arslan): Having just 'job' is not sufficient as there are still many
   " fixes after vim8 was released. Therefor we also need at minimum the patch
   " 15 which has some core fixes we need (8.0.0015). 
@@ -230,7 +230,7 @@ function! s:run_guru(args)
 endfunction
 
 " Show 'implements' relation for selected package
-function! go#guru#Implements(selected)
+function! go#guru#Implements(selected) abort
   let args = {
         \ 'mode': 'implements',
         \ 'format': 'plain',
@@ -243,7 +243,7 @@ endfunction
 
 " Report the possible constants, global variables, and concrete types that may
 " appear in a value of type error
-function! go#guru#Whicherrs(selected)
+function! go#guru#Whicherrs(selected) abort
   let args = {
         \ 'mode': 'whicherrs',
         \ 'format': 'plain',
@@ -261,7 +261,7 @@ function! go#guru#Whicherrs(selected)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
-function! go#guru#Describe(selected)
+function! go#guru#Describe(selected) abort
   let args = {
         \ 'mode': 'describe',
         \ 'format': 'plain',
@@ -272,7 +272,7 @@ function! go#guru#Describe(selected)
   call s:run_guru(args)
 endfunction
 
-function! go#guru#DescribeInfo()
+function! go#guru#DescribeInfo() abort
   " json_encode() and friends are introduced with this patch (7.4.1304)
   " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
   " nvim: https://github.com/neovim/neovim/pull/4131        
@@ -281,7 +281,7 @@ function! go#guru#DescribeInfo()
     return
   endif
 
-  function! s:info(exit_val, output)
+  function! s:info(exit_val, output) abort
     if a:exit_val != 0
       return
     endif
@@ -379,7 +379,7 @@ function! go#guru#DescribeInfo()
 endfunction
 
 " Show possible targets of selected function call
-function! go#guru#Callees(selected)
+function! go#guru#Callees(selected) abort
   let args = {
         \ 'mode': 'callees',
         \ 'format': 'plain',
@@ -391,7 +391,7 @@ function! go#guru#Callees(selected)
 endfunction
 
 " Show possible callers of selected function
-function! go#guru#Callers(selected)
+function! go#guru#Callers(selected) abort
   let args = {
         \ 'mode': 'callers',
         \ 'format': 'plain',
@@ -403,7 +403,7 @@ function! go#guru#Callers(selected)
 endfunction
 
 " Show path from callgraph root to selected function
-function! go#guru#Callstack(selected)
+function! go#guru#Callstack(selected) abort
   let args = {
         \ 'mode': 'callstack',
         \ 'format': 'plain',
@@ -415,7 +415,7 @@ function! go#guru#Callstack(selected)
 endfunction
 
 " Show free variables of selection
-function! go#guru#Freevars(selected)
+function! go#guru#Freevars(selected) abort
   " Freevars requires a selection
   if a:selected == -1
     call go#util#EchoError("GoFreevars requires a selection (range) of code")
@@ -433,7 +433,7 @@ function! go#guru#Freevars(selected)
 endfunction
 
 " Show send/receive corresponding to selected channel op
-function! go#guru#ChannelPeers(selected)
+function! go#guru#ChannelPeers(selected) abort
   let args = {
         \ 'mode': 'peers',
         \ 'format': 'plain',
@@ -445,7 +445,7 @@ function! go#guru#ChannelPeers(selected)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
-function! go#guru#Referrers(selected)
+function! go#guru#Referrers(selected) abort
   let args = {
         \ 'mode': 'referrers',
         \ 'format': 'plain',
@@ -456,11 +456,11 @@ function! go#guru#Referrers(selected)
   call s:run_guru(args)
 endfunction
 
-function! go#guru#SameIdsTimer()
+function! go#guru#SameIdsTimer() abort
   call timer_start(200, function('go#guru#SameIds'), {'repeat': -1})
 endfunction
 
-function! go#guru#SameIds()
+function! go#guru#SameIds() abort
   " we use matchaddpos() which was introduce with 7.4.330, be sure we have
   " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
   if !exists("*matchaddpos")
@@ -487,7 +487,7 @@ function! go#guru#SameIds()
   call s:run_guru(args)
 endfunction
 
-function! s:same_ids_highlight(exit_val, output)
+function! s:same_ids_highlight(exit_val, output) abort
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
   if a:output[0] !=# '{'
@@ -537,7 +537,7 @@ function! s:same_ids_highlight(exit_val, output)
   endif
 endfunction
 
-function! go#guru#ClearSameIds()
+function! go#guru#ClearSameIds() abort
   let m = getmatches()
   for item in m
     if item['group'] == 'goSameId'
@@ -551,7 +551,7 @@ function! go#guru#ClearSameIds()
   endif
 endfunction
 
-function! go#guru#ToggleSameIds()
+function! go#guru#ToggleSameIds() abort
   if len(getmatches()) != 0 
     call go#guru#ClearSameIds()
   else
@@ -559,7 +559,7 @@ function! go#guru#ToggleSameIds()
   endif
 endfunction
 
-function! go#guru#AutoToogleSameIds()
+function! go#guru#AutoToogleSameIds() abort
   if get(g:, "go_auto_sameids", 0)
     call go#util#EchoProgress("sameids auto highlighting disabled")
     call go#guru#ClearSameIds()
@@ -587,7 +587,7 @@ endfunction
 " We discard line2 and col2 for the first errorformat, because it's not
 " useful and location only has the ability to show one line and column
 " number
-func! s:parse_guru_output(exit_val, output)
+function! s:parse_guru_output(exit_val, output) abort
   if a:exit_val
     call go#util#EchoError(a:output)
     return
@@ -602,7 +602,7 @@ func! s:parse_guru_output(exit_val, output)
   call go#list#Window("locationlist", len(errors))
 endfun
 
-function! go#guru#Scope(...)
+function! go#guru#Scope(...) abort
   if a:0
     if a:0 == 1 && a:1 == '""'
       unlet g:go_guru_scope
@@ -622,7 +622,7 @@ function! go#guru#Scope(...)
   endif
 endfunction
 
-function! go#guru#Tags(...)
+function! go#guru#Tags(...) abort
   if a:0
     if a:0 == 1 && a:1 == '""'
       unlet g:go_guru_tags

@@ -123,7 +123,7 @@ endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
 " the location list
-function! go#lint#Vet(bang, ...)
+function! go#lint#Vet(bang, ...) abort
   call go#cmd#autowrite()
   echon "vim-go: " | echohl Identifier | echon "calling vet..." | echohl None
   if a:0 == 0
@@ -202,7 +202,7 @@ function! go#lint#Errcheck(...) abort
 
 endfunction
 
-function! go#lint#ToggleMetaLinterAutoSave()
+function! go#lint#ToggleMetaLinterAutoSave() abort
   if get(g:, "go_metalinter_autosave", 0)
     let g:go_metalinter_autosave = 0
     call go#util#EchoProgress("auto metalinter disabled")

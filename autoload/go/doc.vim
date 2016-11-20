@@ -12,7 +12,7 @@ if !exists("g:go_doc_options")
   let g:go_doc_options = ""
 endif
 
-function! go#doc#OpenBrowser(...)
+function! go#doc#OpenBrowser(...) abort
   " check if we have gogetdoc as it gives us more and accurate information.
   " Only supported if we have json_decode as it's not worth to parse the plain
   " non-json output of gogetdoc
@@ -58,7 +58,7 @@ function! go#doc#OpenBrowser(...)
   call go#tool#OpenBrowser(godoc_url)
 endfunction
 
-function! go#doc#Open(newmode, mode, ...)
+function! go#doc#Open(newmode, mode, ...) abort
   if len(a:000)
     " check if we have 'godoc' and use it automatically
     let bin_path = go#path#CheckBinPath('godoc')
@@ -80,7 +80,7 @@ function! go#doc#Open(newmode, mode, ...)
   call s:GodocView(a:newmode, a:mode, out)
 endfunction
 
-function! s:GodocView(newposition, position, content)
+function! s:GodocView(newposition, position, content) abort
   " reuse existing buffer window if it exists otherwise create a new one
   if !bufexists(s:buf_nr)
     execute a:newposition
@@ -124,7 +124,7 @@ function! s:GodocView(newposition, position, content)
   noremap <buffer> <silent> <Esc> :<C-U>close<CR>
 endfunction
 
-function! s:gogetdoc(json)
+function! s:gogetdoc(json) abort
   " check if we have 'gogetdoc' and use it automatically
   let bin_path = go#path#CheckBinPath('gogetdoc')
   if empty(bin_path)
@@ -168,7 +168,7 @@ endfunction
 " returns the package and exported name. exported name might be empty.
 " ie: fmt and Println
 " ie: github.com/fatih/set and New
-function! s:godocWord(args)
+function! s:godocWord(args) abort
   if !executable('godoc')
     let msg = "godoc command not found."
     let msg .= "  install with: go get golang.org/x/tools/cmd/godoc"
@@ -207,7 +207,7 @@ function! s:godocWord(args)
   return [pkg, exported_name]
 endfunction
 
-function! s:godocNotFound(content)
+function! s:godocNotFound(content) abort
   if len(a:content) == 0
     return 1
   endif

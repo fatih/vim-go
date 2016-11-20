@@ -4,9 +4,10 @@
 
 IMPROVEMENTS:
 
-* Function calls are now highligted as wel when `g:go_highlight_functions` is enabled [gh-1048]
-* Add completion support for uninported packages. This allows to complete even if the package is not improted [gh-1084]
+* Function calls are now highligted as well when `g:go_highlight_functions` is enabled [gh-1048]
+* Add completion support for unimported packages. This allows to complete even if the package is not imported. By default it's disabled, enable by adding `let g:go_gocode_unimported_packages = 1` [gh-1084]
 * Tools that embeds GOROOT into their binaries do not work when people update their Go version and the GOROOT contains the vesion as part of their path (i.e: `/usr/local/Cellar/go/1.7.2/libexec`, [more info](https://blog.filippo.io/stale-goroot-and-gorebuild/)) . This is now fixed by introducing automatic GOROOT set/unset before each tool invoke. [gh-954]
+* Added new setting `g:go_echo_go_info` to enable/disable printing identifier information when completion is done [gh-1101]
 
 BUG FIXES:
 
@@ -16,6 +17,7 @@ BUG FIXES:
 * Highlight nested structs correctly [gh-1075]
 * Highlight builtin functions correctly if `g:go_highlight_functions` is enabled [gh-1070]
 * Fix `:GoSameIds` highlighting if a new buffer is opened in the same window [gh-1067]
+* Internal: add `abort` to all vim function to return in case of errors [gh-1100]
 
 ## 1.9 (September 13, 2016)
 

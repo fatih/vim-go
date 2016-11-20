@@ -1,7 +1,7 @@
 let s:go_stack = []
 let s:go_stack_level = 0
 
-function! go#def#Jump(mode)
+function! go#def#Jump(mode) abort
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
 
@@ -91,7 +91,7 @@ function! go#def#Jump(mode)
   let $GOPATH = old_gopath
 endfunction
 
-function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data)
+function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data) abort
   if a:exit_status != 0
     return
   endif
@@ -99,7 +99,7 @@ function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data)
   call s:jump_to_declaration(a:data[0], a:mode, a:bin_name)
 endfunction
 
-function! s:jump_to_declaration(out, mode, bin_name)
+function! s:jump_to_declaration(out, mode, bin_name) abort
   let final_out = a:out
   if a:bin_name == "godef"
     " append the type information to the same line so our we can parse it.
@@ -168,7 +168,7 @@ function! s:jump_to_declaration(out, mode, bin_name)
   let &switchbuf = old_switchbuf
 endfunction
 
-function! go#def#SelectStackEntry()
+function! go#def#SelectStackEntry() abort
   let target_window = go#ui#GetReturnWindow()
   if empty(target_window)
     let target_window = winnr()
@@ -183,7 +183,7 @@ function! go#def#SelectStackEntry()
   call go#ui#CloseWindow()
 endfunction
 
-function! go#def#StackUI()
+function! go#def#StackUI() abort
   if len(s:go_stack) == 0
     call go#util#EchoError("godef stack empty")
     return
@@ -218,12 +218,12 @@ function! go#def#StackUI()
   noremap <buffer> <silent> q     :<C-U>call go#ui#CloseWindow()<CR>
 endfunction
 
-function! go#def#StackClear(...)
+function! go#def#StackClear(...) abort
   let s:go_stack = []
   let s:go_stack_level = 0
 endfunction
 
-function! go#def#StackPop(...)
+function! go#def#StackPop(...) abort
   if len(s:go_stack) == 0
     call go#util#EchoError("godef stack empty")
     return
@@ -244,7 +244,7 @@ function! go#def#StackPop(...)
   call go#def#Stack(newLevel + 1)
 endfunction
 
-function! go#def#Stack(...)
+function! go#def#Stack(...) abort
   if len(s:go_stack) == 0
     call go#util#EchoError("godef stack empty")
     return
@@ -280,7 +280,7 @@ function! go#def#Stack(...)
   endif
 endfunction
 
-function s:def_job(args)
+function s:def_job(args) abort
   function! s:error_info_cb(job, exit_status, data) closure
     " do not print anything during async definition search&jump
   endfunction
