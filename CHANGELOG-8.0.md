@@ -54,11 +54,15 @@ FEATURES:
   statusline bar. It shows all asyncronously called functions status real time.
   Checkout it in action:  TODO: insert demo here
 
+* A new `go_echo_command_info` setting is added, which is enabled by default.
+  It's just a switch for disabling messages of commands, such as `:GoBuild`,
+  `:GoTest`, etc.. Useful to *disable* if `go#statusline#Show()` is being used
+  in Statusline, to prevent to see duplicates notifcations.
+
 Improvements:
 
-* goSameId highlighting is now linked to `Search`, which is much more better as
+* goSameId highlighting is now linked to `Search`, which is much more clear as
   it changes according to the users colorscheme
-
 
 BACKWARDS INCOMPATIBILITIES:
 

@@ -22,8 +22,10 @@ function! go#cmd#Build(bang, ...)
   let args = ["build"]  + goargs + [".", "errors"]
 
   if has('job')
-    " TODO(arslan): remove echo's
-    " call go#util#EchoProgress("building dispatched ...")
+    if get(g:, 'go_echo_command_info', 1)
+      call go#util#EchoProgress("building dispatched ...")
+    endif
+
     call s:cmd_job({
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
@@ -92,12 +94,9 @@ function! go#cmd#Run(bang, ...)
   endif
 
   if has('job')
-    " 'term': 'open' case is not implement for +jobs. This means executions
-    " waiting for stdin will not work. That's why we don't do anything. Once
-    " this is implemented we're going to make :GoRun async
-    " call go#util#EchoProgress("running dispatched ...")
-    " call go#job#Buffer(a:bang, {'cmd': ['go', 'run'] + go#tool#Files()})
-    " return
+    " NOTE(arslan): 'term': 'open' case is not implement for +jobs. This means
+    " executions waiting for stdin will not work. That's why we don't do
+    " anything. Once this is implemented we're going to make :GoRun async
   endif
 
   let old_gopath = $GOPATH
@@ -156,7 +155,10 @@ function! go#cmd#Install(bang, ...)
     " escape all shell arguments before we pass it to make
     let goargs = go#util#Shelllist(goargs, 1)
 
-    call go#util#EchoProgress("installing dispatched ...")
+    if get(g:, 'go_echo_command_info', 1)
+      call go#util#EchoProgress("installing dispatched ...")
+    endif
+
     call s:cmd_job({
           \ 'cmd': ['go', 'install'] + goargs,
           \ 'bang': a:bang,
@@ -227,6 +229,14 @@ function! go#cmd#Test(bang, compile, ...)
     call add(args, printf("-timeout=%s", timeout))
   endif
 
+  if get(g:, 'go_echo_command_info', 1)
+    if a:compile
+      echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
+    else
+      echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
+    endif
+  endif
+
   if has('job')
     " use vim's job functionality to call it asynchronously
     let job_args = {
@@ -254,13 +264,6 @@ function! go#cmd#Test(bang, compile, ...)
     endif
     return id
   endif
-
-  if a:compile
-    echon "vim-go: " | echohl Identifier | echon "compiling tests ..." | echohl None
-  else
-    echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
-  endif
-
 
   call go#cmd#autowrite()
   redraw

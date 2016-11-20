@@ -47,7 +47,9 @@ function go#job#Spawn(args)
 
     if has_key(self, 'error_info_cb')
       call self.error_info_cb(l:job, exitval, self.messages)
-    else
+    endif
+
+    if get(g:, 'go_echo_command_info', 1)
       if exitval == 0
         call go#util#EchoSuccess("SUCCESS")
       else
