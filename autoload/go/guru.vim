@@ -115,7 +115,7 @@ endfunc
 " and put it into location list. I believe using errorformat is much more
 " easier to use. If we need more power we can always switch back to parse it
 " via regex.
-func! s:loclistSecond(output)
+func! s:loclistSecond(output) abort
   " backup users errorformat, will be restored once we are finished
   let old_errorformat = &errorformat
 
@@ -135,7 +135,7 @@ func! s:loclistSecond(output)
 endfun
 
 
-function! go#guru#Scope(...)
+function! go#guru#Scope(...) abort
   if a:0
     if a:0 == 1 && a:1 == '""'
       unlet g:go_guru_scope
@@ -155,7 +155,7 @@ function! go#guru#Scope(...)
   endif
 endfunction
 
-function! go#guru#Tags(...)
+function! go#guru#Tags(...) abort
   if a:0
     if a:0 == 1 && a:1 == '""'
       unlet g:go_guru_tags
@@ -177,7 +177,7 @@ endfunction
 
 " Report the possible constants, global variables, and concrete types that may
 " appear in a value of type error
-function! go#guru#Whicherrs(selected)
+function! go#guru#Whicherrs(selected) abort
   let out = s:RunGuru('whicherrs', 'plain', a:selected, 1)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -193,7 +193,7 @@ function! go#guru#Whicherrs(selected)
 endfunction
 
 " Show 'implements' relation for selected package
-function! go#guru#Implements(selected)
+function! go#guru#Implements(selected) abort
   let out = s:RunGuru('implements', 'plain', a:selected, 1)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -204,7 +204,7 @@ function! go#guru#Implements(selected)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
-function! go#guru#Describe(selected)
+function! go#guru#Describe(selected) abort
   let out = s:RunGuru('describe', 'plain', a:selected, 0)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -215,7 +215,7 @@ function! go#guru#Describe(selected)
 endfunction
 
 " Show possible targets of selected function call
-function! go#guru#Callees(selected)
+function! go#guru#Callees(selected) abort
   let out = s:RunGuru('callees', 'plain', a:selected, 1)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -226,7 +226,7 @@ function! go#guru#Callees(selected)
 endfunction
 
 " Show possible callers of selected function
-function! go#guru#Callers(selected)
+function! go#guru#Callers(selected) abort
   let out = s:RunGuru('callers', 'plain', a:selected, 1)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -237,7 +237,7 @@ function! go#guru#Callers(selected)
 endfunction
 
 " Show path from callgraph root to selected function
-function! go#guru#Callstack(selected)
+function! go#guru#Callstack(selected) abort
   let out = s:RunGuru('callstack', 'plain', a:selected, 1)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -248,7 +248,7 @@ function! go#guru#Callstack(selected)
 endfunction
 
 " Show free variables of selection
-function! go#guru#Freevars(selected)
+function! go#guru#Freevars(selected) abort
   " Freevars requires a selection
   if a:selected == -1
     call go#util#EchoError("GoFreevars requires a selection (range) of code")
@@ -265,7 +265,7 @@ function! go#guru#Freevars(selected)
 endfunction
 
 " Show send/receive corresponding to selected channel op
-function! go#guru#ChannelPeers(selected)
+function! go#guru#ChannelPeers(selected) abort
   let out = s:RunGuru('peers', 'plain', a:selected, 1)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -276,7 +276,7 @@ function! go#guru#ChannelPeers(selected)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
-function! go#guru#Referrers(selected)
+function! go#guru#Referrers(selected) abort
   let out = s:RunGuru('referrers', 'plain', a:selected, 0)
   if has_key(out, 'err')
     call go#util#EchoError(out.err)
@@ -286,7 +286,7 @@ function! go#guru#Referrers(selected)
   call s:loclistSecond(out.out)
 endfunction
 
-function! go#guru#What(selected)
+function! go#guru#What(selected) abort
   " json_encode() and friends are introduced with this patch (7.4.1304)
   " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
   " nvim: https://github.com/neovim/neovim/pull/4131        
@@ -308,7 +308,7 @@ function! go#guru#What(selected)
   return result
 endfunction
 
-function! go#guru#AutoToogleSameIds()
+function! go#guru#AutoToogleSameIds() abort
   if get(g:, "go_auto_sameids", 0)
     call go#util#EchoProgress("sameids auto highlighting disabled")
     call go#guru#ClearSameIds()
@@ -320,7 +320,7 @@ function! go#guru#AutoToogleSameIds()
   let g:go_auto_sameids = 1
 endfunction
 
-function! go#guru#SameIds(selected)
+function! go#guru#SameIds(selected) abort
   " we use matchaddpos() which was introduce with 7.4.330, be sure we have
   " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
   if !exists("*matchaddpos")
@@ -371,7 +371,7 @@ function! go#guru#SameIds(selected)
   endif
 endfunction
 
-function! go#guru#ClearSameIds()
+function! go#guru#ClearSameIds() abort
   let m = getmatches()
   for item in m
     if item['group'] == 'goSameId'
@@ -385,7 +385,7 @@ function! go#guru#ClearSameIds()
   endif
 endfunction
 
-function! go#guru#ToggleSameIds(selected)
+function! go#guru#ToggleSameIds(selected) abort
   if len(getmatches()) != 0 
     call go#guru#ClearSameIds()
   else

@@ -2,7 +2,7 @@ if !exists("g:go_dispatch_enabled")
   let g:go_dispatch_enabled = 0
 endif
 
-function! go#cmd#autowrite()
+function! go#cmd#autowrite() abort
   if &autowrite == 1
     silent wall
   endif
@@ -13,7 +13,7 @@ endfunction
 " an editor so the best is to build it to catch errors and fix them. By
 " default it tries to call simply 'go build', but it first tries to get all
 " dependent files for the current folder and passes it to go build.
-function! go#cmd#Build(bang, ...)
+function! go#cmd#Build(bang, ...) abort
   " expand all wildcards(i.e: '%' to the current file name)
   let goargs = map(copy(a:000), "expand(v:val)")
 
@@ -75,7 +75,7 @@ endfunction
 
 
 " Run runs the current file (and their dependencies if any) in a new terminal.
-function! go#cmd#RunTerm(bang, mode, files)
+function! go#cmd#RunTerm(bang, mode, files) abort
   if empty(a:files)
     let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
   else
@@ -88,7 +88,7 @@ endfunction
 " This is intented to test small programs and play with them. It's not
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
-function! go#cmd#Run(bang, ...)
+function! go#cmd#Run(bang, ...) abort
   if has('nvim')
     call go#cmd#RunTerm(a:bang, '', a:000)
     return
@@ -143,7 +143,7 @@ endfunction
 " Install installs the package by simple calling 'go install'. If any argument
 " is given(which are passed directly to 'go install') it tries to install those
 " packages. Errors are populated in the location window.
-function! go#cmd#Install(bang, ...)
+function! go#cmd#Install(bang, ...) abort
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
   let default_makeprg = &makeprg
@@ -189,7 +189,7 @@ endfunction
 " Test runs `go test` in the current directory. If compile is true, it'll
 " compile the tests instead of running them (useful to catch errors in the
 " test files). Any other argument is appendend to the final `go test` command
-function! go#cmd#Test(bang, compile, ...)
+function! go#cmd#Test(bang, compile, ...) abort
   let args = ["test"]
 
   " don't run the test, only compile it. Useful to capture and fix errors.
@@ -276,7 +276,7 @@ endfunction
 
 " Testfunc runs a single test that surrounds the current cursor position.
 " Arguments are passed to the `go test` command.
-function! go#cmd#TestFunc(bang, ...)
+function! go#cmd#TestFunc(bang, ...) abort
   " search flags legend (used only)
   " 'b' search backward instead of forward
   " 'c' accept a match at the cursor position
@@ -304,7 +304,7 @@ function! go#cmd#TestFunc(bang, ...)
 endfunction
 
 " Generate runs 'go generate' in similar fashion to go#cmd#Build()
-function! go#cmd#Generate(bang, ...)
+function! go#cmd#Generate(bang, ...) abort
   let default_makeprg = &makeprg
 
   let old_gopath = $GOPATH
@@ -351,7 +351,7 @@ endfunction
 " -----------------------
 let s:test_compile_handlers = {}
 
-function! s:test_compile_handler(job, exit_status, data)
+function! s:test_compile_handler(job, exit_status, data) abort
   if !has_key(s:test_compile_handlers, a:job.id)
     return
   endif

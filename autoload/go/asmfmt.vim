@@ -19,7 +19,7 @@ let s:got_fmt_error = 0
 
 " This is a trimmed-down version of the logic in fmt.vim.
 
-function! go#asmfmt#Format()
+function! go#asmfmt#Format() abort
   " Save state.
   let l:curw = winsaveview()
 
@@ -55,7 +55,7 @@ function! go#asmfmt#Format()
   call winrestview(l:curw)
 endfunction
 
-function! go#asmfmt#ToggleAsmFmtAutoSave()
+function! go#asmfmt#ToggleAsmFmtAutoSave() abort
   if get(g:, "go_asmfmt_autosave", 1)
     let g:go_asmfmt_autosave = 0
     call go#util#EchoProgress("auto asmfmt disabled")
