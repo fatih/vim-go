@@ -29,12 +29,12 @@ function! go#lint#Gometa(autosave, ...) abort
     let goargs = go#util#Shelljoin(a:000)
   endif
 
-  let meta_command = "gometalinter --disable-all"
   if a:autosave || empty(g:go_metalinter_command)
     let bin_path = go#path#CheckBinPath("gometalinter")
     if empty(bin_path)
       return
     endif
+    let meta_command = bin_path . " --disable-all"
 
     if a:autosave
       " include only messages for the active buffer
