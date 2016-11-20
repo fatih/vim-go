@@ -1399,9 +1399,11 @@ to an autocompletion proposals. By default it is enabled.
                                               *'g:go_gocode_unimported_packages'*
 
 Specifies whether `gocode` should include suggestions from unimported packages.
-By default it is enabled
+By default it is disabled.
 >
-  let g:go_gocode_unimported_packages = 1
+  let g:go_gocode_unimported_packages = 0
+<
+
                                                    *'g:go_gocode_socket_type'*
 
 Specifies whether `gocode` should use a different socket type. By default
