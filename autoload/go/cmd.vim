@@ -382,8 +382,10 @@ endfunction
 " ---------------------
 
 function s:cmd_job(args) abort
-  let import_path =  go#package#ImportPath(expand('%:p:h'))
-  call go#statusline#Update(import_path, {
+  let status_dir = expand('%:p:h')
+  let started_at = reltime()
+
+  call go#statusline#Update(status_dir, {
         \ 'desc': "current status",
         \ 'type': a:args.cmd[1],
         \ 'state': "started",
@@ -403,7 +405,12 @@ function s:cmd_job(args) abort
       let status.state = "failed"
     endif
 
-    call go#statusline#Update(import_path, status)
+    let elapsed_time = reltimestr(reltime(started_at))
+    " strip whitespace
+    let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
+    let status.state .= printf(" (%ss)", elapsed_time)
+
+    call go#statusline#Update(status_dir, status)
   endfunction
 
   let a:args.error_info_cb = function('s:error_info_cb')

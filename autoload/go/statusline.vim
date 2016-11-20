@@ -15,8 +15,8 @@ let s:statuses = {}
 " timer_id for cleaner
 let s:timer_id = 0
 
-" last_text is the last generated text
-let s:last_text = ""
+" last_status stores the last generated text per status
+let s:last_status = ""
 
 " Show returns the current status of the job for 20 seconds (configurable). It
 " displays it in form of 'desc: [type|state]' if there is any state available,
@@ -25,8 +25,8 @@ let s:last_text = ""
 function! go#statusline#Show() abort
   " lazy initialiation of the cleaner
   if !s:timer_id
-    " clean every 20 seconds all statuses
-    let interval = get(g:, 'go_statusline_duration', 20000)
+    " clean every 60 seconds all statuses
+    let interval = get(g:, 'go_statusline_duration', 60000)
     let s:timer_id = timer_start(interval, function('go#statusline#Clear'), {'repeat': -1})
   endif
 
@@ -35,12 +35,13 @@ function! go#statusline#Show() abort
     return ''
   endif
 
-  let import_path =  go#package#ImportPath(expand('%:p:h'))
-  if !has_key(s:statuses, import_path)
+  let status_dir =  expand('%:p:h')
+
+  if !has_key(s:statuses, status_dir)
     return ''
   endif
 
-  let status = s:statuses[import_path]
+  let status = s:statuses[status_dir]
   if !has_key(status, 'desc') || !has_key(status, 'state') || !has_key(status, 'type')
     return ''
   endif
@@ -51,25 +52,25 @@ function! go#statusline#Show() abort
   endif
 
   " only update highlight if status has changed.
-  if status_text != s:last_text 
-    if status.state == "success" || status.state == "finished"
+  if status_text != s:last_status
+    if status.state =~ "success" || status.state =~ "finished"
       hi goStatusLineColor cterm=bold ctermbg=76 ctermfg=22
-    elseif status.state == "started" || status.state == "analysing"
+    elseif status.state =~ "started" || status.state =~ "analysing"
       hi goStatusLineColor cterm=bold ctermbg=208 ctermfg=88
-    elseif status.state == "failed"
+    elseif status.state =~ "failed"
       hi goStatusLineColor cterm=bold ctermbg=196 ctermfg=52
     endif
   endif
 
-  let s:last_text = status_text
+  let s:last_status = status_text
   return status_text
 endfunction
 
-" Update updates (adds) the statusline for the given import_path with the
+" Update updates (adds) the statusline for the given status_dir with the
 " given status dict. It overrides any previously set status.
-function! go#statusline#Update(import_path, status) abort
+function! go#statusline#Update(status_dir, status) abort
   let a:status.created_at = reltime()
-  let s:statuses[a:import_path] = a:status
+  let s:statuses[a:status_dir] = a:status
 
   " force to update the statusline, otherwise the user needs to move the
   " cursor
@@ -89,13 +90,13 @@ endfunction
 " Clear clears all currently stored statusline data. The timer_id argument is
 " just a placeholder so we can pass it to a timer_start() function if needed.
 function! go#statusline#Clear(timer_id) abort
-  for [import_path, status] in items(s:statuses)
+  for [status_dir, status] in items(s:statuses)
     let elapsed_time = reltimestr(reltime(status.created_at))
     " strip whitespace
     let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
 
     if str2nr(elapsed_time) > 10
-      call remove(s:statuses, import_path)
+      call remove(s:statuses, status_dir)
     endif
   endfor
 
