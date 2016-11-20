@@ -1441,6 +1441,13 @@ the `hello_world.go` file is used.
 
       let g:go_decls_includes = 'func,type'
 <
+                                                       *'g:go_echo_go_info'*
+
+Use this option to show the identifier information when completion is done. By
+default it's enabled >
+
+      let g:go_echo_go_info = 1
+<
 ==============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
 
