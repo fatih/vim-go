@@ -29,37 +29,43 @@ function! go#lint#Gometa(autosave, ...) abort
     let goargs = go#util#Shelljoin(a:000)
   endif
 
-  let meta_command = "gometalinter --disable-all"
+  let bin_path = go#path#CheckBinPath("gometalinter")
+  if empty(bin_path)
+    return
+  endif
+
+  let cmd = [bin_path]
+  let cmd += ["--disable-all"]
+
   if a:autosave || empty(g:go_metalinter_command)
-    let bin_path = go#path#CheckBinPath("gometalinter")
-    if empty(bin_path)
-      return
-    endif
-
-    if a:autosave
-      " include only messages for the active buffer
-      let meta_command .= " --include='^" . expand('%:p') . ".*$'"
-    endif
-
     " linters
     let linters = a:autosave ? g:go_metalinter_autosave_enabled : g:go_metalinter_enabled
     for linter in linters
-      let meta_command .= " --enable=".linter
+      let cmd += ["--enable=".linter]
     endfor
 
-    " deadline
-    let meta_command .= " --deadline=" . g:go_metalinter_deadline
-
     " path
-    let meta_command .=  " " . goargs
+    let cmd += [expand('%:p:h')]
   else
     " the user wants something else, let us use it.
-    let meta_command = g:go_metalinter_command
+    let cmd += [split(g:go_metalinter_command, " ")]
   endif
 
-  " comment out the following two lines for debugging
-  " echo meta_command
-  " return
+  if has('job') && has('lambda')
+    call go#util#EchoProgress("linting started ...")
+    call s:lint_job({'cmd': cmd})
+    return
+  endif
+
+  " we add deadline only for sync mode
+  let cmd += ["--deadline=" . g:go_metalinter_deadline]
+  if a:autosave
+    " include only messages for the active buffer
+    let cmd += ["--include='^" . expand('%:p') . ".*$'"]
+  endif
+
+
+  let meta_command = join(cmd, " ")
 
   let out = go#tool#ExecuteInDir(meta_command)
 
@@ -205,6 +211,45 @@ function! go#lint#ToggleMetaLinterAutoSave() abort
 
   let g:go_metalinter_autosave = 1
   call go#util#EchoProgress("auto metalinter enabled")
+endfunction
+
+function s:lint_job(args)
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
+  let l:listtype = go#list#Type("quickfix")
+  let l:errformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
+
+  function! s:callback(chan, msg) closure
+    let old_errorformat = &errorformat
+    let &errorformat = l:errformat
+    caddexpr a:msg
+    let &errorformat = old_errorformat
+
+    " TODO(arslan): cursor still jumps to first error even If I don't want
+    " it. Seems like there is a regression somewhere, but not sure where.
+    copen
+  endfunction
+
+  function! s:close_cb(chan) closure
+    let errors = go#list#Get(l:listtype)
+    if empty(errors) 
+      call go#list#Window(l:listtype, len(errors))
+    endif
+
+    call go#util#EchoSuccess("linting finished")
+  endfunction
+
+  let start_options = {
+        \ 'callback': function("s:callback"),
+        \ 'close_cb': function("s:close_cb"),
+        \ }
+
+  call job_start(a:args.cmd, start_options)
+
+  call go#list#Clean(l:listtype)
+  call go#util#EchoProgress("linting started ...")
+
 endfunction
 
 " vim: sw=2 ts=2 et
