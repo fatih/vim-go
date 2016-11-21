@@ -17,29 +17,6 @@ function! go#jobcontrol#Spawn(bang, desc, args) abort
   return job.id
 endfunction
 
-" Statusline returns the current status of the job
-function! go#jobcontrol#Statusline() abort
-  if empty(s:jobs)
-    return ''
-  endif
-
-  let import_path =  go#package#ImportPath(expand('%:p:h'))
-
-  for job in values(s:jobs)
-    if job.importpath != import_path
-      continue
-    endif
-
-    if job.state == "SUCCESS"
-      return ''
-    endif
-
-    return printf("%s ... [%s]", job.desc, job.state)
-  endfor
-
-  return ''
-endfunction
-
 " AddHandler adds a on_exit callback handler and returns the id.
 function! go#jobcontrol#AddHandler(handler) abort
   let i = len(s:handlers)
@@ -179,36 +156,6 @@ endfunction
 " stderr and stores them to the jobs internal stderr list.
 function! s:on_stderr(job_id, data) abort
   call extend(self.stderr, a:data)
-endfunction
-
-" abort_all aborts all current jobs created with s:spawn()
-function! s:abort_all() abort
-  if empty(s:jobs)
-    return
-  endif
-
-  for id in keys(s:jobs)
-    if id > 0
-      silent! call jobstop(id)
-    endif
-  endfor
-
-  let s:jobs = {}
-endfunction
-
-" abort aborts the job with the given name, where name is the first argument
-" passed to s:spawn()
-function! s:abort(path) abort
-  if empty(s:jobs)
-    return
-  endif
-
-  for job in values(s:jobs)
-    if job.importpath == path && job.id > 0
-      silent! call jobstop(job.id)
-      unlet s:jobs['job.id']
-    endif
-  endfor
 endfunction
 
 " vim: sw=2 ts=2 et
