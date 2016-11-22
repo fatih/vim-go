@@ -5,9 +5,8 @@ FEATURES:
 * Vim 8.0 support! This is the initial version to add Vim 8.0 based support to
   all basic commands (check out below for more information). With time we'll
   going to extend it to other commands. All the features are only enabled if
-  you have at least Vim 8.0 (at least version `8.0.0093` recommended due the
-  recent fixes). Backwards compatible with Vim 7.4.xx. If you see any
-  problems, please open an issue.
+  you have at least Vim 8.0.0087. Backwards compatible with Vim 7.4.x.
+  If you see any problems, please open an issue.
 
 * We have now a [logo for vim-go](https://github.com/fatih/vim-go/blob/master/assets/vim-go.png)! Thanks to @egonelbre for his work on this. 
 
