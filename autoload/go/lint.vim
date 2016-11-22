@@ -51,7 +51,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += [split(g:go_metalinter_command, " ")]
   endif
 
-  if has('job') && has('lambda')
+  if go#util#has_job() && has('lambda')
     call go#util#EchoProgress("linting started ...")
     call s:lint_job({'cmd': cmd})
     return

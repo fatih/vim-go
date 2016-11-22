@@ -44,7 +44,7 @@ function! go#coverage#Buffer(bang, ...) abort
   let s:toggle = 1
   let l:tmpname = tempname()
 
-  if has('job')
+  if go#util#has_job()
     call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
           \ 'custom_cb': function('s:coverage_callback', [l:tmpname]),
@@ -104,7 +104,7 @@ endfunction
 " a new HTML coverage page from that profile in a new browser
 function! go#coverage#Browser(bang, ...) abort
   let l:tmpname = tempname()
-  if has('job')
+  if go#util#has_job()
     call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
           \ 'custom_cb': function('s:coverage_browser_callback', [l:tmpname]),

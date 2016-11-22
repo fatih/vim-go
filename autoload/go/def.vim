@@ -55,7 +55,7 @@ function! go#def#Jump(mode) abort
     let fname = fname.':#'.go#util#OffsetCursor()
     call extend(cmd, ["definition", fname])
 
-    if has('job')
+    if go#util#has_job()
       let l:spawn_args = {
             \ 'cmd': cmd,
             \ 'custom_cb': function('s:jump_to_declaration_cb', [a:mode, bin_name]),

@@ -21,7 +21,7 @@ function! go#cmd#Build(bang, ...) abort
   " placeholder with the current folder (indicated with '.')
   let args = ["build"]  + goargs + [".", "errors"]
 
-  if has('job')
+  if go#util#has_job()
     if get(g:, 'go_echo_command_info', 1)
       call go#util#EchoProgress("building dispatched ...")
     endif
@@ -93,7 +93,7 @@ function! go#cmd#Run(bang, ...) abort
     return
   endif
 
-  if has('job')
+  if go#util#has_job()
     " NOTE(arslan): 'term': 'open' case is not implement for +jobs. This means
     " executions waiting for stdin will not work. That's why we don't do
     " anything. Once this is implemented we're going to make :GoRun async
@@ -148,7 +148,7 @@ endfunction
 " those packages. Errors are populated in the location window.
 function! go#cmd#Install(bang, ...) abort
   " use vim's job functionality to call it asynchronously
-  if has('job')
+  if go#util#has_job()
     " expand all wildcards(i.e: '%' to the current file name)
     let goargs = map(copy(a:000), "expand(v:val)")
 
@@ -237,7 +237,7 @@ function! go#cmd#Test(bang, compile, ...) abort
     endif
   endif
 
-  if has('job')
+  if go#util#has_job()
     " use vim's job functionality to call it asynchronously
     let job_args = {
           \ 'cmd': ['go'] + args,
