@@ -307,19 +307,19 @@ else
   syn keyword goDeclaration func
 endif
 hi def link     goFunction          Function
-hi def link     goFunctionCall      Type
+hi def link     goFunctionCall      Function
 
 " Methods;
 if g:go_highlight_methods != 0
   syn match goMethodCall            /\.\w\+\ze(/hs=s+1
 endif
-hi def link     goMethodCall        Type
+hi def link     goMethodCall        Function
 
 " Fields;
 if g:go_highlight_fields != 0
   syn match goField                 /\.\w\+\([.\ \n\r\:\)\[,]\)\@=/hs=s+1
 endif
-hi def link    goField              Identifier
+hi def link    goField              Type
 
 " Structs & Interfaces;
 if g:go_highlight_types != 0
