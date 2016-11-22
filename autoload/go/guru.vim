@@ -281,7 +281,7 @@ function! go#guru#DescribeInfo() abort
     return
   endif
 
-  function! s:info(exit_val, output) abort
+  function! s:info(exit_val, output)
     if a:exit_val != 0
       return
     endif
