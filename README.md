@@ -46,10 +46,8 @@ disabled/enabled easily.
 * Custom vim text objects such as `a function` or `inner function`
   list.
 * Jump to function or type declarations with `:GoDecls` or `:GoDeclsDir`
-* A async launcher for the go command is implemented for Neovim, fully async
-  building and testing (beta).
-* Integrated with the Neovim terminal, launch `:GoRun` and other go commands
-  in their own new terminal. (beta)
+* Vim 8.0 support. Async execution for most commands, various underlying improvements.
+* NeoVim support (beta). Async execution for some commands.
 * Alternate between implementation and test code with `:GoAlternate`
 
 Checkout the official [tutorial](https://github.com/fatih/vim-go-tutorial)
