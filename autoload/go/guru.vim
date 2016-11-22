@@ -290,12 +290,12 @@ function! go#guru#DescribeInfo() abort
       return
     endif
 
-    if empty(a:output) || type(a:output) != v:t_string
+    if empty(a:output) || type(a:output) != type("")
       return
     endif
 
     let result = json_decode(a:output)
-    if type(result) != v:t_dict
+    if type(result) != type({})
       call go#util#EchoError(printf("malformed output from guru: %s", a:output))
       return
     endif
@@ -498,7 +498,7 @@ function! s:same_ids_highlight(exit_val, output) abort
   endif
 
   let result = json_decode(a:output)
-  if type(result) != v:t_dict && !get(g:, 'go_auto_sameids', 0)
+  if type(result) != type({}) && !get(g:, 'go_auto_sameids', 0)
     call go#util#EchoError("malformed output from guru")
     return
   endif

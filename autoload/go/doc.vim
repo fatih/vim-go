@@ -25,7 +25,7 @@ function! go#doc#OpenBrowser(...) abort
     endif
 
     let out = json_decode(json_out)
-    if type(out) != v:t_dict
+    if type(out) != type({})
       call go#util#EchoError("gogetdoc output is malformed")
     endif
 
