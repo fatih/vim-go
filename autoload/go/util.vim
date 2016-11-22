@@ -43,6 +43,12 @@ function! go#util#IsWin() abort
   return 0
 endfunction
 
+function! go#util#has_job() abort
+  " job was introduced in 7.4.xxx however there are multiple bug fixes and one
+  " of the latest is 8.0.0087 which is required for a stable async API.
+  return has('job') && has("patch-8.0.0087")
+endfunction
+
 let s:env_cache = {}
 
 " env returns the go environment variable for the given key. Where key can be

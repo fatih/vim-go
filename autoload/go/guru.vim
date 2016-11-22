@@ -82,7 +82,7 @@ function! s:guru_cmd(args) range abort
     let scopes = go#util#StripTrailingSlash(scopes)
 
     " create shell-safe entries of the list
-    if !has('job') | let scopes = go#util#Shelllist(scopes) | endif
+    if !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
 
     " guru expect a comma-separated list of patterns, construct it
     let l:scope = join(scopes, ",")
@@ -219,10 +219,7 @@ endfunc
 
 " run_guru runs the given guru argument
 function! s:run_guru(args) abort
-  " NOTE(arslan): Having just 'job' is not sufficient as there are still many
-  " fixes after vim8 was released. Therefor we also need at minimum the patch
-  " 15 which has some core fixes we need (8.0.0015). 
-  if has('job') && has("patch15")
+  if go#util#has_job()
     return s:async_guru(a:args)
   endif
 
