@@ -218,7 +218,7 @@ function! go#cmd#Test(bang, compile, ...) abort
   if a:0
     " expand all wildcards(i.e: '%' to the current file name)
     let goargs = map(copy(a:000), "expand(v:val)")
-    if !has('nvim')
+    if !(has('nvim') || go#util#has_job())
       let goargs = go#util#Shelllist(goargs, 1)
     endif
 
