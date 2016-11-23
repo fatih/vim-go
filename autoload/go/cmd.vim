@@ -1,6 +1,6 @@
 function! go#cmd#autowrite() abort
   if &autowrite == 1
-    silent wall
+    silent! wall
   endif
 endfunction
 
