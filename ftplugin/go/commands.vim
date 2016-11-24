@@ -25,7 +25,7 @@ command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToogleSameIds()
 " -- tool
 command! -nargs=0 GoFiles echo go#tool#Files()
 command! -nargs=0 GoDeps echo go#tool#Deps()
-command! -nargs=0 GoInfo call go#guru#DescribeInfo()
+command! -nargs=* GoInfo call go#tool#Info(0)
 command! -nargs=0 GoAutoTypeInfoToggle call go#complete#ToggleAutoTypeInfo()
 
 " -- cmd

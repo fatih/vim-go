@@ -327,7 +327,9 @@ CTRL-t
 :GoInfo
     Show type information about the identifier under the cursor. For example
     putting it above a function call is going to show the full function
-    signature. It uses gocode to get the type informations.
+    signature. By default it uses `gocode` to get the type informations. To
+    change the underlying tool from `gocode` to another tool, see
+    |g:go_info_mode|.
 
 
                                                                   *:GoInstall*
@@ -996,6 +998,16 @@ cursor automatically. Whenever the cursor changes the type info will be
 updated. By default it's disabled.
 >
   let g:go_auto_type_info = 0
+<
+
+                                                            *'g:go_info_mode'*
+
+Use this option to define the command to be used for |:GoInfo|. By default
+`gocode` is being used as it's the fastest option. But one might also use
+`guru` as it's covers more cases and is more accurate.  Current valid options
+are: `[gocode, guru]` >
+
+  let g:go_info_mode = 'gocode'
 <
                                                          *'g:go_auto_sameids'*
 
