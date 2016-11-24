@@ -89,6 +89,7 @@ IMPROVEMENTS:
   being used in Statusline, to prevent to see duplicates notifications.
 * goSameId highlighting is now linked to `Search`, which is much more clear as
   it changes according to the users colorscheme
+* Add plug mapping `(go-lint)` for :GoLint [gh-1089]
 
 
 BUG FIXES:
