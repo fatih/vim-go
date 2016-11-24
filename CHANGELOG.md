@@ -14,7 +14,7 @@ FEATURES:
   it echoes the status. For a better experience use the statusline information
   (more info below)
 
-* `:GoCoverage` and `:GoCoverage` commands are fully async.
+* `:GoCoverage` and `:GoCoverageBrowser` commands are fully async.
 * `:GoDef` is fully async if `guru` is used as command.
 * `:GoRename` is fully async .
 
