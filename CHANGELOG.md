@@ -8,6 +8,7 @@ IMPROVEMENTS:
 BUG FIXES:
 
 * Always use full path to detect packages to be shown in statusline [gh-1121]
+* Use `echom` to persist errors in case of multiple echos [gh-1122]
 
 ## 1.10 (November 24, 2016)
 
