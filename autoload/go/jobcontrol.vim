@@ -99,9 +99,10 @@ function! s:on_exit(job_id, exit_status) abort
 
   call s:callback_handlers_on_exit(s:jobs[a:job_id], a:exit_status, std_combined)
 
+  let l:listtype = go#list#Type("quickfix")
   if a:exit_status == 0
-    call go#list#Clean(0)
-    call go#list#Window(0)
+    call go#list#Clean(l:listtype)
+    call go#list#Window(l:listtype)
 
     let self.state = "SUCCESS"
     call go#util#EchoSuccess("SUCCESS")
@@ -126,7 +127,6 @@ function! s:on_exit(job_id, exit_status) abort
 
   " if we are still in the same windows show the list
   if self.winnr == winnr()
-    let l:listtype = "locationlist"
     call go#list#Populate(l:listtype, errors)
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !self.bang
