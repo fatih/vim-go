@@ -161,7 +161,7 @@ function! go#path#CheckBinPath(binpath) abort
     " just get the basename
     let basename = fnamemodify(binpath, ":t")
     if !executable(basename)
-        echo "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
+        echom "vim-go: could not find '" . basename . "'. Run :GoInstallBinaries to fix it."
         " restore back!
         let $PATH = old_path
         return ""
