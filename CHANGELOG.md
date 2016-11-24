@@ -1,3 +1,9 @@
+## 1.11 - Unplanned
+
+IMPROVEMENTS:
+
+* Add `statusline` support for `:GoMetaLinter` [gh-1120]
+
 ## 1.10 (November 24, 2016)
 
 FEATURES:
