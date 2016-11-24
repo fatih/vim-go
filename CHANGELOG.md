@@ -9,7 +9,6 @@ FEATURES:
   If you see any problems, please open an issue.
 
 * We have now a [logo for vim-go](https://github.com/fatih/vim-go/blob/master/assets/vim-go.png)! Thanks to @egonelbre for his work on this. 
-
 * `:GoBuild`, `:GoTest`, `:GoTestCompile`, `:GoInstall` commands are now fully
   async. Async means it doesn't block your UI anymore. If the command finished
   it echoes the status. For a better experience use the statusline information
