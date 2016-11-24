@@ -57,7 +57,7 @@ if get(g:, "go_textobj_enabled", 1)
 endif
 
 if get(g:, "go_auto_type_info", 0) || get(g:, "go_auto_sameids", 0)
-  setlocal updatetime=800
+  let &l:updatetime= get(g:, "go_updatetime", 800)
 endif
 
 " NOTE(arslan): experimental, disabled by default, doesn't work well. No
