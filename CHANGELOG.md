@@ -1,4 +1,4 @@
-## 1.11 (November 24, 2016)
+## 1.10 (November 24, 2016)
 
 FEATURES:
 
