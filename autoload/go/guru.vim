@@ -152,7 +152,7 @@ function! s:async_guru(args) abort
     return
   endif
 
-  let import_path =  go#package#ImportPath(expand('%:p:h'))
+  let status_dir =  expand('%:p:h')
   let statusline_type = printf("%s", a:args.mode)
 
   if !has_key(a:args, 'disable_progress')
@@ -188,7 +188,7 @@ function! s:async_guru(args) abort
       let status.state = "failed"
     endif
 
-    call go#statusline#Update(import_path, status)
+    call go#statusline#Update(status_dir, status)
 
     if has_key(a:args, 'custom_parse')
       call a:args.custom_parse(l:info.exitval, out)
@@ -208,7 +208,7 @@ function! s:async_guru(args) abort
     let l:start_options.in_name = l:tmpname
   endif
 
-  call go#statusline#Update(import_path, {
+  call go#statusline#Update(status_dir, {
         \ 'desc': "current status",
         \ 'type': statusline_type,
         \ 'state': "analysing",
