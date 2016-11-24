@@ -2,7 +2,7 @@
 
 FEATURES:
 
-* Vim 8.0 support! This is the initial version to add Vim 8.0 based support to
+* **Vim 8.0 support!** This is the initial version to add Vim 8.0 based support to
   all basic commands (check out below for more information). With time we'll
   going to extend it to other commands. All the features are only enabled if
   you have at least Vim 8.0.0087. Backwards compatible with Vim 7.4.x.
@@ -54,7 +54,7 @@ FEATURES:
   information. This makes it a little bit slower than `gocode` for certain Go
   code, but with time the speed of guru will improve.
 
-* *New*: Statusline function: `go#statusline#Show()` which can be plugged into
+* **New**: Statusline function: `go#statusline#Show()` which can be plugged into
   the statusline bar. Works only with vim 8.0. It shows all asynchronously
   called functions status real time.  Checkout it in action:
   https://twitter.com/fatih/status/800473735467847680. To enable it add the
@@ -70,7 +70,7 @@ set statusline+=%*
 
 IMPROVEMENTS:
 
-* *:GoDocBrowser* is now capable to to understand the identifier under the cursor (just like :GoDoc)
+* **:GoDocBrowser** is now capable to to understand the identifier under the cursor (just like :GoDoc)
 * Function calls are now highlighted as well when `g:go_highlight_functions` is enabled [gh-1048]
 * Add completion support for un-imported packages. This allows to complete even
   if the package is not imported. By default it's disabled, enable by adding
@@ -100,6 +100,7 @@ BUG FIXES:
 * Highlight builtin functions correctly if `g:go_highlight_functions` is enabled [gh-1070]
 * Fix `:GoSameIds` highlighting if a new buffer is opened in the same window [gh-1067]
 * Internal: add `abort` to all vim function to return in case of errors [gh-1100]
+* Fix `:GoCoverage` to be executed if working dir is not inside the test dir [gh-1033]
 
 BACKWARDS INCOMPATIBILITIES:
 
