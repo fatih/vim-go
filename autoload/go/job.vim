@@ -85,7 +85,7 @@ function go#job#Spawn(args)
     endif
 
     if self.winnr == winnr()
-      call go#list#Populate(a:listtype, errors)
+      call go#list#Populate(a:listtype, errors, join(self.args))
       call go#list#Window(a:listtype, len(errors))
       if !empty(errors) && !self.bang
         call go#list#JumpToFirst(a:listtype)
