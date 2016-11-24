@@ -52,7 +52,6 @@ function! go#lint#Gometa(autosave, ...) abort
   endif
 
   if go#util#has_job() && has('lambda')
-    call go#util#EchoProgress("linting started ...")
     call s:lint_job({'cmd': cmd})
     return
   endif
@@ -214,6 +213,15 @@ function! go#lint#ToggleMetaLinterAutoSave() abort
 endfunction
 
 function s:lint_job(args)
+  let status_dir = expand('%:p:h')
+  let started_at = reltime()
+
+  call go#statusline#Update(status_dir, {
+        \ 'desc': "current status",
+        \ 'type': "gometalinter",
+        \ 'state': "analysing",
+        \})
+
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
@@ -232,12 +240,40 @@ function s:lint_job(args)
   endfunction
 
   function! s:close_cb(chan) closure
+    let l:job = ch_getjob(a:chan)
+    let l:status = job_status(l:job)
+
+    let exitval = 1
+    if l:status == "dead"
+      let l:info = job_info(l:job)
+      let exitval = l:info.exitval
+    endif
+
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': "gometaliner",
+          \ 'state': "finished",
+          \ }
+
+    if exitval
+      let status.state = "failed"
+    endif
+
+    let elapsed_time = reltimestr(reltime(started_at))
+    " strip whitespace
+    let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
+    let status.state .= printf(" (%ss)", elapsed_time)
+
+    call go#statusline#Update(status_dir, status)
+
     let errors = go#list#Get(l:listtype)
     if empty(errors) 
       call go#list#Window(l:listtype, len(errors))
     endif
 
-    call go#util#EchoSuccess("linting finished")
+    if get(g:, 'go_echo_command_info', 1)
+      call go#util#EchoSuccess("linting finished")
+    endif
   endfunction
 
   let start_options = {
@@ -248,8 +284,10 @@ function s:lint_job(args)
   call job_start(a:args.cmd, start_options)
 
   call go#list#Clean(l:listtype)
-  call go#util#EchoProgress("linting started ...")
 
+  if get(g:, 'go_echo_command_info', 1)
+    call go#util#EchoProgress("linting started ...")
+  endif
 endfunction
 
 " vim: sw=2 ts=2 et
