@@ -43,6 +43,17 @@ function! go#tool#Imports() abort
   return imports
 endfunction
 
+function! go#tool#Info(auto) abort
+  let l:mode = get(g:, 'go_info_mode', 'gocode')
+  if l:mode == 'gocode'
+    call go#complete#Info(a:auto)
+  elseif l:mode == 'guru'
+    call go#guru#DescribeInfo()
+  else
+    call go#util#EchoError('go_info_mode value: '. l:mode .' is not valid. Valid values are: [gocode, guru]')
+  endif
+endfunction
+
 function! go#tool#PackageName() abort
   let command = "go list -f \"{{.Name}}\""
   let out = go#tool#ExecuteInDir(command)

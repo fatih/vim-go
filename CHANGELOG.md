@@ -42,24 +42,24 @@ FEATURES:
   reminder, to enable auto info either call `:GoSameIdsAutoToggle`(temporary)
   or add `let g:go_auto_sameids = 1` (persistent) to your vimrc. 
 
-* :GoInfo is now non blocking and works in async mode. This makes it useful
-  especially for autoinfo mode. In this mode it constantly evaluates the
-  identifier under the cursor whenever it's in hold position and then calls
-  :GoInfo. As a reminder, to enable auto info either call
-  `:GoAutoTypeInfoToggle`(temporary) or add `let g:go_auto_type_info = 1`
-  (persistent) to your vimrc. 
-  
-  Second, it's now much more reliable due the usage of 'guru describe'.
-  Previously it was using `gocode` which wouldn't return sufficient
-  information. This makes it a little bit slower than `gocode` for certain Go
-  code, but with time the speed of guru will improve.
+* :GoInfo is now non blocking and works in async mode if `guru` is used in
+  `g:go_info_mode`. This makes it useful especially for autoinfo mode. In this
+  mode it constantly evaluates the identifier under the cursor whenever it's in
+  hold position and then calls :GoInfo. As a reminder, to enable auto info
+  either call `:GoAutoTypeInfoToggle`(temporary) or add `let
+  g:go_auto_type_info = 1` (persistent) to your vimrc. To use `guru` instead of
+  `gocode` add following to your vimrc: `let g:go_info_mode = 'guru'`
+
+  The `guru` is more accurate and reliabed due the usage of `guru` describe. It
+  doesn't rely on `pkg/` folder like `gocode` does. However it's slower than
+  `gocode` as there is no caching mechanism in `guru` yet.
 
 * **New**: Statusline function: `go#statusline#Show()` which can be plugged into
   the statusline bar. Works only with vim 8.0. It shows all asynchronously
   called functions status real time.  Checkout it in action:
   https://twitter.com/fatih/status/800473735467847680. To enable it add the
   following to your `vimrc`. If you use lightline, airline, .. check out their
-  respective documentation on how to add a custom function.:
+  respective documentation on how to add a custom function:
 
 ```viml
 " go command status (requires vim-go)
