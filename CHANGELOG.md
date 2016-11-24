@@ -5,6 +5,10 @@ IMPROVEMENTS:
 * Add `statusline` support for `:GoMetaLinter` [gh-1120]
 * Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
 
+BUG FIXES:
+
+* Always use full path to detect packages to be shown in statusline [gh-1121]
+
 ## 1.10 (November 24, 2016)
 
 FEATURES:
