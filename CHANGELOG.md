@@ -3,6 +3,7 @@
 IMPROVEMENTS:
 
 * Add `statusline` support for `:GoMetaLinter` [gh-1120]
+* Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
 
 ## 1.10 (November 24, 2016)
 
