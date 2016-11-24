@@ -224,7 +224,7 @@ function! go#coverage#overlay(file) abort
     let cnt += 1
   endwhile
 
-  let fname = expand('%:t')
+  let fname = expand('%')
 
   " when called for a _test.go file, run the coverage for the actuall file
   " file
@@ -240,6 +240,9 @@ function! go#coverage#overlay(file) abort
     " open the alternate file to show the coverage
     exe ":edit ". fnamemodify(fname, ":p")
   endif
+
+  " cov.file includes only the filename itself, without full path
+  let fname = fnamemodify(fname, ":t")
 
   for line in lines[1:]
     let cov = go#coverage#parsegocoverline(line)
