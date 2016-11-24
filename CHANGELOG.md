@@ -36,13 +36,13 @@ FEATURES:
 	* GoChannelPeers
 	* GoReferrers
 
-* :GoSameIds also runs asynchronously. This makes it useful especially for
+* `:GoSameIds` also runs asynchronously. This makes it useful especially for
   auto sameids mode. In this mode it constantly evaluates the identifier under the
   cursor whenever it's in hold position and then calls :GoSameIds. As a
   reminder, to enable auto info either call `:GoSameIdsAutoToggle`(temporary)
   or add `let g:go_auto_sameids = 1` (persistent) to your vimrc. 
 
-* :GoInfo is now non blocking and works in async mode if `guru` is used in
+* `:GoInfo` is now non blocking and works in async mode if `guru` is used in
   `g:go_info_mode`. This makes it useful especially for autoinfo mode. In this
   mode it constantly evaluates the identifier under the cursor whenever it's in
   hold position and then calls :GoInfo. As a reminder, to enable auto info
