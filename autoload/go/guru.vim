@@ -235,7 +235,7 @@ function! go#guru#Implements(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args, 'Implements')
+  call s:run_guru(args)
 endfunction
 
 " Report the possible constants, global variables, and concrete types that may
@@ -254,7 +254,7 @@ function! go#guru#Whicherrs(selected) abort
   "   call go#util#EchoSuccess("no error variables found. Try to change the scope with :GoGuruScope")
   "   return
   " endif
-  call s:run_guru(args, 'Whicherrs')
+  call s:run_guru(args)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
@@ -266,7 +266,7 @@ function! go#guru#Describe(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args, 'Describe')
+  call s:run_guru(args)
 endfunction
 
 function! go#guru#DescribeInfo() abort
@@ -372,7 +372,7 @@ function! go#guru#DescribeInfo() abort
         \ 'disable_progress': 1,
         \ }
 
-  call s:run_guru(args, 'DescribeInfo')
+  call s:run_guru(args)
 endfunction
 
 " Show possible targets of selected function call
@@ -384,7 +384,7 @@ function! go#guru#Callees(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args, 'Callees')
+  call s:run_guru(args)
 endfunction
 
 " Show possible callers of selected function
@@ -396,7 +396,7 @@ function! go#guru#Callers(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args, 'Callers')
+  call s:run_guru(args)
 endfunction
 
 " Show path from callgraph root to selected function
@@ -408,7 +408,7 @@ function! go#guru#Callstack(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args, 'Callstack')
+  call s:run_guru(args)
 endfunction
 
 " Show free variables of selection
@@ -426,7 +426,7 @@ function! go#guru#Freevars(selected) abort
         \ 'needs_scope': 0,
         \ }
 
-  call s:run_guru(args, 'Freevars')
+  call s:run_guru(args)
 endfunction
 
 " Show send/receive corresponding to selected channel op
@@ -438,7 +438,7 @@ function! go#guru#ChannelPeers(selected) abort
         \ 'needs_scope': 1,
         \ }
 
-  call s:run_guru(args, 'ChannelPeers')
+  call s:run_guru(args)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
@@ -450,7 +450,7 @@ function! go#guru#Referrers(selected) abort
         \ 'needs_scope': 0,
         \ }
 
-  call s:run_guru(args, 'Referrers')
+  call s:run_guru(args)
 endfunction
 
 function! go#guru#SameIdsTimer() abort
@@ -481,7 +481,7 @@ function! go#guru#SameIds() abort
         \ 'custom_parse': function('s:same_ids_highlight'),
         \ }
 
-  call s:run_guru(args, 'SameIds')
+  call s:run_guru(args)
 endfunction
 
 function! s:same_ids_highlight(exit_val, output) abort
