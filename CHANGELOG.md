@@ -4,6 +4,7 @@ IMPROVEMENTS:
 
 * Add `statusline` support for `:GoMetaLinter` [gh-1120]
 * Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
+* Quickfix and Location lists contain now a descriptive title [gh-1004]
 
 BUG FIXES:
 
