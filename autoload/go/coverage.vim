@@ -17,7 +17,7 @@ function! go#coverage#BufferToggle(bang, ...) abort
 endfunction
 
 " Buffer creates a new cover profile with 'go test -coverprofile' and changes
-" teh current buffers highlighting to show covered and uncovered sections of
+" the current buffers highlighting to show covered and uncovered sections of
 " the code. Calling it again reruns the tests and shows the last updated
 " coverage.
 function! go#coverage#Buffer(bang, ...) abort
@@ -46,14 +46,14 @@ function! go#coverage#Buffer(bang, ...) abort
 
   if go#util#has_job()
     call s:coverage_job({
-          \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
-          \ 'custom_cb': function('s:coverage_callback', [l:tmpname]),
+          \ 'cmd': ['go', 'test', '-coverprofile',  fnameescape(go#util#ToExternalPath(l:tmpname))],
+          \ 'custom_cb': function('s:coverage_callback', [fnameescape(go#util#ToExternalPath(l:tmpname))]),
           \ 'bang': a:bang,
           \ })
     return
   endif
 
-  let args = [a:bang, 0, "-coverprofile", l:tmpname]
+  let args = [a:bang, 0, "-coverprofile",  fnameescape(go#util#ToExternalPath(l:tmpname))]
   if a:0
     call extend(args, a:000)
   endif
@@ -136,7 +136,7 @@ function! go#coverage#parsegocoverline(line) abort
   let mx = '\([^:]\+\):\(\d\+\)\.\(\d\+\),\(\d\+\)\.\(\d\+\)\s\(\d\+\)\s\(\d\+\)'
   let tokens = matchlist(a:line, mx)
   let ret = {}
-  let ret.file = tokens[1]
+  let ret.file = go#util#ToInternalPath(fnameescape(tokens[1]))
   let ret.startline  = str2nr(tokens[2])
   let ret.startcol = str2nr(tokens[3])
   let ret.endline = str2nr(tokens[4])

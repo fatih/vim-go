@@ -32,7 +32,7 @@ function! go#rename#Rename(bang, ...) abort
 
   let fname = expand('%:p')
   let pos = go#util#OffsetCursor()
-  let offset = printf('%s:#%d', fname, pos)
+  let offset = printf('%s:#%d', go#util#ToExternalPath(fname), pos)
 
   " no need to escape for job call
   let bin_path = go#util#has_job() ? bin_path : shellescape(bin_path)
