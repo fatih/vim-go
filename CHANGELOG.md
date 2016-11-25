@@ -10,8 +10,9 @@ BUG FIXES:
 
 * Always use full path to detect packages to be shown in statusline [gh-1121]
 * Use `echom` to persist errors in case of multiple echos [gh-1122]
-* Fix a race condition where a quickfix window was not closeed if a job has succeeded [gh-1123]
-* Do not expand coverage arguments for non job execution of :GoCoverage [gh-1127]
+* Fix a race condition where a quickfix window was not closed if a job has succeeded [gh-1123]
+* Do not expand coverage arguments for non job execution of `:GoCoverage` [gh-1127]
+* `:GoCoverage` doesn't mess up custom syntax anymore [gh-1128]
 
 
 ## 1.10 (November 24, 2016)
