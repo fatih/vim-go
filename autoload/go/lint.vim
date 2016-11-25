@@ -269,6 +269,12 @@ function s:lint_job(args)
     let errors = go#list#Get(l:listtype)
     if empty(errors) 
       call go#list#Window(l:listtype, len(errors))
+    else
+      if l:listtype == 'quickfix'
+        call setqflist([], 'a', {'title': 'Lint'})
+      else
+        call setloclist(0, [], 'a', {'title': 'Lint'})
+      endif
     endif
 
     if get(g:, 'go_echo_command_info', 1)
