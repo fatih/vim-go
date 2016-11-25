@@ -138,7 +138,7 @@ function! s:sync_guru(args) abort
   if has_key(a:args, 'custom_parse')
     call a:args.custom_parse(go#util#ShellError(), out)
   else
-    call s:parse_guru_output(go#util#ShellError(), out)
+    call s:parse_guru_output(go#util#ShellError(), out, a:args.mode)
   endif
 
   return out
@@ -193,7 +193,7 @@ function! s:async_guru(args) abort
     if has_key(a:args, 'custom_parse')
       call a:args.custom_parse(l:info.exitval, out)
     else
-      call s:parse_guru_output(l:info.exitval, out)
+      call s:parse_guru_output(l:info.exitval, out, a:args.mode)
     endif
   endfunction
 
@@ -584,7 +584,7 @@ endfunction
 " We discard line2 and col2 for the first errorformat, because it's not
 " useful and location only has the ability to show one line and column
 " number
-function! s:parse_guru_output(exit_val, output) abort
+function! s:parse_guru_output(exit_val, output, title) abort
   if a:exit_val
     call go#util#EchoError(a:output)
     return
@@ -592,7 +592,7 @@ function! s:parse_guru_output(exit_val, output) abort
 
   let old_errorformat = &errorformat
   let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-  call go#list#ParseFormat("locationlist", errformat, a:output)
+  call go#list#ParseFormat("locationlist", errformat, a:output, a:title)
   let &errorformat = old_errorformat
 
   let errors = go#list#Get("locationlist")

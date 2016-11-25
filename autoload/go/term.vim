@@ -53,6 +53,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   let $GOPATH = old_gopath
 
   let job.id = id
+  let job.cmd = a:cmd
   startinsert
 
   " resize new term if needed.
@@ -115,7 +116,7 @@ function! s:on_exit(job_id, exit_status) abort
     " close terminal we don't need it anymore
     close 
 
-    call go#list#Populate(l:listtype, errors)
+    call go#list#Populate(l:listtype, errors, job.cmd)
     call go#list#Window(l:listtype, len(errors))
     if !self.bang
       call go#list#JumpToFirst(l:listtype)

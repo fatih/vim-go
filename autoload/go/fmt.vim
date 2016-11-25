@@ -185,7 +185,7 @@ function! go#fmt#Format(withGoimport) abort
       % | " Couldn't detect gofmt error format, output errors
     endif
     if !empty(errors)
-      call go#list#Populate(l:listtype, errors)
+      call go#list#Populate(l:listtype, errors, 'Format')
       echohl Error | echomsg "Gofmt returned error" | echohl None
     endif
 

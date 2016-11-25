@@ -82,7 +82,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let errformat = "%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
 
     " Parse and populate our location list
-    call go#list#ParseFormat(l:listtype, errformat, split(out, "\n"))
+    call go#list#ParseFormat(l:listtype, errformat, split(out, "\n"), 'GoMetaLinter')
 
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
@@ -134,7 +134,7 @@ function! go#lint#Vet(bang, ...) abort
   let l:listtype = "quickfix"
   if go#util#ShellError() != 0
     let errors = go#tool#ParseErrors(split(out, '\n'))
-    call go#list#Populate(l:listtype, errors)
+    call go#list#Populate(l:listtype, errors, 'Vet')
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !a:bang
       call go#list#JumpToFirst(l:listtype)
@@ -176,7 +176,7 @@ function! go#lint#Errcheck(...) abort
     let errformat = "%f:%l:%c:\ %m, %f:%l:%c\ %#%m"
 
     " Parse and populate our location list
-    call go#list#ParseFormat(l:listtype, errformat, split(out, "\n"))
+    call go#list#ParseFormat(l:listtype, errformat, split(out, "\n"), 'Errcheck')
 
     let errors = go#list#Get(l:listtype)
 
@@ -187,7 +187,7 @@ function! go#lint#Errcheck(...) abort
     endif
 
     if !empty(errors)
-      call go#list#Populate(l:listtype, errors)
+      call go#list#Populate(l:listtype, errors, 'Errcheck')
       call go#list#Window(l:listtype, len(errors))
       if !empty(errors)
         call go#list#JumpToFirst(l:listtype)
@@ -269,6 +269,12 @@ function s:lint_job(args)
     let errors = go#list#Get(l:listtype)
     if empty(errors) 
       call go#list#Window(l:listtype, len(errors))
+    else
+      if l:listtype == 'quickfix'
+        call setqflist([], 'a', {'title': 'Lint'})
+      else
+        call setloclist(0, [], 'a', {'title': 'Lint'})
+      endif
     endif
 
     if get(g:, 'go_echo_command_info', 1)
