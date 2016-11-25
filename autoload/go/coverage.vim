@@ -85,10 +85,7 @@ endfunction
 
 " Clear clears and resets the buffer annotation matches
 function! go#coverage#Clear() abort
-  " only reset the syntax if the user has syntax enabled
-  if !empty(&syntax)
-    if exists("g:syntax_on") | syntax enable | endif
-  endif
+  call clearmatches()
 
   if exists("s:toggle") | let s:toggle = 0 | endif
 
@@ -96,8 +93,6 @@ function! go#coverage#Clear() abort
   if exists("#BufWinLeave#<buffer>") 
     autocmd! BufWinLeave <buffer>
   endif
-
-  call clearmatches()
 endfunction
 
 " Browser creates a new cover profile with 'go test -coverprofile' and opens
@@ -255,8 +250,6 @@ function! go#coverage#overlay(file) abort
 
     call extend(matches, go#coverage#genmatch(cov))
   endfor
-
-  syntax manual
 
   " clear the matches if we leave the buffer
   autocmd BufWinLeave <buffer> call go#coverage#Clear()
