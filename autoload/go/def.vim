@@ -146,19 +146,27 @@ function! s:jump_to_declaration(out, mode, bin_name) abort
     if get(g:, 'go_def_reuse_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
       " jumpt to existing buffer if it exists
       execute bufwinnr(filename) . 'wincmd w'
-    elseif a:mode == "tab"
-      let &switchbuf = "usetab"
-      if bufloaded(filename) == 0
-        tab split
+    else
+      if &modified
+        let cmd = 'hide edit'
+      else
+         let cmd = 'edit'
       endif
-    elseif a:mode == "split"
-      split
-    elseif a:mode == "vsplit"
-      vsplit
-    endif
 
-    " open the file and jump to line and column
-    exec 'edit' filename
+      if a:mode == "tab"
+        let &switchbuf = "usetab"
+        if bufloaded(filename) == 0
+          tab split
+        endif
+      elseif a:mode == "split"
+        split
+      elseif a:mode == "vsplit"
+        vsplit
+      endif
+
+      " open the file and jump to line and column
+      exec cmd filename
+    endif
   endif
   call cursor(line, col)
 
