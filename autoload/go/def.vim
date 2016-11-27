@@ -272,7 +272,13 @@ function! go#def#Stack(...) abort
     let target = s:go_stack[s:go_stack_level]
 
     " jump
-    exec 'edit' target["file"]
+    if expand('%:p') != target["file"]
+      if &modified
+        exec 'hide edit' target["file"]
+      else
+        exec 'edit' target["file"]
+      endif
+    endif
     call cursor(target["line"], target["col"])
     normal! zz
   else
