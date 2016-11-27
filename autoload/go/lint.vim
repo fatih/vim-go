@@ -269,11 +269,11 @@ function s:lint_job(args)
     let errors = go#list#Get(l:listtype)
     if empty(errors) 
       call go#list#Window(l:listtype, len(errors))
-    else
+    elseif has("patch-7.4.2200")
       if l:listtype == 'quickfix'
-        call setqflist([], 'a', {'title': 'Lint'})
+        call setqflist([], 'a', {'title': 'GoMetaLinter'})
       else
-        call setloclist(0, [], 'a', {'title': 'Lint'})
+        call setloclist(0, [], 'a', {'title': 'GoMetaLinter'})
       endif
     endif
 
