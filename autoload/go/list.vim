@@ -54,10 +54,13 @@ function! go#list#Populate(listtype, items, title) abort
   let l:listtype = go#list#Type(a:listtype)
   if l:listtype == "locationlist"
     call setloclist(0, a:items, 'r')
-    call setloclist(0, [], 'a', {'title': a:title})
+
+    " The last argument ({what}) is introduced with 7.4.2200:
+    " https://github.com/vim/vim/commit/d823fa910cca43fec3c31c030ee908a14c272640
+    if has("patch-7.4.2200") | call setloclist(0, [], 'a', {'title': a:title}) | endif
   else
     call setqflist(a:items, 'r')
-    call setqflist([], 'a', {'title': a:title})
+    if has("patch-7.4.2200") | call setqflist([], 'a', {'title': a:title}) | endif
   endif
 endfunction
 
@@ -76,10 +79,10 @@ function! go#list#ParseFormat(listtype, errformat, items, title) abort
   let &errorformat = a:errformat
   if l:listtype == "locationlist"
     lgetexpr a:items
-    call setloclist(0, [], 'a', {'title': a:title})
+    if has("patch-7.4.2200") | call setloclist(0, [], 'a', {'title': a:title}) | endif
   else
     cgetexpr a:items
-    call setqflist([], 'a', {'title': a:title})
+    if has("patch-7.4.2200") | call setqflist([], 'a', {'title': a:title}) | endif
   endif
 
   "restore back
