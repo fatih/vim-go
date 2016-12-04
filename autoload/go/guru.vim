@@ -51,7 +51,7 @@ function! s:guru_cmd(args) range abort
   if exists('g:go_guru_tags')
     let tags = get(g:, 'go_guru_tags')
     call extend(cmd, ["-tags", tags])
-    call result.tags = tags
+    let result.tags = tags
   endif
 
   " some modes require scope to be defined (such as callers). For these we
