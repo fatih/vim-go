@@ -1352,9 +1352,9 @@ appropriate kind of list for the command that was called. Supported values are
 <
                                                       *'g:go_asmfmt_autosave'*
 
-Use this option to auto |:AsmFmt| on save. By default it's enabled. >
+Use this option to auto |:AsmFmt| on save. By default it's disabled. >
 
-  let g:go_asmfmt_autosave = 1
+  let g:go_asmfmt_autosave = 0
 <
                                                             *'g:go_term_mode'*
 
