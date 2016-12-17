@@ -150,7 +150,7 @@ function! s:jump_to_declaration(out, mode, bin_name) abort
       if &modified
         let cmd = 'hide edit'
       else
-         let cmd = 'edit'
+        let cmd = 'edit'
       endif
 
       if a:mode == "tab"
