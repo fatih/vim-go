@@ -36,7 +36,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   setlocal noswapfile
   setlocal nobuflisted
 
-  let job = { 
+  let job = {
         \ 'stderr' : [],
         \ 'stdout' : [],
         \ 'bang' : a:bang,
@@ -75,7 +75,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   return id
 endfunction
 
-function! s:on_stdout(job_id, data) abort
+function! s:on_stdout(job_id, data, event) dict abort
   if !has_key(s:jobs, a:job_id)
     return
   endif
@@ -84,7 +84,7 @@ function! s:on_stdout(job_id, data) abort
   call extend(job.stdout, a:data)
 endfunction
 
-function! s:on_stderr(job_id, data) abort
+function! s:on_stderr(job_id, data, event) dict abort
   if !has_key(s:jobs, a:job_id)
     return
   endif
@@ -93,7 +93,7 @@ function! s:on_stderr(job_id, data) abort
   call extend(job.stderr, a:data)
 endfunction
 
-function! s:on_exit(job_id, exit_status) abort
+function! s:on_exit(job_id, exit_status, event) dict abort
   if !has_key(s:jobs, a:job_id)
     return
   endif
@@ -114,7 +114,7 @@ function! s:on_exit(job_id, exit_status) abort
 
   if !empty(errors)
     " close terminal we don't need it anymore
-    close 
+    close
 
     call go#list#Populate(l:listtype, errors, job.cmd)
     call go#list#Window(l:listtype, len(errors))

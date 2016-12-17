@@ -38,9 +38,9 @@ endfunction
 " GOPATH when g:go_autodetect_gopath is enabled. The job is started inside the
 " current files folder.
 function! s:spawn(bang, desc, args) abort
-  let job = { 
-        \ 'desc': a:desc, 
-        \ 'bang': a:bang, 
+  let job = {
+        \ 'desc': a:desc,
+        \ 'bang': a:bang,
         \ 'winnr': winnr(),
         \ 'importpath': go#package#ImportPath(expand('%:p:h')),
         \ 'state': "RUNNING",
@@ -90,7 +90,7 @@ endfunction
 " references and also displaying errors in the quickfix window collected by
 " on_stderr handler. If there are no errors and a quickfix window is open,
 " it'll be closed.
-function! s:on_exit(job_id, exit_status) abort
+function! s:on_exit(job_id, exit_status, event) dict abort
   let std_combined = self.stderr + self.stdout
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -147,14 +147,14 @@ function! s:callback_handlers_on_exit(job, exit_status, data) abort
 endfunction
 
 " on_stdout is the stdout handler for jobstart(). It collects the output of
-" stderr and stores them to the jobs internal stdout list. 
-function! s:on_stdout(job_id, data) abort
+" stderr and stores them to the jobs internal stdout list.
+function! s:on_stdout(job_id, data) dict abort
   call extend(self.stdout, a:data)
 endfunction
 
 " on_stderr is the stderr handler for jobstart(). It collects the output of
 " stderr and stores them to the jobs internal stderr list.
-function! s:on_stderr(job_id, data) abort
+function! s:on_stderr(job_id, data) dict abort
   call extend(self.stderr, a:data)
 endfunction
 
