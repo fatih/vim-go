@@ -1,9 +1,13 @@
 ## 1.11 - Unplanned
 
+FEATURES:
+
+* Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
+* Add new `g:go_template_use_pkg` setting to enable to use cwd as package name instead of basic template file [gh-1124]
+
 IMPROVEMENTS:
 
 * Add `statusline` support for `:GoMetaLinter` [gh-1120]
-* Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
 * Quickfix and Location lists contain now a descriptive title (requires at least Vim `7.4.2200`)[gh-1004]
 
 BUG FIXES:
