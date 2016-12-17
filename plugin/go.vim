@@ -169,7 +169,7 @@ endfunction
 
 function! s:asmfmt_autosave()
   " Go asm formatting on save
-  if get(g:, "go_asmfmt_autosave", 1)
+  if get(g:, "go_asmfmt_autosave", 0)
     call go#asmfmt#Format()
   endif
 endfunction
