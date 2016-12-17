@@ -23,6 +23,7 @@ BUG FIXES:
 * Fix `guru` commands if custom build tags were set [gh-1136]
 * Fix referencing a non defined variable for async commands when bang (!) was used
 * Fix `:GoDef` failing for a modified buffer if `hidden` was not set [gh-1132]
+* Fix `:GoDefStack` to allow popping from jump list when buffer is modified [gh-1133]
 
 
 ## 1.10 (November 24, 2016)
