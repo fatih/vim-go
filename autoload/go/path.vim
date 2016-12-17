@@ -15,7 +15,7 @@ function! go#path#GoPath(...) abort
     " initial GOPATH, which was set when Vim was started.
     if len(a:000) == 1 && a:1 == '""'
       if !empty(s:initial_go_path)
-        let $GOPATH = s:initial_go_path
+        let $GOPATH = go#util#ToExternalPath(s:initial_go_path)
         let s:initial_go_path = ""
       endif
 
@@ -24,8 +24,8 @@ function! go#path#GoPath(...) abort
     endif
 
     echon "vim-go: " | echohl Function | echon "GOPATH changed to ". a:1 | echohl None
-    let s:initial_go_path = $GOPATH
-    let $GOPATH = a:1
+    let s:initial_go_path = go#util#ToInternalPath($GOPATH)
+    let $GOPATH = go#util#ToExternalPath(a:1)
     return
   endif
 
@@ -36,7 +36,7 @@ endfunction
 " it. For multiple GOPATHS separated with a the OS specific separator, only
 " the first one is returned
 function! go#path#Default() abort
-  let go_paths = split($GOPATH, go#util#PathListSep())
+  let go_paths = split(go#util#ToInternalPath($GOPATH), go#util#PathListSep())
 
   if len(go_paths) == 1
     return $GOPATH
@@ -48,7 +48,7 @@ endfunction
 " HasPath checks whether the given path exists in GOPATH environment variable
 " or not
 function! go#path#HasPath(path) abort
-  let go_paths = split($GOPATH, go#util#PathListSep())
+  let go_paths = split(go#util#ToInternalPath($GOPATH), go#util#PathListSep())
   let last_char = strlen(a:path) - 1
 
   " check cases of '/foo/bar/' and '/foo/bar'
@@ -70,7 +70,7 @@ endfunction
 " over the current GOPATH. It also detects diretories whose are outside
 " GOPATH.
 function! go#path#Detect() abort
-  let gopath = $GOPATH
+  let gopath = go#util#ToInternalPath($GOPATH)
 
   " don't lookup for godeps if autodetect is disabled.
   if !get(g:, "go_autodetect_gopath", 1)

@@ -6,6 +6,7 @@ function! go#def#Jump(mode) abort
   let $GOPATH = go#path#Detect()
 
   let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
+  let fname = fnameescape(go#util#ToExternalPath(fname))
 
   " so guru right now is slow for some people. previously we were using
   " godef which also has it's own quirks. But this issue come up so many
@@ -109,13 +110,13 @@ function! s:jump_to_declaration(out, mode, bin_name) abort
 
   " strip line ending
   let out = split(final_out, go#util#LineEnding())[0]
-  if go#util#IsWin()
+  if go#util#IsWin() || go#util#IsWinUnix()
     let parts = split(out, '\(^[a-zA-Z]\)\@<!:')
   else
     let parts = split(out, ':')
   endif
 
-  let filename = parts[0]
+  let filename = go#util#ToInternalPath(fnameescape(parts[0]))
   let line = parts[1]
   let col = parts[2]
   let ident = parts[3]
