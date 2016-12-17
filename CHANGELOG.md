@@ -16,6 +16,7 @@ BUG FIXES:
 * Disable autoformat for `asm` files as they might be non Go ASM format [gh-1141]
 * Fix indentation broken when using a action with a minus sign like `{{-` [gh-1143]
 * Fix breaking Neovim change of passing less arguments to callbacks [gh-1145]
+* Fix `guru` commands if custom build tags were set [gh-1136]
 
 
 ## 1.10 (November 24, 2016)
