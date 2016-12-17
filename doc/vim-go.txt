@@ -1442,6 +1442,9 @@ If the new file is created in an already prepopulated package (with other Go
 files), in this case a Go code template with only the Go package declaration
 (which is automatically determined according to the current package) is added.
 
+To always use the package name instead of the template, enable the
+|`g:go_template_use_pkg`| setting.
+
 By default it is enabled.
 >
   let g:go_template_autocreate = 1
@@ -1453,6 +1456,15 @@ is created. Checkout |'g:go_template_autocreate'| for more info. By default
 the `hello_world.go` file is used.
 >
   let g:go_template_file = "hello_world.go"
+<
+                                                     *'g:go_template_use_pkg'*
+
+Specifies that, rather than using a template, the package name is used if a new
+Go file is created. Checkout |'g:go_template_autocreate'| for more info. By
+default the template file specified by |'g:go_template_file'| is used.
+
+>
+  let g:go_template_use_pkg = 0
 <
                                                        *'g:go_decls_includes'*
 
