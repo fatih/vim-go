@@ -13,6 +13,7 @@ BUG FIXES:
 * Fix a race condition where a quickfix window was not closed if a job has succeeded [gh-1123]
 * Do not expand coverage arguments for non job execution of `:GoCoverage` [gh-1127]
 * `:GoCoverage` doesn't mess up custom syntax anymore [gh-1128]
+* Disable autoformat for `asm` files as they might be non Go ASM format [gh-1141]
 
 
 ## 1.10 (November 24, 2016)
