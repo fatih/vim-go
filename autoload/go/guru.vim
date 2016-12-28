@@ -34,7 +34,6 @@ function! s:guru_cmd(args) range abort
   let cmd = [bin_path]
 
   let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
-  let stdin_content = ""
   if &modified
     let sep = go#util#LineEnding()
     let content  = join(getline(1, '$'), sep )
@@ -127,7 +126,7 @@ function! s:sync_guru(args) abort
 
   " run, forrest run!!!
   let command = join(result.cmd, " ")
-  if &modified
+  if has_key(result, 'stdin_content')
     let out = go#util#System(command, result.stdin_content)
   else
     let out = go#util#System(command)
@@ -198,10 +197,10 @@ function! s:async_guru(args) abort
   endfunction
 
   let start_options = {
-        \ 'close_cb': function("s:close_cb"),
+        \ 'close_cb': funcref("s:close_cb"),
         \ }
 
-  if &modified
+  if has_key(result, 'stdin_content')
     let l:tmpname = tempname()
     call writefile(split(result.stdin_content, "\n"), l:tmpname, "b")
     let l:start_options.in_io = "file"
