@@ -299,7 +299,7 @@ function s:def_job(args) abort
     " do not print anything during async definition search&jump
   endfunction
 
-  let a:args.error_info_cb = function('s:error_info_cb')
+  let a:args.error_info_cb = funcref('s:error_info_cb')
   let callbacks = go#job#Spawn(a:args)
 
   let start_options = {
