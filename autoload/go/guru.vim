@@ -542,7 +542,7 @@ function! go#guru#ClearSameIds() abort
   endfor
 
   " remove the autocmds we defined
-  if exists("#BufWinEnter<buffer>")
+  if exists("#BufWinEnter#<buffer>")
     autocmd! BufWinEnter <buffer>
   endif
 endfunction
