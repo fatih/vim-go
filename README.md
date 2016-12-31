@@ -1,4 +1,4 @@
-# vim-go
+# vim-go [![Build Status](http://img.shields.io/travis/fatih/vim-go.svg?style=flat-square)](https://travis-ci.org/fatih/vim-go) 
 
 <p align="center">
   <img style="float: right;" src="assets/vim-go.png" alt="Vim-go logo"/>
@@ -287,6 +287,18 @@ information. It includes
 [Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
 section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many
 other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
+
+## Development & Testing
+
+vim-go supports now test files. Please check `autoload` folder for examples. If
+you add a new feature be sure you also include the `_test.vim` file next to the
+script. You can locally test it by running:
+
+```
+make
+```
+
+Additionally, each new pull request will trigger a new Travis-ci job.
 
 ## Donation
 
