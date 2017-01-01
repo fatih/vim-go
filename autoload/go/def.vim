@@ -87,7 +87,7 @@ function! go#def#Jump(mode) abort
     return
   endif
 
-  call s:jump_to_declaration(out, a:mode, bin_name)
+  call go#def#jump_to_declaration(out, a:mode, bin_name)
   let $GOPATH = old_gopath
 endfunction
 
@@ -96,10 +96,10 @@ function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data) abort
     return
   endif
 
-  call s:jump_to_declaration(a:data[0], a:mode, a:bin_name)
+  call go#def#jump_to_declaration(a:data[0], a:mode, a:bin_name)
 endfunction
 
-function! s:jump_to_declaration(out, mode, bin_name) abort
+function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let final_out = a:out
   if a:bin_name == "godef"
     " append the type information to the same line so our we can parse it.
