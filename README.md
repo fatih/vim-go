@@ -292,11 +292,24 @@ other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
 
 vim-go supports now test files. Please check `autoload` folder for examples. If
 you add a new feature be sure you also include the `_test.vim` file next to the
-script. You can locally test it by running:
+script. Test functions should be starting with `Test_`, example:
+
+
+```viml
+function Test_run_fmt()
+  call assert_equal(expected, actual)
+  ...
+endfunction
+```
+
+You can locally test it by running:
 
 ```
 make
 ```
+
+This will run all tests and print either `PASS` or `FAIL` to indicate the final
+status of all tests.
 
 Additionally, each new pull request will trigger a new Travis-ci job.
 
