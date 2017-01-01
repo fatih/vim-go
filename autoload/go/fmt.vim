@@ -75,7 +75,7 @@ function! go#fmt#Format(withGoimport) abort
 
   let out = go#fmt#run(bin_name, l:tmpname, expand('%'))
   if go#util#ShellError() == 0
-    call s:update_file(l:tmpname, expand('%'))
+    call go#fmt#update_file(l:tmpname, expand('%'))
   elseif g:go_fmt_fail_silently == 0
     let errors = s:parse_errors(out)
     call s:show_errors(errors)
@@ -102,7 +102,7 @@ function! go#fmt#Format(withGoimport) abort
 endfunction
 
 " update_file updates the target file with the given formatted source
-function! s:update_file(source, target) 
+function! go#fmt#update_file(source, target) 
   " remove undo point caused via BufWritePre
   try | silent undojoin | catch | endtry
 
@@ -120,7 +120,7 @@ function! s:update_file(source, target)
   endif
 
   " reload buffer to reflect latest changes
-  silent edit!
+  silent! edit!
 
   let &fileformat = old_fileformat
   let &syntax = &syntax

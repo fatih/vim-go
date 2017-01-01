@@ -1,6 +1,4 @@
-language: ruby
-
-sudo: required
+language: go
 
 env:
   global:

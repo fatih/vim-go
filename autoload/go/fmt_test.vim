@@ -12,3 +12,20 @@ func Test_run_fmt()
 
   call assert_equal(expected, actual)
 endfunc
+
+func Test_update_file()
+  let expected = join(readfile("test-fixtures/fmt/hello_golden.go"), "\n")
+  let source_file = tempname()
+  call writefile(readfile("test-fixtures/fmt/hello_golden.go"), source_file)
+
+  let target_file = tempname()
+  call writefile([""], target_file)
+
+  " update_file now
+  call go#fmt#update_file(source_file, target_file)
+
+  " this should now contain the formatted code
+  let actual = join(readfile(target_file), "\n")
+
+  call assert_equal(expected, actual)
+endfunc

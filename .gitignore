@@ -1,5 +1,6 @@
 doc/tags
 .DS_Store
 
-messages.log
+# Test specific files
+FAILED
 test.log
