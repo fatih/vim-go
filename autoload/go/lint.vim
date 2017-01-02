@@ -48,7 +48,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += [expand('%:p:h')]
   else
     " the user wants something else, let us use it.
-    let cmd += [split(g:go_metalinter_command, " ")]
+    let cmd += split(g:go_metalinter_command, " ")
   endif
 
   if go#util#has_job() && has('lambda')
