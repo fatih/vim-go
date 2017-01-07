@@ -28,6 +28,18 @@ BUG FIXES:
 * Improve internal defining of functions and referencing them for async operations [gh-1155]
 * Fix `:GoMetaLinter` failing if `go_metalinter_command` is set. [gh-1160]
 
+BACKWARDS INCOMPATIBILITIES:
+
+* The following syntax options are now disabled by default. If you're using them be sure to set them in your .vimrc [gh-1167]
+
+```viml
+g:go_highlight_array_whitespace_error
+g:go_highlight_chan_whitespace_error
+g:go_highlight_extra_types
+g:go_highlight_space_tab_error
+g:go_highlight_trailing_whitespace_error
+```
+
 
 
 ## 1.10 (November 24, 2016)
