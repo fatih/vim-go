@@ -374,7 +374,8 @@ endif
 
 " Folding the functions
 if g:go_folding_functions != 0
-  %g/\(func\_.\{-}\)\@<={/ normal! zfa}
+  " %g/\(func\_.\{-}\)\@<={/ normal! zfa}
+  %g/\/func.*{\)/ normal! $ zfa}
 endif
 
 " :GoCoverage commands
