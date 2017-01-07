@@ -26,6 +26,8 @@ BUG FIXES:
 * Fix `:GoDef` failing for a modified buffer if `hidden` was not set [gh-1132]
 * Fix `:GoDefStack` to allow popping from jump list when buffer is modified [gh-1133]
 * Improve internal defining of functions and referencing them for async operations [gh-1155]
+* Fix `:GoMetaLinter` failing if `go_metalinter_command` is set. [gh-1160]
+
 
 
 ## 1.10 (November 24, 2016)
