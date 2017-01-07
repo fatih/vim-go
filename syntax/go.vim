@@ -373,9 +373,20 @@ if g:go_highlight_build_constraints != 0
 endif
 
 " Folding the functions
-if g:go_folding_functions != 0
-  " %g/\(func\_.\{-}\)\@<={/ normal! zfa}
+if g:go_folding_functions != -1
+  " map the folding points
   %g/\(func.*{\)/ normal! $ zfa}
+
+  " all open if it's 0
+  if g:go_folding_functions == 0
+    normal! zR
+  endif
+
+  " all close if it's 1
+  if g:go_folding_functions == 1
+    normal! zR
+    %g/\(func.*{\)/ normal! zc
+  endif
 endif
 
 " :GoCoverage commands
