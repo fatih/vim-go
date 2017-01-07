@@ -28,6 +28,7 @@ BUG FIXES:
 * Fix `:GoDefStack` to allow popping from jump list when buffer is modified [gh-1133]
 * Improve internal defining of functions and referencing them for async operations [gh-1155]
 * Fix `:GoMetaLinter` failing if `go_metalinter_command` is set. [gh-1160]
+* Fix `:GoMetaLinter`'s `go_metalinter_deadline` setting for async mode [gh-1146]
 
 BACKWARDS INCOMPATIBILITIES:
 
