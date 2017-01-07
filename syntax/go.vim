@@ -89,6 +89,10 @@ if !exists("g:go_highlight_generate_tags")
   let g:go_highlight_generate_tags = 0
 endif
 
+if !exists("g:go_folding_functions")
+  let g:go_folding_functions = 0
+endif
+
 syn case match
 
 syn keyword     goDirective         package import
@@ -366,6 +370,11 @@ if g:go_highlight_build_constraints != 0
         \ end=/\v\n\s*package/he=e-7,me=e-7,re=e-7
         \ contains=@goCommentGroup,@Spell
   hi def link goPackageComment    Comment
+endif
+
+" Folding the functions
+if g:go_folding_functions != 0
+  %g/\(func\_.\{-}\)\@<={/ normal! f{zf%
 endif
 
 " :GoCoverage commands
