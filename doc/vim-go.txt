@@ -1495,6 +1495,17 @@ default it's 60 seconds. Must be in milliseconds.
 >
       let g:go_statusline_duration = 60000
 <
+
+<
+                                                    *'g:go_folding_functions'*
+
+Specifices if the functions must be folded or not. Possible values are
+{-1,0,1}. -1 means there is no mark for folding. 0 means there are some
+marks but it's unfolded. 1 it's folded.
+
+>
+     let g:go_folding_functions = 0
+_
 ==============================================================================
 TROUBLESHOOTING                                         *go-troubleshooting*
 
