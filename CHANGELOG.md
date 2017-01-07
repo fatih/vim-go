@@ -10,6 +10,7 @@ IMPROVEMENTS:
 
 * Add `statusline` support for `:GoMetaLinter` [gh-1120]
 * Quickfix and Location lists contain now a descriptive title (requires at least Vim `7.4.2200`)[gh-1004]
+* Check `go env GOPATH` as well for `:GoInstallBinaries` as Go has now a default path for GOPATH ("~/go")starting with 1.8 [gh-1152]
 
 BUG FIXES:
 
