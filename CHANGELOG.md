@@ -1,4 +1,4 @@
-## 1.11 - Unplanned
+## 1.11 - (January 9, 2017)
 
 FEATURES:
 
