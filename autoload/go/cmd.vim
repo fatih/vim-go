@@ -32,8 +32,11 @@ function! go#cmd#Build(bang, ...) abort
           \})
     return
   elseif has('nvim')
+    if get(g:, 'go_echo_command_info', 1)
+      call go#util#EchoProgress("building dispatched ...")
+    endif
+
     " if we have nvim, call it asynchronously and return early ;)
-    call go#util#EchoProgress("building dispatched ...")
     call go#jobcontrol#Spawn(a:bang, "build", args)
     return
   endif
