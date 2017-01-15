@@ -87,7 +87,7 @@ function! go#def#Jump(mode) abort
     return
   endif
 
-  call s:jump_to_declaration(out, a:mode, bin_name)
+  call go#def#jump_to_declaration(out, a:mode, bin_name)
   let $GOPATH = old_gopath
 endfunction
 
@@ -96,10 +96,10 @@ function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data) abort
     return
   endif
 
-  call s:jump_to_declaration(a:data[0], a:mode, a:bin_name)
+  call go#def#jump_to_declaration(a:data[0], a:mode, a:bin_name)
 endfunction
 
-function! s:jump_to_declaration(out, mode, bin_name) abort
+function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let final_out = a:out
   if a:bin_name == "godef"
     " append the type information to the same line so our we can parse it.
@@ -146,19 +146,27 @@ function! s:jump_to_declaration(out, mode, bin_name) abort
     if get(g:, 'go_def_reuse_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
       " jumpt to existing buffer if it exists
       execute bufwinnr(filename) . 'wincmd w'
-    elseif a:mode == "tab"
-      let &switchbuf = "usetab"
-      if bufloaded(filename) == 0
-        tab split
+    else
+      if &modified
+        let cmd = 'hide edit'
+      else
+        let cmd = 'edit'
       endif
-    elseif a:mode == "split"
-      split
-    elseif a:mode == "vsplit"
-      vsplit
-    endif
 
-    " open the file and jump to line and column
-    exec 'edit' filename
+      if a:mode == "tab"
+        let &switchbuf = "usetab"
+        if bufloaded(filename) == 0
+          tab split
+        endif
+      elseif a:mode == "split"
+        split
+      elseif a:mode == "vsplit"
+        vsplit
+      endif
+
+      " open the file and jump to line and column
+      exec cmd filename
+    endif
   endif
   call cursor(line, col)
 
@@ -272,7 +280,13 @@ function! go#def#Stack(...) abort
     let target = s:go_stack[s:go_stack_level]
 
     " jump
-    exec 'edit' target["file"]
+    if expand('%:p') != target["file"]
+      if &modified
+        exec 'hide edit' target["file"]
+      else
+        exec 'edit' target["file"]
+      endif
+    endif
     call cursor(target["line"], target["col"])
     normal! zz
   else
@@ -285,7 +299,7 @@ function s:def_job(args) abort
     " do not print anything during async definition search&jump
   endfunction
 
-  let a:args.error_info_cb = function('s:error_info_cb')
+  let a:args.error_info_cb = funcref('s:error_info_cb')
   let callbacks = go#job#Spawn(a:args)
 
   let start_options = {

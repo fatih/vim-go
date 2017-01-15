@@ -9,6 +9,7 @@ function go#job#Spawn(args)
         \ 'jobdir': fnameescape(expand("%:p:h")),
         \ 'messages': [],
         \ 'args': a:args.cmd,
+        \ 'bang': 0,
         \ }
 
   if has_key(a:args, 'bang')

@@ -31,12 +31,11 @@ function! go#doc#OpenBrowser(...) abort
 
     let import = out["import"]
     let name = out["name"]
-
-    " if import is empty, it means we selected a package name
-    if import ==# ""
-      let godoc_url = "https://godoc.org/" . name 
-    else
-      let godoc_url = "https://godoc.org/" . import . "#" . name
+    let decl = out["decl"]
+    
+    let godoc_url = "https://godoc.org/" . import
+    if decl !~ "^package"
+      let godoc_url .= "#" . name 
     endif
 
     echo godoc_url

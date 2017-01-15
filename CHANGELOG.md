@@ -1,10 +1,17 @@
-## 1.11 - Unplanned
+## 1.11 - (January 9, 2017)
+
+FEATURES:
+
+* Travis test integration has been added. Now any file that is added as `<name>_test.vim` will be automatically tested in for every Pull Request (just like how we add tests to Go with `_test.go`). Going forward this will tremendously increase the stability and decrease the maintaince burden of vim-go. [gh-1157]
+* Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
+* Add new `g:go_template_use_pkg` setting to enable to use cwd as package name instead of basic template file [gh-1124]
 
 IMPROVEMENTS:
 
 * Add `statusline` support for `:GoMetaLinter` [gh-1120]
-* Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
 * Quickfix and Location lists contain now a descriptive title (requires at least Vim `7.4.2200`)[gh-1004]
+* Check `go env GOPATH` as well for `:GoInstallBinaries` as Go has now a default path for GOPATH ("~/go")starting with 1.8 [gh-1152]
+* `:GoDocBrowser` now also works on import paths [gh-1174]
 
 BUG FIXES:
 
@@ -13,6 +20,29 @@ BUG FIXES:
 * Fix a race condition where a quickfix window was not closed if a job has succeeded [gh-1123]
 * Do not expand coverage arguments for non job execution of `:GoCoverage` [gh-1127]
 * `:GoCoverage` doesn't mess up custom syntax anymore [gh-1128]
+* Disable autoformat for `asm` files as they might be non Go ASM format [gh-1141]
+* Fix indentation broken when using a action with a minus sign like `{{-` [gh-1143]
+* Fix breaking Neovim change of passing less arguments to callbacks [gh-1145]
+* Fix `guru` commands if custom build tags were set [gh-1136]
+* Fix referencing a non defined variable for async commands when bang (!) was used
+* Fix `:GoDef` failing for a modified buffer if `hidden` was not set [gh-1132]
+* Fix `:GoDefStack` to allow popping from jump list when buffer is modified [gh-1133]
+* Improve internal defining of functions and referencing them for async operations [gh-1155]
+* Fix `:GoMetaLinter` failing if `go_metalinter_command` is set. [gh-1160]
+* Fix `:GoMetaLinter`'s `go_metalinter_deadline` setting for async mode [gh-1146]
+
+BACKWARDS INCOMPATIBILITIES:
+
+* The following syntax options are now disabled by default. If you're using them be sure to set them in your .vimrc [gh-1167]
+
+```viml
+g:go_highlight_array_whitespace_error
+g:go_highlight_chan_whitespace_error
+g:go_highlight_extra_types
+g:go_highlight_space_tab_error
+g:go_highlight_trailing_whitespace_error
+```
+
 
 
 ## 1.10 (November 24, 2016)

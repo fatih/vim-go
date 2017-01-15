@@ -1,4 +1,4 @@
-# vim-go
+# vim-go [![Build Status](http://img.shields.io/travis/fatih/vim-go.svg?style=flat-square)](https://travis-ci.org/fatih/vim-go) 
 
 <p align="center">
   <img style="float: right;" src="assets/vim-go.png" alt="Vim-go logo"/>
@@ -235,9 +235,10 @@ let g:go_get_update = 0
 ### Using with Neovim (beta)
 
 Note: Neovim currently is not a first class citizen for vim-go. You are free
-to open bugs but I'm not going to look at them. Even though I'm using Neovim
-myself, Neovim itself is still alpha. So vim-go might not work well as good as
-in Vim. I'm happy to accept pull requests or very detailed bug reports.
+to open bug, however I'm not using Neovim so it's hard for me to test it. 
+vim-go might not work well as good as in Vim. I'm happy to accept pull requests 
+or very detailed bug reports. If you're interested to improve the state of 
+Neovim in vim-go you're always welcome!
 
 
 Run `:GoRun` in a new tab, horizontal split or vertical split terminal
@@ -286,6 +287,31 @@ information. It includes
 [Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
 section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many
 other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
+
+## Development & Testing
+
+vim-go supports now test files. Please check `autoload` folder for examples. If
+you add a new feature be sure you also include the `_test.vim` file next to the
+script. Test functions should be starting with `Test_`, example:
+
+
+```viml
+function Test_run_fmt()
+  call assert_equal(expected, actual)
+  ...
+endfunction
+```
+
+You can locally test it by running:
+
+```
+make
+```
+
+This will run all tests and print either `PASS` or `FAIL` to indicate the final
+status of all tests.
+
+Additionally, each new pull request will trigger a new Travis-ci job.
 
 ## Donation
 

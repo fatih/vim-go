@@ -1352,9 +1352,9 @@ appropriate kind of list for the command that was called. Supported values are
 <
                                                       *'g:go_asmfmt_autosave'*
 
-Use this option to auto |:AsmFmt| on save. By default it's enabled. >
+Use this option to auto |:AsmFmt| on save. By default it's disabled. >
 
-  let g:go_asmfmt_autosave = 1
+  let g:go_asmfmt_autosave = 0
 <
                                                             *'g:go_term_mode'*
 
@@ -1382,8 +1382,7 @@ For example here is how to set each to 30.
 This option is Neovim only. Use it to change the behavior of the test
 commands. If set to 1 it opens the test commands inside a new terminal
 according to |'g:go_term_mode'|, otherwise it will run them in the background
-just like `:GoBuild` and then display the status with
-|go#jobcontrol#Statusline()|. By default it is disabled.
+just like `:GoBuild`. By default it is disabled.
 >
   let g:go_term_enabled = 0
 <
@@ -1442,6 +1441,9 @@ If the new file is created in an already prepopulated package (with other Go
 files), in this case a Go code template with only the Go package declaration
 (which is automatically determined according to the current package) is added.
 
+To always use the package name instead of the template, enable the
+|`g:go_template_use_pkg`| setting.
+
 By default it is enabled.
 >
   let g:go_template_autocreate = 1
@@ -1453,6 +1455,15 @@ is created. Checkout |'g:go_template_autocreate'| for more info. By default
 the `hello_world.go` file is used.
 >
   let g:go_template_file = "hello_world.go"
+<
+                                                     *'g:go_template_use_pkg'*
+
+Specifies that, rather than using a template, the package name is used if a new
+Go file is created. Checkout |'g:go_template_autocreate'| for more info. By
+default the template file specified by |'g:go_template_file'| is used.
+
+>
+  let g:go_template_use_pkg = 0
 <
                                                        *'g:go_decls_includes'*
 
