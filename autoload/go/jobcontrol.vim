@@ -119,7 +119,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   execute cd . fnameescape(dir)
 
-  if !len(errors)
+  if !len(errors) && len(std_combined)
     " failed to parse errors, output the original content
     call go#util#EchoError(std_combined[0])
     return
@@ -148,13 +148,13 @@ endfunction
 
 " on_stdout is the stdout handler for jobstart(). It collects the output of
 " stderr and stores them to the jobs internal stdout list.
-function! s:on_stdout(job_id, data) dict abort
+function! s:on_stdout(job_id, data, event) dict abort
   call extend(self.stdout, a:data)
 endfunction
 
 " on_stderr is the stderr handler for jobstart(). It collects the output of
 " stderr and stores them to the jobs internal stderr list.
-function! s:on_stderr(job_id, data) dict abort
+function! s:on_stderr(job_id, data, event) dict abort
   call extend(self.stderr, a:data)
 endfunction
 
