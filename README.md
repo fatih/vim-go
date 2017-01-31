@@ -137,43 +137,43 @@ current buffer. You can also open the definition/declaration, in a new vertical,
 horizontal, or tab, for the word under your cursor:
 
 ```vim
-au FileType go nmap <Leader>ds <Plug>(go-def-split)
-au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
-au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+au FileType go nmap <leader>ds <Plug>(go-def-split)
+au FileType go nmap <leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <leader>dt <Plug>(go-def-tab)
 ```
 
 Open the relevant Godoc for the word under the cursor with `<leader>gd` or open
 it vertically with `<leader>gv`
 
 ```vim
-au FileType go nmap <Leader>gd <Plug>(go-doc)
-au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+au FileType go nmap <leader>gd <Plug>(go-doc)
+au FileType go nmap <leader>gv <Plug>(go-doc-vertical)
 ```
 
 Or open the Godoc in browser
 
 ```vim
-au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+au FileType go nmap <leader>gb <Plug>(go-doc-browser)
 ```
 
 Show a list of interfaces which is implemented by the type under your cursor
 with `<leader>s`
 
 ```vim
-au FileType go nmap <Leader>s <Plug>(go-implements)
+au FileType go nmap <leader>s <Plug>(go-implements)
 ```
 
 Show type info for the word under your cursor with `<leader>i` (useful if you
 have disabled auto showing type info via `g:go_auto_type_info`)
 
 ```vim
-au FileType go nmap <Leader>i <Plug>(go-info)
+au FileType go nmap <leader>i <Plug>(go-info)
 ```
 
 Rename the identifier under the cursor to a new name
 
 ```vim
-au FileType go nmap <Leader>e <Plug>(go-rename)
+au FileType go nmap <leader>e <Plug>(go-rename)
 ```
 
 More `<Plug>` mappings can be seen with `:he go-mappings`. Also these are just
@@ -245,8 +245,8 @@ Run `:GoRun` in a new tab, horizontal split or vertical split terminal
 
 ```vim
 au FileType go nmap <leader>rt <Plug>(go-run-tab)
-au FileType go nmap <Leader>rs <Plug>(go-run-split)
-au FileType go nmap <Leader>rv <Plug>(go-run-vertical)
+au FileType go nmap <leader>rs <Plug>(go-run-split)
+au FileType go nmap <leader>rv <Plug>(go-run-vertical)
 ```
 
 By default new terminals are opened in a vertical split. To change it
