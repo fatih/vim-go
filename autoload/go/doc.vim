@@ -152,8 +152,7 @@ function! s:gogetdoc(json) abort
     "     file size followed by newline
     "     file contents
     let in = ""
-    let sep = go#util#LineEnding()
-    let content = join(getline(1, '$'), sep)
+    let content = join(go#util#GetLines(), "\n")
     let in = fname . "\n" . strlen(content) . "\n" . content
     let command .= " -modified"
     let out = go#util#System(command, in)

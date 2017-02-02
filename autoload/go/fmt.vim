@@ -63,7 +63,7 @@ function! go#fmt#Format(withGoimport) abort
 
   " Write current unsaved buffer to a temp file
   let l:tmpname = tempname()
-  call writefile(getline(1, '$'), l:tmpname)
+  call writefile(go#util#GetLines(), l:tmpname)
   if go#util#IsWin()
     let l:tmpname = tr(l:tmpname, '\', '/')
   endif

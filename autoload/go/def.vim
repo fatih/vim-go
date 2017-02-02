@@ -16,7 +16,7 @@ function! go#def#Jump(mode) abort
     if &modified
       " Write current unsaved buffer to a temp file and use the modified content
       let l:tmpname = tempname()
-      call writefile(getline(1, '$'), l:tmpname)
+      call writefile(go#util#GetLines(), l:tmpname)
       let fname = l:tmpname
     endif
 
@@ -41,8 +41,7 @@ function! go#def#Jump(mode) abort
     let stdin_content = ""
 
     if &modified
-      let sep = go#util#LineEnding()
-      let content  = join(getline(1, '$'), sep)
+      let content  = join(go#util#GetLines(), "\n")
       let stdin_content = fname . "\n" . strlen(content) . "\n" . content
       call add(cmd, "-modified")
     endif
