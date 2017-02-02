@@ -633,7 +633,7 @@ function! go#guru#Tags(...) abort
   if !exists('g:go_guru_tags')
     call go#util#EchoSuccess("guru tags is not set")
   else
-    call go#util#EchoSuccess("current guru tags: ". a:1)
+    call go#util#EchoSuccess("current guru tags: ". g:go_guru_tags)
   endif
 endfunction
 
