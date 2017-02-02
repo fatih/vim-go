@@ -2,7 +2,7 @@
 
 FEATURES:
 
-* add new `errl` snippet that expands to [gh-1185]:
+* Add new `errl` snippet that expands to [gh-1185]:
 
 ```
 if err != nil {
@@ -12,13 +12,14 @@ if err != nil {
 
 IMPROVEMENTS:
 
-* lowercase `<Leader>` in mappings examples for consisten documentation across the README [gh-1192]
+* Lowercase `<Leader>` in mappings examples for consisten documentation across the README [gh-1192]
+* All of files should be written in utf-8 if the file will be passed to external command. [gh-1184]
 
 BUG FIXES:
 
-* honor `g:go_echo_command_info` when dispatching builds in neovim [gh-1176]
-* fix `:GoBuild` error in neovim due to invalid jobcontrol handler function signatures (`s:on_stdout`, `s:on_stderr`)[gh-1176]
-* update statusline before and after `go#jobcontrol#Spawn` command is executed [gh-1176]
+* Honor `g:go_echo_command_info` when dispatching builds in neovim [gh-1176]
+* Fix `:GoBuild` error in neovim due to invalid jobcontrol handler function signatures (`s:on_stdout`, `s:on_stderr`)[gh-1176]
+* Update statusline before and after `go#jobcontrol#Spawn` command is executed [gh-1176]
 
 ## 1.11 - (January 9, 2017)
 
