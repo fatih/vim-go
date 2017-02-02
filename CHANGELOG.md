@@ -1,5 +1,9 @@
 ## unplanned
 
+IMPROVEMENTS:
+
+* lowercase `<Leader>` in mappings examples for consisten documentation across the README [gh-1192]
+
 BUG FIXES:
 
 * honor `g:go_echo_command_info` when dispatching builds in neovim [gh-1176]
