@@ -1,3 +1,11 @@
+## unplanned
+
+BUG FIXES:
+
+* honor `g:go_echo_command_info` when dispatching builds in neovim [gh-1176]
+* fix `:GoBuild` error in neovim due to invalid jobcontrol handler function signatures (`s:on_stdout`, `s:on_stderr`)[gh-1176]
+* update statusline before and after `go#jobcontrol#Spawn` command is executed [gh-1176]
+
 ## 1.11 - (January 9, 2017)
 
 FEATURES:
