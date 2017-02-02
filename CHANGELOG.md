@@ -1,5 +1,15 @@
 ## unplanned
 
+FEATURES:
+
+* add new `errl` snippet that expands to [gh-1185]:
+
+```
+if err != nil {
+	log.Fatal(err)
+}
+```
+
 IMPROVEMENTS:
 
 * lowercase `<Leader>` in mappings examples for consisten documentation across the README [gh-1192]
