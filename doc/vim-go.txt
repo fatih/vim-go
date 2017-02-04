@@ -1488,6 +1488,8 @@ default it's enabled >
 
       let g:go_echo_go_info = 1
 <
+Please note that 'noshowmode' must be set for this feature to work correctly.
+
                                                     *'g:go_statusline_duration'*
 
 Specifices the duration of statusline information being showed per package. By
