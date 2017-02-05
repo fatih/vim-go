@@ -36,6 +36,8 @@ command! -nargs=* -bang GoInstall call go#cmd#Install(<bang>0, <f-args>)
 command! -nargs=* -bang GoTest call go#cmd#Test(<bang>0, 0, <f-args>)
 command! -nargs=* -bang GoTestFunc call go#cmd#TestFunc(<bang>0, <f-args>)
 command! -nargs=* -bang GoTestCompile call go#cmd#Test(<bang>0, 1, <f-args>)
+command! -nargs=* -bang GoToggleBreakpoint call go#cmd#ToggleBreakpoint(expand('%:p'), line('.'), <f-args>)
+command! -nargs=* -bang GoDebug call go#cmd#Debug(<bang>0, 0, <f-args>)
 
 " -- cover
 command! -nargs=* -bang GoCoverage call go#coverage#Buffer(<bang>0, <f-args>)
