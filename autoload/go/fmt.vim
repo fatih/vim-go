@@ -77,7 +77,7 @@ function! go#fmt#Format(withGoimport) abort
   if go#util#ShellError() == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
   elseif g:go_fmt_fail_silently == 0
-    let errors = s:parse_errors(out)
+    let errors = s:parse_errors(expand('%'), out)
     call s:show_errors(errors)
   endif
 
@@ -196,7 +196,7 @@ function! s:fmt_cmd(bin_name, source, target)
 endfunction
 
 " parse_errors parses the given errors and returns a list of parsed errors
-function! s:parse_errors(content) abort
+function! s:parse_errors(filename, content) abort
   let splitted = split(a:content, '\n')
 
   " list of errors to be put into location list
@@ -205,6 +205,7 @@ function! s:parse_errors(content) abort
     let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
     if !empty(tokens)
       call add(errors,{
+            \"filename": a:filename,
             \"lnum":     tokens[2],
             \"col":      tokens[3],
             \"text":     tokens[4],
