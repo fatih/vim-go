@@ -34,7 +34,7 @@ function! go#coverage#Buffer(bang, ...) abort
   try
     execute cd . fnameescape(expand("%:p:h"))
     if empty(glob("*_test.go"))
-      call go#util#EchoError("no tests files available")
+      call go#util#EchoError("no test files available")
       return
     endif
   finally
