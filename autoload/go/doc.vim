@@ -32,10 +32,10 @@ function! go#doc#OpenBrowser(...) abort
     let import = out["import"]
     let name = out["name"]
     let decl = out["decl"]
-    
+
     let godoc_url = "https://godoc.org/" . import
     if decl !~ "^package"
-      let godoc_url .= "#" . name 
+      let godoc_url .= "#" . name
     endif
 
     echo godoc_url
