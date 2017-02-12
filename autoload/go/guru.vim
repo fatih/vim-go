@@ -217,9 +217,9 @@ function! s:run_guru(args) abort
   let $GOPATH = go#path#Detect()
   if go#util#has_job()
     let res = s:async_guru(a:args)
+  else
+    let res = s:sync_guru(a:args)
   endif
-
-  let res = s:sync_guru(a:args)
 
   let $GOPATH = old_gopath
 
