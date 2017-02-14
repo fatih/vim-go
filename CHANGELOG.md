@@ -2,6 +2,7 @@
 
 FEATURES:
 
+* New `:GoAddTags` and `:GoRemoveTags` command based on the tool [gomodifytags](https://github.com/fatih/gomodifytags). This fixes many old bugs that were due prior regexp based implementation. For the usage please read the docs and checkout the demo at: https://github.com/fatih/vim-go/pull/1204 [gh-1204]
 * Add new `errl` snippet that expands to [gh-1185]:
 
 ```
