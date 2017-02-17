@@ -576,7 +576,7 @@ CTRL-t
                                                             *:GoSameIdsToggle*
 :GoSameIdsToggle
 
-    Toggle between |:GoSameIds| and |:GoSameIdsClear|. 
+    Toggle between |:GoSameIds| and |:GoSameIdsClear|.
 
                                                         *:GoSameIdsAutoToggle*
 :GoSameIdsAutoToggle
@@ -990,7 +990,7 @@ Shows the status of a job running asynchronously. Can be used to plug into the
 statusline. It works to show the status per package instead of per
 file. Assume you have three files open, all belonging to the same package, if
 the package build (`:GoBuild`) is successful, all statusline's will show
-`success`, if you it fails all file's statusline will show `failed`. 
+`success`, if you it fails all file's statusline will show `failed`.
 
 To avoid always showing old status information, the status information is
 cleaned for each package after `60` seconds. This can be changed with the

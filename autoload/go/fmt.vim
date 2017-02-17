@@ -102,7 +102,7 @@ function! go#fmt#Format(withGoimport) abort
 endfunction
 
 " update_file updates the target file with the given formatted source
-function! go#fmt#update_file(source, target) 
+function! go#fmt#update_file(source, target)
   " remove undo point caused via BufWritePre
   try | silent undojoin | catch | endtry
 
@@ -133,8 +133,8 @@ endfunction
 
 " run runs the gofmt/goimport command for the given source file and returns
 " the the output of the executed command. Target is the real file to be
-" formated. 
-function! go#fmt#run(bin_name, source, target) 
+" formated.
+function! go#fmt#run(bin_name, source, target)
   let cmd = s:fmt_cmd(a:bin_name, a:source, a:target)
   if cmd[0] == "goimports"
     " change GOPATH too, so goimports can pick up the correct library
@@ -218,13 +218,13 @@ endfunction
 " show_errors opens a location list and shows the given errors. If the given
 " errors is empty, it closes the the location list
 function! s:show_errors(errors) abort
-  let l:listtype = "locationlist" 
+  let l:listtype = "locationlist"
   if !empty(a:errors)
     call go#list#Populate(l:listtype, a:errors, 'Format')
     echohl Error | echomsg "Gofmt returned error" | echohl None
   endif
 
-  " this closes the window if there are no errors or it opens 
+  " this closes the window if there are no errors or it opens
   " it if there is any
   call go#list#Window(l:listtype, len(a:errors))
 endfunction

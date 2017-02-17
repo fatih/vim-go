@@ -26,5 +26,3 @@ func Test_remove_tags()
 
   call assert_equal(expected, actual)
 endfunc
-
-

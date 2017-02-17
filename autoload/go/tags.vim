@@ -8,7 +8,7 @@ function! go#tags#Add(start, end, count, ...) abort
   endif
 
   let offset = 0
-  if a:count == -1 
+  if a:count == -1
     let offset = go#util#OffsetCursor()
   endif
 
@@ -31,7 +31,7 @@ function! go#tags#Remove(start, end, count, ...) abort
   endif
 
   let offset = 0
-  if a:count == -1 
+  if a:count == -1
     let offset = go#util#OffsetCursor()
   endif
 
@@ -104,7 +104,7 @@ func s:write_out(out) abort
     let index += 1
   endfor
 endfunc
- 
+
 
 " create_cmd returns a dict that contains the command to execute gomodifytags
 func s:create_cmd(args) abort
@@ -144,12 +144,12 @@ func s:create_cmd(args) abort
         let splitted = split(item, ",")
 
         " tag only
-        if len(splitted) == 1 
+        if len(splitted) == 1
           call add(l:tags, splitted[0])
         endif
 
         " options only
-        if len(splitted) == 2 
+        if len(splitted) == 2
           call add(l:tags, splitted[0])
           call add(l:options, printf("%s=%s", splitted[0], splitted[1]))
         endif
@@ -178,12 +178,12 @@ func s:create_cmd(args) abort
         let splitted = split(item, ",")
 
         " tag only
-        if len(splitted) == 1 
+        if len(splitted) == 1
           call add(l:tags, splitted[0])
         endif
 
         " options only
-        if len(splitted) == 2 
+        if len(splitted) == 2
           call add(l:options, printf("%s=%s", splitted[0], splitted[1]))
         endif
       endfor
