@@ -17,6 +17,7 @@ IMPROVEMENTS:
 * All of files should be written in utf-8 if the file will be passed to external command. [gh-1184]
 * `:GoAddTags` is now able to add options to existing tags with the syntax `:GoAddTags key,option`, i.e: `:GoAddTags json,omitempty` [gh-985]
 * Document 'noshowmode' requirement for echo_go_info [gh-1197]
+* Improve godoc view for vertical splits [gh-1195]
 
 BUG FIXES:
 
