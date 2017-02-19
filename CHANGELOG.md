@@ -18,6 +18,7 @@ IMPROVEMENTS:
 * `:GoAddTags` is now able to add options to existing tags with the syntax `:GoAddTags key,option`, i.e: `:GoAddTags json,omitempty` [gh-985]
 * Document 'noshowmode' requirement for echo_go_info [gh-1197]
 * Improve godoc view for vertical splits [gh-1195]
+* Set GOPATH for both possible go guru execution paths (sync and async) [gh-1193]
 
 BUG FIXES:
 
