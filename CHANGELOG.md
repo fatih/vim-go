@@ -30,6 +30,7 @@ BUG FIXES:
 * Fix `:GoAddTags` not working for fiels of types `interface{}` [gh-1091]
 * Fix `:GoAddTags` not working for fields with one line comments [gh-1181]
 * Fix `:GoAddTags` not working if any field comment would contain `{}` [gh-1189]
+* Respect go_fmt_options when running goimports [gh-1211]
 
 
 ## 1.11 - (January 9, 2017)
