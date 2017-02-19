@@ -168,10 +168,9 @@ function! s:fmt_cmd(bin_name, source, target)
   " start constructing the command
   let cmd = [bin_path]
   call add(cmd, "-w")
+  call extend(cmd, split(g:go_fmt_options, " "))
 
-  if a:bin_name != "goimports"
-    call extend(cmd, split(g:go_fmt_options, " "))
-  else
+  if a:bin_name == "goimports"
     " lazy check if goimports support `-srcdir`. We should eventually remove
     " this in the future
     if !exists('b:goimports_vendor_compatible')
