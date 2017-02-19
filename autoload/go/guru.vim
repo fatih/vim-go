@@ -120,8 +120,6 @@ function! s:sync_guru(args) abort
     endif
   endif
 
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
 
   " run, forrest run!!!
   let command = join(result.cmd, " ")
@@ -130,8 +128,6 @@ function! s:sync_guru(args) abort
   else
     let out = go#util#System(command)
   endif
-
-  let $GOPATH = old_gopath
 
   if has_key(a:args, 'custom_parse')
     call a:args.custom_parse(go#util#ShellError(), out)
@@ -217,11 +213,17 @@ endfunc
 
 " run_guru runs the given guru argument
 function! s:run_guru(args) abort
+  let old_gopath = $GOPATH
+  let $GOPATH = go#path#Detect()
   if go#util#has_job()
-    return s:async_guru(a:args)
+    let res = s:async_guru(a:args)
+  else
+    let res = s:sync_guru(a:args)
   endif
 
-  return s:sync_guru(a:args)
+  let $GOPATH = old_gopath
+
+  return res
 endfunction
 
 " Show 'implements' relation for selected package
