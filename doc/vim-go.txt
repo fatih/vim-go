@@ -1092,6 +1092,13 @@ is empty. >
 
   let g:go_fmt_options = ''
 <
+                                                          *'g:go_imports_options'*
+
+Use this option to add additional options to the |'g:go_goimports_bin'|. Default
+is empty. >
+
+  let g:go_imports_options = ''
+<
                                                     *'g:go_fmt_fail_silently'*
 
 Use this option to disable showing a location list when |'g:go_fmt_command'|
