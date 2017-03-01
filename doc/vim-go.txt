@@ -1216,6 +1216,13 @@ this. By default it's not set.
 >
   let g:go_guru_tags = ''
 <
+                                                        *'g:go_rename_tags'*
+
+These options that will be automatically passed to the `-tags` option of
+`gorename` when it's invoked with |:GoRename|. By default it's not set.
+>
+  let g:go_rename_tags = ''
+<
 
                                      *'g:go_highlight_array_whitespace_error'*
 
