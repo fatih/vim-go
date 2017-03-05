@@ -148,4 +148,24 @@ function s:parse_errors(exit_val, bang, out)
   silent execute ":e"
 endfunction
 
+function! go#rename#Tags(...) abort
+  if a:0
+    if a:0 == 1 && a:1 == '""'
+      unlet g:go_rename_tags
+      call go#util#EchoSuccess("rename tags is cleared")
+    else
+      let g:go_rename_tags = a:1
+      call go#util#EchoSuccess("rename tags changed to ". a:1)
+    endif
+
+    return
+  endif
+
+  if !exists('g:go_rename_tags')
+    call go#util#EchoSuccess("rename tags is not set")
+  else
+    call go#util#EchoSuccess("current rename tags: ". g:go_rename_tags)
+  endif
+endfunction
+
 " vim: sw=2 ts=2 et
