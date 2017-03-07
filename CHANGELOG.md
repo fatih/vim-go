@@ -10,6 +10,7 @@ if err != nil {
 	log.Fatal(err)
 }
 ```
+* New `:GoRenameTags` command to change the build tags for the `gorename` tool [gh-1225]
 
 IMPROVEMENTS:
 
