@@ -41,8 +41,9 @@ function! go#rename#Rename(bang, ...) abort
 
   let cmd = [bin_path, "-offset", offset, "-to", to_identifier]
 
-  if exists('g:go_rename_tags')
-    let tags = get(g:, 'go_rename_tags')
+  " check for any tags
+  if exists('g:go_build_tags')
+    let tags = get(g:, 'go_build_tags')
     call extend(cmd, ["-tags", tags])
   endif
 
@@ -146,26 +147,6 @@ function s:parse_errors(exit_val, bang, out)
   " we need a way to get the list of changes from gorename upon an success
   " change.
   silent execute ":e"
-endfunction
-
-function! go#rename#Tags(...) abort
-  if a:0
-    if a:0 == 1 && a:1 == '""'
-      unlet g:go_rename_tags
-      call go#util#EchoSuccess("rename tags is cleared")
-    else
-      let g:go_rename_tags = a:1
-      call go#util#EchoSuccess("rename tags changed to ". a:1)
-    endif
-
-    return
-  endif
-
-  if !exists('g:go_rename_tags')
-    call go#util#EchoSuccess("rename tags is not set")
-  else
-    call go#util#EchoSuccess("current rename tags: ". g:go_rename_tags)
-  endif
 endfunction
 
 " vim: sw=2 ts=2 et
