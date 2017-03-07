@@ -608,6 +608,16 @@ CTRL-t
     The custom build tags is cleared (unset) if `""` is given. If no arguments
     is given it prints the current custom build tags.
 
+                                                                 *:GoRenameTags*
+:GoRenameTags [tags]
+
+    Changes the custom |'g:go_rename_tags'| setting and overrides it with the
+    given build tags. This command cooperate with GoRename command when
+    there exist mulitiple build tags in your project, then you can set one of
+    the build tags for GoRename to find more accurate.
+    The custom build tags is cleared (unset) if `""` is given. If no arguments
+    is given it prints the current custom build tags.
+
                                                                      *:AsmFmt*
 :AsmFmt
 
@@ -1215,6 +1225,13 @@ These options that will be automatically passed to the `-tags` option of
 this. By default it's not set.
 >
   let g:go_guru_tags = ''
+<
+                                                        *'g:go_rename_tags'*
+
+These options that will be automatically passed to the `-tags` option of
+`gorename` when it's invoked with |:GoRename|. By default it's not set.
+>
+  let g:go_rename_tags = ''
 <
 
                                      *'g:go_highlight_array_whitespace_error'*
