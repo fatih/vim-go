@@ -264,6 +264,13 @@ let g:go_term_enabled = 1
 ```
 
 ### Using with Syntastic
+Get all the features:
+```vim
+let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': ['go'] }
+```
+
+
 Sometimes when using both `vim-go` and `syntastic` Vim will start lagging while
 saving and opening files. The following fixes this:
 
