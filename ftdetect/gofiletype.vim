@@ -27,5 +27,6 @@ au BufRead *.s call s:gofiletype_pre("asm")
 au BufReadPost *.s call s:gofiletype_post()
 
 au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
+au BufRead,BufNewFile *.qtpl set filetype=gohtmltmpl
 
 " vim: sw=2 ts=2 et
