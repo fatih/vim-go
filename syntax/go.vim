@@ -317,6 +317,7 @@ hi def link     goMethodCall        Type
 if g:go_highlight_fields != 0
   syn match goField                 /\.\w\+\([.\ \n\r\:\)\[,]\)\@=/hs=s+1
 endif
+hi def link    goVarArgs            Type
 hi def link    goField              Identifier
 
 " Structs & Interfaces;
