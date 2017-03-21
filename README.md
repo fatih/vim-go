@@ -219,6 +219,12 @@ Disable opening browser after posting your snippet to `play.golang.org`:
 let g:go_play_open_browser = 0
 ```
 
+Disable running `go doc` when `K` is pressed:
+
+```vim
+let g:go_doc_keywordprg_enabled = 0
+```
+
 By default when `:GoInstallBinaries` is called, the binaries are installed to
 `$GOBIN` or `$GOPATH/bin`. To change it:
 
