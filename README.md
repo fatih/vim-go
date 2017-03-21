@@ -49,6 +49,7 @@ disabled/enabled easily.
 * Vim 8.0 support. Async execution for most commands, various underlying improvements.
 * NeoVim support (beta). Async execution for some commands.
 * Alternate between implementation and test code with `:GoAlternate`
+* **New** **`:GoImpl`** command that generates method stubs for implementing an interface. Checkout the [demo](https://twitter.com/fatih/status/729991365581545472) to see how it works.
 
 Checkout the official [tutorial](https://github.com/fatih/vim-go-tutorial)
 that goes literally over all features and shows many tips and tricks. It shows
