@@ -1,4 +1,4 @@
-# vim-go
+# vim-go [![Build Status](http://img.shields.io/travis/fatih/vim-go.svg?style=flat-square)](https://travis-ci.org/fatih/vim-go)
 
 <p align="center">
   <img style="float: right;" src="assets/vim-go.png" alt="Vim-go logo"/>
@@ -46,10 +46,8 @@ disabled/enabled easily.
 * Custom vim text objects such as `a function` or `inner function`
   list.
 * Jump to function or type declarations with `:GoDecls` or `:GoDeclsDir`
-* A async launcher for the go command is implemented for Neovim, fully async
-  building and testing (beta).
-* Integrated with the Neovim terminal, launch `:GoRun` and other go commands
-  in their own new terminal. (beta)
+* Vim 8.0 support. Async execution for most commands, various underlying improvements.
+* NeoVim support (beta). Async execution for some commands.
 * Alternate between implementation and test code with `:GoAlternate`
 
 Checkout the official [tutorial](https://github.com/fatih/vim-go-tutorial)
@@ -139,43 +137,43 @@ current buffer. You can also open the definition/declaration, in a new vertical,
 horizontal, or tab, for the word under your cursor:
 
 ```vim
-au FileType go nmap <Leader>ds <Plug>(go-def-split)
-au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
-au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+au FileType go nmap <leader>ds <Plug>(go-def-split)
+au FileType go nmap <leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <leader>dt <Plug>(go-def-tab)
 ```
 
 Open the relevant Godoc for the word under the cursor with `<leader>gd` or open
 it vertically with `<leader>gv`
 
 ```vim
-au FileType go nmap <Leader>gd <Plug>(go-doc)
-au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+au FileType go nmap <leader>gd <Plug>(go-doc)
+au FileType go nmap <leader>gv <Plug>(go-doc-vertical)
 ```
 
 Or open the Godoc in browser
 
 ```vim
-au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+au FileType go nmap <leader>gb <Plug>(go-doc-browser)
 ```
 
 Show a list of interfaces which is implemented by the type under your cursor
 with `<leader>s`
 
 ```vim
-au FileType go nmap <Leader>s <Plug>(go-implements)
+au FileType go nmap <leader>s <Plug>(go-implements)
 ```
 
 Show type info for the word under your cursor with `<leader>i` (useful if you
 have disabled auto showing type info via `g:go_auto_type_info`)
 
 ```vim
-au FileType go nmap <Leader>i <Plug>(go-info)
+au FileType go nmap <leader>i <Plug>(go-info)
 ```
 
 Rename the identifier under the cursor to a new name
 
 ```vim
-au FileType go nmap <Leader>e <Plug>(go-rename)
+au FileType go nmap <leader>e <Plug>(go-rename)
 ```
 
 More `<Plug>` mappings can be seen with `:he go-mappings`. Also these are just
@@ -237,17 +235,18 @@ let g:go_get_update = 0
 ### Using with Neovim (beta)
 
 Note: Neovim currently is not a first class citizen for vim-go. You are free
-to open bugs but I'm not going to look at them. Even though I'm using Neovim
-myself, Neovim itself is still alpha. So vim-go might not work well as good as
-in Vim. I'm happy to accept pull requests or very detailed bug reports.
+to open bug, however I'm not using Neovim so it's hard for me to test it.
+vim-go might not work well as good as in Vim. I'm happy to accept pull requests
+or very detailed bug reports. If you're interested to improve the state of
+Neovim in vim-go you're always welcome!
 
 
 Run `:GoRun` in a new tab, horizontal split or vertical split terminal
 
 ```vim
 au FileType go nmap <leader>rt <Plug>(go-run-tab)
-au FileType go nmap <Leader>rs <Plug>(go-run-split)
-au FileType go nmap <Leader>rv <Plug>(go-run-vertical)
+au FileType go nmap <leader>rs <Plug>(go-run-split)
+au FileType go nmap <leader>rv <Plug>(go-run-vertical)
 ```
 
 By default new terminals are opened in a vertical split. To change it
@@ -288,6 +287,31 @@ information. It includes
 [Screencasts](https://github.com/fatih/vim-go/wiki/Screencasts), an [FAQ
 section](https://github.com/fatih/vim-go/wiki/FAQ-Troubleshooting), and many
 other [various pieces](https://github.com/fatih/vim-go/wiki) of information.
+
+## Development & Testing
+
+vim-go supports now test files. Please check `autoload` folder for examples. If
+you add a new feature be sure you also include the `_test.vim` file next to the
+script. Test functions should be starting with `Test_`, example:
+
+
+```viml
+function Test_run_fmt()
+  call assert_equal(expected, actual)
+  ...
+endfunction
+```
+
+You can locally test it by running:
+
+```
+make
+```
+
+This will run all tests and print either `PASS` or `FAIL` to indicate the final
+status of all tests.
+
+Additionally, each new pull request will trigger a new Travis-ci job.
 
 ## Donation
 
