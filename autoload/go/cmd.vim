@@ -218,7 +218,7 @@ function! go#cmd#Install(bang, ...) abort
   if !empty(errors) && !a:bang
     call go#list#JumpToFirst(l:listtype)
   else
-    call go#util#EchoSuccess("installed to ". $GOPATH)
+    call go#util#EchoSuccess("installed to ". go#path#Detect())
   endif
 
   let $GOPATH = old_gopath
@@ -403,7 +403,6 @@ function! go#cmd#Generate(bang, ...) abort
   let &makeprg = default_makeprg
   let $GOPATH = old_gopath
 endfunction
-
 
 " ---------------------
 " | Vim job callbacks |
