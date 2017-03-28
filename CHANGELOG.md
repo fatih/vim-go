@@ -27,6 +27,7 @@ IMPROVEMENTS:
 * Document 'noshowmode' requirement for echo_go_info [gh-1197]
 * Improve godoc view for vertical splits [gh-1195]
 * Set GOPATH for both possible go guru execution paths (sync and async) [gh-1193]
+* Improve docs for :GoDef usage [gh-1242]
 
 BUG FIXES:
 
