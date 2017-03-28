@@ -63,7 +63,7 @@ hi def link     goImaginary  Number
 
 " Token groups
 syn cluster     gotplLiteral     contains=goString,goRawString,goCharacter,@goInt,goFloat,goImaginary
-syn keyword     gotplControl     contained   if else end range with template
+syn keyword     gotplControl     contained   if else end range with template code space elseif endif endfor endfunc comment endcomment plain endplain stripspace endstripspace collapsespace endcollapsespace endswitch import func type struct return
 syn keyword     gotplFunctions   contained   and html index js len not or print printf println urlquery eq ne lt le gt ge
 syn match       gotplVariable    contained   /\$[a-zA-Z0-9_]*\>/
 syn match       goTplIdentifier  contained   /\.[^\s}]+\>/
@@ -73,8 +73,10 @@ hi def link     gotplFunctions      Function
 hi def link     goTplVariable       Special
 
 syn region gotplAction start="{{" end="}}" contains=@gotplLiteral,gotplControl,gotplFunctions,gotplVariable,goTplIdentifier display
+syn region gotplAction start="{%" end="%}" contains=@gotplLiteral,gotplControl,gotplFunctions,gotplVariable,goTplIdentifier display
 syn region gotplAction start="\[\[" end="\]\]" contains=@gotplLiteral,gotplControl,gotplFunctions,gotplVariable display
 syn region goTplComment start="{{/\*" end="\*/}}" display
+syn region goTplComment start="{%/\*" end="\*/%}" display
 syn region goTplComment start="\[\[/\*" end="\*/\]\]" display
 
 hi def link gotplAction PreProc
