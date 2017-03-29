@@ -404,6 +404,61 @@ function! go#cmd#Generate(bang, ...) abort
   let $GOPATH = old_gopath
 endfunction
 
+function! go#cmd#ToggleBreakpoint(file, line, ...) abort
+  " Compose the breakpoint for delve:
+  " Example: break /home/user/path/to/go/file.go:23
+  let breakpoint = "break " . a:file. ':' . a:line
+
+  " Define the sign for the gutter
+  exe "sign define gobreakpoint text=◉ texthl=Search"
+
+  " If the line isn't already in the list, add it.
+  " Otherwise remove it from the list.
+  let i = index(g:go_breakpoints, breakpoint)
+  if i == -1
+    call add(g:go_breakpoints, breakpoint)
+    exe "sign place ". a:line ." line=" . a:line . " name=gobreakpoint file=" . a:file
+  else
+    call remove(g:go_breakpoints, i)
+    exe "sign unplace ". a:line ." file=" . a:file
+  endif
+endfunction
+
+function! go#cmd#writeBreakpointsFile(...) abort
+  call writefile(g:go_breakpoints + ["continue"], g:go_breakpoints_file)
+endfunction
+
+function! go#cmd#deleteBreakpointsFile(...) abort
+  if filereadable(g:go_breakpoints_file)
+    call delete(g:go_breakpoints_file)
+  endif
+endfunction
+
+function! go#cmd#Debug(bang, ...) abort
+  call go#cmd#writeBreakpointsFile()
+  let args = ["debug", "--init=" . g:go_breakpoints_file]
+
+  " FIXME: this doesn't works for Vim 8
+  if go#util#has_job()
+    " use vim's job functionality to call it asynchronously
+    let job_args = {
+          \ 'cmd': ['dlv'] + args,
+          \ 'bang': a:bang,
+          \ }
+
+    call s:cmd_job(job_args)
+    return
+  elseif has('nvim')
+    " use nvims's job functionality
+    if get(g:, 'go_term_enabled', 0)
+      let id = go#term#new(a:bang, ["dlv"] + args)
+    else
+      let id = go#jobcontrol#Spawn(a:bang, "dlv", args)
+    endif
+
+    return id
+  endif
+endfunction
 
 " ---------------------
 " | Vim job callbacks |

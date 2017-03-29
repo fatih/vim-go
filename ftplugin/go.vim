@@ -60,6 +60,17 @@ if get(g:, "go_auto_type_info", 0) || get(g:, "go_auto_sameids", 0)
   let &l:updatetime= get(g:, "go_updatetime", 800)
 endif
 
+" Set a global list of breakpoints, if not already exist
+if !exists("g:go_breakpoints")
+  let g:go_breakpoints = []
+endif
+
+if !exists("g:go_breakpoints_file")
+  let g:go_breakpoints_file = '.gobreakpoints'
+endif
+
+autocmd VimLeave * call go#cmd#deleteBreakpointsFile()<cr>
+
 " NOTE(arslan): experimental, disabled by default, doesn't work well. No
 " documentation as well. If anyone feels adventerous, enable the following and
 " try to search for Go identifiers ;)
