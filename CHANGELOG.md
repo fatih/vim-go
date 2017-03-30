@@ -20,6 +20,7 @@ if err != nil {
 
 IMPROVEMENTS:
 
+* vim-go works now even if GOPATH is not set (starting with Go 1.8) [gh-1248]
 * Lowercase `<Leader>` in mappings examples for consistent documentation across the README [gh-1192]
 * All of files should be written in utf-8 if the file will be passed to external command. [gh-1184]
 * `:GoAddTags` is now able to add options to existing tags with the syntax
