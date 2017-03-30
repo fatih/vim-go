@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.12 - (March 29, 2017)
+
 FEATURES:
 
 * New `:GoAddTags` and `:GoRemoveTags` command based on the tool
