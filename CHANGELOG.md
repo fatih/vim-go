@@ -47,13 +47,13 @@ BUG FIXES:
 * Fix `:GoAddTags` not working if any field comment would contain `{}` [gh-1189]
 * Respect go_fmt_options when running goimports [gh-1211]
 * Set the filename in the location-list when there is an error with :GoFmt [gh-1199]
-* Fux `:GoInstall` to accept additional arguments if async mode was enabled [gh-1246]
+* Fxx `:GoInstall` to accept additional arguments if async mode was enabled [gh-1246]
 
 BACKWARDS INCOMPATIBILITIES:
 
 * The command `:GoGuruTags` is removed in favour of the new command
   `:GoBuildTags`. This command will be used now not just for `guru`, also for
-  all new commands such as `guru` [gh-1232]
+  all new commands such as `gorename` [gh-1232]
 * The setting `g:go_guru_tags` is removed in favour of the new setting
   `g:go_build_tags` [gh-1232]
 
