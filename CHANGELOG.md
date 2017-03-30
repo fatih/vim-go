@@ -49,7 +49,7 @@ BUG FIXES:
 * Fix `:GoAddTags` not working if any field comment would contain `{}` [gh-1189]
 * Respect go_fmt_options when running goimports [gh-1211]
 * Set the filename in the location-list when there is an error with :GoFmt [gh-1199]
-* Fxx `:GoInstall` to accept additional arguments if async mode was enabled [gh-1246]
+* Fix `:GoInstall` to accept additional arguments if async mode was enabled [gh-1246]
 
 BACKWARDS INCOMPATIBILITIES:
 
