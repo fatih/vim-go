@@ -260,23 +260,14 @@ function s:lint_job(args)
     copen
   endfunction
 
-  function! s:close_cb(chan) closure
-    let l:job = ch_getjob(a:chan)
-    let l:status = job_status(l:job)
-
-    let exitval = 1
-    if l:status == "dead"
-      let l:info = job_info(l:job)
-      let exitval = l:info.exitval
-    endif
-
+  function! s:exit_cb(job, exitval) closure
     let status = {
           \ 'desc': 'last status',
           \ 'type': "gometaliner",
           \ 'state': "finished",
           \ }
 
-    if exitval
+    if a:exitval
       let status.state = "failed"
     endif
 
@@ -305,7 +296,7 @@ function s:lint_job(args)
 
   let start_options = {
         \ 'callback': funcref("s:callback"),
-        \ 'close_cb': funcref("s:close_cb"),
+        \ 'exit_cb': funcref("s:exit_cb"),
         \ }
 
   call job_start(a:args.cmd, start_options)
