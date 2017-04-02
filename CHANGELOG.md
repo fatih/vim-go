@@ -1,5 +1,9 @@
 ## unplanned
 
+IMPROVEMENTS
+
+* :GoMetaLinter can now exclude linters with the new `g:go_metalinter_excludes` option [gh-1253]
+
 ## 1.12 - (March 29, 2017)
 
 FEATURES:
