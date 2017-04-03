@@ -37,15 +37,11 @@ Vim-go follows the standard runtime path structure. Below are some helper lines
 for popular package managers:
 
 *  [Pathogen](https://github.com/tpope/vim-pathogen)
-  * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
+    * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
 *  [vim-plug](https://github.com/junegunn/vim-plug)
-  * `Plug 'fatih/vim-go'`
-*  [NeoBundle](https://github.com/Shougo/neobundle.vim)
-  * `NeoBundle 'fatih/vim-go'`
-*  [Vundle](https://github.com/gmarik/vundle)
-  * `Plugin 'fatih/vim-go'`
+    * `Plug 'fatih/vim-go'`
 *  [Vim packages](http://vimhelp.appspot.com/repeat.txt.html#packages)
-  * `git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go`
+    * `git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go`
 
 After installing, please install all necessary binaries. We have a handy
 command for it:
@@ -68,4 +64,4 @@ tutorial](https://github.com/fatih/vim-go-tutorial).
 
 ## License
 
-The BSD 3-Clause License - see `LICENSE` for more details
+The BSD 3-Clause License - see [`LICENSE`](LICENSE) for more details
