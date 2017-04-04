@@ -92,4 +92,7 @@ command! -nargs=* -buffer -complete=customlist,go#impl#Complete GoImpl call go#i
 " -- template
 command! -nargs=0 GoTemplateAutoCreateToggle call go#template#ToggleAutoCreate()
 
+" -- modifytags
+command! -nargs=* -range -bang GoModifyTags call go#modifytags#Run(<bang>0, <line1>, <line2>, <q-args>)
+
 " vim: sw=2 ts=2 et
