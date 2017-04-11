@@ -742,7 +742,22 @@ CTRL-t
 
     Toggles |'g:go_template_autocreate'|.
 
+                                                               *:GoKeyify*
+:GoKeyify
 
+    Uses `keyify` to turn unkeyed struct literals into keyed ones.
+
+    For example:
+>
+      Person{"John", "Smith"}
+<
+    Becomes:
+>
+      Person{
+        Name: "John",
+        Surname: "Smith",
+      }
+<
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
