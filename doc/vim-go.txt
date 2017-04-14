@@ -1307,6 +1307,13 @@ By default it's enabled. >
 
   let g:go_highlight_format_strings = 1
 <
+                                                *'g:go_highlight_extra_vars'*
+
+Highlights not predeclared but commonly used variables, such as ok, err.
+By default it's disabled. >
+
+  let g:go_highlight_extra_vars = 0
+<
                                                     *'g:go_autodetect_gopath'*
 
 Automatically modifies GOPATH for certain directory structures, such as for
