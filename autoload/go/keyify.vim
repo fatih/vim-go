@@ -34,7 +34,16 @@ function! go#keyify#Keyify()
   " Replace contents between start and end with `replacement`
   call setpos("'<", start)
   call setpos("'>", end)
-  silent! execute "normal! gv\"=result.replacement\<cr>p"
+
+  let select = 'gv'
+
+  " Make sure the visual mode is 'v', to avoid some bugs
+  normal! gv
+  if mode() !=# 'v'
+    let select .= 'v'
+  endif
+
+  silent! execute "normal!" select."\"=result.replacement\<cr>p"
 
   " Replacement text isn't aligned, so it needs fix
   normal! '<v'>=
