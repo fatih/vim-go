@@ -16,7 +16,7 @@ function! go#keyify#Keyify()
 
   " We want to output the error message in case the result isn't a JSON
   if type(result) != type({})
-    echoerr s:chomp(output)
+    call go#util#EchoError(s:chomp(output))
     let $GOPATH = old_gopath
     return
   endif
