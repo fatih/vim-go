@@ -14,8 +14,9 @@ function! go#keyify#Keyify()
   let output = go#util#System(command)
   silent! let result = json_decode(output)
 
-  " We don't want to do anything if output of the command was an error
+  " We want to output the error message in case the result isn't a JSON
   if type(result) != type({})
+    echoerr s:chomp(output)
     let $GOPATH = old_gopath
     return
   endif
@@ -41,4 +42,8 @@ function! go#keyify#Keyify()
   call setpos("'<", vis_start)
   call setpos("'>", vis_end)
   let $GOPATH = old_gopath
+endfunction
+
+function! s:chomp(string)
+    return substitute(a:string, '\n\+$', '', '')
 endfunction
