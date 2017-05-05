@@ -11,6 +11,8 @@ IMPROVEMENTS:
 * Add package-level comment folding [gh-1377]
 * Allow using :GoImpl on the type and struct parts too. Makes it a wee bit
   easier to use [gh-1386]
+* `:GoDef` sets the path of new buffers as relative to the current directory
+  when appropriate, instead of always using the full path [gh-1277].
 
 BUG FIXES:
 
