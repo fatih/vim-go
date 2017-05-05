@@ -99,7 +99,13 @@ endfunction
 function! go#util#System(str, ...) abort
   let l:shell = &shell
   if !go#util#IsWin() && executable('/bin/sh')
-    let &shell = '/bin/sh'
+    " Having the [t]csh shells set as the login shell results in temporary
+    " file access errors when calling ksh or dash system shells. /bin/sh is
+    " often aliased to these shells on modern Linux and BSD systems including
+    " VoidLinux, Debian and FreeBSD.
+    if match(l:shell, 'csh$') == -1
+      let &shell = '/bin/sh'
+    endif
   endif
 
   try
