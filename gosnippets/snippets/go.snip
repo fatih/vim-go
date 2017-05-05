@@ -121,10 +121,10 @@ snippet else
 
 # if inline error
 snippet ife
-abbr if err := ...; err != nil { ... } 
-if err := ${1:condition}; err != nil {
-	${0}
-}
+abbr if err := ...; err != nil { ... }
+	if err := ${1:condition}; err != nil {
+		${0}
+	}
 
 # error snippet
 snippet errn
