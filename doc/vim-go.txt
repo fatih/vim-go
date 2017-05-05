@@ -1539,13 +1539,13 @@ default it's 60 seconds. Must be in milliseconds.
       let g:go_statusline_duration = 60000
 <
 
-                                                   *'g:go_modifytags_transform'*
+                                                   *'g:go_addtags_transform'*
 
 Sets the `transform` option for `gomodifytags` when using |:GoAddTags|.
 Possible options are: `snakecase`, `camelcase`. By default it is set to
 `snakecase`.
 >
-      let g:go_modifytags_transform = 'snakecase'
+      let g:go_addtags_transform = 'snakecase'
 <
 
 ==============================================================================
