@@ -222,11 +222,14 @@ COMMANDS                                                         *go-commands*
 :GoDef
 gd
 CTRL-]
+g<C-LeftMouse>
+<C-LeftMouse>
 
-    Goto declaration/definition for the declaration under the cursor. By default
-    the CTRL-] key and the mapping `gd` are enabled to invoke :GoDef for the
-    identifier under the cursor. See |'g:go_def_mapping_enabled'| to disable
-    them.  No explicit arguments are supported.
+    Goto declaration/definition for the declaration under the cursor. By
+    default the CTRL-] shortcut, the mapping `gd` and <C-LeftMouse>,
+    g<LeftMouse> are enabled to invoke :GoDef for the identifier under the
+    cursor. See |'g:go_def_mapping_enabled'| to disable them. No explicit
+    arguments are supported.
 
     vim-go also keeps a per-window location stack, roughly analogous to how
     Vim's internal |tags| functionality works. This is pushed to every time a
@@ -1143,9 +1146,10 @@ Use this option to define the command to be used for |:GoDef|. By default
 <
                                                   *'g:go_def_mapping_enabled'*
 
-Use this option to enable/disable the default mapping of CTRL-] and (`gd`) for
-GoDef and CTRL-t for :GoDefPop. Disabling it allows you to map something else
-to these keys or mappings. Default is enabled. >
+Use this option to enable/disable the default mapping of CTRL-],
+<C-LeftMouse>, g<C-LeftMouse> and (`gd`) for GoDef and CTRL-t for :GoDefPop.
+Disabling it allows you to map something else to these keys or mappings.
+Default is enabled. >
 
   let g:go_def_mapping_enabled = 1
 <
