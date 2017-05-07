@@ -12,6 +12,7 @@ IMPROVEMENTS
 BUG FIXES:
 
 * job: fix race between channel close and job exit [gh-1247]
+* internal: fix system calls when using tcsh [gh-1276]
 
 ## 1.12 - (March 29, 2017)
 
