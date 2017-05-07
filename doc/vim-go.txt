@@ -102,7 +102,7 @@ command.
 
     Plugin 'fatih/vim-go'
 
-*  Vim |packages| 
+*  Vim |packages|
 >
     git clone https://github.com/fatih/vim-go.git \
       ~/.vim/pack/plugins/start/vim-go
@@ -219,7 +219,7 @@ COMMANDS                                                         *go-commands*
     If [!] is not given the first error is jumped to.
 
                                                                       *:GoDef*
-:GoDef 
+:GoDef
 gd
 CTRL-]
 
@@ -605,7 +605,7 @@ CTRL-t
     Changes the build tags for various commands. If you have any file that
     uses a custom build tag, such as `//+build integration` , this command can
     be used to pass it to all tools that accepts tags, such as guru, gorenate,
-    etc.. 
+    etc..
 
     The build tags is cleared (unset) if `""` is given. If no arguments is
     given it prints the current custom build tags.
@@ -1553,6 +1553,16 @@ default it's 60 seconds. Must be in milliseconds.
 >
       let g:go_statusline_duration = 60000
 <
+
+                                                   *'g:go_addtags_transform'*
+
+Sets the `transform` option for `gomodifytags` when using |:GoAddTags|.
+Possible options are: `snakecase`, `camelcase`. By default it is set to
+`snakecase`.
+>
+      let g:go_addtags_transform = 'snakecase'
+<
+
 ==============================================================================
 DEVELOPMENT                                               *go-development*
 
