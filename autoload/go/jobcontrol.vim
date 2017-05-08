@@ -155,7 +155,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   execute cd . fnameescape(dir)
 
-  if !len(errors)
+  if !len(errors) && len(std_combined)
     " failed to parse errors, output the original content
     call go#util#EchoError(std_combined[0])
     return
