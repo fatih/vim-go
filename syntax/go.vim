@@ -73,6 +73,10 @@ if !exists("g:go_highlight_types")
   let g:go_highlight_types = 0
 endif
 
+if !exists("g:go_highlight_interfaces")
+  let g:go_highlight_interfaces = 0
+endif
+
 if !exists("g:go_highlight_build_constraints")
   let g:go_highlight_build_constraints = 0
 endif
@@ -334,6 +338,14 @@ hi def link     goTypeConstructor   Type
 hi def link     goTypeName          Type
 hi def link     goTypeDecl          Keyword
 hi def link     goDeclType          Keyword
+
+" Interfaces;
+if g:go_highlight_interfaces != 0
+  syn match goInterface             /\(.\)\@<=\w+\({\)\@=/
+  syn match goInterfaceDef          /\(type\s\+\)\@<=\w\+\(\s\+interface\s\+{\)\@=/
+ endif
+hi def link goInterface             Function
+hi def link goInterfaceDef          Function
 
 " Build Constraints
 if g:go_highlight_build_constraints != 0
