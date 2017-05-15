@@ -94,19 +94,29 @@ function! go#util#osarch() abort
   return go#util#goos() . '_' . go#util#goarch()
 endfunction
 
-" System runs a shell command. It will reset the shell to /bin/sh for Unix-like
-" systems if it is executable.
+" System runs a shell command. If possible, it will temporary set 
+" the shell to /bin/sh for Unix-like systems providing a Bourne
+" POSIX like environment.
 function! go#util#System(str, ...) abort
+  " Preserve original shell and shellredir values
   let l:shell = &shell
+  let l:shellredir = &shellredir
+
+  " Use a Bourne POSIX like shell. Some parts of vim-go expect
+  " commands to be executed using bourne semantics #988 and #1276.
+  " Alter shellredir to match bourne. Especially important if login shell
+  " is set to any of the csh or zsh family #1276.
   if !go#util#IsWin() && executable('/bin/sh')
-    let &shell = '/bin/sh'
+      set shell=/bin/sh shellredir=>%s\ 2>&1
   endif
 
   try
     let l:output = call('system', [a:str] + a:000)
     return l:output
   finally
+    " Restore original values
     let &shell = l:shell
+    let &shellredir = l:shellredir
   endtry
 endfunction
 
