@@ -190,6 +190,10 @@ function! s:template_autocreate()
   endif
 endfunction
 
+function! s:fold_functions()
+  %g/\(func\_.\{-}\)\@<={/ normal! f{zf%
+endfunction
+
 augroup vim-go
   autocmd!
 
@@ -206,6 +210,9 @@ augroup vim-go
   autocmd BufWritePre *.s call s:asmfmt_autosave()
   autocmd BufWritePost *.go call s:metalinter_autosave()
   autocmd BufNewFile *.go call s:template_autocreate()
+  autocmd BufNewFile *.go call s:fold_functions()
+  autocmd BufRead *.go call s:fold_functions()
+
   " clear SameIds when the buffer is unloaded so that loading another buffer
   " in the same window doesn't highlight the most recently matched
   " identifier's positions.
