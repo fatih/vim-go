@@ -255,9 +255,15 @@ function s:lint_job(args)
     caddexpr a:msg
     let &errorformat = old_errorformat
 
-    " TODO(arslan): cursor still jumps to first error even If I don't want
-    " it. Seems like there is a regression somewhere, but not sure where.
+    " TODO(jinleileiking): give a configure to jump or not
+    let l:winnr = winnr()
+
     copen
+
+    " If focus changed, restore it (jump to the last window).
+    if l:winnr !=# winnr()
+      wincmd p
+    endif
   endfunction
 
   function! s:exit_cb(job, exitval) closure
