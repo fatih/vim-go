@@ -294,17 +294,19 @@ hi def link     goOperator          Operator
 
 " Functions;
 if g:go_highlight_functions != 0
-  syn match goDeclaration       /\<func\>/ nextgroup=goReceiver,goFunction skipwhite skipnl
+  syn match goDeclaration       /\<func\>/ nextgroup=goReceiver,goFunction,goInitFunction skipwhite skipnl
   syn match goReceiver          /(\(\w\|[ *]\)\+)/ contained nextgroup=goFunction contains=goReceiverVar skipwhite skipnl
   syn match goReceiverVar       /\w\+/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
   syn match goFunction          /\w\+/ contained
+  syn match goInitFunction      /\<init\>/ contained
   syn match goFunctionCall      /\w\+\ze(/ contains=GoBuiltins,goDeclaration
 else
   syn keyword goDeclaration func
 endif
 hi def link     goFunction          Function
+hi def link     goInitFunction      goBuiltins
 hi def link     goFunctionCall      Type
 
 " Methods;
