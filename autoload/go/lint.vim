@@ -123,12 +123,11 @@ function! go#lint#Golint(...) abort
   endif
 
   if a:0 == 0
-    let goargs = shellescape(expand('%'))
+    let out = go#util#System(bin_path)
   else
-    let goargs = go#util#Shelljoin(a:000)
+    let out = go#util#System(bin_path . " " . go#util#Shelljoin(a:000))
   endif
 
-  let out = go#util#System(bin_path . " " . goargs)
   if empty(out)
     echon "vim-go: " | echohl Function | echon "[lint] PASS" | echohl None
     return

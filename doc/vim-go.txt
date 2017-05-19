@@ -167,7 +167,7 @@ COMMANDS                                                         *go-commands*
                                                                      *:GoLint*
 :GoLint [packages]
 
-    Run golint for the current Go file, or for given packages.
+    Run golint for the current directory, or for given packages.
 
                                                                       *:GoDoc*
 :GoDoc [word]
