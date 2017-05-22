@@ -17,6 +17,10 @@ BUG FIXES:
 * internal: fix system calls when using tcsh [gh-1276]
 * path: return the unmodified GOPATH if autodetect is disabled [gh-1280]
 
+BACKWARDS INCOMPATIBILITIES:
+
+* `:GoLint` works on the whole directory instead of the current file. To use it for the current file give it as an argument, i.e `:GoLint foo.go` [gh-1295]
+
 ## 1.12 - (March 29, 2017)
 
 FEATURES:
