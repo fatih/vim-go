@@ -1189,28 +1189,6 @@ is used. Use "neosnippet" for neosnippet.vim: >
 
   let g:go_snippet_engine = "ultisnips"
 <
-                                                    *'g:go_snippet_case_type'*
-
-Use this option to define the default conversion type of snippet expansion for
-field tags. For the following case, if `snakecase` is used the `json` snippet
-will expand to:
->
-  type T struct {
-    FooBarQuz string `json:"foo_bar_quz"
-  }
-<
-
-If "camelcase" is used:
->
-  type T struct {
-    FooBarQuz string `json:"fooBarQuz"
-  }
-<
-By default "snakecase" is used. Current values are: ["snakecase",
-"camelcase"].
->
-  let g:go_snippet_case_type = "snakecase"
-<
                                                            *'g:go_get_update'*
 
 Use this option to disable updating dependencies with |:GoInstallBinaries|. By
@@ -1560,9 +1538,24 @@ default it's 60 seconds. Must be in milliseconds.
 
                                                    *'g:go_addtags_transform'*
 
-Sets the `transform` option for `gomodifytags` when using |:GoAddTags|.
-Possible options are: `snakecase`, `camelcase`. By default it is set to
-`snakecase`.
+Sets the `transform` option for `gomodifytags` when using |:GoAddTags| or if
+it's being used for snippet expansion of single fields.  Possible options are:
+`snakecase`, `camelcase`. For the following case, if `snakecase` is used the
+field will be transformed to:
+>
+  type T struct {
+    FooBarQuz string `json:"foo_bar_quz"
+  }
+<
+
+If "camelcase" is used:
+>
+  type T struct {
+    FooBarQuz string `json:"fooBarQuz"
+  }
+<
+By default "snakecase" is used. Current values are: ["snakecase",
+"camelcase"].
 >
       let g:go_addtags_transform = 'snakecase'
 <
