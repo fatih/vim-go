@@ -260,10 +260,8 @@ function s:lint_job(args)
 
     copen
 
-    " If focus changed, restore it (jump to the last window).
-    if l:winnr !=# winnr()
-      wincmd p
-    endif
+    exe l:winnr . "wincmd w"
+
   endfunction
 
   function! s:exit_cb(job, exitval) closure
