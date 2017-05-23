@@ -16,6 +16,7 @@ BUG FIXES:
 * job: fix race between channel close and job exit [gh-1247]
 * internal: fix system calls when using tcsh [gh-1276]
 * path: return the unmodified GOPATH if autodetect is disabled [gh-1280]
+* fix jumping to quickfix window when autom gometalinter on save was enabled [gh-1293]
 
 BACKWARDS INCOMPATIBILITIES:
 
