@@ -1210,7 +1210,7 @@ set, so the relevant commands defaults are being used.
                                                            *'g:go_build_tags'*
 
 These options that will be automatically passed to the `-tags` option of
-various tools, such as `guru`, `gorename`, etc... This is a permanatent
+various tools, such as `guru`, `gorename`, etc... This is a permanent
 setting. A more useful way is to use |:GoBuildTags| to dynamically change or
 remove build tags. By default it's not set.
 >
