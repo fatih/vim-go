@@ -17,6 +17,7 @@ BUG FIXES:
 * internal: fix system calls when using tcsh [gh-1276]
 * path: return the unmodified GOPATH if autodetect is disabled [gh-1280]
 * fix jumping to quickfix window when autom gometalinter on save was enabled [gh-1293]
+* fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled [gh-1301]
 
 BACKWARDS INCOMPATIBILITIES:
 
