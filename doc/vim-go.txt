@@ -1382,9 +1382,10 @@ explicitly overrides this behavior. For standard Vim behavior, set it to 10.
 <
                                                             *'g:go_list_type'*
 
-Specifies the type of list to use. The default value (empty) will use the
-appropriate kind of list for the command that was called. Supported values are
-"", "quickfix", and "locationlist". >
+Specifies the type of list to use for command outputs (such as errors from
+builds, results from static analysis commands, etc...). The default value
+(empty) will use the appropriate kind of list for the command that was called.
+Supported values are "", "quickfix", and "locationlist". >
 
   let g:go_list_type = ""
 <
