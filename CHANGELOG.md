@@ -10,6 +10,7 @@ IMPROVEMENTS
 
 * :GoMetaLinter can now exclude linters with the new `g:go_metalinter_excludes` option [gh-1253]
 * Override `<C-LeftMouse>` mapping so `:GoDef` is used by default (as we do the same for `CTRL-]`, `gd`, etc. [gh-1264]
+* add support for `go_list_type` setting in `:GoFmt` and `:GoImports` commands [gh-1304]
 
 BUG FIXES:
 
