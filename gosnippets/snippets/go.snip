@@ -155,6 +155,19 @@ abbr if err != nil { return [...], err }
 	}
 	${0}
 
+# formatted error snippet
+snippet errf
+abbr if err != nil { ... }
+	if err != nil {
+		return fmt.Errorf("${1:description}%v", err)
+	}
+	${0}
+
+# Fmt Errorf
+snippet fe
+abbr fmt.Errorf(...)
+	fmt.Errorf("${1:description}%v", err)${0}
+
 # error snippet handle and return
 snippet errh
 abbr if err != nil { return }
