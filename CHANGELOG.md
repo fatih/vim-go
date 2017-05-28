@@ -19,6 +19,7 @@ BUG FIXES:
 * path: return the unmodified GOPATH if autodetect is disabled [gh-1280]
 * fix jumping to quickfix window when autom gometalinter on save was enabled [gh-1293]
 * fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled [gh-1301]
+* fix cwd for running :GoRun when used with NeoVim [gh-1296]
 
 BACKWARDS INCOMPATIBILITIES:
 
