@@ -20,6 +20,7 @@ IMPROVEMENTS
     \ 'goimports': '-local mycompany.com',
     \ }
 ```
+* If win-vim(x64) with Cygwin is used, `cygpath` is used for constructing the paths [gh-1092]
 
 BUG FIXES:
 
