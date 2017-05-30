@@ -11,6 +11,15 @@ IMPROVEMENTS
 * :GoMetaLinter can now exclude linters with the new `g:go_metalinter_excludes` option [gh-1253]
 * Override `<C-LeftMouse>` mapping so `:GoDef` is used by default (as we do the same for `CTRL-]`, `gd`, etc. [gh-1264]
 * add support for `go_list_type` setting in `:GoFmt` and `:GoImports` commands [gh-1304]
+* `go_fmt_options` can be now a dictionary to allow us to specifcy the
+  options for multiple binaries [gh-1308]. i.e:
+
+```
+  let g:go_fmt_options = {
+    \ 'gofmt': '-s',
+    \ 'goimports': '-local mycompany.com',
+    \ }
+```
 
 BUG FIXES:
 
@@ -25,6 +34,9 @@ BACKWARDS INCOMPATIBILITIES:
 
 * `:GoLint` works on the whole directory instead of the current file. To use it for the current file give it as an argument, i.e `:GoLint foo.go` [gh-1295]
 * `go_snippet_case_type` is removed in favor of the new `go_addtags_transform` setting [gh-1299]
+* `go_imports_bin` is removed to avoid confusion as it would lead to race
+  conditions when set to `gofmt` along with the usage of `go_fmt_command`
+  [gh-1212] [gh-1308]
 
 ## 1.12 - (March 29, 2017)
 
