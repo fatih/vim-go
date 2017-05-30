@@ -1107,10 +1107,23 @@ used >
 <
                                                           *'g:go_fmt_options'*
 
-Use this option to add additional options to the |'g:go_fmt_command'|. Default
-is empty. >
-
+Use this option to add additional options to the |'g:go_fmt_command'|. It's
+value type can be either a string or a dictionary. This is due backwards
+compatibility. The string version will be removed in the future so please use
+the dictionary version. Default is empty. 
+>
   let g:go_fmt_options = ''
+
+  or 
+
+  let g:go_fmt_options = {}
+<
+The dictionary version allows you to define options for multiple binaries:
+>
+  let g:go_fmt_options = {
+    \ 'gofmt': '-s',
+    \ 'goimports': '-local mycompany.com',
+    \ }
 <
                                                     *'g:go_fmt_fail_silently'*
 
