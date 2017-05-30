@@ -173,22 +173,18 @@ function! go#path#CheckBinPath(binpath) abort
 
   let $PATH = old_path
 
-  return go#path#SupportCygwin(go_bin_path . go#util#PathSep() . basename)
-endfunction
+   " When you are using:
+   " 1) Windows system
+   " 2) Has cygpath executable
+   " 3) Use *sh* as 'shell'
+   "
+   " This converts your <path> to $(cygpath '<path>') to make cygwin working in
+   " shell of cygwin way
+   if go#util#IsWin() && executable('cygpath') && &shell !~ '.*sh.*'
+     return printf("$(cygpath '%s')", a:bin_path)
+   endif
 
-" When you are using:
-" 1) Windows system
-" 2) Has cygpath exeuctable
-" 3) Use *sh* as 'shell'
-"
-" This function would convert your <path> to $(cygpath '<path>') to make cygwin
-" working in shell of cygwin way
-function! go#path#SupportCygwin(bin_path)
-  if !go#util#IsWin() || !executable('cygpath') || &shell !~ '.*sh.*'
-    return a:bin_path
-  endif
-
-  return printf("$(cygpath '%s')", a:bin_path)
+  return go_bin_path . go#util#PathSep() . basename
 endfunction
 
 " vim: sw=2 ts=2 et
