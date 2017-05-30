@@ -9,16 +9,12 @@ if !exists("g:go_fmt_command")
   let g:go_fmt_command = "gofmt"
 endif
 
-if !exists("g:go_goimports_bin")
-  let g:go_goimports_bin = "goimports"
+if !exists('g:go_fmt_options')
+  let g:go_fmt_options = ''
 endif
 
 if !exists('g:go_fmt_fail_silently')
   let g:go_fmt_fail_silently = 0
-endif
-
-if !exists('g:go_fmt_options')
-  let g:go_fmt_options = ''
 endif
 
 if !exists("g:go_fmt_experimental")
@@ -70,7 +66,7 @@ function! go#fmt#Format(withGoimport) abort
 
   let bin_name = g:go_fmt_command
   if a:withGoimport == 1
-    let bin_name = g:go_goimports_bin
+    let bin_name = "goimports"
   endif
 
   let out = go#fmt#run(bin_name, l:tmpname, expand('%'))
@@ -172,7 +168,15 @@ function! s:fmt_cmd(bin_name, source, target)
   " start constructing the command
   let cmd = [bin_path]
   call add(cmd, "-w")
-  call extend(cmd, split(g:go_fmt_options, " "))
+    
+  " add the options for binary (if any). go_fmt_options was by default of type
+  " string, however to allow customization it's now a dictionary of binary
+  " name mapping to options.
+  let opts = g:go_fmt_options
+  if type(g:go_fmt_options) == type({})
+    let opts = has_key(g:go_fmt_options, a:bin_name) ? g:go_fmt_options[a:bin_name] : ""
+  endif
+  call extend(cmd, split(opts, " "))
 
   if a:bin_name == "goimports"
     " lazy check if goimports support `-srcdir`. We should eventually remove
