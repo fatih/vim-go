@@ -251,16 +251,20 @@ function s:lint_job(args)
   function! s:callback(chan, msg) closure
     let old_errorformat = &errorformat
     let &errorformat = l:errformat
-    caddexpr a:msg
+    if l:listtype == "locationlist"
+      lad a:msg
+    elseif l:listtype == "quickfix"
+      caddexpr a:msg
+    endif
     let &errorformat = old_errorformat
 
     " TODO(jinleileiking): give a configure to jump or not
     let l:winnr = winnr()
 
-    copen
+    let errors = go#list#Get(l:listtype)
+    call go#list#Window(l:listtype, len(errors))
 
     exe l:winnr . "wincmd w"
-
   endfunction
 
   function! s:exit_cb(job, exitval) closure
