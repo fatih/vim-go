@@ -31,7 +31,8 @@ BUG FIXES:
 * fix jumping to quickfix window when autom gometalinter on save was enabled [gh-1293]
 * fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled [gh-1301]
 * fix cwd for running :GoRun when used with NeoVim [gh-1296]
-
+* `:GoFmt` handles files that are symlinked into GOPATH better (note that this behaviour is discouraged, but we're trying our best to handle all edge case :)) [gh-1310]
+ 
 BACKWARDS INCOMPATIBILITIES:
 
 * `:GoLint` works on the whole directory instead of the current file. To use it for the current file give it as an argument, i.e `:GoLint foo.go` [gh-1295]
