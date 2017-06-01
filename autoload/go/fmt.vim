@@ -193,7 +193,9 @@ function! s:fmt_cmd(bin_name, source, target)
     if exists('b:goimports_vendor_compatible') && b:goimports_vendor_compatible
       let ssl_save = &shellslash
       set noshellslash
-      call extend(cmd, ["-srcdir", shellescape(fnamemodify(a:target, ":p"))])
+      " use the filename without the fully qualified name if the tree is
+      " symlinked into the GOPATH, goimports won't work properly.
+      call extend(cmd, ["-srcdir", shellescape(a:target)])
       let &shellslash = ssl_save
     endif
   endif
