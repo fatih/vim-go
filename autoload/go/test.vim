@@ -6,8 +6,9 @@ function! go#test#Test(bang, compile, ...) abort
 
   " don't run the test, only compile it. Useful to capture and fix errors.
   if a:compile
-    let compile_file = "vim-go-test-compile"
-    call extend(args, ["-c", "-o", compile_file])
+    " we're going to tell to run a test function that doesn't exist. This
+    " triggers a build of the test file itself but no tests will run.
+    call extend(args, ["-run", "499EE4A2-5C85-4D35-98FC-7377CD87F263"])
   endif
 
   if a:0
@@ -45,12 +46,9 @@ function! go#test#Test(bang, compile, ...) abort
           \ 'bang': a:bang,
           \ 'winnr': winnr(),
           \ 'dir': getcwd(),
+          \ 'compile_test': a:compile,
           \ 'jobdir': fnameescape(expand("%:p:h")),
           \ }
-
-    if a:compile
-      let job_args['compile_cb'] = function('s:test_compile', [compile_file])
-    endif
 
     call s:test_job(job_args)
     return
@@ -62,10 +60,6 @@ function! go#test#Test(bang, compile, ...) abort
       let id = go#jobcontrol#Spawn(a:bang, "test", args)
     endif
 
-    if a:compile
-      call go#jobcontrol#AddHandler(function('s:test_compile_handler'))
-      let s:test_compile_handlers[id] = compile_file
-    endif
     return id
   endif
 
@@ -80,10 +74,6 @@ function! go#test#Test(bang, compile, ...) abort
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
   execute cd fnameescape(expand("%:p:h"))
-
-  if a:compile
-    call delete(compile_file)
-  endif
 
   if go#util#ShellError() != 0
     let errors = s:parse_errors(split(out, '\n'))
@@ -150,7 +140,7 @@ function s:test_job(args) abort
         \ 'state': "started",
         \ }
 
-  if has_key(a:args, 'compile_cb')
+  if a:args.compile_test
     let status.state = "compiling"
   endif
 
@@ -171,8 +161,7 @@ function s:test_job(args) abort
           \ 'state': "pass",
           \ }
 
-    if has_key(a:args, 'compile_cb')
-      call a:args.compile_cb(a:job, a:exitval, messages)
+    if a:args.compile_test
       let status.state = "success"
     endif
 
@@ -281,26 +270,6 @@ function! s:parse_errors(lines) abort
 
   return errors
 endfunction
-
-" test_compile is called when a GoTestCompile call is finished
-function! s:test_compile(test_file, job, exit_status, data) abort
-  call delete(a:test_file)
-endfunction
-
-" -----------------------
-" | Neovim job handlers |
-" -----------------------
-let s:test_compile_handlers = {}
-
-function! s:test_compile_handler(job, exit_status, data) abort
-  if !has_key(s:test_compile_handlers, a:job.id)
-    return
-  endif
-  let l:compile_file = s:test_compile_handlers[a:job.id]
-  call delete(l:compile_file)
-  unlet s:test_compile_handlers[a:job.id]
-endfunction
-
 
 " vim: sw=2 ts=2 et
 "
