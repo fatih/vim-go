@@ -30,9 +30,10 @@ BUG FIXES:
 * path: return the unmodified GOPATH if autodetect is disabled [gh-1280]
 * fix jumping to quickfix window when autom gometalinter on save was enabled [gh-1293]
 * fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled [gh-1301]
-* fix cwd for running :GoRun when used with NeoVim [gh-1296]
+* fix cwd for running `:GoRun` when used with neovim [gh-1296]
 * `:GoFmt` handles files that are symlinked into GOPATH better (note that this behaviour is discouraged, but we're trying our best to handle all edge case :)) [gh-1310]
 * `:GoTest` is able to parse error messages that include a colon `:` [gh-1316]
+* `:GoTestCompile` under the hood doesn't produces a test binary anymore. Sometimes a race condition would happen which would not delete the test binary. [gh-1317]
  
 BACKWARDS INCOMPATIBILITIES:
 
