@@ -86,7 +86,7 @@ function! go#test#Test(bang, compile, ...) abort
   endif
 
   if go#util#ShellError() != 0
-    let errors = go#tool#ParseErrors(split(out, '\n'))
+    let errors = s:parse_errors(split(out, '\n'))
     let errors = go#tool#FilterValids(errors)
 
     call go#list#Populate(l:listtype, errors, command)
@@ -257,7 +257,7 @@ function! s:parse_errors(lines) abort
   " https://github.com/golang/go/issues/2981
   for line in a:lines
     let fatalerrors = matchlist(line, '^\(fatal error:.*\)$')
-    let tokens = matchlist(line, '^\s*\(.\{-}\):\(\d\+\):\s*\(.*\)')
+    let tokens = matchlist(line, '^\s*\(.\{-}\.go\):\(\d\+\):\s*\(.*\)')
 
     if !empty(fatalerrors)
       call add(errors, {"text": fatalerrors[1]})
