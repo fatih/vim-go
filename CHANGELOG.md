@@ -32,6 +32,7 @@ BUG FIXES:
 * fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled [gh-1301]
 * fix cwd for running :GoRun when used with NeoVim [gh-1296]
 * `:GoFmt` handles files that are symlinked into GOPATH better (note that this behaviour is discouraged, but we're trying our best to handle all edge case :)) [gh-1310]
+* `:GoTest` is able to parse error messages that include a colon `:` [gh-1316]
  
 BACKWARDS INCOMPATIBILITIES:
 
