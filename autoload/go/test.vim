@@ -43,10 +43,13 @@ function! go#test#Test(bang, compile, ...) abort
     let job_args = {
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
+          \ 'winnr': winnr(),
+          \ 'dir': getcwd(),
+          \ 'jobdir': fnameescape(expand("%:p:h")),
           \ }
 
     if a:compile
-      let job_args['custom_cb'] = function('s:test_compile', [compile_file])
+      let job_args['compile_cb'] = function('s:test_compile', [compile_file])
     endif
 
     call s:test_job(job_args)
@@ -134,7 +137,149 @@ function! go#test#Func(bang, ...) abort
     call extend(args, a:000)
   endif
 
-  call call('go#cmd#Test', args)
+  call call('go#test#Test', args)
+endfunction
+
+function s:test_job(args) abort
+  let status_dir = expand('%:p:h')
+  let started_at = reltime()
+
+  let status = {
+        \ 'desc': 'current status',
+        \ 'type': "test",
+        \ 'state': "started",
+        \ }
+
+  if has_key(a:args, 'compile_cb')
+    let status.state = "compiling"
+  endif
+
+  call go#statusline#Update(status_dir, status)
+
+  " autowrite is not enabled for jobs
+  call go#cmd#autowrite()
+
+  let messages = []
+  function! s:callback(chan, msg) closure
+    call add(messages, a:msg)
+  endfunction
+
+  function! s:exit_cb(job, exitval) closure
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': "test",
+          \ 'state': "pass",
+          \ }
+
+    if has_key(a:args, 'compile_cb')
+      call a:args.compile_cb(a:job, a:exitval, messages)
+      let status.state = "success"
+    endif
+
+    if a:exitval
+      let status.state = "failed"
+    endif
+
+    let elapsed_time = reltimestr(reltime(started_at))
+    " strip whitespace
+    let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
+    let status.state .= printf(" (%ss)", elapsed_time)
+
+    call go#statusline#Update(status_dir, status)
+
+    let l:listtype = go#list#Type("quickfix")
+    if a:exitval == 0
+      call go#list#Clean(l:listtype)
+      call go#list#Window(l:listtype)
+      return
+    endif
+
+    call s:show_errors(a:args, a:exitval, messages)
+  endfunction
+
+  let start_options = {
+        \ 'callback': funcref("s:callback"),
+        \ 'exit_cb': funcref("s:exit_cb"),
+        \ }
+
+  " modify GOPATH if needed
+  let old_gopath = $GOPATH
+  let $GOPATH = go#path#Detect()
+
+  " pre start
+  let dir = getcwd()
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let jobdir = fnameescape(expand("%:p:h"))
+  execute cd . jobdir
+
+  call job_start(a:args.cmd, start_options)
+
+  " post start
+  execute cd . fnameescape(dir)
+  let $GOPATH = old_gopath
+endfunction
+
+" show_errors parses the given list of lines of a 'go test' output and returns
+" a quickfix compatible list of errors. It's intended to be used only for go
+" test output. 
+function! s:show_errors(args, exit_val, messages) abort
+  let l:listtype = go#list#Type("quickfix")
+
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  try
+    execute cd a:args.jobdir
+    let errors = s:parse_errors(a:messages)
+    let errors = go#tool#FilterValids(errors)
+  finally
+    execute cd . fnameescape(a:args.dir)
+  endtry
+
+  if !len(errors)
+    " failed to parse errors, output the original content
+    call go#util#EchoError(join(a:messages, " "))
+    call go#util#EchoError(a:args.dir)
+    return
+  endif
+
+  if a:args.winnr == winnr()
+    call go#list#Populate(l:listtype, errors, join(a:args.cmd))
+    call go#list#Window(l:listtype, len(errors))
+    if !empty(errors) && !a:args.bang
+      call go#list#JumpToFirst(l:listtype)
+    endif
+  endif
+endfunction
+
+function! s:parse_errors(lines) abort
+  let errors = []
+
+  " NOTE(arslan): once we get JSON output everything will be easier :)
+  " https://github.com/golang/go/issues/2981
+  for line in a:lines
+    let fatalerrors = matchlist(line, '^\(fatal error:.*\)$')
+    let tokens = matchlist(line, '^\s*\(.\{-}\):\(\d\+\):\s*\(.*\)')
+
+    if !empty(fatalerrors)
+      call add(errors, {"text": fatalerrors[1]})
+    elseif !empty(tokens)
+      " strip endlines of form ^M
+      let out = substitute(tokens[3], '\r$', '', '')
+
+      call add(errors, {
+            \ "filename" : fnamemodify(tokens[1], ':p'),
+            \ "lnum"     : tokens[2],
+            \ "text"     : out,
+            \ })
+    elseif !empty(errors)
+      " Preserve indented lines.
+      " This comes up especially with multi-line test output.
+      if match(line, '^\s') >= 0
+        call add(errors, {"text": line})
+      endif
+    endif
+  endfor
+
+  return errors
 endfunction
 
 " test_compile is called when a GoTestCompile call is finished
@@ -156,62 +301,6 @@ function! s:test_compile_handler(job, exit_status, data) abort
   unlet s:test_compile_handlers[a:job.id]
 endfunction
 
-function s:test_job(args) abort
-  let status_dir = expand('%:p:h')
-  let started_at = reltime()
-
-  call go#statusline#Update(status_dir, {
-        \ 'desc': "current status",
-        \ 'type': a:args.cmd[1],
-        \ 'state': "started",
-        \})
-
-  " autowrite is not enabled for jobs
-  call go#cmd#autowrite()
-
-  function! s:error_info_cb(job, exit_status, data) closure abort
-    let status = {
-          \ 'desc': 'last status',
-          \ 'type': a:args.cmd[1],
-          \ 'state': "success",
-          \ }
-
-    if a:exit_status
-      let status.state = "failed"
-    endif
-
-    let elapsed_time = reltimestr(reltime(started_at))
-    " strip whitespace
-    let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
-    let status.state .= printf(" (%ss)", elapsed_time)
-
-    call go#statusline#Update(status_dir, status)
-  endfunction
-
-  let a:args.error_info_cb = funcref('s:error_info_cb')
-  let callbacks = go#job#Spawn(a:args)
-
-  let start_options = {
-        \ 'callback': callbacks.callback,
-        \ 'exit_cb': callbacks.exit_cb,
-        \ }
-
-  " modify GOPATH if needed
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
-
-  " pre start
-  let dir = getcwd()
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let jobdir = fnameescape(expand("%:p:h"))
-  execute cd . jobdir
-
-  call job_start(a:args.cmd, start_options)
-
-  " post start
-  execute cd . fnameescape(dir)
-  let $GOPATH = old_gopath
-endfunction
 
 " vim: sw=2 ts=2 et
 "
