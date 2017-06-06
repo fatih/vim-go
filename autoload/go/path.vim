@@ -39,7 +39,7 @@ endfunction
 function! go#path#Default() abort
   if $GOPATH == ""
     " use default GOPATH via go env
-    return go#util#gopath()
+    return go#util#env("gopath")
   endif
 
   return $GOPATH
