@@ -33,7 +33,7 @@ function! go#package#Paths() abort
 
   if !exists("s:goroot")
     if executable('go')
-      let s:goroot = go#util#goroot()
+      let s:goroot = go#util#env("goroot")
       if go#util#ShellError() != 0
         echomsg '''go env GOROOT'' failed'
       endif
