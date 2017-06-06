@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.13 - (June 6, 2017)
+
 FEATURES:
 
 * New `:GoKeyify` command that turns unkeyed struct literals into keyed struct literals. [gh-1258]
