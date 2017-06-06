@@ -1,5 +1,9 @@
 ## unplanned
 
+IMPROVEMENTS
+
+* We create a different template if you create `_test.go` file for the first time. The template can be changed with the setting `g:go_template_test_file` setting. [gh-1318]
+
 ## 1.13 - (June 6, 2017)
 
 FEATURES:
