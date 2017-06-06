@@ -3,6 +3,8 @@
 IMPROVEMENTS
 
 * We create a different template if you create `_test.go` file for the first time. The template can be changed with the  `g:go_template_test_file` setting. [gh-1318]
+* Improve performance for highly used operations by caching `go env` calls [gh-1320]
+
 
 ## 1.13 - (June 6, 2017)
 
