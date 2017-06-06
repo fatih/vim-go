@@ -34,6 +34,7 @@ BUG FIXES:
 * `:GoFmt` handles files that are symlinked into GOPATH better (note that this behaviour is discouraged, but we're trying our best to handle all edge case :)) [gh-1310]
 * `:GoTest` is able to parse error messages that include a colon `:` [gh-1316]
 * `:GoTestCompile` under the hood doesn't produces a test binary anymore. Sometimes a race condition would happen which would not delete the test binary. [gh-1317]
+* `:GoDef` jumps now to definition for build tags defined with `:GoBuildTags` (only guru) [gh-1319]
  
 BACKWARDS INCOMPATIBILITIES:
 
