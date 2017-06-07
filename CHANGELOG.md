@@ -2,9 +2,12 @@
 
 IMPROVEMENTS
 
-* We create a different template if you create `_test.go` file for the first time. The template can be changed with the  `g:go_template_test_file` setting. [gh-1318]
+* Files created with `_test.go` extension have a new template with a ready to go test function. The template can be changed with the  `g:go_template_test_file` setting. [gh-1318]
 * Improve performance for highly used operations by caching `go env` calls [gh-1320]
 
+BUG FIXES:
+
+* Fix obtaining package's import path for the current directory. This fixes some issues we had if the user was using multiple GOPATH's [gh-1321]
 
 ## 1.13 - (June 6, 2017)
 
