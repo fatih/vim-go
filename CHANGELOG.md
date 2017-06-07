@@ -13,7 +13,25 @@ BUG FIXES:
 
 FEATURES:
 
-* New `:GoKeyify` command that turns unkeyed struct literals into keyed struct literals. [gh-1258]
+* New `:GoKeyify` command that turns unkeyed struct literals into keyed struct literals. [gh-1258]. i.e:
+
+```
+Example{"foo", "bar", "qux"}
+```
+
+will be converted to:
+
+```
+Example{
+  foo: "foo",
+  bar: "bar",
+  qux: "qux",
+}
+```
+
+Checkout the demo here: https://twitter.com/fatih/status/860410299714764802
+
+
 * New `g:go_addtags_transform` setting to change the transform rule (snakecase, camelcase, etc..) for `:GoAddTags` command [gh-1275]
 * New snippet shortcut assigned to `ife` that expands to `if err := foo(); err != nil { ... }` [gh-1268]
 
