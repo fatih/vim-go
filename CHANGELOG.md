@@ -8,6 +8,7 @@ IMPROVEMENTS
 BUG FIXES:
 
 * Fix obtaining package's import path for the current directory. This fixes some issues we had if the user was using multiple GOPATH's [gh-1321]
+* Fix documentation for vim-go & syntastic integration for errcheck using [gh-1323]
 
 ## 1.13 - (June 6, 2017)
 
