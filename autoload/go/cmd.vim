@@ -97,6 +97,12 @@ function! go#cmd#BuildTags(bang, ...) abort
   endif
 endfunction
 
+" Get runs go get to download imported packages and their dependencies.
+function! go#cmd#Get(bang, ...) abort
+  let goargs = map(copy(a:000), "expand(v:val)")
+  let goargs = go#util#Shelljoin(goargs, 1)
+  exec '!go get ' . goargs
+endfunction
 
 " Run runs the current file (and their dependencies if any) in a new terminal.
 function! go#cmd#RunTerm(bang, mode, files) abort
