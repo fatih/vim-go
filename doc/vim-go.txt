@@ -1657,7 +1657,13 @@ How do I use vim-go with syntastic?~
 Sometimes when using both `vim-go` and `syntastic` Vim will start lagging
 while saving and opening files. The following fixes this:
 >
- let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+ let g:syntastic_go_checkers = ['golint', 'govet']
+ let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+<
+If you want to add errcheck you can use gometalinter as a wrapper
+>
+ let g:syntastic_go_checkers = ['golint', 'govet', 'gometalinter']
+ let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
  let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 <
 Another issue with `vim-go` and `syntastic` is that the location list window
