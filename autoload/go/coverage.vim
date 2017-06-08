@@ -46,7 +46,7 @@ function! go#coverage#Buffer(bang, ...) abort
 
   if go#util#has_job()
     call s:coverage_job({
-          \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
+          \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname] + a:000,
           \ 'custom_cb': function('s:coverage_callback', [l:tmpname]),
           \ 'bang': a:bang,
           \ })
