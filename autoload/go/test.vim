@@ -169,6 +169,18 @@ function s:test_job(args) abort
       let status.state = "failed"
     endif
 
+    if get(g:, 'go_echo_command_info', 1)
+      if a:exitval == 0
+        if a:args.compile_test
+          call go#util#EchoSuccess("SUCCESS")
+        else
+          call go#util#EchoSuccess("PASS")
+        endif
+      else
+        call go#util#EchoError("FAILED")
+      endif
+    endif
+
     let elapsed_time = reltimestr(reltime(started_at))
     " strip whitespace
     let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
