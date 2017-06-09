@@ -4,6 +4,7 @@ IMPROVEMENTS
 
 * Files created with `_test.go` extension have a new template with a ready to go test function. The template can be changed with the  `g:go_template_test_file` setting. [gh-1318]
 * Improve performance for highly used operations by caching `go env` calls [gh-1320]
+* `:GoCoverage` can accept arguments now. i.e: `:GoCoverage -run TestFoo` [gh-1326]
 
 BUG FIXES:
 
