@@ -18,8 +18,10 @@ function! go#cmd#Build(bang, ...) abort
   endif
   " create our command arguments. go build discards any results when it
   " compiles multiple packages. So we pass the `errors` package just as an
-  " placeholder with the current folder (indicated with '.')
-  let args = ["build"]  + goargs + [".", "errors"]
+  " placeholder with the current folder (indicated with '.'). We also pass -i
+  " that tries to install the dependencies, this has the side effect that it
+  " caches the build results, so every other build is faster.
+  let args = ["build"]  + goargs + ["-i", ".", "errors"]
 
   if go#util#has_job()
     if get(g:, 'go_echo_command_info', 1)
