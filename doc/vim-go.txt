@@ -333,7 +333,7 @@ CTRL-t
     putting it above a function call is going to show the full function
     signature. By default it uses `gocode` to get the type informations. To
     change the underlying tool from `gocode` to another tool, see
-    |g:go_info_mode|.
+    |'g:go_info_mode'|.
 
 
                                                                   *:GoInstall*
@@ -602,7 +602,7 @@ CTRL-t
     use the variable |'g:go_metalinter_command'|. To override the maximum
     linters execution time use |'g:go_metalinter_deadline'| variable.
 
-                                                                 *:GoBuildTags*
+                                                                *:GoBuildTags*
 :GoBuildTags [tags]
 
     Changes the build tags for various commands. If you have any file that
@@ -1014,7 +1014,7 @@ the package build (`:GoBuild`) is successful, all statusline's will show
 
 To avoid always showing old status information, the status information is
 cleaned for each package after `60` seconds. This can be changed with the
-|g:go_statusline_duration| setting.
+|'g:go_statusline_duration'| setting.
 
                                                        *go#complete#GetInfo()*
 
@@ -1143,12 +1143,20 @@ it's causing problems on some Vim versions. By default it's disabled. >
 <
                                                *'g:go_doc_keywordprg_enabled'*
 
-Use this option to run `godoc` on words under the cursor with the default K ,
-keywordprg shortcut. Usually this shortcut is set to use the program `man`. In
-Go, using `godoc` is more idiomatic. Default is enabled. >
+Use this option to run `godoc` on words under the cursor with |K|; this will
+normally run the `man` program, but for Go using `godoc` is more idiomatic. It
+will not override the |'keywordprg'| setting, but will run |:GoDoc|. Default
+is enabled. >
 
   let g:go_doc_keywordprg_enabled = 1
 <
+                                                           *'g:go_doc_height'*
+
+Maximum height for the GoDoc window created with |:GoDoc|. Default is 20. >
+
+  let g:go_doc_max_height = 20
+<
+
                                                              *'g:go_def_mode'*
 
 Use this option to define the command to be used for |:GoDef|. By default
@@ -1362,7 +1370,7 @@ default it's using `vet`, `golint` and `errcheck`.
 >
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
-                                                   *'g:go_metalinter_excludes'*
+                                                  *'g:go_metalinter_excludes'*
 
 Specifies the linters to be excluded from the |:GoMetaLinter| command. By
 default it's empty
@@ -1467,10 +1475,10 @@ to an autocompletion proposals. By default it is enabled.
 >
   let g:go_gocode_propose_builtins = 1
 <
-                                              *'g:go_gocode_unimported_packages'*
+                                           *'g:go_gocode_unimported_packages'*
 
-Specifies whether `gocode` should include suggestions from unimported packages.
-By default it is disabled.
+Specifies whether `gocode` should include suggestions from unimported
+packages. By default it is disabled.
 >
   let g:go_gocode_unimported_packages = 0
 <
@@ -1494,7 +1502,7 @@ files), in this case a Go code template with only the Go package declaration
 (which is automatically determined according to the current package) is added.
 
 To always use the package name instead of the template, enable the
-|`g:go_template_use_pkg`| setting.
+|'g:go_template_use_pkg'| setting.
 
 By default it is enabled.
 >
@@ -1508,7 +1516,7 @@ the `hello_world.go` file is used.
 >
   let g:go_template_file = "hello_world.go"
 <
-                                                        *'g:go_template_test_file'*
+                                                   *'g:go_template_test_file'*
 
 Specifies the file under the `templates` folder that is used if a new Go test
 file is created. Checkout |'g:go_template_autocreate'| for more info. By
@@ -1518,9 +1526,9 @@ default the `hello_world_test.go` file is used.
 <
                                                      *'g:go_template_use_pkg'*
 
-Specifies that, rather than using a template, the package name is used if a new
-Go file is created. Checkout |'g:go_template_autocreate'| for more info. By
-default the template file specified by |'g:go_template_file'| is used.
+Specifies that, rather than using a template, the package name is used if a
+new Go file is created. Checkout |'g:go_template_autocreate'| for more info.
+By default the template file specified by |'g:go_template_file'| is used.
 
 >
   let g:go_template_use_pkg = 0
@@ -1533,7 +1541,7 @@ for |:GoDecls|.  It is a Comma delimited list Possible options are:
 
       let g:go_decls_includes = 'func,type'
 <
-                                                       *'g:go_echo_command_info'*
+                                                    *'g:go_echo_command_info'*
 
 Echoes information about various Go commands, such as `:GoBuild`, `:GoTest`,
 `:GoCoverage`, etc... Useful to disable if you use the statusline integration,
@@ -1550,7 +1558,7 @@ default it's enabled >
 <
 Please note that 'noshowmode' must be set for this feature to work correctly.
 
-                                                    *'g:go_statusline_duration'*
+                                                  *'g:go_statusline_duration'*
 
 Specifices the duration of statusline information being showed per package. By
 default it's 60 seconds. Must be in milliseconds.
@@ -1599,9 +1607,9 @@ You can locally test it by running:
 >
  make
 <
-This will run all tests and print either `PASS` or `FAIL` to indicate the final
-status of all tests. Additionally, each new pull request will trigger a new
-Travis-ci job.
+This will run all tests and print either `PASS` or `FAIL` to indicate the
+final status of all tests. Additionally, each new pull request will trigger a
+new Travis-ci job.
 
 
 ==============================================================================
@@ -1677,9 +1685,9 @@ Using with NeoVim~
 
 Note: Neovim currently is not a first class citizen for vim-go. You are free
 to open bug, however I'm not using Neovim so it's hard for me to test it.
-vim-go might not work well as good as in Vim. I'm happy to accept pull requests
-or very detailed bug reports. If you're interested to improve the state of
-Neovim in vim-go you're always welcome!
+vim-go might not work well as good as in Vim. I'm happy to accept pull
+requests or very detailed bug reports. If you're interested to improve the
+state of Neovim in vim-go you're always welcome!
 
 Run `:GoRun` in a new tab, horizontal split or vertical split terminal
 >
@@ -1700,8 +1708,8 @@ by being a patreon at: https://www.patreon.com/fatih
 
 By being a patron, you are enabling vim-go to grow and mature, helping me to
 invest in bug fixes, new documentation, and improving both current and future
-features. It's completely optional and is just a direct way to support Vim-go's
-ongoing development. Thanks!
+features. It's completely optional and is just a direct way to support
+Vim-go's ongoing development. Thanks!
 
 Check it out: https://www.patreon.com/fatih
 
