@@ -7,6 +7,7 @@ IMPROVEMENTS
 * `:GoCoverage` can accept arguments now. i.e: `:GoCoverage -run TestFoo` [gh-1326]
 * `:GoDecls` and `:GoDeclsDir` shows a warning if [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) is not installed
 * `:GoBuild` now compiles the package with the `-i` flag added. This means that subsequent calls are much more faster due caching of packages [gh-1330]
+* `:GoCoverage` echos now the progress if `go_echo_command_info` is enabled [gh-1333]
 
 BUG FIXES:
 
