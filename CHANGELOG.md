@@ -125,7 +125,7 @@ BUG FIXES:
 * Fix `:GoAddTags` to allow modifying existing comments [gh-984]
 * Fix `:GoAddTags` to work with nested structs [gh-990]
 * Fix `:GoAddTags` adding tags twice for existing tags [gh-1064]
-* Fix `:GoAddTags` not working for fiels of types `interface{}` [gh-1091]
+* Fix `:GoAddTags` not working for fields of types `interface{}` [gh-1091]
 * Fix `:GoAddTags` not working for fields with one line comments [gh-1181]
 * Fix `:GoAddTags` not working if any field comment would contain `{}` [gh-1189]
 * Respect go_fmt_options when running goimports [gh-1211]
@@ -310,7 +310,7 @@ IMPROVEMENTS:
   `:GoDef`, `:GoReferrers`, etc.. [gh-944]
 * **:GoDoc** uses now the `-modified` flag under the hood (for `gogetdoc), which allows us to get documentation for the identifier under the cursor ina modified buffer. [gh-1014]
 * Cleanup and improve documentation [gh-987]
-* Add new `g:go_gocode_socket_type` setting to change the underlying socket type passed to `gocode`. Usefull to fallback to `tcp` on cases such as Bash on Windows [gh-1000]
+* Add new `g:go_gocode_socket_type` setting to change the underlying socket type passed to `gocode`. Useful to fallback to `tcp` on cases such as Bash on Windows [gh-1000]
 * `:GoSameIds` is now automatically re-evaluated in cases of buffer reloads (such as `:GoRename`) [gh-998]
 * Improve docs about `go_auto_sameids` [gh-1017]
 * Improve error message by printing the full path if an incompatible `goimports` is being used [gh-1006]
@@ -410,7 +410,7 @@ IMPROVEMENTS:
 BUG FIXES:
 * Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [gh-832]
 * Commands based on guru now shows a more meaningful error message instead of just showing the exit status (-1)
-* Fix `:GoCoverage` accidently enabling syntax highlighting for users who don't use syntax (i.e syntax off) [gh-827]
+* Fix `:GoCoverage` accidentally enabling syntax highlighting for users who don't use syntax (i.e syntax off) [gh-827]
 * Fix `:GoCoverage` colors to work for xterm as well [gh-863]
 * Fix commenting out block of texts for Go templates (filetype gothtmltmpl) [gh-813]
 * Fix `:GoImplements` failing because of an empty scope definition. Now we default to current package to make it usable.

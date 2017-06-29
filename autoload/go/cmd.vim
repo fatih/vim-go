@@ -4,7 +4,7 @@ function! go#cmd#autowrite() abort
   endif
 endfunction
 
-" Build builds the source code without producting any output binary. We live in
+" Build builds the source code without producing any output binary. We live in
 " an editor so the best is to build it to catch errors and fix them. By
 " default it tries to call simply 'go build', but it first tries to get all
 " dependent files for the current folder and passes it to go build.
@@ -111,7 +111,7 @@ function! go#cmd#RunTerm(bang, mode, files) abort
 endfunction
 
 " Run runs the current file (and their dependencies if any) and outputs it.
-" This is intented to test small programs and play with them. It's not
+" This is intended to test small programs and play with them. It's not
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...) abort
