@@ -44,6 +44,10 @@ function! go#coverage#Buffer(bang, ...) abort
   let s:toggle = 1
   let l:tmpname = tempname()
 
+  if get(g:, 'go_echo_command_info', 1)
+    echon "vim-go: " | echohl Identifier | echon "testing ..." | echohl None
+  endif
+
   if go#util#has_job()
     call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname] + a:000,
