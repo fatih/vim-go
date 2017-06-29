@@ -8,6 +8,7 @@ IMPROVEMENTS
 * `:GoDecls` and `:GoDeclsDir` shows a warning if [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) is not installed
 * `:GoBuild` now compiles the package with the `-i` flag added. This means that subsequent calls are much more faster due caching of packages [gh-1330]
 * `:GoCoverage` echos now the progress if `go_echo_command_info` is enabled [gh-1333]
+* Add g:go_doc_max_height setting to control the maximum height of the window created by `:GoDoc` and `K` mapping [gh-1335]
 
 BUG FIXES:
 
