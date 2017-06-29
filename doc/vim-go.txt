@@ -690,7 +690,7 @@ CTRL-t
       :GoAddTags xml db
 <
     If [option] is passed it'll either add a new tag with an option or will
-    modify exising tags. An example of adding `omitempty` to all `json` fields
+    modify existing tags. An example of adding `omitempty` to all `json` fields
     would be:
 >
       :GoAddTags json,omitempty
@@ -833,7 +833,7 @@ Clears the coverage annotation
                                                         *(go-coverage-toggle)*
 
 Calls `go test -coverprofile-temp.out` for the current package and shows the
-coverage annotation. If run agains it acts as a toggle and clears the
+coverage annotation. If run again it acts as a toggle and clears the
 annotation.
 
                                                                 *(go-imports)*
@@ -1552,7 +1552,7 @@ Please note that 'noshowmode' must be set for this feature to work correctly.
 
                                                     *'g:go_statusline_duration'*
 
-Specifices the duration of statusline information being showed per package. By
+Specifies the duration of statusline information being showed per package. By
 default it's 60 seconds. Must be in milliseconds.
 >
       let g:go_statusline_duration = 60000
