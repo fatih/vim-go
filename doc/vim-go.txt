@@ -690,8 +690,8 @@ CTRL-t
       :GoAddTags xml db
 <
     If [option] is passed it'll either add a new tag with an option or will
-    modify existing tags. An example of adding `omitempty` to all `json` fields
-    would be:
+    modify existing tags. An example of adding `omitempty` to all `json`
+    fields would be:
 >
       :GoAddTags json,omitempty
 <
