@@ -57,11 +57,22 @@ function! go#textobj#Function(mode) abort
 
   if a:mode == 'a'
     " anonymous functions doesn't have associated doc. Also check if the user
-    " want's to include doc comments for function declarations
+    " wants to include doc comments for function declarations
     if has_key(info, 'doc') && g:go_textobj_include_function_doc
       call cursor(info.doc.line, info.doc.col)
     else
       call cursor(info.func.line, info.func.col)
+    endif
+
+    " Select variable too when an anonymous function is assigned.
+    if info['sig']['name'] == ''
+      " Get function plus two characters before, to see if we're assigning it.
+      let assign = getline('.')[info['func']['col']-3:][:len(info['sig']['full'])+1]
+
+      " Back it up!
+      if assign == '= ' . info['sig']['full']
+        normal! bb
+      endif
     endif
 
     normal! v
