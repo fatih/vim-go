@@ -690,8 +690,8 @@ CTRL-t
       :GoAddTags xml db
 <
     If [option] is passed it'll either add a new tag with an option or will
-    modify existing tags. An example of adding `omitempty` to all `json` fields
-    would be:
+    modify existing tags. An example of adding `omitempty` to all `json`
+    fields would be:
 >
       :GoAddTags json,omitempty
 <
@@ -1565,7 +1565,6 @@ default it's 60 seconds. Must be in milliseconds.
 >
       let g:go_statusline_duration = 60000
 <
-
                                                    *'g:go_addtags_transform'*
 
 Sets the `transform` option for `gomodifytags` when using |:GoAddTags| or if
@@ -1588,6 +1587,23 @@ By default "snakecase" is used. Current values are: ["snakecase",
 "camelcase"].
 >
       let g:go_addtags_transform = 'snakecase'
+<
+                                                        *'g:go_fold_enable'*
+
+Control syntax-based folding. If it's 1 all syntax-based folds are enabled.
+You can enable specific fold regions by setting an array. Possible values are:
+
+- "block"       `{` .. `}` blocks.
+- "import"      `import` block.
+- "varconst"    `var` and `const` blocks.
+
+By default it's 1.
+>
+  let g:go_fold = 1
+<
+Enable folding of only imports:
+>
+  let g:go_fold = ['import']
 <
 
 ==============================================================================
