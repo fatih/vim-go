@@ -16,6 +16,7 @@ BUG FIXES:
 * Fix documentation for vim-go & syntastic integration for errcheck using [gh-1323]
 * Fix showing an output if a test has finished when `:GoTest` is called [gh-1327]
 * Fix warning when goimports doesn't support srcdir [gh-1344]
+* Fix brokwn code folding with go_highlight_types [gh-1338]
 
 ## 1.13 - (June 6, 2017)
 
