@@ -65,6 +65,17 @@ function! go#path#HasPath(path) abort
   return hasA || hasB
 endfunction
 
+" IsParentOf checks whether a path is a child of the current GOPATH environment
+" variable or not
+function! go#path#IsParentOf(path) abort
+  let go_paths = split(go#path#Default(), go#util#PathListSep())
+  for p in go_paths
+    if !empty(p) && stridx(a:path, p) == 0
+      return 1
+    endif
+  endfor
+endfunction
+
 " Detect returns the current GOPATH. If a package manager is used, such as
 " Godeps, GB, it will modify the GOPATH so those directories take precedence
 " over the current GOPATH. It also detects diretories whose are outside
@@ -95,7 +106,7 @@ function! go#path#Detect() abort
       let gopath = gb_vendor_root . go#util#PathListSep() . gopath
     endif
 
-    if !go#path#HasPath(src_path)
+    if !go#path#HasPath(src_path) && !go#path#IsParentOf(src_root)
       let gopath =  src_path . go#util#PathListSep() . gopath
     endif
   endif
