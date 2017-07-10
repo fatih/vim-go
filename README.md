@@ -40,6 +40,8 @@ for popular package managers:
     * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
 *  [vim-plug](https://github.com/junegunn/vim-plug)
     * `Plug 'fatih/vim-go'`
+*  [Vundle](https://github.com/VundleVim/Vundle.vim)
+    * `PluginInstall 'fatih/vim-go'`
 *  [Vim packages](http://vimhelp.appspot.com/repeat.txt.html#packages)
     * `git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go`
 
