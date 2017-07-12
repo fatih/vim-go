@@ -39,7 +39,7 @@ for popular package managers:
 *  [Pathogen](https://github.com/tpope/vim-pathogen)
     * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
 *  [vim-plug](https://github.com/junegunn/vim-plug)
-    * `Plug 'fatih/vim-go'`
+    * `Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }`
 *  [Vim packages](http://vimhelp.appspot.com/repeat.txt.html#packages)
     * `git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go`
 
