@@ -18,6 +18,8 @@ BUG FIXES:
 * Fix showing an output if a test has finished when `:GoTest` is called [gh-1327]
 * Fix warning when goimports doesn't support srcdir [gh-1344]
 * Fix brokwn code folding with go_highlight_types [gh-1338]
+* Fix blocking the ui when swapfile is enabled and `:GoFmt` is called (either manually or via autosave) [gh-1362]
+
 
 ## 1.13 - (June 6, 2017)
 
