@@ -1606,6 +1606,10 @@ Enable folding of only imports:
 >
   let g:go_fold_enable = ['import']
 <
+Disable everything (same as not setting 'foldmethod' to `syntax`):
+>
+  let g:go_fold_enable = []
+<
 
 ==============================================================================
 DEVELOPMENT                                               *go-development*
