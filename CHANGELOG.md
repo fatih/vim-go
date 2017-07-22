@@ -10,6 +10,8 @@ IMPROVEMENTS
 * `:GoCoverage` echos now the progress if `g:go_echo_command_info` is enabled [gh-1333]
 * Add `g:go_doc_max_height` setting to control the maximum height of the window created by `:GoDoc` and `K` mapping [gh-1335]
 * The `af` text object is able to include the assignment variable for anonymous functions. Can be disabled with `g:go_textobj_include_variable = 0` [gh-1345]
+* Add `g:go_list_autoclose` setting to prevent closting the quickfix/location list after zero items [gh-1361]
+
 
 BUG FIXES:
 
