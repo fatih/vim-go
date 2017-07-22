@@ -92,7 +92,7 @@ endif
 let s:fold_block = 1
 let s:fold_import = 1
 let s:fold_varconst = 1
-if exists("g:go_fold_enable") && type(g:go_fold_enable) == type([])
+if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'block') == -1
     let s:fold_block = 0
   endif
@@ -108,11 +108,13 @@ syn case match
 
 syn keyword     goPackage           package
 syn keyword     goImport            import    contained
-syn keyword     goVarConst          var const contained
+syn keyword     goVar               var       contained
+syn keyword     goConst             const     contained
 
 hi def link     goPackage           Statement
 hi def link     goImport            Statement
-hi def link     goVarConst          Keyword
+hi def link     goVar               Keyword
+hi def link     goConst             Keyword
 hi def link     goDeclaration       Keyword
 
 " Keywords within functions
@@ -223,15 +225,15 @@ endif
 
 " var, const
 if s:fold_varconst
-  syn region    goVarConst          start='\(var\|const\) (' end=')' transparent fold contains=ALLBUT,goParen,goBlock
+  syn region    goVar               start='var (' end=')' transparent fold contains=ALLBUT,goParen,goBlock
+  syn region    goConst             start='const (' end=')' transparent fold contains=ALLBUT,goParen,goBlock
 else
-  syn region    goVarConst          start='\(var\|const\) (' end=')' transparent contains=ALLBUT,goParen,goBlock
+  syn region    goVar               start='var (' end=')' transparent contains=ALLBUT,goParen,goBlock
+  syn region    goConst             start='const (' end=')' transparent contains=ALLBUT,goParen,goBlock
 endif
 
 " Single-line var, const, and import.
-syn match       goSingleImport      /\(import\|var\|const\) [^(]\@=/ contains=goImport,goVarConst
-
-"syn region goImport start='var ' end=''contains=goVarConst
+syn match       goSingleDecl        /\(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
 
 " Integers
 syn match       goDecimalInt        "\<-\=\d\+\%([Ee][-+]\=\d\+\)\=\>"
