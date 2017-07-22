@@ -1129,7 +1129,7 @@ The dictionary version allows you to define options for multiple binaries:
 <
                                                     *'g:go_fmt_fail_silently'*
 
-Use this option to disable showing a location list when |'g:go_fmt_command'|
+Use this option to disable showing a quickfix list when |'g:go_fmt_command'|
 fails. By default the location list is shown. >
 
   let g:go_fmt_fail_silently = 0
