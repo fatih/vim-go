@@ -21,6 +21,8 @@ BUG FIXES:
 * Fix warning when goimports doesn't support srcdir [gh-1344]
 * Fix brokwn code folding with go_highlight_types [gh-1338]
 * Fix blocking the ui when swapfile is enabled and `:GoFmt` is called (either manually or via autosave) [gh-1362]
+* Fix getting bin paths for binaries if GOPATH was not set and Go version =>1.7 was used [gh-1363]
+
 
 
 ## 1.13 - (June 6, 2017)
