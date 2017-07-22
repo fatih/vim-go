@@ -22,6 +22,11 @@ BUG FIXES:
 * Fix brokwn code folding with go_highlight_types [gh-1338]
 * Fix blocking the ui when swapfile is enabled and `:GoFmt` is called (either manually or via autosave) [gh-1362]
 * Fix getting bin paths for binaries if GOPATH was not set and Go version =>1.7 was used [gh-1363]
+* Fix picking up the correct list type for showing `:GoFmt` errors [gh-1365]
+
+BACKWARDS INCOMPATIBILITIES:
+
+* `:GoFmt` now uses `quickfix` to show formatting errors instead of `locationlist`. To change back to `locationlist` you can change it with the setting `let g:go_list_type = "locationlist"` [gh-1365]
 
 
 
