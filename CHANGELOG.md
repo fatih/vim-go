@@ -1,5 +1,9 @@
 ## unplanned
 
+FEATURES:
+
+* We now have folding support based on Go syntax. To enable it you have to set the following vim setting: `set foldmethod=syntax`. Currently it folds at block (`{ }`), var and const level. These can be individually disabled/enabled if wished. For more info please read the documentation for the `g:go_fold_enable` setting. [gh-1339] 
+
 IMPROVEMENTS
 
 * Files created with `_test.go` extension have a new template with a ready to go test function. The template can be changed with the  `g:go_template_test_file` setting. [gh-1318]
