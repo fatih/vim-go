@@ -70,6 +70,8 @@ function! go#fmt#Format(withGoimport) abort
   endif
 
   let out = go#fmt#run(bin_name, l:tmpname, expand('%'))
+  let diff_offset = len(readfile(l:tmpname)) - line('$') 
+
   if go#util#ShellError() == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
   elseif g:go_fmt_fail_silently == 0
@@ -95,6 +97,9 @@ function! go#fmt#Format(withGoimport) abort
     " Restore our cursor/windows positions.
     call winrestview(l:curw)
   endif
+
+  " be smart and jump to the line the new statement was added/removed
+  call cursor(line('.') + diff_offset, 0)
 endfunction
 
 " update_file updates the target file with the given formatted source
