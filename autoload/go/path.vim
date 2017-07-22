@@ -129,6 +129,9 @@ function! go#path#BinPath() abort
     let bin_path = $GOBIN
   else
     let go_paths = split(go#path#Default(), go#util#PathListSep())
+    if len(go_paths) == 0
+      return "" "nothing found
+    endif
     let bin_path = expand(go_paths[0] . "/bin/")
   endif
 
