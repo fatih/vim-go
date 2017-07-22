@@ -1419,6 +1419,16 @@ Supported values are "", "quickfix", and "locationlist". >
 
   let g:go_list_type = ""
 <
+
+                                                       *'g:go_list_autoclose'*
+
+Specifies whether the quickfix/location list should be closed automatically
+in the absence of errors.  The default value is 1.
+If you prefer to keep a long running error window open, you can disable 
+this by setting the value to 0.
+>
+  let g:go_list_autoclose = 1
+<
                                                       *'g:go_asmfmt_autosave'*
 
 Use this option to auto |:AsmFmt| on save. By default it's disabled. >
