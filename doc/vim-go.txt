@@ -1716,16 +1716,8 @@ wrapper script; for example if you would like to run `goapp` instead of `go`:
 >
      PATH="$HOME/gobin/:$PATH" vim
 <
-   Or from within your vimrc:
->
-     augroup go_path
-       autocmd!
-       autocmd FileType go 
-         \  if stridx($PATH, expand("$HOME/gobin")) == -1
-         \|   let $PATH = expand("$HOME/gobin:$PATH")
-         \| endif
-     augroup end
-<
+   Alternatively you you could set `$PATH` in your vimrc with an |autocmd|.
+
 
 How do I use vim-go with syntastic?~
 
