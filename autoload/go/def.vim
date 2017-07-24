@@ -5,13 +5,14 @@ function! go#def#Jump(mode) abort
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
 
-  let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
+  let fname = '"' . fnamemodify(expand("%"), ':p:gs?\\?/?') . '"'
 
   " so guru right now is slow for some people. previously we were using
   " godef which also has it's own quirks. But this issue come up so many
   " times I've decided to support both. By default we still use guru as it
   " covers all edge cases, but now anyone can switch to godef if they wish
   let bin_name = get(g:, 'go_def_mode', 'guru')
+
   if bin_name == 'godef'
     if &modified
       " Write current unsaved buffer to a temp file and use the modified content
@@ -20,18 +21,19 @@ function! go#def#Jump(mode) abort
       let fname = l:tmpname
     endif
 
-    let bin_path = go#path#CheckBinPath("godef")
+    let bin_path = '"' . go#path#CheckBinPath("godef") . '"'
     if empty(bin_path)
       let $GOPATH = old_gopath
       return
     endif
     let command = printf("%s -f=%s -o=%s -t", bin_path, fname, go#util#OffsetCursor())
+
     let out = go#util#System(command)
     if exists("l:tmpname")
       call delete(l:tmpname)
     endif
   elseif bin_name == 'guru'
-    let bin_path = go#path#CheckBinPath("guru")
+    let bin_path = '"' . go#path#CheckBinPath("guru") . '"'
     if empty(bin_path)
       let $GOPATH = old_gopath
       return

@@ -2,15 +2,15 @@ let total_started = reltime()
 
 " add vim-go the only plugin inside the runtimepath
 let git_root_path = system("git rev-parse --show-toplevel | tr -d '\\n'")
-exe 'set rtp=' . git_root_path
+exe 'set rtp=' . '"' . git_root_path . '"'
 
 " source the passed test file
 source %
 
 " cd into the folder of the test file
 let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-let dir = getcwd()
-execute cd . expand('%:p:h')
+let dir = '"' . getcwd() . '"'
+execute cd . '"' . expand('%:p:h') . '"'
 
 " initialize variables
 let g:testname = expand('%')
