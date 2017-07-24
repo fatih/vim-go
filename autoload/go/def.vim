@@ -25,7 +25,8 @@ function! go#def#Jump(mode) abort
       let $GOPATH = old_gopath
       return
     endif
-    let command = printf("%s -f=%s -o=%s -t", bin_path, go#util#Shellescape(fname), go#util#OffsetCursor())
+    let command = printf("%s -f=%s -o=%s -t", go#util#Shellescape(bin_path),
+      \ go#util#Shellescape(fname), go#util#OffsetCursor())
     let out = go#util#System(command)
     if exists("l:tmpname")
       call delete(l:tmpname)

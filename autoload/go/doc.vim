@@ -65,7 +65,7 @@ function! go#doc#Open(newmode, mode, ...) abort
       return
     endif
 
-    let command = printf("%s %s", bin_path, join(a:000, ' '))
+    let command = printf("%s %s", go#util#Shellescape(bin_path), join(a:000, ' '))
     let out = go#util#System(command)
   else
     let out = s:gogetdoc(0)
@@ -137,7 +137,7 @@ function! s:gogetdoc(json) abort
     return -1
   endif
 
-  let cmd =  [bin_path]
+  let cmd = [go#util#Shellescape(bin_path)]
 
   let offset = go#util#OffsetCursor()
   let fname = expand("%:p:gs!\\!/!")
