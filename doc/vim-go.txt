@@ -436,18 +436,22 @@ CTRL-t
     Check for unchecked errors in you current package. Errors are populated in
     the quickfix window.
 
-    You may optionally pass any valid errcheck flags/options. For a full list
-    please see `errcheck -h`.
+    You may optionally pass any valid errcheck flags/options. See
+    `errcheck -h` for a full list.
 
                                                                     *:GoFiles*
-:GoFiles
+:GoFiles [source_files]
 
-    Show source files that depends for the current package
+    Show source files for the current package. The [source_files] specifies
+    which file types to list. See the "// Source files" section of
+    `go list -h` for possible values; multiple values are accepted.
+    Command-line completion also works for this command.
+    The default is to use `GoFiles` if no arguments are given.
 
                                                                      *:GoDeps*
 :GoDeps
 
-    Show dependencies for the current package
+    Show dependencies for the current package.
 
                                                           *:GoInstallBinaries*
 :GoInstallBinaries
