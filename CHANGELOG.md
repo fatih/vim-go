@@ -30,6 +30,7 @@ BUG FIXES:
 * Fix picking up the correct list type for showing `:GoFmt` errors [gh-1365]
 * Fix auto detecting of GOPATH for import paths with string 'src' (i.e: `GOPATH/src/github.com/foo/src/bar`) [gh-1366]
 * Fix showing an empty window if `gogetdoc` was not found [gh-1379]
+* Fix commands not being executed if paths would include spaces (binary name, GOPATH, file itself, etc..)  [gh-1374]
 
 BACKWARDS INCOMPATIBILITIES:
 
