@@ -172,6 +172,7 @@ function! s:fmt_cmd(bin_name, source, target)
   endif
 
   " start constructing the command
+  let bin_path = go#util#Shellescape(bin_path)
   let cmd = [bin_path]
   call add(cmd, "-w")
     

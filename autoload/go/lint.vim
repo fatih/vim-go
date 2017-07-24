@@ -121,6 +121,7 @@ function! go#lint#Golint(...) abort
   if empty(bin_path)
     return
   endif
+  let bin_path = go#util#Shellescape(bin_path)
 
   if a:0 == 0
     let out = go#util#System(bin_path)
@@ -188,7 +189,7 @@ function! go#lint#Errcheck(...) abort
   echon "vim-go: " | echohl Identifier | echon "errcheck analysing ..." | echohl None
   redraw
 
-  let command = bin_path . ' -abspath ' . import_path
+  let command =  go#util#Shellescape(bin_path) . ' -abspath ' . import_path
   let out = go#tool#ExecuteInDir(command)
 
   let l:listtype = "quickfix"

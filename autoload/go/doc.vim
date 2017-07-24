@@ -141,7 +141,7 @@ function! s:gogetdoc(json) abort
     return -1
   endif
 
-  let cmd =  [bin_path]
+  let cmd = [go#util#Shellescape(bin_path)]
 
   let offset = go#util#OffsetCursor()
   let fname = expand("%:p:gs!\\!/!")

@@ -25,7 +25,8 @@ function! go#def#Jump(mode) abort
       let $GOPATH = old_gopath
       return
     endif
-    let command = printf("%s -f=%s -o=%s -t", bin_path, fname, go#util#OffsetCursor())
+    let command = printf("%s -f=%s -o=%s -t", go#util#Shellescape(bin_path),
+      \ go#util#Shellescape(fname), go#util#OffsetCursor())
     let out = go#util#System(command)
     if exists("l:tmpname")
       call delete(l:tmpname)
@@ -164,7 +165,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
       endif
 
       " open the file and jump to line and column
-      exec cmd filename
+      exec cmd fnameescape(filename)
     endif
   endif
   call cursor(line, col)
