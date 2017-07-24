@@ -39,6 +39,7 @@ BUG FIXES:
 * Fix auto detecting of GOPATH for import paths with string 'src' (i.e: `GOPATH/src/github.com/foo/src/bar`) [gh-1366]
 * Fix showing an empty window if `gogetdoc` was not found [gh-1379]
 * Fix commands not being executed if paths would include spaces (binary name, GOPATH, file itself, etc..)  [gh-1374]
+* Fix showing correct message when editing a new file [gh-1371]
 
 BACKWARDS INCOMPATIBILITIES:
 
