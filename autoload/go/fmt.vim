@@ -69,6 +69,7 @@ function! go#fmt#Format(withGoimport) abort
     let bin_name = "goimports"
   endif
 
+  let current_col = col('.')
   let out = go#fmt#run(bin_name, l:tmpname, expand('%'))
   let diff_offset = len(readfile(l:tmpname)) - line('$') 
 
@@ -99,7 +100,7 @@ function! go#fmt#Format(withGoimport) abort
   endif
 
   " be smart and jump to the line the new statement was added/removed
-  call cursor(line('.') + diff_offset, 0)
+  call cursor(line('.') + diff_offset, current_col)
 endfunction
 
 " update_file updates the target file with the given formatted source
