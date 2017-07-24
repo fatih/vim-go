@@ -3,6 +3,14 @@
 FEATURES:
 
 * We now have folding support based on Go syntax. To enable it you have to set the following vim setting: `set foldmethod=syntax`. Currently it folds at block (`{ }`), var and const level. These can be individually disabled/enabled if wished. For more info please read the documentation for the `g:go_fold_enable` setting. [gh-1339] 
+* `:GoFiles` accepts now an argument to change the type of files it can show. By default it shows`.go source files` but now it can be changed to show various kind of files. The full list can be seen via `go list --help` under the `// Source Files` section [gh-1372] i.e:
+
+```
+:GoFiles CgoFiles        // shows .go sources files that import "C"
+:GoFiles TestGoFiles     // shows _test.go files in package
+:GoFiles IgnoredGoFiles  // shows .go sources ignored due to build constraints
+etc..
+```
 
 IMPROVEMENTS
 
