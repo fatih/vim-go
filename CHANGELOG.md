@@ -29,6 +29,7 @@ BUG FIXES:
 * Fix getting bin paths for binaries if GOPATH was not set and Go version =>1.7 was used [gh-1363]
 * Fix picking up the correct list type for showing `:GoFmt` errors [gh-1365]
 * Fix auto detecting of GOPATH for import paths with string 'src' (i.e: `GOPATH/src/github.com/foo/src/bar`) [gh-1366]
+* Fix showing an empty window if `gogetdoc` was not found [gh-1379]
 
 BACKWARDS INCOMPATIBILITIES:
 
