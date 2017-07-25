@@ -1716,7 +1716,7 @@ wrapper script; for example if you would like to run `goapp` instead of `go`:
 >
      PATH="$HOME/gobin/:$PATH" vim
 <
-   Alternatively you you could set `$PATH` in your vimrc with an |autocmd|.
+   Alternatively you you could set `$PATH` in your vimrc with an |:autocmd|.
 
 
 How do I use vim-go with syntastic?~
