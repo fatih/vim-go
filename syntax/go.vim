@@ -218,9 +218,9 @@ endif
 
 " import
 if s:fold_import
-  syn region    goImport            start='import (' end=')' transparent fold contains=goImport,goString
+  syn region    goImport            start='import (' end=')' transparent fold contains=goImport,goString,goComment
 else
-  syn region    goImport            start='import (' end=')' transparent contains=goImport,goString
+  syn region    goImport            start='import (' end=')' transparent contains=goImport,goString,goComment
 endif
 
 " var, const
