@@ -33,7 +33,7 @@ endfunction
 function! s:call_jsonrpc(method, ...) abort
   let s:state['rpcid'] += 1
   let json = json_encode({
-  \  'id': 1,
+  \  'id': s:state['rpcid'],
   \  'method': a:method,
   \  'params': a:000,
   \})
