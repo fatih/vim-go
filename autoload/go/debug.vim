@@ -1,3 +1,7 @@
+if !executable('dlv')
+  finish
+endif
+
 if !exists('s:state')
   let s:state = {
   \ 'rpcid': 1,
@@ -16,31 +20,16 @@ function! s:exit(job, status) abort
   endif
 endfunction
 
-function! s:out_cb(ch, msg) abort
+function! s:logger(prefix, ch, msg)
   let winnum = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
   if winnum == -1
     return
   endif
   exe winnum 'wincmd w'
   if getline(1) == ''
-    call setline('$', 'OUT: ' . a:msg)
+    call setline('$', a:prefix . a:msg)
   else
-    call append('$', 'OUT: ' . a:msg)
-  endif
-  normal! G
-  wincmd p
-endfunction
-
-function! s:err_cb(ch, msg) abort
-  let winnum = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
-  if winnum == -1
-    return
-  endif
-  exe winnum 'wincmd w'
-  if getline(1) == ''
-    call setline('$', 'ERR: ' . a:msg)
-  else
-    call append('$', 'ERR: ' . a:msg)
+    call append('$', a:prefix . a:msg)
   endif
   normal! G
   wincmd p
@@ -255,7 +244,7 @@ function! go#debug#Start() abort
     let job = job_start(['dlv', 'debug', '--headless', '--api-version=2', '--log', '--listen=127.0.0.1:8181', '--accept-multiclient'])
     call job_setoptions(job, {'exit_cb': function('s:exit'), 'stoponexit': 'kill'})
     let ch = job_getchannel(job)
-    call ch_setoptions(job, {'out_cb': function('s:out_cb'), 'err_cb': function('s:err_cb')})
+    call ch_setoptions(job, {'out_cb': function('s:logger', ['OUT: ']), 'err_cb': function('s:logger', ['ERR: '])})
     let s:state['job'] = job
     sleep 3
     call s:call_jsonrpc('RPCServer.ListBreakpoints', function('s:start_cb'))
