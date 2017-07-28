@@ -316,18 +316,20 @@ function! go#debug#Set(symbol, value) abort
 endfunction
 
 function! go#debug#Stack(name) abort
+  let name = a:name
   if len(s:state['breakpoint']) == 0
     try
-      call s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'name': 'main'}})
-      let res = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
-      call s:update(res)
+      let res = s:call_jsonrpc('RPCServer.FindLocation', {'loc': 'main.main'})
+      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'addr': res.result.Locations[0].pc}})
+      let bt = res.result.Breakpoint
+      let s:state['breakpoint'][bt.id] = bt
+      let name = 'continue'
     catch
       echohl Error | echomsg v:exception | echohl None
     endtry
-    return
   endif
   try
-    let res = s:call_jsonrpc('RPCServer.Command', {'name': a:name})
+    let res = s:call_jsonrpc('RPCServer.Command', {'name': name})
     call s:update(res)
   catch
     echohl Error | echomsg v:exception | echohl None
