@@ -99,19 +99,8 @@ command! -nargs=0 GoKeyify call go#keyify#Keyify()
 command! -nargs=0 GoFillStruct call go#fillstruct#FillStruct()
 
 " -- debug
-if !exists(':GoDebugEval')
-  command! -nargs=0 GoDebugConnect call go#debug#Connect()
-  command! -nargs=0 GoDebugDiag call go#debug#Diag()
-  command! -nargs=0 GoDebugToggleBreakpoint call go#debug#ToggleBreakpoint()
-  command! -nargs=0 GoDebugContinue call go#debug#Stack('continue')
-  command! -nargs=0 GoDebugNext call go#debug#Stack('next')
-  command! -nargs=0 GoDebugStep call go#debug#Stack('step')
-  command! -nargs=0 GoDebugStepIn call go#debug#Stack('stepin')
-  command! -nargs=0 GoDebugStepOut call go#debug#Stack('stepout')
-  command! -nargs=0 GoDebugRestart call go#debug#Restart()
-  command! -nargs=0 GoDebugStacktrace call go#debug#Stacktrace()
-  command! -nargs=* GoDebugSet call go#debug#Set(<f-args>)
-  command! -nargs=1 GoDebugEval call go#debug#Eval(<q-args>)
+if !exists(':GoDebugStart')
+  command! -nargs=0 GoDebugStart call go#debug#Start()
 endif
 
 " vim: sw=2 ts=2 et
