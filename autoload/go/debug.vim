@@ -35,16 +35,23 @@ function! s:logger(prefix, ch, msg)
   wincmd p
 endfunction
 
-function! s:call_jsonrpc(method, cb, ...) abort
+function! s:call_jsonrpc(method, ...) abort
+  if len(a:000) > 0 && type(a:000[0]) == v:t_func
+     let Cb = a:000[0]
+     let args = a:000[1:]
+  else
+     let Cb = v:none
+     let args = a:000
+  endif
   let s:state['rpcid'] += 1
   let json = json_encode({
   \  'id': s:state['rpcid'],
   \  'method': a:method,
-  \  'params': a:000,
+  \  'params': args,
   \})
   try
-	if type(a:cb) == v:t_func
-      let s:ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'callback': a:cb})
+	if type(Cb) == v:t_func
+      let s:ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'callback': Cb})
       call ch_sendraw(s:ch, json)
       return
     endif
@@ -52,7 +59,7 @@ function! s:call_jsonrpc(method, cb, ...) abort
     call ch_sendraw(ch, json)
     let json = ch_readraw(ch)
     let obj = json_decode(json)
-    if type(obj) == 4 && has_key(obj, 'error') && !empty(obj.error)
+    if type(obj) == v:t_dict && has_key(obj, 'error') && !empty(obj.error)
       throw obj.error
     endif
     return obj
@@ -156,7 +163,7 @@ endfunction
 
 function! s:start_cb(ch, json)
   let res = json_decode(a:json)
-  if type(res) == 4 && has_key(res, 'error') && !empty(res.error)
+  if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
     throw res.error
   endif
   if empty(res) || !has_key(res, 'result')
@@ -256,9 +263,9 @@ endfunction
 
 function! s:eval(arg) abort
   try
-    let res = s:call_jsonrpc('RPCServer.State', v:none)
+    let res = s:call_jsonrpc('RPCServer.State')
     let goroutineID = res.result.State.currentThread.goroutineID
-    let res = s:call_jsonrpc('RPCServer.Eval', v:none, {'expr': a:arg, 'scope':{'GoroutineID': goroutineID}})
+    let res = s:call_jsonrpc('RPCServer.Eval', {'expr': a:arg, 'scope':{'GoroutineID': goroutineID}})
     return printf('%s: %s', a:arg, res.result.Variable.value)
   catch
   endtry
@@ -279,7 +286,7 @@ endfunction
 
 function! go#debug#Command(...) abort
   try
-    let res = s:call_jsonrpc('RPCServer.Command', v:none, {'name': join(a:000, ' ')})
+    let res = s:call_jsonrpc('RPCServer.Command', {'name': join(a:000, ' ')})
     call s:update(res)
   catch
     echohl Error | echomsg v:exception | echohl None
@@ -288,14 +295,14 @@ endfunction
 
 function! go#debug#Set(symbol, value) abort
   try
-    let res = s:call_jsonrpc('RPCServer.State', v:none)
+    let res = s:call_jsonrpc('RPCServer.State')
     let goroutineID = res.result.State.currentThread.goroutineID
-    call s:call_jsonrpc('RPCServer.Set', v:none, {'symbol': a:symbol, 'value': a:value, 'scope':{'GoroutineID': goroutineID}})
+    call s:call_jsonrpc('RPCServer.Set', {'symbol': a:symbol, 'value': a:value, 'scope':{'GoroutineID': goroutineID}})
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
   try
-    let res = s:call_jsonrpc('RPCServer.ListLocalVars', v:none, {'scope':{'GoroutineID': s:groutineID()}})
+    let res = s:call_jsonrpc('RPCServer.ListLocalVars', {'scope':{'GoroutineID': s:groutineID()}})
     call s:localvars(res)
   catch
     echohl Error | echomsg v:exception | echohl None
@@ -305,7 +312,7 @@ endfunction
 function s:stack_cb(ch, json)
   let s:stack_name = ''
   let res = json_decode(a:json)
-  if type(res) == 4 && has_key(res, 'error') && !empty(res.error)
+  if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
     throw res.error
   endif
   if empty(res) || !has_key(res, 'result')
@@ -314,13 +321,13 @@ function s:stack_cb(ch, json)
   call s:update(res)
 
   try
-    let res = s:call_jsonrpc('RPCServer.Stacktrace', v:none, {'id': s:groutineID(), 'depth': 5})
+    let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:groutineID(), 'depth': 5})
     call s:stacktrace(res)
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
   try
-    let res = s:call_jsonrpc('RPCServer.ListLocalVars', v:none, {'scope':{'GoroutineID': s:groutineID()}})
+    let res = s:call_jsonrpc('RPCServer.ListLocalVars', {'scope':{'GoroutineID': s:groutineID()}})
     call s:localvars(res)
   catch
     echohl Error | echomsg v:exception | echohl None
@@ -331,8 +338,8 @@ function! go#debug#Stack(name) abort
   let name = a:name
   if len(s:state['breakpoint']) == 0
     try
-      let res = s:call_jsonrpc('RPCServer.FindLocation', v:none, {'loc': 'main.main'})
-      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', v:none, {'Breakpoint':{'addr': res.result.Locations[0].pc}})
+      let res = s:call_jsonrpc('RPCServer.FindLocation', {'loc': 'main.main'})
+      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'addr': res.result.Locations[0].pc}})
       let bt = res.result.Breakpoint
       let s:state['breakpoint'][bt.id] = bt
       let name = 'continue'
@@ -342,7 +349,7 @@ function! go#debug#Stack(name) abort
   endif
   try
     if name == 'next' && get(s:, 'stack_name', '') == 'next'
-      call s:call_jsonrpc('RPCServer.CancelNext', v:none)
+      call s:call_jsonrpc('RPCServer.CancelNext')
     endif
     let s:stack_name = name
     let res = s:call_jsonrpc('RPCServer.Command', function('s:stack_cb'), {'name': name})
@@ -354,7 +361,7 @@ endfunction
 
 function! go#debug#Restart() abort
   try
-    let res = s:call_jsonrpc('RPCServer.Restart', v:none)
+    let res = s:call_jsonrpc('RPCServer.Restart')
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
@@ -372,12 +379,12 @@ function! go#debug#ToggleBreakpoint() abort
         break
       endif
     endfor
-    if type(found) == 4
+    if type(found) == v:t_dict
       call remove(s:state['breakpoint'], bt.id)
-      let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', v:none, {'id': found.id})
+      let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': found.id})
       exe 'sign unplace '. found.id .' file=' . found.file
     else
-      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', v:none, {'Breakpoint':{'file': filename, 'line': linenr}})
+      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'file': filename, 'line': linenr}})
       let bt = res.result.Breakpoint
       let s:state['breakpoint'][bt.id] = bt
       exe 'sign place '. bt.id .' line=' . bt.line . ' name=godebugbreakpoint file=' . bt.file
