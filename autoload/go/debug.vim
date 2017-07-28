@@ -59,9 +59,9 @@ function! s:call_jsonrpc(method, cb, ...) abort
       call ch_sendraw(s:ch, json)
       return
     endif
-    let s:ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'timeout': 20000})
-    call ch_sendraw(s:ch, json)
-    let json = ch_readraw(s:ch)
+    let ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'timeout': 20000})
+    call ch_sendraw(ch, json)
+    let json = ch_readraw(ch)
     let obj = json_decode(json)
     if type(obj) == 4 && has_key(obj, 'error') && !empty(obj.error)
       throw obj.error
@@ -90,7 +90,7 @@ function! s:update(res) abort
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
   let s:state['currentThread'] = state.currentThread
   if oldfile != filename
-    silent exe 'edit' filename
+    silent! exe 'edit' filename
   endif
   silent! exe 'norm!' linenr.'G'
   silent! normal! zvzz
@@ -314,6 +314,7 @@ function! go#debug#Set(symbol, value) abort
 endfunction
 
 function s:stack_cb(ch, json)
+  let s:stack_name = ''
   let res = json_decode(a:json)
   if type(res) == 4 && has_key(res, 'error') && !empty(res.error)
     throw res.error
@@ -351,6 +352,10 @@ function! go#debug#Stack(name) abort
     endtry
   endif
   try
+    if name == 'next' && get(s:, 'stack_name', '') == 'next'
+      call s:call_jsonrpc('RPCServer.CancelNext', v:none)
+    endif
+    let s:stack_name = name
     let res = s:call_jsonrpc('RPCServer.Command', function('s:stack_cb'), {'name': name})
   catch
     echohl Error | echomsg v:exception | echohl None
