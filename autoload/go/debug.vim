@@ -6,15 +6,44 @@ if !exists('s:state')
   \}
 endif
 
+function! s:groutineID()
+  return s:state['currentThread'].goroutineID
+endfunction
+
 function! s:exit(job, status) abort
   if has_key(s:state, 'job')
     call remove(s:state, 'job')
   endif
 endfunction
 
+function! s:out_cb(ch, msg) abort
+  let winnum = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
+  if winnum == -1
+    return
+  endif
+  exe winnum 'wincmd w'
+  if getline(1) == ''
+    call setline('$', 'OUT: ' . a:msg)
+  else
+    call append('$', 'OUT: ' . a:msg)
+  endif
+  normal! G
+  wincmd p
+endfunction
+
 function! s:err_cb(ch, msg) abort
-  redraw
-  echomsg a:msg
+  let winnum = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
+  if winnum == -1
+    return
+  endif
+  exe winnum 'wincmd w'
+  if getline(1) == ''
+    call setline('$', 'ERR: ' . a:msg)
+  else
+    call append('$', 'ERR: ' . a:msg)
+  endif
+  normal! G
+  wincmd p
 endfunction
 
 function! s:start() abort
@@ -22,7 +51,7 @@ function! s:start() abort
     let job = job_start(['dlv', 'debug', '--headless', '--api-version=2', '--log', '--listen=127.0.0.1:8181', '--accept-multiclient'])
     call job_setoptions(job, {'exit_cb': function('s:exit'), 'stoponexit': 'kill'})
     let ch = job_getchannel(job)
-    call ch_setoptions(job, {'err_cb': function('s:err_cb')})
+    call ch_setoptions(job, {'out_cb': function('s:out_cb'), 'err_cb': function('s:err_cb')})
     let s:state['job'] = job
     sleep 1
   endif
@@ -31,8 +60,8 @@ function! s:start() abort
     return
   endif
   for bt in res.result.Breakpoints
-    let s:state['breakpoint'][bt.id] = bt
     if bt.id >= 0
+      let s:state['breakpoint'][bt.id] = bt
       exe 'sign place '. bt.id .' line=' . bt.line . ' name=godebugbreakpoint file=' . bt.file
     endif
   endfor
@@ -94,7 +123,7 @@ function! s:stacktrace(res) abort
   if !has_key(a:res, 'result')
     return
   endif
-  let winnum = bufwinnr(bufnr('__GODEBUG__'))
+  let winnum = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
   if winnum != -1
     exe winnum 'wincmd w'
   endif
@@ -102,6 +131,22 @@ function! s:stacktrace(res) abort
   for i in range(len(a:res.result.Locations))
     let loc = a:res.result.Locations[i]
     call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':t'), loc.line))
+  endfor
+  wincmd p
+endfunction
+
+function! s:localvars(res) abort
+  if !has_key(a:res, 'result')
+    return
+  endif
+  let winnum = bufwinnr(bufnr('__GODEBUG_VARIABLES__'))
+  if winnum != -1
+    exe winnum 'wincmd w'
+  endif
+  silent %delete _
+  for i in range(len(a:res.result.Variables))
+    let var = a:res.result.Variables[i]
+    call setline(i+1, printf('%s: %s', var.name, var.value))
   endfor
   wincmd p
 endfunction
@@ -137,10 +182,17 @@ function! go#debug#Stop() abort
   call s:stop()
 
   wincmd p
-  silent! exe bufnr('__GODEBUG__') 'bwipeout!'
+  silent! exe bufnr('__GODEBUG_STACKTRACE__') 'bwipeout!'
+  silent! exe bufnr('__GODEBUG_VARIABLES__') 'bwipeout!'
+  silent! exe bufnr('__GODEBUG_OUTPUT__') 'bwipeout!'
+
+  set noballooneval
+  set balloonexpr=
 endfunction
 
 function! go#debug#Start() abort
+  let oldbuf = bufnr('%')
+
   if has_key(s:state, 'job') && has_key(s:state, 'ch')
     return
   endif
@@ -151,17 +203,28 @@ function! go#debug#Start() abort
     return
   endtry
 
-  let winnum = bufwinnr(bufnr('__GODEBUG__'))
+  let winnum = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
   if winnum != -1
     return
   endif
+
   silent leftabove 20vnew
-  silent file `='__GODEBUG__'`
-  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber cursorline
-  setlocal filetype=godebug
-  setlocal ballooneval
-  set balloonexpr=go#debug#BalloonExpr()
-  set ballooneval
+  silent file `='__GODEBUG_STACKTRACE__'`
+  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
+  setlocal filetype=godebug-stacktrace
+  nmap <buffer> q <Plug>(go-debug-stop)
+
+  silent botright 10new
+  silent file `='__GODEBUG_OUTPUT__'`
+  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
+  setlocal filetype=godebug-output
+  nmap <buffer> q <Plug>(go-debug-stop)
+
+  silent leftabove 20vnew
+  silent file `='__GODEBUG_VARIABLES__'`
+  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
+  setlocal filetype=godebug-variables
+  nmap <buffer> q <Plug>(go-debug-stop)
 
   command! -nargs=0 GoDebugDiag call go#debug#Diag()
   command! -nargs=0 GoDebugToggleBreakpoint call go#debug#ToggleBreakpoint()
@@ -171,9 +234,10 @@ function! go#debug#Start() abort
   command! -nargs=0 GoDebugStepIn call go#debug#Stack('stepin')
   command! -nargs=0 GoDebugStepOut call go#debug#Stack('stepout')
   command! -nargs=0 GoDebugRestart call go#debug#Restart()
-  command! -nargs=0 GoDebugStacktrace call go#debug#Stacktrace()
+  command! -nargs=0 GoDebugStop call go#debug#Stop()
   command! -nargs=* GoDebugSet call go#debug#Set(<f-args>)
   command! -nargs=1 GoDebugEval call go#debug#Eval(<q-args>)
+  command! -nargs=* GoDebugCommand call go#debug#Command(<f-args>)
 
   nnoremap <silent> <Plug>(go-debug-diag) :<C-u>call go#debug#Diag()<CR>
   nnoremap <silent> <Plug>(go-debug-toggle-breakpoint) :<C-u>call go#debug#ToggleBreakpoint()<CR>
@@ -190,16 +254,20 @@ function! go#debug#Start() abort
   nmap <F9> <Plug>(go-debug-toggle-breakpoint)
   nmap <F10> <Plug>(go-debug-next)
   nmap <F11> <Plug>(go-debug-step)
-  nmap <buffer> q <Plug>(go-debug-stop)
+
+  set balloonexpr=go#debug#BalloonExpr()
+  set ballooneval
 
   augroup GoDebugWindow
     au!
-    au BufWipeout <buffer> call go#debug#Stop()
+    au BufWipeout __GODEBUG_STACKTRACE__ call go#debug#Stop()
+    au BufWipeout __GODEBUG_VARIABLES__ call go#debug#Stop()
+    au BufWipeout __GODEBUG_OUTPUT__ call go#debug#Stop()
   augroup END
-  wincmd p
+  exe bufwinnr(oldbuf) 'wincmd w'
 endfunction
 
-function! s:balloon(arg) abort
+function! s:eval(arg) abort
   try
     let res = s:call_jsonrpc('RPCServer.State')
     let goroutineID = res.result.State.currentThread.goroutineID
@@ -211,12 +279,21 @@ function! s:balloon(arg) abort
 endfunction
 
 function! go#debug#BalloonExpr() abort
-  return s:balloon(v:beval_text)
+  return s:eval(v:beval_text)
 endfunction
 
 function! go#debug#Eval(arg) abort
   try
-    echo s:balloon(a:arg)
+    echo s:eval(a:arg)
+  catch
+    echohl Error | echomsg v:exception | echohl None
+  endtry
+endfunction
+
+function! go#debug#Command(...) abort
+  try
+    let res = s:call_jsonrpc('RPCServer.Command', {'name': join(a:000, ' ')})
+    call s:update(res)
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
@@ -226,14 +303,29 @@ function! go#debug#Set(symbol, value) abort
   try
     let res = s:call_jsonrpc('RPCServer.State')
     let goroutineID = res.result.State.currentThread.goroutineID
-    let res = s:call_jsonrpc('RPCServer.Set', {'symbol': a:symbol, 'value': a:value, 'scope':{'GoroutineID': goroutineID}})
-    echo res
+    call s:call_jsonrpc('RPCServer.Set', {'symbol': a:symbol, 'value': a:value, 'scope':{'GoroutineID': goroutineID}})
+  catch
+    echohl Error | echomsg v:exception | echohl None
+  endtry
+  try
+    let res = s:call_jsonrpc('RPCServer.ListLocalVars', {'scope':{'GoroutineID': s:groutineID()}})
+    call s:localvars(res)
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
 endfunction
 
 function! go#debug#Stack(name) abort
+  if len(s:state['breakpoint']) == 0
+    try
+      call s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'name': 'main'}})
+      let res = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
+      call s:update(res)
+    catch
+      echohl Error | echomsg v:exception | echohl None
+    endtry
+    return
+  endif
   try
     let res = s:call_jsonrpc('RPCServer.Command', {'name': a:name})
     call s:update(res)
@@ -241,17 +333,14 @@ function! go#debug#Stack(name) abort
     echohl Error | echomsg v:exception | echohl None
   endtry
   try
-    let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:state['currentThread'].goroutineID, 'depth': 5})
+    let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:groutineID(), 'depth': 5})
     call s:stacktrace(res)
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
-endfunction
-
-function! go#debug#Stacktrace() abort
   try
-    let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:state['currentThread'].goroutineID})
-    echo res
+    let res = s:call_jsonrpc('RPCServer.ListLocalVars', {'scope':{'GoroutineID': s:groutineID()}})
+    call s:localvars(res)
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
