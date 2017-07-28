@@ -119,10 +119,11 @@ function! s:localvars(res) abort
     exe winnum 'wincmd w'
   endif
   silent %delete _
-  for i in range(len(a:res.result.Variables))
-    let var = a:res.result.Variables[i]
-    call setline(i+1, printf('%s: %s', var.name, var.value))
+  let v = ''
+  for c in a:res.result.Variables
+    let v .= s:eval_tree(c, 0)
   endfor
+  call setline(1, split(v, "\n"))
   wincmd p
 endfunction
 
@@ -261,13 +262,28 @@ function! go#debug#Start() abort
   endtry
 endfunction
 
+function! s:eval_tree(var, nest)
+  let nest = a:nest
+  let v = ''
+  if !empty(a:var.name)
+    let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.value)
+  else
+    let nest -= 1
+  endif
+  for c in a:var.children
+    let v .= s:eval_tree(c, nest+1)
+  endfor
+  return v
+endfunction
+
 function! s:eval(arg) abort
   try
     let res = s:call_jsonrpc('RPCServer.State')
     let goroutineID = res.result.State.currentThread.goroutineID
     let res = s:call_jsonrpc('RPCServer.Eval', {'expr': a:arg, 'scope':{'GoroutineID': goroutineID}})
-    return printf('%s: %s', a:arg, res.result.Variable.value)
+    return s:eval_tree(res.result.Variable, 0)
   catch
+    echohl Error | echomsg v:exception | echohl None
   endtry
   return ''
 endfunction
@@ -309,7 +325,7 @@ function! go#debug#Set(symbol, value) abort
   endtry
 endfunction
 
-function s:stack_cb(ch, json)
+function! s:stack_cb(ch, json) abort
   let s:stack_name = ''
   let res = json_decode(a:json)
   if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
