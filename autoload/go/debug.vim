@@ -85,10 +85,15 @@ function! s:update(res) abort
   if !has_key(state, 'currentThread')
     return
   endif
+  let s:state['currentThread'] = state.currentThread
+  let bufs = filter(map(range(1, winnr('$')), '[v:val,bufname(winbufnr(v:val))]'), 'v:val[1]=~"\.go$"')
+  if len(bufs) == 0
+    return
+  endif
+  exe bufs[0][0] 'wincmd w'
   let filename = state.currentThread.file
   let linenr = state.currentThread.line
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
-  let s:state['currentThread'] = state.currentThread
   if oldfile != filename
     silent! exe 'edit' filename
   endif
@@ -111,7 +116,7 @@ function! s:stacktrace(res) abort
   silent %delete _
   for i in range(len(a:res.result.Locations))
     let loc = a:res.result.Locations[i]
-    call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':t'), loc.line))
+    call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':p'), loc.line))
   endfor
   setlocal nomodifiable
   wincmd p
@@ -122,7 +127,7 @@ function! s:localvars(res) abort
     return
   endif
   let winnum = bufwinnr(bufnr('__GODEBUG_VARIABLES__'))
-  if winnum != -1
+  if winnum == -1
     return
   endif
   exe winnum 'wincmd w'
@@ -172,6 +177,37 @@ function! go#debug#Stop() abort
   set balloonexpr=
 endfunction
 
+function! s:goto_file()
+  let m = matchlist(getline('.'), ' - \(.*\):\([0-9]\+\)$')
+  if m[1] == ''
+    return
+  endif
+  let bufs = filter(map(range(1, winnr('$')), '[v:val,bufname(winbufnr(v:val))]'), 'v:val[1]=~"\.go$"')
+  if len(bufs) == 0
+    return
+  endif
+  exe bufs[0][0] 'wincmd w'
+  let filename = m[1]
+  let linenr = m[2]
+  let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
+  if oldfile != filename
+    silent! exe 'edit' filename
+  endif
+  silent! exe 'norm!' linenr.'G'
+  silent! normal! zvzz
+endfunction
+
+function! s:expand_var()
+  let name = matchstr(getline('.'), '^[^:]\+\ze: \.\.\.$')
+  if name == ''
+    return
+  endif
+  setlocal modifiable
+  call append('.', split(s:eval(name), "\n"))
+  silent! d _
+  setlocal nomodifiable
+endfunction
+
 function! s:start_cb(ch, json)
   let res = json_decode(a:json)
   if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
@@ -188,7 +224,7 @@ function! s:start_cb(ch, json)
   endfor
 
   let oldbuf = bufnr('%')
-  only!
+  silent! only!
 
   let winnum = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
   if winnum != -1
@@ -199,6 +235,7 @@ function! s:start_cb(ch, json)
   silent file `='__GODEBUG_STACKTRACE__'`
   setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
   setlocal filetype=godebug-stacktrace
+  nmap <buffer> <cr> :<c-u>call <SID>goto_file()<cr>
   nmap <buffer> q <Plug>(go-debug-stop)
 
   silent botright 10new
@@ -211,6 +248,7 @@ function! s:start_cb(ch, json)
   silent file `='__GODEBUG_VARIABLES__'`
   setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
   setlocal filetype=godebug-variables
+  nmap <buffer> <cr> :<c-u>call <SID>expand_var()<cr>
   nmap <buffer> q <Plug>(go-debug-stop)
 
   command! -nargs=0 GoDebugDiag call go#debug#Diag()
@@ -292,7 +330,7 @@ function! s:eval_tree(var, nest)
     if len(a:var.children) > 0 && a:var.value == ''
       let v .= repeat(' ', nest) . printf("%s: ...\n", a:var.name)
     else
-      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.value)
+      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, string(a:var.value))
     endif
   else
     let nest -= 1
