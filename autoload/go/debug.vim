@@ -28,12 +28,14 @@ function! s:logger(prefix, ch, msg)
     return
   endif
   exe winnum 'wincmd w'
+  setlocal modifiable
   if getline(1) == ''
     call setline('$', a:prefix . a:msg)
   else
     call append('$', a:prefix . a:msg)
   endif
   normal! G
+  setlocal nomodifiable
   wincmd p
 endfunction
 
@@ -101,14 +103,17 @@ function! s:stacktrace(res) abort
     return
   endif
   let winnum = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
-  if winnum != -1
-    exe winnum 'wincmd w'
+  if winnum == -1
+    return
   endif
+  exe winnum 'wincmd w'
+  setlocal modifiable
   silent %delete _
   for i in range(len(a:res.result.Locations))
     let loc = a:res.result.Locations[i]
     call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':t'), loc.line))
   endfor
+  setlocal nomodifiable
   wincmd p
 endfunction
 
@@ -118,14 +123,17 @@ function! s:localvars(res) abort
   endif
   let winnum = bufwinnr(bufnr('__GODEBUG_VARIABLES__'))
   if winnum != -1
-    exe winnum 'wincmd w'
+    return
   endif
+  exe winnum 'wincmd w'
+  setlocal modifiable
   silent %delete _
   let v = ''
   for c in a:res.result.Variables
     let v .= s:eval_tree(c, 0)
   endfor
   call setline(1, split(v, "\n"))
+  setlocal nomodifiable
   wincmd p
 endfunction
 
@@ -156,9 +164,9 @@ function! go#debug#Stop() abort
   call s:stop()
 
   wincmd p
-  silent! exe bufnr('__GODEBUG_STACKTRACE__') 'bwipeout!'
-  silent! exe bufnr('__GODEBUG_VARIABLES__') 'bwipeout!'
-  silent! exe bufnr('__GODEBUG_OUTPUT__') 'bwipeout!'
+  silent! exe bufwinnr(bufnr('__GODEBUG_STACKTRACE__')) 'wincmd c'
+  silent! exe bufwinnr(bufnr('__GODEBUG_VARIABLES__')) 'wincmd c'
+  silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
 
   set noballooneval
   set balloonexpr=
@@ -189,19 +197,19 @@ function! s:start_cb(ch, json)
 
   silent leftabove 20vnew
   silent file `='__GODEBUG_STACKTRACE__'`
-  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
+  setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
   setlocal filetype=godebug-stacktrace
   nmap <buffer> q <Plug>(go-debug-stop)
 
   silent botright 10new
   silent file `='__GODEBUG_OUTPUT__'`
-  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
+  setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
   setlocal filetype=godebug-output
   nmap <buffer> q <Plug>(go-debug-stop)
 
   silent leftabove 30vnew
   silent file `='__GODEBUG_VARIABLES__'`
-  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
+  setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
   setlocal filetype=godebug-variables
   nmap <buffer> q <Plug>(go-debug-stop)
 
@@ -262,6 +270,7 @@ function! go#debug#Start() abort
     return
   endif
   try
+    echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
     let job = job_start('dlv debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient', {
     \ 'out_cb': function('s:starting'),
     \ 'err_cb': function('s:starting'),
@@ -280,7 +289,11 @@ function! s:eval_tree(var, nest)
   let nest = a:nest
   let v = ''
   if !empty(a:var.name)
-    let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.value)
+    if len(a:var.children) > 0 && a:var.value == ''
+      let v .= repeat(' ', nest) . printf("%s: ...\n", a:var.name)
+    else
+      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.value)
+    endif
   else
     let nest -= 1
   endif
