@@ -10,6 +10,8 @@ if !exists('s:state')
   \}
 endif
 
+let s:addr = '127.0.0.1:8181'
+
 function! s:groutineID()
   return s:state['currentThread'].goroutineID
 endfunction
@@ -197,7 +199,7 @@ function! s:start_cb(ch, json)
   setlocal filetype=godebug-output
   nmap <buffer> q <Plug>(go-debug-stop)
 
-  silent leftabove 20vnew
+  silent leftabove 30vnew
   silent file `='__GODEBUG_VARIABLES__'`
   setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
   setlocal filetype=godebug-variables
@@ -244,18 +246,30 @@ function! s:start_cb(ch, json)
   exe bufwinnr(oldbuf) 'wincmd w'
 endfunction
 
+function! s:starting(ch, msg)
+  echomsg a:msg
+  if stridx(a:msg, s:addr) != -1
+    call ch_setoptions(a:ch, {
+    \ 'out_cb': function('s:logger', ['OUT: ']),
+    \ 'err_cb': function('s:logger', ['ERR: ']),
+    \})
+    call s:call_jsonrpc('RPCServer.ListBreakpoints', function('s:start_cb'))
+  endif
+endfunction
+
 function! go#debug#Start() abort
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
   endif
   try
-    let job = job_start(['dlv', 'debug', '--headless', '--api-version=2', '--log', '--listen=127.0.0.1:8181', '--accept-multiclient'])
-    call job_setoptions(job, {'exit_cb': function('s:exit'), 'stoponexit': 'kill'})
+    let job = job_start('dlv debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient', {
+    \ 'out_cb': function('s:starting'),
+    \ 'err_cb': function('s:starting'),
+    \ 'exit_cb': function('s:exit'),
+    \ 'stoponexit': 'kill',
+    \})
     let ch = job_getchannel(job)
-    call ch_setoptions(job, {'out_cb': function('s:logger', ['OUT: ']), 'err_cb': function('s:logger', ['ERR: '])})
     let s:state['job'] = job
-    sleep 3
-    call s:call_jsonrpc('RPCServer.ListBreakpoints', function('s:start_cb'))
   catch
     echohl Error | echomsg v:exception | echohl None
     return
