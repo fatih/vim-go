@@ -203,6 +203,7 @@ function! s:expand_var()
     return
   endif
   setlocal modifiable
+  silent! %g/^\s/d _
   call append('.', split(s:eval(name), "\n"))
   silent! d _
   setlocal nomodifiable
@@ -234,20 +235,20 @@ function! s:start_cb(ch, json)
   silent leftabove 20vnew
   silent file `='__GODEBUG_STACKTRACE__'`
   setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
-  setlocal filetype=godebug-stacktrace
+  setlocal filetype=godebugstacktrace
   nmap <buffer> <cr> :<c-u>call <SID>goto_file()<cr>
   nmap <buffer> q <Plug>(go-debug-stop)
 
   silent botright 10new
   silent file `='__GODEBUG_OUTPUT__'`
   setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
-  setlocal filetype=godebug-output
+  setlocal filetype=godebugoutput
   nmap <buffer> q <Plug>(go-debug-stop)
 
   silent leftabove 30vnew
   silent file `='__GODEBUG_VARIABLES__'`
   setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
-  setlocal filetype=godebug-variables
+  setlocal filetype=godebugvariables
   nmap <buffer> <cr> :<c-u>call <SID>expand_var()<cr>
   nmap <buffer> q <Plug>(go-debug-stop)
 
