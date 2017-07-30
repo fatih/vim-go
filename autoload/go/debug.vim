@@ -15,7 +15,7 @@ endif
 
 let s:addr = '127.0.0.1:8181'
 
-function! s:groutineID()
+function! s:groutineID() abort
   return s:state['currentThread'].goroutineID
 endfunction
 
@@ -29,7 +29,7 @@ function! s:exit(job, status) abort
   endif
 endfunction
 
-function! s:logger(prefix, ch, msg)
+function! s:logger(prefix, ch, msg) abort
   let winnum = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
   if winnum == -1
     return
@@ -189,7 +189,7 @@ function! go#debug#Stop() abort
   set balloonexpr=
 endfunction
 
-function! s:goto_file()
+function! s:goto_file() abort
   let m = matchlist(getline('.'), ' - \(.*\):\([0-9]\+\)$')
   if m[1] == ''
     return
@@ -209,19 +209,20 @@ function! s:goto_file()
   silent! normal! zvzz
 endfunction
 
-function! s:expand_var()
+function! s:expand_var() abort
   let name = matchstr(getline('.'), '^[^:]\+\ze: \.\.\.$')
   if name == ''
     return
   endif
   setlocal modifiable
+  let l = line('.')
   silent! %g/^\s/d _
-  call append('.', split(s:eval(name), "\n"))
-  silent! d _
+  call append(l, split(s:eval(name), "\n")[1:])
+  silent! exe 'norm!' l.'G'
   setlocal nomodifiable
 endfunction
 
-function! s:start_cb(ch, json)
+function! s:start_cb(ch, json) abort
   let res = json_decode(a:json)
   if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
     throw res.error
@@ -306,7 +307,7 @@ function! s:start_cb(ch, json)
   exe bufwinnr(oldbuf) 'wincmd w'
 endfunction
 
-function! s:starting(ch, msg)
+function! s:starting(ch, msg) abort
   echomsg a:msg
   let s:state['message'] += [a:msg]
   if stridx(a:msg, s:addr) != -1
@@ -339,7 +340,7 @@ function! go#debug#Start() abort
   endtry
 endfunction
 
-function! s:eval_tree(var, nest)
+function! s:eval_tree(var, nest) abort
   if a:var.name =~ '^\~'
     return ''
   endif
@@ -393,7 +394,7 @@ function! go#debug#Command(...) abort
   endtry
 endfunction
 
-function! s:update_variables()
+function! s:update_variables() abort
   let vars = [
   \{
   \  'method': 'RPCServer.ListLocalVars',
@@ -428,7 +429,7 @@ function! go#debug#Set(symbol, value) abort
   call s:update_variables()
 endfunction
 
-function! s:update_stacktrace()
+function! s:update_stacktrace() abort
   try
     let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:groutineID(), 'depth': 5})
     call s:show_stacktrace(res)
