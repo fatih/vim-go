@@ -7,6 +7,9 @@ if !exists('s:state')
   \ 'rpcid': 1,
   \ 'breakpoint': {},
   \ 'currentThread': {},
+  \ 'localVars': {},
+  \ 'functionArgs': {},
+  \ 'message': [],
   \}
 endif
 
@@ -19,6 +22,10 @@ endfunction
 function! s:exit(job, status) abort
   if has_key(s:state, 'job')
     call remove(s:state, 'job')
+  endif
+  if a:status != 0
+    echohl Error | echo join(s:state['message'], "\n") . "\n" | echohl None
+	call getchar()
   endif
 endfunction
 
@@ -54,7 +61,7 @@ function! s:call_jsonrpc(method, ...) abort
   \  'params': args,
   \})
   try
-	if type(Cb) == v:t_func
+    if type(Cb) == v:t_func
       let s:ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'callback': Cb})
       call ch_sendraw(s:ch, json)
       return
@@ -77,7 +84,7 @@ function! go#debug#Diag() abort
   echo s:state
 endfunction
 
-function! s:update(res) abort
+function! s:update_breakpoint(res) abort
   if type(a:res) ==# v:t_none
     return
   endif
@@ -103,7 +110,7 @@ function! s:update(res) abort
   silent! exe 'sign place 9999 line=' . linenr . ' name=godebugcurline file=' . filename
 endfunction
 
-function! s:stacktrace(res) abort
+function! s:show_stacktrace(res) abort
   if !has_key(a:res, 'result')
     return
   endif
@@ -122,10 +129,7 @@ function! s:stacktrace(res) abort
   wincmd p
 endfunction
 
-function! s:localvars(res) abort
-  if !has_key(a:res, 'result')
-    return
-  endif
+function! s:show_variables() abort
   let winnum = bufwinnr(bufnr('__GODEBUG_VARIABLES__'))
   if winnum == -1
     return
@@ -133,11 +137,19 @@ function! s:localvars(res) abort
   exe winnum 'wincmd w'
   setlocal modifiable
   silent %delete _
-  let v = ''
-  for c in a:res.result.Variables
-    let v .= s:eval_tree(c, 0)
+
+  let v = []
+  let v += ['# Local Variables']
+  for c in s:state['localVars']
+    let v += split(s:eval_tree(c, 0), "\n")
   endfor
-  call setline(1, split(v, "\n"))
+  let v += ['']
+  let v += ['# Function Arguments']
+  for c in s:state['functionArgs']
+    let v += split(s:eval_tree(c, 0), "\n")
+  endfor
+  call setline(1, v)
+
   setlocal nomodifiable
   wincmd p
 endfunction
@@ -249,6 +261,7 @@ function! s:start_cb(ch, json)
   silent file `='__GODEBUG_VARIABLES__'`
   setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
   setlocal filetype=godebugvariables
+  call append(0, ["# Local Variables", "", "# Function Arguments"])
   nmap <buffer> <cr> :<c-u>call <SID>expand_var()<cr>
   nmap <buffer> q <Plug>(go-debug-stop)
 
@@ -295,6 +308,7 @@ endfunction
 
 function! s:starting(ch, msg)
   echomsg a:msg
+  let s:state['message'] += [a:msg]
   if stridx(a:msg, s:addr) != -1
     call ch_setoptions(a:ch, {
     \ 'out_cb': function('s:logger', ['OUT: ']),
@@ -310,6 +324,7 @@ function! go#debug#Start() abort
   endif
   try
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
+    let s:state['message'] = []
     let job = job_start('dlv debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient', {
     \ 'out_cb': function('s:starting'),
     \ 'err_cb': function('s:starting'),
@@ -325,13 +340,16 @@ function! go#debug#Start() abort
 endfunction
 
 function! s:eval_tree(var, nest)
+  if a:var.name =~ '^\~'
+    return ''
+  endif
   let nest = a:nest
   let v = ''
   if !empty(a:var.name)
     if len(a:var.children) > 0 && a:var.value == ''
       let v .= repeat(' ', nest) . printf("%s: ...\n", a:var.name)
     else
-      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, string(a:var.value))
+      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.type == 'string' ? json_encode(a:var.value) : a:var.value)
     endif
   else
     let nest -= 1
@@ -369,10 +387,34 @@ endfunction
 function! go#debug#Command(...) abort
   try
     let res = s:call_jsonrpc('RPCServer.Command', {'name': join(a:000, ' ')})
-    call s:update(res)
+    call s:update_breakpoint(res)
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
+endfunction
+
+function! s:update_variables()
+  let vars = [
+  \{
+  \  'method': 'RPCServer.ListLocalVars',
+  \  'kind': 'localVars',
+  \  'bind': 'Variables',
+  \},
+  \{
+  \  'method': 'RPCServer.ListFunctionArgs',
+  \  'kind': 'functionArgs',
+  \  'bind': 'Args',
+  \}
+  \]
+  for v in vars
+    try
+      let res = s:call_jsonrpc(v.method, {'scope':{'GoroutineID': s:groutineID()}})
+      let s:state[v.kind] = res.result[v.bind]
+    catch
+      echohl Error | echomsg v:exception | echohl None
+    endtry
+  endfor
+  call s:show_variables()
 endfunction
 
 function! go#debug#Set(symbol, value) abort
@@ -383,9 +425,13 @@ function! go#debug#Set(symbol, value) abort
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
+  call s:update_variables()
+endfunction
+
+function! s:update_stacktrace()
   try
-    let res = s:call_jsonrpc('RPCServer.ListLocalVars', {'scope':{'GoroutineID': s:groutineID()}})
-    call s:localvars(res)
+    let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:groutineID(), 'depth': 5})
+    call s:show_stacktrace(res)
   catch
     echohl Error | echomsg v:exception | echohl None
   endtry
@@ -400,20 +446,9 @@ function! s:stack_cb(ch, json) abort
   if empty(res) || !has_key(res, 'result')
     return
   endif
-  call s:update(res)
-
-  try
-    let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:groutineID(), 'depth': 5})
-    call s:stacktrace(res)
-  catch
-    echohl Error | echomsg v:exception | echohl None
-  endtry
-  try
-    let res = s:call_jsonrpc('RPCServer.ListLocalVars', {'scope':{'GoroutineID': s:groutineID()}})
-    call s:localvars(res)
-  catch
-    echohl Error | echomsg v:exception | echohl None
-  endtry
+  call s:update_breakpoint(res)
+  call s:update_stacktrace()
+  call s:update_variables()
 endfunction
 
 function! go#debug#Stack(name) abort
