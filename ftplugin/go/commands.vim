@@ -100,7 +100,7 @@ command! -nargs=0 GoFillStruct call go#fillstruct#FillStruct()
 
 " -- debug
 if !exists(':GoDebugStart')
-  command! -nargs=0 GoDebugStart call go#debug#Start()
+  command! -nargs=* GoDebugStart call go#debug#Start(<f-args>)
 endif
 
 " vim: sw=2 ts=2 et

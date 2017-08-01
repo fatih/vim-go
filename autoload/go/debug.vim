@@ -180,7 +180,12 @@ function! go#debug#Stop() abort
 
   call s:stop()
 
-  wincmd p
+  let bufs = filter(map(range(1, winnr('$')), '[v:val,bufname(winbufnr(v:val))]'), 'v:val[1]=~"\.go$"')
+  if len(bufs) > 0
+    exe bufs[0][0] 'wincmd w'
+  else
+    wincmd p
+  endif
   silent! exe bufwinnr(bufnr('__GODEBUG_STACKTRACE__')) 'wincmd c'
   silent! exe bufwinnr(bufnr('__GODEBUG_VARIABLES__')) 'wincmd c'
   silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
@@ -319,14 +324,14 @@ function! s:starting(ch, msg) abort
   endif
 endfunction
 
-function! go#debug#Start() abort
+function! go#debug#Start(...) abort
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
   endif
   try
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
     let s:state['message'] = []
-    let job = job_start('dlv debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient', {
+    let job = job_start('dlv debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient -- ' . join(a:000, ' '), {
     \ 'out_cb': function('s:starting'),
     \ 'err_cb': function('s:starting'),
     \ 'exit_cb': function('s:exit'),
