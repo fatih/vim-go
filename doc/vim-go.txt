@@ -840,6 +840,41 @@ CTRL-t
       }
 <
 
+                                                               *:GoDebugStart*
+:GoDebugStart
+
+    Start Go Debugger. This debugger similar to Visual Studio or Eclipse which
+    has following features:
+
+    * Show stacktrace and Jump
+    * List local variables
+    * List function arguments
+    * Expand values of struct or array/slice
+    * Show balloon on the symbol
+    * Show output of stdout/stderr
+    * Toggle breakpoint
+    * Stack operation continue/next/stepin/stepout
+
+    To start debugger, type `:GoDebugStart`. If you want to pass arguments to
+    the program, append arguments following this command: >
+
+        :GoDebugStart -age 18
+<
+    This may take few seconds. After while compiling your code, You'll see 3
+    panes windows. The stacktrace in left side, left bottom in variable list,
+    command output in bottom.
+
+    You should add breakpoint at the first. Go to somewhere where you want to
+    break on debugger. Then type <F9> to toggle breakpoint.  To start command,
+    type <F5>.
+
+    If your program reach the breakpoint immediately, go debugger stop with
+    the breakpoint. Then, you can go next line <F10> or step in <F11>.
+    When the program stop in the debugger, stacktrace and variable list will
+    be updated with the current value.
+    Struct value is displayed as '{...}', Array/Slice is displayed like '[4]'.
+    To expand the values, type <CR> on the variable name.
+
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
