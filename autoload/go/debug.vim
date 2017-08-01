@@ -214,17 +214,43 @@ function! s:goto_file() abort
   silent! normal! zvzz
 endfunction
 
+function! s:delete_expands()
+  let nr = line('.')
+  while 1
+    let l = getline(nr+1)
+    if empty(l) || l =~ '^\S'
+      return
+    endif
+    silent! exe (nr+1) . 'd _'
+  endwhile
+  silent! exe 'norm!' nr.'G'
+endfunction
+
 function! s:expand_var() abort
-  let name = matchstr(getline('.'), '^[^:]\+\ze: \.\.\.$')
-  if name == ''
+  let name = matchstr(getline('.'), '^[^:]\+\ze: {\.\.\.}$')
+  if name != ''
+    setlocal modifiable
+    let l = line('.')
+    call s:delete_expands()
+    call append(l, split(s:eval(name), "\n")[1:])
+    silent! exe 'norm!' l.'G'
+    setlocal nomodifiable
     return
   endif
-  setlocal modifiable
-  let l = line('.')
-  silent! %g/^\s/d _
-  call append(l, split(s:eval(name), "\n")[1:])
-  silent! exe 'norm!' l.'G'
-  setlocal nomodifiable
+  let m = matchlist(getline('.'), '^\([^:]\+\)\ze: \[\([0-9]\+\)\]$')
+  if len(m) > 0 && m[1] != ''
+    setlocal modifiable
+    let l = line('.')
+    call s:delete_expands()
+    let vs = ''
+    for i in range(0, min([10, m[2]-1]))
+      let vs .= ' ' . s:eval(m[1] . '[' . i . ']')
+    endfor
+    call append(l, split(vs, "\n"))
+    silent! exe 'norm!' l.'G'
+    setlocal nomodifiable
+    return
+  endif
 endfunction
 
 function! s:start_cb(ch, json) abort
@@ -353,7 +379,9 @@ function! s:eval_tree(var, nest) abort
   let v = ''
   if !empty(a:var.name)
     if len(a:var.children) > 0 && a:var.value == ''
-      let v .= repeat(' ', nest) . printf("%s: ...\n", a:var.name)
+      let v .= repeat(' ', nest) . printf("%s: {...}\n", a:var.name)
+    elseif  a:var.len > 0 && a:var.value == ''
+      let v .= repeat(' ', nest) . printf("%s: [%d]\n", a:var.name, a:var.len)
     else
       let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.type == 'string' ? json_encode(a:var.value) : a:var.value)
     endif
