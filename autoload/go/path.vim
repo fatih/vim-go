@@ -89,7 +89,7 @@ function! go#path#Detect() abort
   " for cases like GOPATH/src/foo/src/bar, pick up GOPATH/src instead of
   " GOPATH/src/foo/src
   let src_root = ""
-  if len(src_roots) > 0 
+  if len(src_roots) > 0
     let src_root = src_roots[-1]
   endif
 
@@ -168,6 +168,11 @@ function! go#path#CheckBinPath(binpath) abort
       let binpath = exepath(binpath)
     endif
     let $PATH = old_path
+
+    if go#util#IsUsingCygwinShell() == 1
+      return go#path#CygwinPath(binpath)
+    endif
+
     return binpath
   endif
 
@@ -184,18 +189,15 @@ function! go#path#CheckBinPath(binpath) abort
 
   let $PATH = old_path
 
-   " When you are using:
-   " 1) Windows system
-   " 2) Has cygpath executable
-   " 3) Use *sh* as 'shell'
-   "
-   " This converts your <path> to $(cygpath '<path>') to make cygwin working in
-   " shell of cygwin way
-   if go#util#IsWin() && executable('cygpath') && &shell !~ '.*sh.*'
-     return printf("$(cygpath '%s')", a:bin_path)
-   endif
+  if go#util#IsUsingCygwinShell() == 1
+    return go#path#CygwinPath(a:binpath)
+  endif
 
   return go_bin_path . go#util#PathSep() . basename
+endfunction
+
+function! go#path#CygwinPath(path)
+   return substitute(a:path, '\\', '/', "g")
 endfunction
 
 " vim: sw=2 ts=2 et
