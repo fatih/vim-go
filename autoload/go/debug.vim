@@ -354,10 +354,16 @@ function! go#debug#Start(...) abort
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
   endif
+
+  let dlv = go#path#CheckBinPath("dlv")
+  if empty(dlv)
+    return
+  endif
+
   try
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
     let s:state['message'] = []
-    let job = job_start('dlv debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient -- ' . join(a:000, ' '), {
+    let job = job_start(dlv . ' debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient -- ' . join(a:000, ' '), {
     \ 'out_cb': function('s:starting'),
     \ 'err_cb': function('s:starting'),
     \ 'exit_cb': function('s:exit'),
