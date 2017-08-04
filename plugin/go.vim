@@ -165,7 +165,7 @@ endfunction
 function! s:fmt_autosave()
   " Go code formatting on save
   if get(g:, "go_fmt_autosave", 1)
-    call go#fmt#Format(-1)
+    silent! call go#fmt#Format(-1)
   endif
 endfunction
 
