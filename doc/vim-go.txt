@@ -1704,6 +1704,25 @@ example sometimes code.google.com times out. To test, just execute a simple
 You'll see a more detailed error. If this works, vim-go will work too.
 
 
+I want to use a different binary name than "go", can I do this?~
+
+There is no way to directly configure the binary name; but you can use a
+wrapper script; for example if you would like to run `goapp` instead of `go`:
+
+1. In `~/gobin/go` (remember to make it executable):
+>
+     #!/bin/sh
+     # Remove gobin from PATH and run goapp.
+     PATH=${PATH#$HOME/gobin} goapp "$@"
+<
+2. Start Vim with `~/gobin` as the first `PATH` entry so it will use the
+   wrapper script:
+>
+     PATH="$HOME/gobin/:$PATH" vim
+<
+   Alternatively you you could set `$PATH` in your vimrc with an |:autocmd|.
+
+
 How do I use vim-go with syntastic?~
 
 Sometimes when using both `vim-go` and `syntastic` Vim will start lagging
