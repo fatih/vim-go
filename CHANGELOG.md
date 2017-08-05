@@ -41,10 +41,12 @@ BUG FIXES:
 * Fix commands not being executed if paths would include spaces (binary name, GOPATH, file itself, etc..)  [gh-1374]
 * Fix showing correct message when editing a new file [gh-1371]
 * Fix filepaths in the quickfix list for :GoVet [gh-1381]
+* Run :GoLint against the package of the open file [gh-1382]
 
 BACKWARDS INCOMPATIBILITIES:
 
 * `:GoFmt` now uses `quickfix` to show formatting errors instead of `locationlist`. To change back to `locationlist` you can change it with the setting `let g:go_list_type = "locationlist"` [gh-1365]
+* `:GoLint` now runs against the package of the open file instead of the current working directory. This is so all commands behave the same relative to the current open buffer. For more info check the [comment here](https://github.com/fatih/vim-go/issues/1375#issuecomment-317535953) [gh-1382]
 
 
 
