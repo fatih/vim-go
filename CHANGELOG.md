@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.14 - (August 6, 2017)
+
 FEATURES:
 
 * We now have folding support based on Go syntax. To enable it you have to set the following vim setting: `set foldmethod=syntax`. Currently it folds at block (`{ }`), var and const level. These can be individually disabled/enabled if wished. For more info please read the documentation for the `g:go_fold_enable` setting. [gh-1339] 
