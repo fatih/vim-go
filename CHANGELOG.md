@@ -40,6 +40,7 @@ BUG FIXES:
 * Fix showing an empty window if `gogetdoc` was not found [gh-1379]
 * Fix commands not being executed if paths would include spaces (binary name, GOPATH, file itself, etc..)  [gh-1374]
 * Fix showing correct message when editing a new file [gh-1371]
+* Fix filepaths in the quickfix list for :GoVet [gh-1381]
 
 BACKWARDS INCOMPATIBILITIES:
 
