@@ -1167,7 +1167,7 @@ Maximum height for the GoDoc window created with |:GoDoc|. Default is 20. >
 
 Use this option to define the command to be used for |:GoDef|. By default
 `guru` is being used as it covers all edge cases. But one might also use
-`godef` as it's more faster. Current valid options are: `[guru, godef]` >
+`godef` as it's faster. Current valid options are: `[guru, godef]` >
 
   let g:go_def_mode = 'guru'
 <
