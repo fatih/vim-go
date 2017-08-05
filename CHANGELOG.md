@@ -25,6 +25,7 @@ IMPROVEMENTS
 * Add `g:go_list_autoclose` setting to prevent closting the quickfix/location list after zero items [gh-1361]
 * Cursor is now adjusted and locked to the correct line when `goimports` is used for autosave [gh-1367]
 * Complement the path of command for different situations of Cygwin environment [gh-1394]
+* Show message when using :GoDef and opening a new buffer [gh-1385]
 
 
 BUG FIXES:
