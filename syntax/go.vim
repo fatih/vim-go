@@ -225,11 +225,15 @@ endif
 
 " var, const
 if s:fold_varconst
-  syn region    goVar               start='var (' end=')' transparent fold contains=ALLBUT,goParen,goBlock
-  syn region    goConst             start='const (' end=')' transparent fold contains=ALLBUT,goParen,goBlock
+  syn region    goVar               start='var ('   end='^\s*)$' transparent fold
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
+  syn region    goConst             start='const (' end='^\s*)$' transparent fold
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
 else
-  syn region    goVar               start='var (' end=')' transparent contains=ALLBUT,goParen,goBlock
-  syn region    goConst             start='const (' end=')' transparent contains=ALLBUT,goParen,goBlock
+  syn region    goVar               start='var ('   end='^\s*)$' transparent 
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
+  syn region    goConst             start='const (' end='^\s*)$' transparent
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
 endif
 
 " Single-line var, const, and import.
