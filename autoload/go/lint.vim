@@ -124,7 +124,7 @@ function! go#lint#Golint(...) abort
   let bin_path = go#util#Shellescape(bin_path)
 
   if a:0 == 0
-    let out = go#util#System(bin_path)
+    let out = go#util#System(bin_path . " " . go#util#Shellescape(go#package#ImportPath()))
   else
     let out = go#util#System(bin_path . " " . go#util#Shelljoin(a:000))
   endif
