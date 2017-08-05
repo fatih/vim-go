@@ -24,6 +24,7 @@ IMPROVEMENTS
 * The `af` text object is able to include the assignment variable for anonymous functions. Can be disabled with `g:go_textobj_include_variable = 0` [gh-1345]
 * Add `g:go_list_autoclose` setting to prevent closting the quickfix/location list after zero items [gh-1361]
 * Cursor is now adjusted and locked to the correct line when `goimports` is used for autosave [gh-1367]
+* Complement the path of command for different situations of Cygwin environment [gh-1394]
 
 
 BUG FIXES:
