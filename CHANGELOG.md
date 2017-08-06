@@ -1,5 +1,9 @@
 ## unplanned
 
+BUG FIXES:
+
+* Include comments in import block when folding is enabled [gh-1387]
+
 ## 1.14 - (August 6, 2017)
 
 FEATURES:
