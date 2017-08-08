@@ -926,3 +926,7 @@ We don't tag any changes or releases, so let's start with `1.0`. Our Windows
 support is now in a good shape, tons of bugs are fixed, many new features and
 improvements is being added and it's getting better with each day (thanks to
 the community contributions).
+
+## 0.0 (Mar 24, 2014)
+
+Initial commit: https://github.com/fatih/vim-go/commit/78c5caa82c111c50e9c219f222d65b07694f8f5a
