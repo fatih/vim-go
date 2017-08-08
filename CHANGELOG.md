@@ -15,8 +15,16 @@ BUG FIXES:
 
 FEATURES:
 
-* We now have folding support based on Go syntax. Check out the [demo](https://twitter.com/fatih/status/893843722093330433) to see it in action. To enable it you have to set the following vim setting: `set foldmethod=syntax`. Currently it folds at block (`{ }`), var and const level. These can be individually disabled/enabled if wished. For more info please read the documentation for the `g:go_fold_enable` setting. [gh-1339] 
-* `:GoFiles` accepts now an argument to change the type of files it can show. By default it shows`.go source files` but now it can be changed to show various kind of files. The full list can be seen via `go list --help` under the `// Source Files` section [gh-1372] i.e:
+* We now have folding support based on Go syntax. Check out the
+  [demo](https://twitter.com/fatih/status/893843722093330433) to see it in
+  action. To enable it you have to set the following vim setting: `set
+  foldmethod=syntax`. Currently it folds at block (`{ }`), var and const level.
+  These can be individually disabled/enabled if wished. For more info please
+  read the documentation for the `g:go_fold_enable` setting. [gh-1339] 
+* `:GoFiles` accepts now an argument to change the type of files it can show.
+  By default it shows`.go source files` but now it can be changed to show
+  various kind of files. The full list can be seen via `go list --help` under
+  the `// Source Files` section [gh-1372] i.e:
 
 ```
 :GoFiles CgoFiles        // shows .go sources files that import "C"
@@ -27,7 +35,9 @@ etc..
 
 IMPROVEMENTS
 
-* Files created with `_test.go` extension have a new template with a ready to go test function. The template can be changed with the  `g:go_template_test_file` setting. [gh-1318]
+* Files created with `_test.go` extension have a new template with a ready to
+  go test function. The template can be changed with the
+  `g:go_template_test_file` setting. [gh-1318]
 * Improve performance for highly used operations by caching `go env` calls [gh-1320]
 * `:GoCoverage` can accept arguments now. i.e: `:GoCoverage -run TestFoo` [gh-1326]
 * `:GoDecls` and `:GoDeclsDir` shows a warning if [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) is not installed
@@ -60,8 +70,14 @@ BUG FIXES:
 
 BACKWARDS INCOMPATIBILITIES:
 
-* `:GoFmt` now uses `quickfix` to show formatting errors instead of `locationlist`. To change back to `locationlist` you can change it with the setting `let g:go_list_type = "locationlist"` [gh-1365]
-* `:GoLint` now runs against the package of the open file instead of the current working directory. This is so all commands behave the same relative to the current open buffer. For more info check the [comment here](https://github.com/fatih/vim-go/issues/1375#issuecomment-317535953) [gh-1382]
+* `:GoFmt` now uses `quickfix` to show formatting errors instead of
+  `locationlist`. To change back to `locationlist` you can change it with the
+  setting `let g:go_list_type = "locationlist"` [gh-1365]
+* `:GoLint` now runs against the package of the open file instead of the
+  current working directory. This is so all commands behave the same relative
+  to the current open buffer. For more info check the [comment
+  here](https://github.com/fatih/vim-go/issues/1375#issuecomment-317535953)
+  [gh-1382]
 
 
 
@@ -196,7 +212,11 @@ BACKWARDS INCOMPATIBILITIES:
 
 FEATURES:
 
-* Travis test integration has been added. Now any file that is added as `<name>_test.vim` will be automatically tested in for every Pull Request (just like how we add tests to Go with `_test.go`). Going forward this will tremendously increase the stability and decrease the maintenance burden of vim-go. [gh-1157]
+* Travis test integration has been added. Now any file that is added as
+  `<name>_test.vim` will be automatically tested in for every Pull Request
+  (just like how we add tests to Go with `_test.go`). Going forward this will
+  tremendously increase the stability and decrease the maintenance burden of
+  vim-go. [gh-1157]
 * Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [gh-1055]
 * Add new `g:go_template_use_pkg` setting to enable to use cwd as package name instead of basic template file [gh-1124]
 
@@ -701,8 +721,208 @@ BUG FIXES:
 * Do not treat builtins as keywords. Now `make` will not highlighted but
   `make()` will be highlighted (gh-605)
 
+## 1.2 (Oct 2, 2015)
 
-## Previous releases
+FEATURES:
 
-Previous changelogs can be found here: https://github.com/fatih/vim-go/releases
+* A new `:GoMetaLinter` command which invokes [gometalinter](https://github.com/alecthomas/gometalinter). Please check the PR [#553](https://github.com/fatih/vim-go/pull/553) for more detail on customizing and usage of `:GoMetaLinter`.
 
+IMPROVEMENTS:
+
+* Improve `:GoImport` to trim spaces when including import paths of form `"fmt "`
+* Avoid setting `filetype` twice. Previously it was doing it twice, which was expensive
+* Improve handling of GOPATH's with trailing `/` characters, such as `/home/user/go/`
+* Add a new `g:go_highlight_string_spellcheck` feature, which is enabled by feature. Now if spell is enabled, go strings are also checked.
+* Specify our limited but functional [gb](http://getgb.io/) support
+
+BUG FIXES:
+* Fixed `:GoRun` to display errors when `g:go_dispatch_enabled` was enabled
+* Fixed `:GoDrop` displaying "Not enough arguments" (regression)
+* Fixed `:GoErrCheck` not showing `PASS` message if the command was successful
+* Fixed `:GoErrCheck` not executing in the directory of the currently edited file
+* Close quickfix window after a successful second round of `:GoInstall`
+* Fix passing files rather than packages to certain oracle commands.
+* Escape files passed to oracle command. This could lead to some serious things.
+* Clear `g:go_oracle_scope` when the scope was reseted. Previously it was set to empty string, which was causing false positives.
+* Correct various misspellings.
+
+## 1.1 (Jul 25, 2015)
+
+With this release the version will now increase in `minor` levels. So the next
+release will be `1.2`, the other one `1.3`, etc.. This provides us more
+flexibility (like releasing patch versions if needed).
+
+FEATURES:
+* A new `:GoGenerate` command is now available which can be used to invoke `go generate` within vim
+* Vim-go didn't had any license, now we use BSD 3-Clause License (the same as Go). This is needed for Linux distributions to package vim-go and is also something that people asked for.
+
+IMPROVEMENTS:
+* Improve commands `GoRun, GoTest{,Func,Compile}, GoCoverage,
+  GoGenerate, GoErrcheck, GoLint, and GoVet` to handle multiple arguments.
+  Previously this feature was limited to only certain commands. What this means
+  is, for example `:GoVet . -all` will invoke `go tool vet . -all`
+  automatically instead of plan `go vet`. This is one of the big changes in
+  this release, so give it a try :)
+* Improved `:GoFmt` command, which now uses the `-w` flag to
+  write to the source code directly, instead of outputting it to stdout. This
+  makes `:GoFmt` much more faster than the current implementation. This is one
+  of the big changes in this release, so feedback is welcome!
+* Improve `:GoImport` to have a `!` feature. Now when when called
+  with a `!` appended it will go get it. i.e: `:GoImport!
+  github.com/fatih/color`. Useful if `:GoImport` fails and you want to download
+  it.
+* Automatic GOPATH detections can now detect `gb` vendored folders. Some commands should now work without any problem when invoked on a `gb` project.
+* All command arguments are now properly escaped for shell invocation. 
+* Added the `-f` flag to :GoInstallBinaries command to support `git url.<base>.insteadOf` configuration
+* Improve width and precision highlighting, such as `%s %5s %-5s %5.5f %.5f`
+* Show an error if a region is not selected when `:GoFreeVars` is called
+
+BUG FIXES:
+* Fix`:GoDef` for files containing spaces. We know escape the files before passing to `:GoDef`
+* Fix `:GoFmt` not picking up the correct GOPATH when the fmt command was set to `goimports`
+* Fix and simplify README.md, add Wiki reference
+* Fixed tagbar integration to show correct imports.
+
+
+## 1.0.5 (May 26, 2015)
+
+FEATURES:
+* A new `:GoOracleScope` is added to change the oracle scope on-the-fly. It
+  accepts import paths as arguments. If no arguments are passed it prints the
+  current custom oracle scope. `:GoOracleScope` also supports completion of
+  import paths, so it's very fast and handy to use. `:GoOracleScope ""` clears
+  the current custom scope.
+* A new `:GoPath` command that displays the current `GOPATH`. A path can be
+  passed to change the `GOPATH` (i.e `:GoPath ~/foo/src`). `:GoPath ""` clears
+  and resets the `GOPATH` to the initial value.
+* A new "autodetect GOPATH" feature is added. This automatically detects if the
+  project is using `godep` or is under a `src` root directory which is not in
+  `GOPATH` and changes/modifies the `GOPATH` so all commands work based on this
+  GOPATH. What this means is, commands such as `:GoDef`, `:GoBuild`, etc.. will
+  include the Godeps folder. For example any go-to-definition via `:GoDef` will
+  jump to the source code inside Godeps. This is enabled by default, but can
+  disabled with `let g:go_autodetect_gopath = 0`. This new feature is also the
+  foundation for other tools such as `gb` or `wgo`.
+
+IMPROVEMENTS:
+* Improve `:GoFmt` (gofmt and goimports) speed. Now it's 2x faster than the previous implementation.
+* Add Dispatch support for `:GoBuild` and `:GoRun`. For more info about
+  dispatch see https://github.com/tpope/vim-dispatch . By default it's
+  disabled, to enable it add `let g:go_dispatch_enabled = 1` to your vimrc.
+* Add support for the bang `!` attribute for all `go` tool commands. What this
+  does it, if `:GoBuild` is called it will jump to the error. But `:GoBuild!`
+  will not jump to any error. This has the same behavior as the internal
+  `:make` command in vim. We had this feature already for `:GoBuild` and
+  `:GoRun`. But not for `:GoInstall`, `:GoTest`, etc.. Now all commands are
+  unified.
+* Add autojump to error for `:GoInstall`.
+* Add autowrite feature for `:GoInstall`, `:GoTestXXX` functions and `:GoVet`
+* Support `git url.<base>.insteadOf` and custom import paths of binaries. This
+  improves the commands `:GoInstallBinaries` and `:GoUpdateBinaries`.
+* Add support for highlighting go templates with `*.tmpl` extensions. Based on
+  the work from @cespare from https://github.com/cespare/vim-go-templates
+
+BUG FIXES:
+* Fix clearing the status bar when `:GoErrCheck` is called
+* Fix godocNotFound to not match 'os' pkg contents. This improves the command
+  `:GoDoc`
+* Fix parsing and jumping to error locations when used Vim from a different
+  directory than the current buffer's directory
+* Fix completion showing duplicates paths for completion results, such as
+  github.com/fatih/color and github.com/fatih/color/.
+
+## 1.0.4 (Apr 28, 2015)
+
+FEATURES:
+
+* A new `:GoTestFunc` command (with appropriate
+  mappings) is added. Run tests function which surrounds the current cursor
+  location. Useful to test single tests.
+* Highlight all Go operators. Previously not all
+  operators were highlighted. As previously, to highlight options, enable it
+  with by setting `g:go_highlight_operators` to 1 in your vimrc.
+
+IMPROVEMENTS:
+
+* Improved certain `:GoDoc` usages to show a better error message
+* Improved `:GoRename` to have a default value for rename input. Avoids retyping similar words.
+* Synced with latest Oracle version. `callgraph` is removed.
+* Removed our custom referrers mode. New version of oracle now displays the matching lines.
+
+BUG FIXES:
+
+* Fixed the internal `executeInDir` function which was failing when ignorelist was not set properly.
+* Fixed trailing slash for package completion with `:GoImport`
+* Fixed paths in error list for Windows users.
+* Fixed not showing "import cycle not allowed" error message when called `:GoBuild` or `:GoRun`
+* Fixed users using vimproc requiring arguments to functions to be escaped.
+* Fixed depth for test snippets
+* Fixed neosnippet support loading snippet files the second time if necessary.
+
+## 1.0.3 (Mar 7, 2015)
+
+FEATURES:
+* A new `:GoTestCompile` command (with appropriate mappings) is added. Useful to compile a test binary or show/fix compile errors in quickfix window
+
+IMPROVEMENTS:
+* `referrer` mode is improved to show referring lines in the quickfix window
+* A new `errt` snippet is added, which expands to `if err != nil { t.Fatal(err) }`
+* A new `errh` snippet is added, useful to be used in a `http.Handler`
+* UltiSnips snippets are improved to take advance of Vim's `Visual` mode. For example selecting a block and typing `if` will create an if scope around the block. 
+* Cleanup README.md
+
+BUG FIXES:
+* Fix trimming brackets if completion was invoked on a previous completion
+* Fix Oracle scope settings. Added docs about usage.
+* Fixed previously broken `var` and `vars` snippets
+* Fix duplicate docs
+* Fix fallback binary path for Windows users. The fallback mechanism is used to discover the necessary Go tools, such as `godef`, `gocode`, etc...
+
+## 1.0.2 (Feb 17, 2015)
+
+FEATURES:
+
+* New snippets are added, mostly for testing ( [changes](https://github.com/fatih/vim-go/pull/321/files))
+
+IMPROVEMENTS:
+
+* Enable all Oracle commands. Docs, mappings and commands are also added. It uses Quickfix list instead of a custom UI.
+* Clarify installation process in Readme, add instructions for vim-plug, NeoBundle and manual.
+
+BUG FIXES:
+
+* Fix shiftwidth parsing, it was broken in the previous release for old Vim versions
+* Fix experimantal mode
+
+
+## 1.0.1 (Feb 9, 2015)
+
+FEATURES:
+
+* New feature to highlight build constraints (disabled by default)
+
+IMPROVEMENTS:
+
+* Updated godef import path
+* Updated Readme for possible problems with `csh`
+* Documentation for text objects are updated, typo fixes are merged
+* If vimproc is installed, Windows users will use it for autocompletion
+* Improve UltiSnips snippets to pick Visual selection (demo: http://quick.as/0dvigz5)
+* Packages with extensions, like "gopkg.in/yaml.v2" can be now displayed
+* Packages with different import paths, like "github.com/bitly/go-simplejson" can be now displayed
+
+BUG FIXES:
+
+* Fatal errors are now parsed successfully and populated to quickfix list
+* Shiftwidth is changed to use shiftwidth() function. Fixes usage with plugins like vim-sleuth and possible mis usage (like setting shiftwidth to zero)
+* Added a new [Donation](https://github.com/fatih/vim-go#donations) section to Readme, for those who ask for it.
+* Fix parsing of errcheck error syntax
+* Fix consistency between Neosnippet and UltiSnips snippets
+
+
+## 1.0 (Dec 24, 2014)
+
+We don't tag any changes or releases, so let's start with `1.0`. Our Windows
+support is now in a good shape, tons of bugs are fixed, many new features and
+improvements is being added and it's getting better with each day (thanks to
+the community contributions).
