@@ -537,6 +537,56 @@ BACKWARDS INCOMPATIBILITIES:
   i.g: `let g:go_guru_scope = ["github.com/fatih/structs", "golang.org/x/tools/..."]`
 
 
+## 1.5 (Mar 16, 2016)
+
+FEATURES:
+* Introducing code name "motion". A new whole way of moving
+  around and navigating (gh-765). Checkout the following new changes:
+  * A vim-go specific tool, called [motion](https://github.com/fatih/motion) is being developed which
+    provides us the underlying foundation for the following and upcoming
+    new features.
+  * `]]` and `[[` motions can be used to jump between functions
+  * `if` and `af` are improved and implement from scratch. It has now
+    support for literal functions, comments of functions, better cursor
+    position support and more stable.
+  * New `:GoDecls` and `:GoDeclsDir` commands that are available if
+    `ctrlp.vim` is installed. Once called one can easily jump to any generic declaration available.
+  * I wrote two blog posts about these new features in more detail. I recommend you to read it: [Treating Go types as objects in Vim](https://medium.com/@farslan/treating-go-types-as-objects-in-vim-ed6b3fad9287#.mbwaisevp) and [Navigation between functions and types in vim-go](https://medium.com/@farslan/navigation-between-functions-and-types-in-vim-go-f9dd7de8ca37#.2sdf8tbbe)
+* A new `:GoAlternate` command that toggles to the test
+  file of the current file. It also has new appropriate mappings to open the
+  alternate file in split or tabs. (gh-704)
+* Now commands can choose whether they want to open a
+  `quickfix` or a `location list` via the setting `g:go_list_type`. Also all
+  the commands have now some sensible settings, some will open a qf window,
+  some will open a location list (gh-700)
+
+IMPROVEMENTS:
+
+* Add support for goimport's new `-srcdir`. Goimports now succesfully suports `vendor/` folders with this release. (gh-735)
+* Add `g:go_gorename_prefill` setting which disabled pre filling the argument for `:GoRename` (gh-711)
+* Improve `:GoRun` to complete to filenames (gh-742)
+* Highlight `//go:generate` comment directives (gh-757)
+* Indent code in Go HTML templates (gh-709)
+* Improve negative numbers of all types, octals, imaginary numbers with exponents (gh-752)
+* Improved internal usage of retrieving offsets (gh-762)
+* Improve by substitute all backslashes to slashes for filename (gh-703)
+* Improve internal Go package path function (gh-702)
+* Improved typo and grammar errors in docs (gh-714)
+* Improved internal `:GoInfo` automatic call (gh-759)
+
+BUG FIXES:
+
+* Fix oracle scope not working if trailing slash exists in scope (gh-751) 
+* Fix `:GoErrCheck` checking abspath (gh-671)
+* Fix `:GoInstall` correctly parsing errors (gh-692)
+* Fix `:GoInstall` correctly parsing errors (gh-692)
+* Fix `:GoTestFunc` for neovim (gh-695)
+* Fix `:GoRun` accepting arguments for neovim (gh-730)
+* Fix `go run` mappings not working (gh-542)
+* Fix autodetect gopath picking up non existing GB vendor folder
+* Fix gofmt errors showing per buffer instead of per script (gh-721)
+* Fix some of the neosnippet snippets
+
 ## Previous releases
 
 Previous changelogs can be found here: https://github.com/fatih/vim-go/releases
