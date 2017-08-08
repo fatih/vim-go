@@ -155,9 +155,11 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
       endif
 
       if a:mode == "tab"
-        let &switchbuf = "usetab"
+        let &switchbuf = "useopen,usetab,newtab"
         if bufloaded(filename) == 0
           tab split
+        else
+           let cmd = 'sbuf'
         endif
       elseif a:mode == "split"
         split
