@@ -591,22 +591,58 @@ BUG FIXES:
 
 FEATURES:
 
-* You waited for it for a long time. And here you have it: **Neovim support!** This is a huge feature. It's fully compatible with Vim and kicks only in if vim-go is being used within Neovim. Checkout the full list of changes (gh-607):
-  * An async launcher and base foundation was implemented for the `go` command. This will be used in the future for all upcoming subcommands of the `go` tool.
+* You waited for it for a long time. And here you have it: **Neovim support!**
+  This is a huge feature. It's fully compatible with Vim and kicks only in if
+  vim-go is being used within Neovim. Checkout the full list of changes
+  (gh-607):
+  * An async launcher and base foundation was implemented for the `go` command.
+	This will be used in the future for all upcoming subcommands of the `go`
+	tool.
   * `:GoBuild` is now called asynchronously (it doesn't block the UI anymore). 
-  * A new `go#jobcontrol#Statusline()` can be used to plug into the statusline. This will show the status of the job running asynchronously. The statusline is improved to show the status per package instead of file. Assume you have three files open, all belonging to the same package, if the package build (`:GoBuild`) is successful, all statusline's will be empty (means SUCCESS), if it fails all files statusline's will show `FAILED`. 
-  * `:GoRun` opens a new vertical terminal emulator inside Neovim and runs the command there. The terminal mode can be changed with `g:go_term_mode`, which is by default `vsplit`. Current options are `vsplit, split or tab`. We also have three new mappings to open `:GoRun` command in different terminal split modes: `<Plug>(go-run-vertical)`,  `<Plug>(go-run-split)` and  `<Plug>(go-run-tab)`
-  * `:GoTest`, `:GoTestFunc` and `:GoTestCompile` opens and runs in a new terminal. The view mode (split,vertical, tab) is defined with `g:go_term_mode`.  The `g:go_term_enabled` setting can be use to change the behavior of `:GoTestXXX` commands .If set to `1`, it opens the test commands inside a terminal, if not it runs them in background just like  `:GoBuild` and displays the result in the statusline.
-  * We have two settings for terminal sizes: `g:go_term_height` and `g:go_term_width`. By default a vertical or horizontal view is equally splitted by vim automatically. However with these settings we can for example have a terminal with a smaller height when we split it horizontally.
-  * If a command inside the term fails (such as `go run`, `go test` ...) we parse now the errors and list them inside a location list.
-* Instead of quickfix window, vim-go now uses the `location list` feature of Vim. These are associated with each window independently of each other. This enables us to have multiple, independent location lists per window (example usages: `:GoBuild` with errors that needs to be fixed, `:GoLint` with warnings that we want to check, `:GoReferrers` with a list of referred identifiers) (gh-626)
+  * A new `go#jobcontrol#Statusline()` can be used to plug into the statusline.
+	This will show the status of the job running asynchronously. The statusline
+	is improved to show the status per package instead of file. Assume you have
+	three files open, all belonging to the same package, if the package build
+	(`:GoBuild`) is successful, all statusline's will be empty (means SUCCESS),
+	if it fails all files statusline's will show `FAILED`. 
+  * `:GoRun` opens a new vertical terminal emulator inside Neovim and runs the
+	command there. The terminal mode can be changed with `g:go_term_mode`,
+	which is by default `vsplit`. Current options are `vsplit, split or tab`.
+	We also have three new mappings to open `:GoRun` command in different
+	terminal split modes: `<Plug>(go-run-vertical)`,  `<Plug>(go-run-split)`
+	and  `<Plug>(go-run-tab)`
+  * `:GoTest`, `:GoTestFunc` and `:GoTestCompile` opens and runs in a new
+	terminal. The view mode (split,vertical, tab) is defined with
+	`g:go_term_mode`.  The `g:go_term_enabled` setting can be use to change the
+	behavior of `:GoTestXXX` commands .If set to `1`, it opens the test
+	commands inside a terminal, if not it runs them in background just like
+	`:GoBuild` and displays the result in the statusline.
+  * We have two settings for terminal sizes: `g:go_term_height` and
+	`g:go_term_width`. By default a vertical or horizontal view is equally
+	splitted by vim automatically. However with these settings we can for
+	example have a terminal with a smaller height when we split it
+	horizontally.
+  * If a command inside the term fails (such as `go run`, `go test` ...) we
+	parse now the errors and list them inside a location list.
+* Instead of quickfix window, vim-go now uses the `location list` feature of
+  Vim. These are associated with each window independently of each other. This
+  enables us to have multiple, independent location lists per window (example
+  usages: `:GoBuild` with errors that needs to be fixed, `:GoLint` with
+  warnings that we want to check, `:GoReferrers` with a list of referred
+  identifiers) (gh-626)
 * a new **`:AsmFmt`** command which is integrated to work with [asmfmt](https://github.com/klauspost/asmfmt) (gh-673)
-* the full identifier information of a completed identifier is echoed in statusline. This is very useful to see a function signatures arguments. (gh-685)
+* the full identifier information of a completed identifier is echoed in
+  statusline. This is very useful to see a function signatures arguments.
+  (gh-685)
 
 IMPROVEMENTS:
 
 * Improve `:GoFmt` by checking if the binary is indeed installed on the system (gh-617)
-* Improve `:GoMetaLinter` by adding the option to run the metalinter on save and adding the option to limit the output to the currently active buffer. Set `let g:go_metalinter_autosave = 1` to enable autosave and use `let g:go_metalinter_autosave_enabled = ['vet', 'golint']` to change your options. (gh-631)
+* Improve `:GoMetaLinter` by adding the option to run the metalinter on save
+  and adding the option to limit the output to the currently active buffer. Set
+  `let g:go_metalinter_autosave = 1` to enable autosave and use `let
+  g:go_metalinter_autosave_enabled = ['vet', 'golint']` to change your options.
+  (gh-631)
 * Improved `:GoDef`. If `vimproc` is installed `godef` will make use of it (gh-670)
 * Improve completion of godoce when vimproc is used (gh-620)
 * Improve internal error matching prodecure to not match false positives (gh-618)
@@ -619,6 +655,52 @@ BUG FIXES
 * Fix `:GoTest` to output the original error if parsing fails (gh-676)
 * Fixed `fmt.Fprintln` not to highlight as builtin (gh-628)
 * Fixed wrong highlighting of channels of channels (gh-678)
+
+## 1.3 (Nov 22, 2015)
+
+FEATURES:
+
+* A new `:GoOracleTags` command was added to pass build tags to Oracle's `-tags` flag. (gh-573)
+
+IMPROVEMENTS:
+
+* Change `:GoTest` command to timeout after 10 seconds. Vim UI is blocking and
+  tests with large running times makes Vim blocking for a long time. This is
+  also customizable with the new option `g:go_test_timeout`. (gh-578)
+* Improve `:GoRename` to collect and populate quickfix window with errors.
+  (gh-577)
+* Improve `:GoRun` by dropping bad filenames from quickfix window. This allows
+  us to have only valid entries which can be jumped to (gh-547)
+* Improve `:GoMetaLinter` quickfix output by using absolute paths. This enables
+  us to jump to errors for all cases. (gh-565)
+* Improve `:GoMetaLinter` command by adding a new option
+  `g:go_metalinter_deadline` which cancels the linters after 5 seconds
+  (previous default).  (gh-576)
+* Improve `:GoMetaLinter` by jumping to the first encountered error from the quickfix window.
+* Automatically resize quickfix window based on the number of errors (gh-602)
+* Improve build constraints to show invalid cases (such as `// +buildfoo`, not
+  having an empty line between the package statement, etc..). Also add missing
+  `GOARCH` values sucha s `arm64`. There are many other useful improvements,
+  for more detail please have a look at
+  ([gh-589](https://github.com/fatih/vim-go/pull/589))
+* Add support for all values of `GOARCH` (gh-601)
+* Add note about Syntastic usage as this problem comes up a lot (gh-580)
+* Add note about `:GoUpdateBinaries` (gh-606)
+
+BUG FIXES:
+
+* Fixed `:GoErrCheck` showing the correct output when executed inside the source folder (gh-564)
+* Fixed `:GoBuild` by not using `/dev/null` anymore for build output (not
+  supported by `go`). We pass a temporary file now. (gh-567)
+* Fixed `:GoFmt` passing `g:go_fmt_options` options to `goimports`. This option
+  is only valid with `gofmt`. (gh-590)
+* Fix vim-go for `cygwin` users. (gh-575)
+* Fixed identifier in template files to be highlighted correctly (gh-559)
+* Fixed character region in template files to be highlighted correctly (gh-603)
+* Fixed variables in template files to be highlighted correctly (gh-611)
+* Do not treat builtins as keywords. Now `make` will not highlighted but
+  `make()` will be highlighted (gh-605)
+
 
 ## Previous releases
 
