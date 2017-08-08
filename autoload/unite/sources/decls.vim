@@ -30,8 +30,13 @@ function! s:source.gather_candidates(args, context) abort
 
   let l:include = get(g:, 'go_decls_includes', 'func,type')
   let l:command = printf('%s -format vim -mode decls -include %s -%s %s', l:bin_path, l:include, l:mode, l:path)
-  let l:result = eval(unite#util#system(l:command))
-  let l:candidates = get(l:result, 'decls', [])
+  let l:candidates = []
+  try
+    let l:result = eval(unite#util#system(l:command))
+    let l:candidates = get(l:result, 'decls', [])
+  catch
+    call unite#print_source_error(['command returned invalid response.', v:exception], s:source.name)
+  endtry
 
   return map(l:candidates, "{
         \ 'word': printf('%s :%d :%s', fnamemodify(v:val.filename, ':~:.'), v:val.line, v:val.full),
