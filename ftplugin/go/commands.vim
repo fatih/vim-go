@@ -104,4 +104,10 @@ command! -nargs=0 GoTemplateAutoCreateToggle call go#template#ToggleAutoCreate()
 " -- keyify
 command! -nargs=0 GoKeyify call go#keyify#Keyify()
 
+" --dep
+:command! -nargs=0 GoDepInit call go#dep#Init()
+:command! -nargs=* GoDepEnsure call go#dep#Ensure(<f-args>)
+:command! -nargs=0 GoDepEnsureUpdate call go#dep#Ensure("--update","")
+:command! -nargs=1 GoDepEnsureAdd call go#dep#Ensure("--add",<f-args>)
+
 " vim: sw=2 ts=2 et

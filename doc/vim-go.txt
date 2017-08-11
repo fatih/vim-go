@@ -766,6 +766,25 @@ CTRL-t
         Surname: "Smith",
       }
 <
+                                                                *:GoDepInit*
+:GoDepInit
+    Initilize the vendor repository using golang/dep.
+
+                                                              *:GoDepEnsure*
+:GoDepEnsure
+
+    Install the required packages of the repository using golang/dep.
+
+                                                            *:GoDepEnsureAdd*
+:GoDepEnsureAdd [package]
+
+    Install the required packages using golang/dep and autoimport it.
+
+                                                          *:GoDepEnsureUpdate*
+:GoDepEnsureUpdate
+
+    Update the vendor packages using GoDep.
+
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
