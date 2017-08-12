@@ -75,9 +75,15 @@ function! go#fmt#Format(withGoimport) abort
 
   if go#util#ShellError() == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
-  elseif g:go_fmt_fail_silently == 0
-    let errors = s:parse_errors(expand('%'), out)
-    call s:show_errors(errors)
+  endif
+
+  if g:go_fmt_fail_silently == 0
+    if go#util#ShellError() == 0
+      call go#fmt#cleanup_list()
+    else
+      let errors = s:parse_errors(expand('%'), out)
+      call s:show_errors(errors)
+    endif
   endif
 
   " We didn't use the temp file, so clean up
@@ -126,8 +132,10 @@ function! go#fmt#update_file(source, target)
 
   let &fileformat = old_fileformat
   let &syntax = &syntax
+endfunction
 
-  " clean up previous location list
+" crean up list
+function! go#fmt#cleanup_list()
   let l:listtype = go#list#Type("quickfix")
   call go#list#Clean(l:listtype)
   call go#list#Window(l:listtype)
