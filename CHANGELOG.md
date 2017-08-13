@@ -10,6 +10,7 @@ BUG FIXES:
 
 * Include comments in import block when folding is enabled [gh-1387]
 * Fix opening definitions in tabs [gh-1400]
+* Fix accidently closing quickfix window from other commands if :GoFmt or autosave format was called [gh-1407]
 
 ## 1.14 - (August 6, 2017)
 
