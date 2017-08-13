@@ -481,7 +481,8 @@ function! s:stack_cb(ch, json) abort
   let s:stack_name = ''
   let res = json_decode(a:json)
   if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
-    throw res.error
+    echohl Error | res.error | echohl None
+    return
   endif
   if empty(res) || !has_key(res, 'result')
     return
