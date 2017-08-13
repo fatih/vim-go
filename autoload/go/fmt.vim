@@ -128,9 +128,12 @@ function! go#fmt#update_file(source, target)
   let &syntax = &syntax
 
   " clean up previous location list
-  let l:listtype = go#list#Type("quickfix")
-  call go#list#Clean(l:listtype)
-  call go#list#Window(l:listtype)
+  let l:list_title = getqflist({'title': 1})
+  if has_key(l:list_title, "title") && l:list_title['title'] == "Format"
+    let l:listtype = go#list#Type("quickfix")
+    call go#list#Clean(l:listtype)
+    call go#list#Window(l:listtype)
+  endif
 endfunction
 
 " run runs the gofmt/goimport command for the given source file and returns
