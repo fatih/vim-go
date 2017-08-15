@@ -127,6 +127,13 @@ function! go#fmt#update_file(source, target)
   let &fileformat = old_fileformat
   let &syntax = &syntax
 
+
+  " the title information was introduced with 7.4-2200
+  " https://github.com/vim/vim/commit/d823fa910cca43fec3c31c030ee908a14c272640
+  if !has('patch-7.4-2200')
+    return
+  endif
+
   " clean up previous location list
   let l:list_title = getqflist({'title': 1})
   if has_key(l:list_title, "title") && l:list_title['title'] == "Format"
