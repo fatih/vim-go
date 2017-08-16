@@ -77,6 +77,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   call jobresize(id, width, height)
 
   let s:jobs[id] = job
+  stopinsert
   return id
 endfunction
 
