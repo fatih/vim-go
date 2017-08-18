@@ -87,7 +87,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
   let meta_command = join(cmd, " ")
 
-  let out = go#tool#ExecuteInDir(meta_command)
+  let out = go#util#System(meta_command)
 
   let l:listtype = "quickfix"
   if go#util#ShellError() == 0
