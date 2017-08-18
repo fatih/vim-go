@@ -31,6 +31,7 @@ function! go#cmd#Build(bang, ...) abort
     call s:cmd_job({
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
+          \ 'for': 'GoBuild',
           \})
     return
   elseif has('nvim')
@@ -39,7 +40,7 @@ function! go#cmd#Build(bang, ...) abort
     endif
 
     " if we have nvim, call it asynchronously and return early ;)
-    call go#jobcontrol#Spawn(a:bang, "build", args)
+    call go#jobcontrol#Spawn(a:bang, "build", "GoBuild", args)
     return
   endif
 
@@ -48,7 +49,7 @@ function! go#cmd#Build(bang, ...) abort
   let default_makeprg = &makeprg
   let &makeprg = "go " . join(args, ' ')
 
-  let l:listtype = go#list#Type("quickfix")
+  let l:listtype = go#list#Type("GoBuild", "quickfix")
   " execute make inside the source folder so we can parse the errors
   " correctly
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -149,7 +150,7 @@ function! go#cmd#Run(bang, ...) abort
     let &makeprg = "go run " . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
   endif
 
-  let l:listtype = go#list#Type("quickfix")
+  let l:listtype = go#list#Type("GoRun", "quickfix")
 
   if l:listtype == "locationlist"
     exe 'lmake!'
@@ -186,6 +187,7 @@ function! go#cmd#Install(bang, ...) abort
     call s:cmd_job({
           \ 'cmd': ['go', 'install'] + goargs,
           \ 'bang': a:bang,
+          \ 'for': 'GoInstall',
           \})
     return
   endif
@@ -198,7 +200,7 @@ function! go#cmd#Install(bang, ...) abort
   let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
   let &makeprg = "go install " . goargs
 
-  let l:listtype = go#list#Type("quickfix")
+  let l:listtype = go#list#Type("GoInstall", "quickfix")
   " execute make inside the source folder so we can parse the errors
   " correctly
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -243,7 +245,7 @@ function! go#cmd#Generate(bang, ...) abort
     let &makeprg = "go generate " . goargs . ' ' . gofiles
   endif
 
-  let l:listtype = go#list#Type("quickfix")
+  let l:listtype = go#list#Type("GoGenerate", "quickfix")
 
   echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None
   if l:listtype == "locationlist"
