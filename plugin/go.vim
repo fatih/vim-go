@@ -212,4 +212,7 @@ augroup vim-go
   autocmd BufWinEnter *.go call go#guru#ClearSameIds()
 augroup END
 
+" set environment variable to allow ginkgo to be ran inside an editor
+let $GINKGO_EDITOR_INTEGRATION = "true"
+
 " vim: sw=2 ts=2 et
