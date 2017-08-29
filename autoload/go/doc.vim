@@ -60,12 +60,17 @@ endfunction
 function! go#doc#Open(newmode, mode, ...) abort
   " With argument: run "godoc [arg]".
   if len(a:000)
-    let bin_path = go#path#CheckBinPath('godoc')
+    let bin_path = go#path#CheckBinPath(g:go_doc_command)
     if empty(bin_path)
       return
     endif
 
-    let command = printf("%s %s", go#util#Shellescape(bin_path), join(a:000, ' '))
+    let bin_path = go#util#Shellescape(bin_path) 
+    if !empty(g:go_doc_options)
+      let bin_path .= " " . g:go_doc_options
+    endif
+
+    let command = printf("%s %s", bin_path, join(a:000, ' '))
     let out = go#util#System(command)
   " Without argument: run gogetdoc on cursor position.
   else
