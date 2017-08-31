@@ -382,6 +382,9 @@ hi def link     goTypeName          Type
 hi def link     goTypeDecl          Keyword
 hi def link     goDeclType          Keyword
 
+" Variable Declarations
+syn match goVarDef /\w\+\(,\s*\w+\)*\s*\ze:=/
+
 " Build Constraints
 if g:go_highlight_build_constraints != 0
   syn match   goBuildKeyword      display contained "+build"
