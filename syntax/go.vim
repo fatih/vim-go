@@ -247,6 +247,7 @@ else
 endif
 
 if s:fold_comment
+	" changed this to comments instead of declaration_comment
   syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell fold
   syn match     goComment           "\v(^\s*//.*\n)+" contains=goGenerate,@goCommentGroup,@Spell fold
 endif
