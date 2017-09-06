@@ -9,6 +9,8 @@ IMPROVEMENTS:
   malformed struct tags (run `:GoUpdateBinaries` to update `gomodifiytags`
   binary) [gh-1401]
 * Add package-level comment folding [gh-1377]
+* Allow using :GoImpl on the type and struct parts too. Makes it a wee bit
+  easier to use [gh-1386]
 
 BUG FIXES:
 
@@ -16,6 +18,18 @@ BUG FIXES:
 * Fix opening definitions in tabs [gh-1400]
 * Fix accidently closing quickfix window from other commands if :GoFmt or autosave format was called [gh-1407]
 * Fix entering into insert mode after for term mode in nvim [gh-1411]
+* When using :GoImpl on type foo struct{} it would work, but with:
+
+```
+type foo struct{
+}
+```
+
+  or with a struct with fields, it would create the generated methods inside the
+  struct [gh-1386]
+* `:GoImpl` output would include extra newline, and error would include
+  trailing newline from shell command: `vim-go: invalid receiver: "} *}"<00>`.
+  Fixed with [gh-1386]
 
 
 ## 1.14 - (August 6, 2017)
