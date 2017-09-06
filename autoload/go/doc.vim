@@ -60,7 +60,7 @@ function! go#doc#Open(newmode, mode, ...) abort
       return
     endif
 
-    let command = printf("%s %s", join(g:go_doc_command, ' '), join(a:000, ' '))
+    let command = printf("%s %s", go#util#Shelljoin(g:go_doc_command), join(a:000, ' '))
     let out = go#util#System(command)
   " Without argument: run gogetdoc on cursor position.
   else
