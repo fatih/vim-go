@@ -92,6 +92,7 @@ endif
 let s:fold_block = 1
 let s:fold_import = 1
 let s:fold_varconst = 1
+let s:fold_func = 1
 if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'block') == -1
     let s:fold_block = 0
@@ -101,6 +102,9 @@ if exists("g:go_fold_enable")
   endif
   if index(g:go_fold_enable, 'varconst') == -1
     let s:fold_varconst = 0
+  endif
+  if index(g:go_fold_enable, 'func') == -1
+    let s:fold_func = 0
   endif
 endif
 
@@ -234,6 +238,11 @@ else
                         \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
   syn region    goConst             start='const (' end='^\s*)$' transparent
                         \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
+endif
+
+if s:fold_func
+  syn region    goFoldFunc start="\v(\v(^\s*//.*\n)+func.*)" end="\s" transparent fold 
+                        \ contains=goComment,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
 endif
 
 " Single-line var, const, and import.
