@@ -16,7 +16,7 @@ BUG FIXES:
 
 * Include comments in import block when folding is enabled [gh-1387]
 * Fix opening definitions in tabs [gh-1400]
-* Fix accidently closing quickfix window from other commands if :GoFmt or autosave format was called [gh-1407]
+* Fix accidentally closing quickfix window from other commands if :GoFmt or autosave format was called [gh-1407]
 * Fix entering into insert mode after for term mode in nvim [gh-1411]
 * When using :GoImpl on type foo struct{} it would work, but with:
 
@@ -31,6 +31,13 @@ type foo struct{
   trailing newline from shell command: `vim-go: invalid receiver: "} *}"<00>`.
   Fixed with [gh-1386]
 
+* Run `:GoMetaLinter` against the package of the open file [gh-1414].
+
+BACKWARDS INCOMPATIBILITIES:
+
+* `:GoMetaLinter` now runs against the package of the open file instead of the
+  current working directory. This is so all commands behave the same relative
+  to the current open buffer. [gh-1414]
 
 ## 1.14 - (August 6, 2017)
 
