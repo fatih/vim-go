@@ -1745,6 +1745,13 @@ not appear.  To resolve this:
  let g:go_list_type = "quickfix"
 <
 
+How do I run focused ginkgo tests?~
+
+You must set this environment variable in your `.vimrc`:
+>
+  let $GINKGO_EDITOR_INTEGRATION = "true"
+<
+
 Using with NeoVim~
 
 Note: Neovim currently is not a first class citizen for vim-go. You are free
