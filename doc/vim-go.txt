@@ -1190,8 +1190,8 @@ mappings of |:GoDef|. By default it's disabled. >
 <
                                                           *'g:go_doc_command'*
 
-Use this option to define which tool is used to godoc. By default `godoc` is
-used >
+Use this option to define which tool is used to godoc. By default `godoc` is used.
+|g:go_doc_command| only used when |:GoDoc| invoked with a package name argument. >
 
   let g:go_doc_command = ["godoc"]
 
