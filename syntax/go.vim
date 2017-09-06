@@ -92,6 +92,7 @@ endif
 let s:fold_block = 1
 let s:fold_import = 1
 let s:fold_varconst = 1
+let s:fold_package_comment = 1
 if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'block') == -1
     let s:fold_block = 0
@@ -101,6 +102,9 @@ if exists("g:go_fold_enable")
   endif
   if index(g:go_fold_enable, 'varconst') == -1
     let s:fold_varconst = 0
+  endif
+  if index(g:go_fold_enable, 'package_comment') == -1
+    let s:fold_package_comment = 0
   endif
 endif
 
@@ -403,15 +407,22 @@ if g:go_highlight_build_constraints != 0
   hi def link goBuildCommentStart Comment
   hi def link goBuildDirectives   Type
   hi def link goBuildKeyword      PreProc
+endif
 
+if g:go_highlight_build_constraints != 0 || s:fold_package_comment
   " One or more line comments that are followed immediately by a "package"
   " declaration are treated like package documentation, so these must be
   " matched as comments to avoid looking like working build constraints.
   " The he, me, and re options let the "package" itself be highlighted by
   " the usual rules.
-  syn region  goPackageComment    start=/\v(\/\/.*\n)+\s*package/
-        \ end=/\v\n\s*package/he=e-7,me=e-7,re=e-7
-        \ contains=@goCommentGroup,@Spell
+  exe 'syn region  goPackageComment    start=/\v(\/\/.*\n)+\s*package/'
+        \ . ' end=/\v\n\s*package/he=e-7,me=e-7,re=e-7'
+        \ . ' contains=@goCommentGroup,@Spell'
+        \ . (s:fold_package_comment ? ' fold' : '')
+  exe 'syn region  goPackageComment    start=/\v\/\*.*\n(.*\n)*\s*\*\/\npackage/'
+        \ . ' end=/\v\n\s*package/he=e-7,me=e-7,re=e-7'
+        \ . ' contains=@goCommentGroup,@Spell'
+        \ . (s:fold_package_comment ? ' fold' : '')
   hi def link goPackageComment    Comment
 endif
 

@@ -1618,13 +1618,14 @@ Control syntax-based folding which takes effect when 'foldmethod' is set to
 `syntax`.
 You can enable specific fold regions by setting an array. Possible values are:
 
-- "block"       `{` .. `}` blocks.
-- "import"      `import` block.
-- "varconst"    `var` and `const` blocks.
+- "block"            `{` .. `}` blocks.
+- "import"           `import` block.
+- "varconst"         `var` and `const` blocks.
+- "package_comment"  The package comment.
 
 By default they're all enabled:
 >
-  let g:go_fold_enable = ['block', 'import', 'varconst']
+  let g:go_fold_enable = ['block', 'import', 'varconst', 'package_comment']
 <
 Enable folding of only imports:
 >
