@@ -60,7 +60,7 @@ function! go#lint#Gometa(autosave, ...) abort
   " For async mode (s:lint_job), we want to override the default deadline only
   " if we have a deadline configured.
   "
-  " For sync mode (go#tool#ExecuteInDir), always explicitly pass the 5 seconds
+  " For sync mode (go#util#System), always explicitly pass the 5 seconds
   " deadline if there is no other deadline configured. If a deadline is
   " configured, then use it.
 
@@ -87,7 +87,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
   let meta_command = join(cmd, " ")
 
-  let out = go#tool#ExecuteInDir(meta_command)
+  let out = go#util#System(meta_command)
 
   let l:listtype = "quickfix"
   if go#util#ShellError() == 0
