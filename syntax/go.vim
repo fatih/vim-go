@@ -92,7 +92,8 @@ endif
 let s:fold_block = 1
 let s:fold_import = 1
 let s:fold_varconst = 1
-let s:fold_doc = 1
+let s:fold_package_comment = 1
+let s:fold_comment = 1
 
 if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'block') == -1
@@ -104,8 +105,11 @@ if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'varconst') == -1
     let s:fold_varconst = 0
   endif
-  if index(g:go_fold_enable, 'doc') == -1
-    let s:fold_doc = 0
+  if index(g:go_fold_enable, 'comment') == -1
+    let s:fold_comment = 0
+  endif
+  if index(g:go_fold_enable, 'package_comment') == -1
+    let s:fold_package_comment = 0
   endif
 endif
 
@@ -160,6 +164,7 @@ hi def link     goPredefinedIdentifiers    goBoolean
 " Comments; their contents
 syn keyword     goTodo              contained TODO FIXME XXX BUG
 syn cluster     goCommentGroup      contains=goTodo
+
 syn region      goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell
 syn region      goComment           start="//" end="$" contains=goGenerate,@goCommentGroup,@Spell
 
@@ -241,12 +246,11 @@ else
                         \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
 endif
 
-" fold blocks including doc comment
-if s:fold_doc
-  syn region    goDocComment start="\v(\v(^\s*//[^/]*\n)+\w.*)" end="\s" fold 
-                       \ contains=ALLBUT,goDocComment
-
+if s:fold_comment
+  syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell fold
+  syn match     goComment           "\v(^\s*//.*\n)+" contains=goGenerate,@goCommentGroup,@Spell fold
 endif
+
 
 " Single-line var, const, and import.
 syn match       goSingleDecl        /\(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
@@ -415,15 +419,22 @@ if g:go_highlight_build_constraints != 0
   hi def link goBuildCommentStart Comment
   hi def link goBuildDirectives   Type
   hi def link goBuildKeyword      PreProc
+endif
 
+if g:go_highlight_build_constraints != 0 || s:fold_package_comment
   " One or more line comments that are followed immediately by a "package"
   " declaration are treated like package documentation, so these must be
   " matched as comments to avoid looking like working build constraints.
   " The he, me, and re options let the "package" itself be highlighted by
   " the usual rules.
-  syn region  goPackageComment    start=/\v(\/\/.*\n)+\s*package/
-        \ end=/\v\n\s*package/he=e-7,me=e-7,re=e-7
-        \ contains=@goCommentGroup,@Spell
+  exe 'syn region  goPackageComment    start=/\v(\/\/.*\n)+\s*package/'
+        \ . ' end=/\v\n\s*package/he=e-7,me=e-7,re=e-7'
+        \ . ' contains=@goCommentGroup,@Spell'
+        \ . (s:fold_package_comment ? ' fold' : '')
+  exe 'syn region  goPackageComment    start=/\v\/\*.*\n(.*\n)*\s*\*\/\npackage/'
+        \ . ' end=/\v\n\s*package/he=e-7,me=e-7,re=e-7'
+        \ . ' contains=@goCommentGroup,@Spell'
+        \ . (s:fold_package_comment ? ' fold' : '')
   hi def link goPackageComment    Comment
 endif
 
@@ -453,4 +464,5 @@ syn sync minlines=500
 
 let b:current_syntax = "go"
 
-" vim: sw=2 ts=2 et
+
+

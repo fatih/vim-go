@@ -676,7 +676,7 @@ CTRL-t
     receiver and the interface needs to be specified. Example usages:
 >
       :GoImpl f *Foo io.Writer
-      :GoImpl T io.ReadWriteCloser
+      :GoImpl t Type io.ReadWriteCloser
 <
                                                                   *:GoAddTags*
 :[range]GoAddTags [key],[option] [key1],[option] ...
@@ -1618,13 +1618,14 @@ Control syntax-based folding which takes effect when 'foldmethod' is set to
 `syntax`.
 You can enable specific fold regions by setting an array. Possible values are:
 
-- "block"       `{` .. `}` blocks.
-- "import"      `import` block.
-- "varconst"    `var` and `const` blocks.
+- "block"            `{` .. `}` blocks.
+- "import"           `import` block.
+- "varconst"         `var` and `const` blocks.
+- "package_comment"  The package comment.
 
 By default they're all enabled:
 >
-  let g:go_fold_enable = ['block', 'import', 'varconst']
+  let g:go_fold_enable = ['block', 'import', 'varconst', 'package_comment']
 <
 Enable folding of only imports:
 >
@@ -1743,6 +1744,13 @@ that contains the output of commands such as `:GoBuild` and `:GoTest` might
 not appear.  To resolve this:
 >
  let g:go_list_type = "quickfix"
+<
+
+How do I run focused ginkgo tests?~
+
+You must set this environment variable in your `.vimrc`:
+>
+  let $GINKGO_EDITOR_INTEGRATION = "true"
 <
 
 Using with NeoVim~
