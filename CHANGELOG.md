@@ -2,9 +2,8 @@
 
 IMPROVEMENTS:
 
-* `:GoAddTags` and `:GoRemoveTags` now continue to process if there are malformed individual struct tags [gh-1401]
-* `:GoAddTags` and `:GoRemoveTags` now shows a quickfix window if there are malformed struct tags [gh-1401]
-
+* `:GoAddTags` and `:GoRemoveTags` now continue to process if there are malformed individual struct tags (run `:GoUpdateBinaries` to update `gomodifiytags` binary) [gh-1401]
+* `:GoAddTags` and `:GoRemoveTags` now shows a quickfix window if there are malformed struct tags (run `:GoUpdateBinaries` to update `gomodifiytags` binary) [gh-1401]
 
 BUG FIXES:
 
