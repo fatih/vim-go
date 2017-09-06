@@ -2,21 +2,36 @@
 
 IMPROVEMENTS:
 
-* `:GoAddTags` and `:GoRemoveTags` now continue to process if there are malformed individual struct tags (run `:GoUpdateBinaries` to update `gomodifiytags` binary) [gh-1401]
-* `:GoAddTags` and `:GoRemoveTags` now shows a quickfix window if there are malformed struct tags (run `:GoUpdateBinaries` to update `gomodifiytags` binary) [gh-1401]
+* `:GoAddTags` and `:GoRemoveTags` now continue to process if there are
+  malformed individual struct tags (run `:GoUpdateBinaries` to update
+  `gomodifiytags` binary) [gh-1401]
+* `:GoAddTags` and `:GoRemoveTags` now shows a quickfix window if there are
+  malformed struct tags (run `:GoUpdateBinaries` to update `gomodifiytags`
+  binary) [gh-1401]
+* Add package-level comment folding [gh-1377]
 
 BUG FIXES:
 
 * Include comments in import block when folding is enabled [gh-1387]
 * Fix opening definitions in tabs [gh-1400]
 * Fix accidently closing quickfix window from other commands if :GoFmt or autosave format was called [gh-1407]
+* Fix entering into insert mode after for term mode in nvim [gh-1411]
+
 
 ## 1.14 - (August 6, 2017)
 
 FEATURES:
 
-* We now have folding support based on Go syntax. To enable it you have to set the following Vim setting: `set foldmethod=syntax`. Currently it folds blocks (`{ }`), `import`, `var`, and `const` blocks, and package-level comments. These can be individually disabled/enabled if desired. For more info please read the documentation for the `g:go_fold_enable` setting. [gh-1339] [gh-1377]
-* `:GoFiles` accepts now an argument to change the type of files it can show. By default it shows`.go source files` but now it can be changed to show various kind of files. The full list can be seen via `go list --help` under the `// Source Files` section [gh-1372] i.e:
+* We now have folding support based on Go syntax. To enable it you have to set
+  the following Vim setting: `set foldmethod=syntax`. Currently it folds blocks
+  (`{ }`), `import`, `var`, and `const` blocks, and package-level comments.
+  These can be individually disabled/enabled if desired. For more info please
+  read the documentation for the `g:go_fold_enable` setting. [gh-1339]
+  [gh-1377]
+* `:GoFiles` accepts now an argument to change the type of files it can show.
+  By default it shows`.go source files` but now it can be changed to show
+  various kind of files. The full list can be seen via `go list --help` under
+  the `// Source Files` section [gh-1372] i.e:
 
 ```
 :GoFiles CgoFiles        // shows .go sources files that import "C"
