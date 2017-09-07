@@ -556,3 +556,5 @@ hi GoDebugBreakpoint term=standout ctermbg=8 guibg=#BAD4F5
 hi GoDebugCurrent term=reverse ctermbg=12 guibg=DarkBlue
 sign define godebugbreakpoint text=> texthl=GoDebugBreakpoint
 sign define godebugcurline text== linehl=GoDebugCurrent texthl=GoDebugCurrent
+
+" vim: sw=2 ts=2 et
