@@ -548,9 +548,17 @@ function! go#debug#ToggleBreakpoint() abort
   endtry
 endfunction
 
-hi GoDebugBreakpoint term=standout ctermbg=8 guibg=#BAD4F5
-hi GoDebugCurrent term=reverse ctermbg=12 guibg=DarkBlue
 sign define godebugbreakpoint text=> texthl=GoDebugBreakpoint
 sign define godebugcurline text== linehl=GoDebugCurrent texthl=GoDebugCurrent
+
+fun! s:hi()
+  hi GoDebugBreakpoint term=standout ctermbg=8 guibg=#BAD4F5
+  hi GoDebugCurrent term=reverse ctermbg=12 guibg=DarkBlue
+endfun
+augroup vim-go-breakpoint
+  autocmd!
+  autocmd ColorScheme * call s:hi()
+augroup end
+call s:hi()
 
 " vim: sw=2 ts=2 et
