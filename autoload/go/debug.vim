@@ -1,7 +1,3 @@
-if !executable('dlv')
-  finish
-endif
-
 if !exists('s:state')
   let s:state = {
   \ 'rpcid': 1,
