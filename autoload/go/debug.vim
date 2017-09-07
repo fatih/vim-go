@@ -119,7 +119,7 @@ function! s:show_stacktrace(res) abort
   silent %delete _
   for i in range(len(a:res.result.Locations))
     let loc = a:res.result.Locations[i]
-    call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':p'), loc.line))
+    call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':.p'), loc.line))
   endfor
   setlocal nomodifiable
   wincmd p
