@@ -138,8 +138,7 @@ COMMANDS                                                         *go-commands*
                                                                      *:GoPath*
 :GoPath [path]
 
-    GoPath sets and overrides GOPATH with the given {path}. If no {path} is
-    given it shows the current GOPATH. If `""` is given as path, it clears
+    GoPath sets and overrides GOPATH with the given {path}. If no {path} is given it shows the current GOPATH. If `""` is given as path, it clears
     current `GOPATH` which was set with |:GoPath| and restores `GOPATH` back
     to the initial value which was sourced when Vim was started.
 
