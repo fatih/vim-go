@@ -552,8 +552,8 @@ sign define godebugbreakpoint text=> texthl=GoDebugBreakpoint
 sign define godebugcurline text== linehl=GoDebugCurrent texthl=GoDebugCurrent
 
 fun! s:hi()
-  hi GoDebugBreakpoint term=standout ctermbg=8 guibg=#BAD4F5
-  hi GoDebugCurrent term=reverse ctermbg=12 guibg=DarkBlue
+  hi GoDebugBreakpoint term=standout ctermbg=8  ctermfg=0 guibg=#BAD4F5  guifg=Black
+  hi GoDebugCurrent    term=reverse  ctermbg=12 ctermfg=7 guibg=DarkBlue guifg=White
 endfun
 augroup vim-go-breakpoint
   autocmd!
