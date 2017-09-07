@@ -1,3 +1,11 @@
+if !exists('g:go_debug_windows')
+  let g:go_debug_windows = {
+        \ 'stack': 'leftabove 20vnew',
+        \ 'out':   'botright 10new',
+        \ 'vars':  'leftabove 30vnew',
+        \ }
+endif
+
 if !exists('s:state')
   let s:state = {
   \ 'rpcid': 1,
@@ -272,26 +280,32 @@ function! s:start_cb(ch, json) abort
     return
   endif
 
-  silent leftabove 20vnew
-  silent file `='__GODEBUG_STACKTRACE__'`
-  setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
-  setlocal filetype=godebugstacktrace
-  nmap <buffer> <cr> :<c-u>call <SID>goto_file()<cr>
-  nmap <buffer> q <Plug>(go-debug-stop)
+  if exists('g:go_debug_windows["stack"]') && g:go_debug_windows['stack'] != ''
+    exe 'silent ' . g:go_debug_windows['stack']
+    silent file `='__GODEBUG_STACKTRACE__'`
+    setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
+    setlocal filetype=godebugstacktrace
+    nmap <buffer> <cr> :<c-u>call <SID>goto_file()<cr>
+    nmap <buffer> q <Plug>(go-debug-stop)
+  endif
 
-  silent botright 10new
-  silent file `='__GODEBUG_OUTPUT__'`
-  setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
-  setlocal filetype=godebugoutput
-  nmap <buffer> q <Plug>(go-debug-stop)
+  if exists('g:go_debug_windows["out"]') && g:go_debug_windows['out'] != ''
+    exe 'silent ' . g:go_debug_windows['out']
+    silent file `='__GODEBUG_OUTPUT__'`
+    setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
+    setlocal filetype=godebugoutput
+    nmap <buffer> q <Plug>(go-debug-stop)
+  endif
 
-  silent leftabove 30vnew
-  silent file `='__GODEBUG_VARIABLES__'`
-  setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
-  setlocal filetype=godebugvariables
-  call append(0, ["# Local Variables", "", "# Function Arguments"])
-  nmap <buffer> <cr> :<c-u>call <SID>expand_var()<cr>
-  nmap <buffer> q <Plug>(go-debug-stop)
+  if exists('g:go_debug_windows["vars"]') && g:go_debug_windows['vars'] != ''
+    exe 'silent ' . g:go_debug_windows['vars']
+    silent file `='__GODEBUG_VARIABLES__'`
+    setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
+    setlocal filetype=godebugvariables
+    call append(0, ["# Local Variables", "", "# Function Arguments"])
+    nmap <buffer> <cr> :<c-u>call <SID>expand_var()<cr>
+    nmap <buffer> q <Plug>(go-debug-stop)
+  endif
 
   command! -nargs=0 GoDebugDiag call go#debug#Diag()
   command! -nargs=0 GoDebugToggleBreakpoint call go#debug#ToggleBreakpoint()
