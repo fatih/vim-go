@@ -165,8 +165,13 @@ hi def link     goPredefinedIdentifiers    goBoolean
 syn keyword     goTodo              contained TODO FIXME XXX BUG
 syn cluster     goCommentGroup      contains=goTodo
 
-syn region      goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell
 syn region      goComment           start="//" end="$" contains=goGenerate,@goCommentGroup,@Spell
+if s:fold_comment
+  syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell fold
+  syn match     goComment           "\v(^\s*//.*\n)+" contains=goGenerate,@goCommentGroup,@Spell fold
+else
+	syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell
+endif
 
 hi def link     goComment           Comment
 hi def link     goTodo              Todo
@@ -245,13 +250,6 @@ else
   syn region    goConst             start='const (' end='^\s*)$' transparent
                         \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
 endif
-
-if s:fold_comment
-	" changed this to comments instead of declaration_comment
-  syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell fold
-  syn match     goComment           "\v(^\s*//.*\n)+" contains=goGenerate,@goCommentGroup,@Spell fold
-endif
-
 
 " Single-line var, const, and import.
 syn match       goSingleDecl        /\(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
@@ -465,5 +463,4 @@ syn sync minlines=500
 
 let b:current_syntax = "go"
 
-
-
+" vim: sw=2 ts=2 et
