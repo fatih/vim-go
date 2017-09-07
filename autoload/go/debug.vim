@@ -6,6 +6,10 @@ if !exists('g:go_debug_windows')
         \ }
 endif
 
+if !exists('g:go_debug_address')
+  let g:go_debug_address = '127.0.0.1:8181'
+endif
+
 if !exists('s:state')
   let s:state = {
   \ 'rpcid': 1,
@@ -16,8 +20,6 @@ if !exists('s:state')
   \ 'message': [],
   \}
 endif
-
-let s:addr = '127.0.0.1:8181'
 
 function! s:groutineID() abort
   return s:state['currentThread'].goroutineID
@@ -351,7 +353,7 @@ endfunction
 function! s:starting(ch, msg) abort
   echomsg a:msg
   let s:state['message'] += [a:msg]
-  if stridx(a:msg, s:addr) != -1
+  if stridx(a:msg, g:go_debug_address) != -1
     call ch_setoptions(a:ch, {
     \ 'out_cb': function('s:logger', ['OUT: ']),
     \ 'err_cb': function('s:logger', ['ERR: ']),
@@ -373,7 +375,7 @@ function! go#debug#Start(...) abort
   try
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
     let s:state['message'] = []
-    let job = job_start(dlv . ' debug --headless --api-version=2 --log --listen=' . s:addr . ' --accept-multiclient -- ' . join(a:000, ' '), {
+    let job = job_start(dlv . ' debug --headless --api-version=2 --log --listen=' . g:go_debug_address . ' --accept-multiclient -- ' . join(a:000, ' '), {
     \ 'out_cb': function('s:starting'),
     \ 'err_cb': function('s:starting'),
     \ 'exit_cb': function('s:exit'),
