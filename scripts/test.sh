@@ -39,6 +39,7 @@ echo "Running vimhelplint"
 lint=$(vim -esN --cmd 'set rtp+=./vim-vimhelplint' -c 'filetype plugin on' \
         -c 'e ../doc/vim-go.txt' -c 'verb VimhelpLintEcho' -c q 2>&1)
 if [ -n "$lint" ]; then 
+	   echo $lint
        exit 1
 else
        exit 0
