@@ -389,6 +389,7 @@ hi def link     goDeclType          Keyword
 " Variable Declarations
 if g:go_highlight_variable_declarations != 0
   syn match goVarDefs /\v\w+(,\s*\w+)*\ze(\s*:\=)/
+  hi def link   goVarDefs           Special
 endif
 
 " Build Constraints
