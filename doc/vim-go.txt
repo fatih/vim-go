@@ -1326,6 +1326,13 @@ By default it's enabled. >
 
   let g:go_highlight_format_strings = 1
 <
+                                      *'g:go_highlight_variable_declarations'*
+
+Highlight variable declarations (`:=`). Variable assignments (`=`) are not
+highlighted. By default it's disabled. >
+
+  let g:go_highlight_variable_declarations = 0
+<
                                                     *'g:go_autodetect_gopath'*
 
 Automatically modifies GOPATH for certain directory structures, such as for

@@ -89,6 +89,10 @@ if !exists("g:go_highlight_generate_tags")
   let g:go_highlight_generate_tags = 0
 endif
 
+if !exists("g:go_highlight_variable_declarations")
+  let g:go_highlight_variable_declarations = 0
+endif
+
 let s:fold_block = 1
 let s:fold_import = 1
 let s:fold_varconst = 1
@@ -385,6 +389,12 @@ hi def link     goTypeConstructor   Type
 hi def link     goTypeName          Type
 hi def link     goTypeDecl          Keyword
 hi def link     goDeclType          Keyword
+
+" Variable Declarations
+if g:go_highlight_variable_declarations != 0
+  syn match goVarDefs /\v\w+(,\s*\w+)*\ze(\s*:\=)/
+  hi def link   goVarDefs           Special
+endif
 
 " Build Constraints
 if g:go_highlight_build_constraints != 0
