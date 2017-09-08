@@ -396,9 +396,9 @@ function! s:eval_tree(var, nest) abort
   let nest = a:nest
   let v = ''
   if !empty(a:var.name)
-    if len(a:var.children) > 0 && a:var.value == ''
+    if a:var.kind == 25
       let v .= repeat(' ', nest) . printf("%s: {...}\n", a:var.name)
-    elseif a:var.type != 'string' && a:var.len > 0 && a:var.value == ''
+    elseif a:var.kind ==  23
       let v .= repeat(' ', nest) . printf("%s: [%d]\n", a:var.name, a:var.len)
     else
       let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.type == 'string' ? json_encode(a:var.value) : a:var.value)
