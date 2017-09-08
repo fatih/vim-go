@@ -235,24 +235,30 @@ endfunction
 function! s:expand_var() abort
   let name = matchstr(getline('.'), '^[^:]\+\ze: {\.\.\.}$')
   if name != ''
+    let op = getline(line('.')+1) !~ '^ '
     setlocal modifiable
     let l = line('.')
     call s:delete_expands()
-    call append(l, split(s:eval(name), "\n")[1:])
+    if op
+      call append(l, split(s:eval(name), "\n")[1:])
+    endif
     silent! exe 'norm!' l.'G'
     setlocal nomodifiable
     return
   endif
   let m = matchlist(getline('.'), '^\([^:]\+\)\ze: \[\([0-9]\+\)\]$')
   if len(m) > 0 && m[1] != ''
+    let op = getline(line('.')+1) !~ '^ '
     setlocal modifiable
     let l = line('.')
     call s:delete_expands()
-    let vs = ''
-    for i in range(0, min([10, m[2]-1]))
-      let vs .= ' ' . s:eval(m[1] . '[' . i . ']')
-    endfor
-    call append(l, split(vs, "\n"))
+    if op
+      let vs = ''
+      for i in range(0, min([10, m[2]-1]))
+        let vs .= ' ' . s:eval(m[1] . '[' . i . ']')
+      endfor
+      call append(l, split(vs, "\n"))
+    endif
     silent! exe 'norm!' l.'G'
     setlocal nomodifiable
     return
