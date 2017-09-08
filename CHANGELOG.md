@@ -8,11 +8,14 @@ IMPROVEMENTS:
 * `:GoAddTags` and `:GoRemoveTags` now shows a quickfix window if there are
   malformed struct tags (run `:GoUpdateBinaries` to update `gomodifiytags`
   binary) [gh-1401]
-* Add package-level comment folding [gh-1377]
+* Add folding of the package-level comment (enabled by default) and/or any
+  other comments (disabled by default) [gh-1377].
+  [gh-1428].
 * Allow using :GoImpl on the type and struct parts too. Makes it a wee bit
   easier to use [gh-1386]
 * `:GoDef` sets the path of new buffers as relative to the current directory
   when appropriate, instead of always using the full path [gh-1277].
+* Syntax highlighting for variable declarations (disabled by default) [gh-1426].
 
 BUG FIXES:
 
