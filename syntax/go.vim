@@ -93,7 +93,7 @@ let s:fold_block = 1
 let s:fold_import = 1
 let s:fold_varconst = 1
 let s:fold_package_comment = 1
-let s:fold_comment = 1
+let s:fold_comment = 0
 
 if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'block') == -1
@@ -170,7 +170,7 @@ if s:fold_comment
   syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell fold
   syn match     goComment           "\v(^\s*//.*\n)+" contains=goGenerate,@goCommentGroup,@Spell fold
 else
-	syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell
+  syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell
 endif
 
 hi def link     goComment           Comment
