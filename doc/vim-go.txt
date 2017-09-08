@@ -1623,8 +1623,9 @@ You can enable specific fold regions by setting an array. Possible values are:
 - "import"           `import` block.
 - "varconst"         `var` and `const` blocks.
 - "package_comment"  The package comment.
+- "comment"          Any comment that is not the package comment.
 
-By default they're all enabled:
+By default all except "comment" are enabled:
 >
   let g:go_fold_enable = ['block', 'import', 'varconst', 'package_comment']
 <

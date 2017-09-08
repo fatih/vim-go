@@ -97,6 +97,8 @@ let s:fold_block = 1
 let s:fold_import = 1
 let s:fold_varconst = 1
 let s:fold_package_comment = 1
+let s:fold_comment = 0
+
 if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'block') == -1
     let s:fold_block = 0
@@ -106,6 +108,9 @@ if exists("g:go_fold_enable")
   endif
   if index(g:go_fold_enable, 'varconst') == -1
     let s:fold_varconst = 0
+  endif
+  if index(g:go_fold_enable, 'comment') == -1
+    let s:fold_comment = 0
   endif
   if index(g:go_fold_enable, 'package_comment') == -1
     let s:fold_package_comment = 0
@@ -163,8 +168,14 @@ hi def link     goPredefinedIdentifiers    goBoolean
 " Comments; their contents
 syn keyword     goTodo              contained TODO FIXME XXX BUG
 syn cluster     goCommentGroup      contains=goTodo
-syn region      goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell
+
 syn region      goComment           start="//" end="$" contains=goGenerate,@goCommentGroup,@Spell
+if s:fold_comment
+  syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell fold
+  syn match     goComment           "\v(^\s*//.*\n)+" contains=goGenerate,@goCommentGroup,@Spell fold
+else
+  syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell
+endif
 
 hi def link     goComment           Comment
 hi def link     goTodo              Todo
