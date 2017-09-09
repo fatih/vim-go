@@ -100,6 +100,7 @@ let s:fold_package_comment = 1
 let s:fold_comment = 0
 
 if exists("g:go_fold_enable")
+  " Enabled by default.
   if index(g:go_fold_enable, 'block') == -1
     let s:fold_block = 0
   endif
@@ -109,11 +110,13 @@ if exists("g:go_fold_enable")
   if index(g:go_fold_enable, 'varconst') == -1
     let s:fold_varconst = 0
   endif
-  if index(g:go_fold_enable, 'comment') == -1
-    let s:fold_comment = 0
-  endif
   if index(g:go_fold_enable, 'package_comment') == -1
     let s:fold_package_comment = 0
+  endif
+ 
+  " Disabled by default.
+  if index(g:go_fold_enable, 'comment') > -1
+    let s:fold_comment = 1
   endif
 endif
 
