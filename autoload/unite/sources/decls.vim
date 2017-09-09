@@ -29,7 +29,7 @@ function! s:source.gather_candidates(args, context) abort
   endif
 
   let l:include = get(g:, 'go_decls_includes', 'func,type')
-  let l:command = printf('%s -format vim -mode decls -include %s -%s %s', l:bin_path, l:include, l:mode, l:path)
+  let l:command = printf('%s -format vim -mode decls -include %s -%s %s', l:bin_path, l:include, l:mode, shellescape(l:path))
   let l:candidates = []
   try
     let l:result = eval(unite#util#system(l:command))
