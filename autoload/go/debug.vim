@@ -391,20 +391,33 @@ function! go#debug#StartWith(...) abort
   endif
 
   try
+    " Run dlv from a temporary directory so it won't put the binary in the
+    " current dir. We pass --wd= so the binary is still run from the current
+    " dir.
+    let original_dir = getcwd()
+    let tmp = fnamemodify(tempname(), ':h')
+    let pkgname = go#package#FromPath(bufname(''))
+    exe 'lcd ' . tmp
+
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
     let s:state['message'] = []
-    exe 'lcd' fnamemodify(bufname(''), ':p:h')
-    let job = job_start(dlv . ' debug --headless --api-version=2 --log --listen=' . g:go_debug_address . ' --accept-multiclient ' . join(a:000, ' '), {
-    \ 'out_cb': function('s:starting'),
-    \ 'err_cb': function('s:starting'),
-    \ 'exit_cb': function('s:exit'),
-    \ 'stoponexit': 'kill',
+
+    let l:cmd = printf('%s debug --headless --api-version=2 --log --listen=%s --wd=%s --accept-multiclient %s %s',
+          \ dlv, g:go_debug_address, original_dir, pkgname, join(a:000, ' '))
+
+    let job = job_start(l:cmd, {
+      \ 'out_cb': function('s:starting'),
+      \ 'err_cb': function('s:starting'),
+      \ 'exit_cb': function('s:exit'),
+      \ 'stoponexit': 'kill',
     \})
     let ch = job_getchannel(job)
     let s:state['job'] = job
   catch
     echohl Error | echomsg v:exception | echohl None
     return
+  finally
+    exe 'lcd ' . original_dir
   endtry
 endfunction
 
