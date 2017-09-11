@@ -40,7 +40,8 @@ function! go#impl#Impl(...) abort
   endif
 
   try
-    let result = go#util#System(join(go#util#Shelllist([binpath, recv, iface], ' ')))
+    let dirname = fnameescape(expand('%:p:h'))
+    let result = go#util#System(join(go#util#Shelllist([binpath, '-dir', dirname, recv, iface], ' ')))
     let result = substitute(result, "\n*$", "", "")
     if go#util#ShellError() != 0
       call go#util#EchoError(result)
