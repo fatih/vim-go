@@ -667,6 +667,22 @@ CTRL-t
     type declarations for the current directory. If [dir] is given it parses
     the given directory.
 
+                                                                 *unite-decls*
+:Unite decls[:file or dir]
+
+    Only enabled if `unite.vim` is installed. If run shows declarations for
+    all functions and types on the current file or directory.  If [:file or
+    dir] is non empty, it parses the given one.
+>
+    " show declarations on the parent directory of the current file
+    :Unite decls
+
+    " show declarations on the file
+    :Unite decls:foo/bar.go
+
+    " show declarations on the directory
+    :Unite decls:foo
+<
                                                                      *:GoImpl*
 :GoImpl [receiver] [interface]
 
@@ -1560,8 +1576,9 @@ By default the template file specified by |'g:go_template_file'| is used.
 <
                                                        *'g:go_decls_includes'*
 
-Only useful if `ctrlp.vim` is installed. This sets which declarations to show
-for |:GoDecls|.  It is a Comma delimited list Possible options are:
+Only useful if `ctrlp.vim` or `unite.vim` are installed. This sets which
+declarations to show for |:GoDecls| (`ctrp.vim`) and |unite-decls|
+(`unite.vim`).  It is a Comma delimited list Possible options are:
 {func,type}.  The default is: >
 
       let g:go_decls_includes = 'func,type'
