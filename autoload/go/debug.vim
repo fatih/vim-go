@@ -404,7 +404,7 @@ function! go#debug#StartWith(...) abort
 endfunction
 
 function! go#debug#Start(...) abort
-  return go#debug#StartWith(['--'] + a:000)
+  return call('go#debug#StartWith', ['--'] + a:000)
 endfunction
 
 function! s:eval_tree(var, nest) abort
