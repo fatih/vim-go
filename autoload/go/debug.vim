@@ -375,7 +375,7 @@ function! s:starting(ch, msg) abort
   endif
 endfunction
 
-function! go#debug#Start(...) abort
+function! go#debug#StartWith(...) abort
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
   endif
@@ -389,7 +389,7 @@ function! go#debug#Start(...) abort
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
     let s:state['message'] = []
     exe 'lcd' fnamemodify(bufname(''), ':p:h')
-    let job = job_start(dlv . ' debug --headless --api-version=2 --log --listen=' . g:go_debug_address . ' --accept-multiclient -- ' . join(a:000, ' '), {
+    let job = job_start(dlv . ' debug --headless --api-version=2 --log --listen=' . g:go_debug_address . ' --accept-multiclient ' . join(a:000, ' '), {
     \ 'out_cb': function('s:starting'),
     \ 'err_cb': function('s:starting'),
     \ 'exit_cb': function('s:exit'),
@@ -401,6 +401,10 @@ function! go#debug#Start(...) abort
     echohl Error | echomsg v:exception | echohl None
     return
   endtry
+endfunction
+
+function! go#debug#Start(...) abort
+  return go#debug#StartWith(['--'] + a:000)
 endfunction
 
 function! s:eval_tree(var, nest) abort
