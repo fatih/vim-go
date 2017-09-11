@@ -160,9 +160,15 @@ function! s:show_variables() abort
   wincmd p
 endfunction
 
-function! s:stop() abort
+function! s:clearState() abort
   let s:state['breakpoint'] = {}
   let s:state['currentThread'] = {}
+  let s:state['localVars'] = {}
+  let s:state['functionArgs'] = {}
+endfunction
+
+function! s:stop() abort
+  call s:clearState()
   if has_key(s:state, 'job')
     call job_stop(s:state['job'], 'kill')
     call remove(s:state, 'job')
@@ -540,6 +546,7 @@ endfunction
 
 function! go#debug#Restart() abort
   try
+    call s:clearState()
     let res = s:call_jsonrpc('RPCServer.Restart')
   catch
     echohl Error | echomsg v:exception | echohl None
