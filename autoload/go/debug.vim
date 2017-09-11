@@ -376,6 +376,10 @@ function! s:starting(ch, msg) abort
 endfunction
 
 function! go#debug#StartWith(...) abort
+  if has('nvim')
+    echoerr 'This feature only works in Vim for now; Neovim is not (yet) supported. Sorry :-('
+    return
+  endif
   if !go#util#has_job()
     echoerr "This feature requires Vim 8.0.0087 or newer with +job."
     return
