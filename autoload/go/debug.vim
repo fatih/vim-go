@@ -381,6 +381,7 @@ function! go#debug#Start(...) abort
   try
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
     let s:state['message'] = []
+    exe 'lcd' fnamemodify(bufname(''), ':p:h')
     let job = job_start(dlv . ' debug --headless --api-version=2 --log --listen=' . g:go_debug_address . ' --accept-multiclient -- ' . join(a:000, ' '), {
     \ 'out_cb': function('s:starting'),
     \ 'err_cb': function('s:starting'),
