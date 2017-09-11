@@ -40,6 +40,7 @@ type foo struct{
 * Run `:GoMetaLinter` against the package of the open file #1414.
 * The `g:go_doc_command` and `g:go_doc_options` to configure the command for
   `:GoDoc` were documented but never referenced #1420.
+* `go#package#FromPath()` didn't work correctly #1435.
 
 BACKWARDS INCOMPATIBILITIES:
 
