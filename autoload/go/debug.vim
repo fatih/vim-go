@@ -29,6 +29,7 @@ function! s:exit(job, status) abort
   if has_key(s:state, 'job')
     call remove(s:state, 'job')
   endif
+  call s:clearState()
   if a:status != 0
     echohl Error | echo join(s:state['message'], "\n") . "\n" | echohl None
 	call getchar()
@@ -161,7 +162,6 @@ function! s:show_variables() abort
 endfunction
 
 function! s:clearState() abort
-  let s:state['breakpoint'] = {}
   let s:state['currentThread'] = {}
   let s:state['localVars'] = {}
   let s:state['functionArgs'] = {}
@@ -508,7 +508,9 @@ function! s:stack_cb(ch, json) abort
   let s:stack_name = ''
   let res = json_decode(a:json)
   if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
-    echohl Error | res.error | echohl None
+    echohl Error | echomsg res.error | echohl None
+    call s:clearState()
+    call go#debug#Restart()
     return
   endif
   if empty(res) || !has_key(res, 'result')
