@@ -29,62 +29,63 @@ CONTENTS                                                         *go-contents*
 ==============================================================================
 INTRO                                                               *go-intro*
 
-Go (golang) support for Vim. vim-go installs automatically all necessary
-binaries for providing seamless Vim integration.  It comes with pre-defined
-sensible settings (like auto gofmt on save), has autocomplete, snippet
-support, improved syntax highlighting, go toolchain commands, etc... It's
-highly customizable and each individual feature can be disabled/enabled
-easily.
+Go (golang) support for Vim. vim-go automatically installs all necessary
+binaries for providing a seamless Vim integration. It comes with pre-defined
+sensible settings (like automatic `gofmt` on save), has autocomplete, snippet
+support, improved syntax highlighting, go toolchain commands, etc. It's highly
+customizable and individual features can be disabled/enabled easily.
 
-  * Improved Syntax highlighting with items such as Functions, Operators,
-    Methods.
-  * Auto completion support via `gocode`.
-  * Better `gofmt` on save, which keeps cursor position and doesn't break your
-    undo history.
-  * Go to symbol/declaration with `:GoDef`.
-  * Look up documentation with `:GoDoc` inside Vim or open it in browser.
-  * Automatically import packages via `:GoImport` or plug it into autosave.
-  * Compile your package with `:GoBuild`, install them with `:GoInstall` or
-    test them with `:GoTest` (also supports running single tests with
-    `:GoTestFunc`).
-  * Quickly execute your current file/files with `:GoRun`.
-  * Automatic `GOPATH` detection based on the directory structure (e.g. `gb`
-    projects, `godep` vendored projects).
-  * Change or display `GOPATH` with `:GoPath`.
-  * Create a coverage profile and display annotated source code in to see
-    which functions are covered with `:GoCoverage`.
-  * Call `gometalinter` with `:GoMetaLinter`, which invokes all possible
-    linters (golint, vet, errcheck, deadcode, etc..) and shows the
-    warnings/errors.
-  * Lint your code with `:GoLint`.
-  * Run your code through `:GoVet` to catch static errors.
-  * Advanced source analysis tools utilizing guru, such as `:GoImplements`,
-    `:GoCallees`, and `:GoReferrers`.
-  * Precise type-safe renaming of identifiers with `:GoRename`.
-  * List all source files and dependencies.
-  * Unchecked error checking with `:GoErrCheck`.
+  * Compile your package with |:GoBuild|, install it with |:GoInstall| or
+    test it with |:GoTest|. Run a single tests with |:GoTestFunc|).
+  * Quickly execute your current file(s) with |:GoRun|.
+  * Improved syntax highlighting and folding.
+  * Completion support via `gocode`.
+  * `gofmt` or `goimports` on save keeps the cursor position and undo history.
+  * Go to symbol/declaration with |:GoDef|.
+  * Look up documentation with |:GoDoc| or |:GoDocBrowser|.
+  * Easily import packages via |:GoImport|, remove them via |:GoDrop|.
+  * Automatic `GOPATH` detection which works with `gb` and `godep`. Change or
+    display `GOPATH` with |:GoPath|.
+  * See which code is covered by tests with |:GoCoverage|.
+  * Add or remove tags on struct fields with |:GoAddTags| and |:GoRemoveTags|.
+  * Call `gometalinter` with |:GoMetaLinter| to invoke all possible linters
+    (`golint`, `vet`, `errcheck`, `deadcode`, etc.) and put the result in the
+    quickfix or location list.
+  * Lint your code with |:GoLint|, run your code through |:GoVet| to catch
+    static errors, or make sure errors are checked with |:GoErrCheck|.
+  * Advanced source analysis tools utilizing `guru`, such as |:GoImplements|,
+    |:GoCallees|, and |:GoReferrers|.
+  * Precise type-safe renaming of identifiers with |:GoRename|.
   * Integrated and improved snippets, supporting `ultisnips` or `neosnippet`.
-  * Share your current code to [play.golang.org](http://play.golang.org) with
-    `:GoPlay`
-  * On-the-fly type information about the word under the cursor. Plug it into
-    your custom Vim function.
-  * Go asm formatting on save.
-  * Tagbar support to show tags of the source code in a sidebar with `gotags`.
-  * Custom vim text objects such as `a function` or `inner function`.
-  * A async launcher for the go command is implemented for neovim, fully async
+  * Share your current code to play.golang.org with |:GoPlay|.
+  * On-the-fly information about the word under the cursor. Plug it into your
+    custom Vim function.
+  * Text objects such as "a function" (|go-af|) or "inner function" (|go-if|).
+  * Most commands are run asynchronous in Neovim and Vim 8. Fully async
     building and testing.
-  * Integrated with the neovim terminal, launch `:GoRun` and other go commands
-    in their own new terminal.
-  * Alternate between implementation and test code with `:GoAlternate`.
+  * Integrated with the Neovim terminal, launch |:GoRun| and other Go commands
+    in a terminal buffer.
+  * Switch between `file.go` and `file_test.go` code with |:GoAlternate|.
+  * Supports integration with the Tagbar and ctrlp.vim plugins.
+  * ...and more...
 
 ==============================================================================
 INSTALL                                                           *go-install*
 
-Vim-go follows the standard runtime path structure, so I highly recommend to
-use a common and well known plugin manager to install vim-go. Do not use
-vim-go with other Go plugins. For Pathogen just clone the repo, for other
-plugin managers add the appropriate lines and execute the plugin's install
-command.
+Master branch is a _development_ branch. Please use with caution. I recommend
+to use the latest stable release from
+https://github.com/fatih/vim-go/releases/latest
+
+Vim-go follows the standard runtime path structure and should work with any of
+the major plugin managers.
+
+For Pathogen or Vim |packages| just clone the repo, for other plugin managers
+add the appropriate lines and execute the plugin's install command.
+
+*  Vim 8 |packages|
+>
+    git clone https://github.com/fatih/vim-go.git \
+      ~/.vim/pack/plugins/start/vim-go
 
 *  https://github.com/tpope/vim-pathogen >
 
@@ -101,36 +102,49 @@ command.
 *  https://github.com/gmarik/vundle >
 
     Plugin 'fatih/vim-go'
-
-*  Vim |packages|
->
-    git clone https://github.com/fatih/vim-go.git \
-      ~/.vim/pack/plugins/start/vim-go
 <
-*  Manual >
+*  Manual (not recommended) >
 
     Copy all of the files into your `~/.vim` directory
 <
+You will also need to install all necessary binaries. We have a handy
+command for it: |:GoInstallBinaries|, which will `go get` all the required
+binaries.
+The binaries will be installed to `$GOPATH/bin` (default: `$HOME/go/bin`). It
+requires `git`.
 
-Please be sure all necessary binaries are installed (such as `gocode`,
-`godef`, `goimports`, etc.). You can easily install them with the included
-|:GoInstallBinaries| command. If you invoke it, all necessary binaries will be
-automatically downloaded and installed to your `$GOBIN` environment (if not
-set it will use `$GOPATH/bin`).  It requires `git` for fetching the individual
-Go packages.
+Depending on your installation method, you may have to generate the plugin's
+|:helptags| manually (e.g. `:helptags ALL`).
 
-* Autocompletion is enabled by default via `<C-x><C-o>`, to get real-time
-completion (completion by type) install:
-https://github.com/Shougo/neocomplete.vim for Vim or
-https://github.com/Shougo/deoplete.nvim and
-https://github.com/zchee/deoplete-go for Neovim
-* To get displayed source code tag informations on a sidebar install
-https://github.com/majutsushi/tagbar.
-* For snippet feature install:
-https://github.com/Shougo/neosnippet.vim or
-https://github.com/SirVer/ultisnips.
+Autocompletion is enabled by default via 'omnifunc', which you can trigger
+with |i_CTRL-X_CTRL-O| (`<C-x><C-o>`).
+
+Supported Go plugins~                                         *vim-go-plugins*
+
+The following plugins are supported for use with vim-go:
+
+* Real-time completion (Vim):
+  https://github.com/Shougo/neocomplete.vim 
+
+* Real-time completion (Neovim):
+  https://github.com/Shougo/deoplete.nvim and
+  https://github.com/zchee/deoplete-go
+
+* Display source code navigation in a sidebar:
+  https://github.com/majutsushi/tagbar
+
+* Snippets:
+  https://github.com/Shougo/neosnippet.vim or
+  https://github.com/SirVer/ultisnips
+
 * For a better documentation viewer check out:
   https://github.com/garyburd/go-explorer
+
+* Integration with `delve` (Neovim only):
+  https://github.com/jodosha/vim-godebug
+
+* Interactive |:GoDecls| and |:GoDeclsDir|:
+  https://github.com/Shougo/unite.vim
 
 ==============================================================================
 COMMANDS                                                         *go-commands*
