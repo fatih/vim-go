@@ -404,8 +404,10 @@ function! s:eval_tree(var, nest) abort
   if !empty(a:var.name)
     if a:var.kind == 25
       let v .= repeat(' ', nest) . printf("%s: {...}\n", a:var.name)
-    elseif a:var.kind ==  23
+    elseif a:var.kind ==  23 || a:var.kind == 24
       let v .= repeat(' ', nest) . printf("%s: [%d]\n", a:var.name, a:var.len)
+    elseif a:var.kind == 7
+      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, json_encode(nr2char(a:var.value)))
     else
       let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.type == 'string' ? json_encode(a:var.value) : a:var.value)
     endif
