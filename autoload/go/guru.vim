@@ -159,9 +159,10 @@ function! s:async_guru(args) abort
     call add(messages, a:msg)
   endfunction
 
-  function! s:exit_cb(job, exitval) closure
-    let out = join(messages, "\n")
+  let status = {}
+  let exitval = 0
 
+  function! s:exit_cb(job, exitval) closure
     let status = {
           \ 'desc': 'last status',
           \ 'type': statusline_type,
@@ -169,21 +170,27 @@ function! s:async_guru(args) abort
           \ }
 
     if a:exitval
+      let exitval = a:exitval
       let status.state = "failed"
     endif
 
     call go#statusline#Update(status_dir, status)
+  endfunction
+
+  function! s:close_cb(ch) closure
+    let out = join(messages, "\n")
 
     if has_key(a:args, 'custom_parse')
-      call a:args.custom_parse(a:exitval, out)
+      call a:args.custom_parse(exitval, out)
     else
-      call s:parse_guru_output(a:exitval, out, a:args.mode)
+      call s:parse_guru_output(exitval, out, a:args.mode)
     endif
   endfunction
 
   let start_options = {
         \ 'callback': funcref("s:callback"),
         \ 'exit_cb': funcref("s:exit_cb"),
+        \ 'close_cb': funcref("s:close_cb"),
         \ }
 
   if has_key(result, 'stdin_content')
