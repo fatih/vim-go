@@ -29,18 +29,8 @@ This plugin adds Go language support for Vim, with the following main features:
 * Advanced source analysis tools utilizing `guru`, such as `:GoImplements`,
   `:GoCallees`, and `:GoReferrers`.
 * Precise type-safe renaming of identifiers with `:GoRename`.
-* Integrated and improved snippets, supporting `ultisnips` or `neosnippet`.
-* Share your current code to play.golang.org with `:GoPlay`.
-* On-the-fly information about the word under the cursor. Plug it into your
-  custom Vim function.
-* Text objects such as "a function" (`af`) or "inner function" (`if`).
-* Most commands are run asynchronous in Neovim and Vim 8. Fully async building
-  and testing.
-* Integrated with the Neovim terminal, launch `:GoRun` and other Go commands in
-  a terminal buffer.
-* Switch between `file.go` and `file_test.go` code with `:GoAlternate`.
-* Supports integration with the Tagbar and ctrlp.vim plugins.
-* ...and more...
+* ... and many more! Please see [doc/vim-go.txt](doc/vim-go.txt) for more
+  information.
 
 ## Install
 
