@@ -4,27 +4,27 @@ IMPROVEMENTS:
 
 * `:GoAddTags` and `:GoRemoveTags` now continue to process if there are
   malformed individual struct tags (run `:GoUpdateBinaries` to update
-  `gomodifiytags` binary) [#1401]
+  `gomodifiytags` binary) #1401
 * `:GoAddTags` and `:GoRemoveTags` now shows a quickfix window if there are
   malformed struct tags (run `:GoUpdateBinaries` to update `gomodifiytags`
-  binary) [#1401]
+  binary) #1401
 * Add folding of the package-level comment (enabled by default) and/or any
-  other comments (disabled by default) [#1377].
-  [#1428].
+  other comments (disabled by default) #1377.
+  #1428.
 * Allow using :GoImpl on the type and struct parts too. Makes it a wee bit
-  easier to use [#1386]
+  easier to use #1386
 * `:GoDef` sets the path of new buffers as relative to the current directory
-  when appropriate, instead of always using the full path [#1277].
-* Syntax highlighting for variable declarations (disabled by default) [#1426].
-* Add support for `:GoDecls[Dir]` in [unite.vim](https://github.com/Shougo/unite.vim) [#1391].
-* Support relative imports for `:GoImpl` [#1322].
+  when appropriate, instead of always using the full path #1277.
+* Syntax highlighting for variable declarations (disabled by default) #1426.
+* Add support for `:GoDecls[Dir]` in [unite.vim](https://github.com/Shougo/unite.vim) #1391.
+* Support relative imports for `:GoImpl` #1322.
 
 BUG FIXES:
 
-* Include comments in import block when folding is enabled [#1387]
-* Fix opening definitions in tabs [#1400]
-* Fix accidentally closing quickfix window from other commands if :GoFmt or autosave format was called [#1407]
-* Fix entering into insert mode after for term mode in nvim [#1411]
+* Include comments in import block when folding is enabled #1387
+* Fix opening definitions in tabs #1400
+* Fix accidentally closing quickfix window from other commands if :GoFmt or autosave format was called #1407
+* Fix entering into insert mode after for term mode in nvim #1411
 * When using :GoImpl on type foo struct{} it would work, but with:
 
 ```
@@ -33,23 +33,23 @@ type foo struct{
 ```
 
   or with a struct with fields, it would create the generated methods inside the
-  struct [#1386]
+  struct #1386
 * `:GoImpl` output would include extra newline, and error would include
   trailing newline from shell command: `vim-go: invalid receiver: "} *}"<00>`.
-  Fixed with [#1386]
-* Run `:GoMetaLinter` against the package of the open file [#1414].
+  Fixed with #1386
+* Run `:GoMetaLinter` against the package of the open file #1414.
 * The `g:go_doc_command` and `g:go_doc_options` to configure the command for
-  `:GoDoc` were documented but never referenced [#1420].
+  `:GoDoc` were documented but never referenced #1420.
 
 BACKWARDS INCOMPATIBILITIES:
 
 * `:GoMetaLinter` now runs against the package of the open file instead of the
   current working directory. This is so all commands behave the same relative
-  to the current open buffer. [#1414]
+  to the current open buffer. #1414
 
 * `:GoImpl` now requires [`impl`](https://github.com/josharian/impl) version
   3fb19c2c or newer (released June 13, 2017); use `:GoUpdateBinaries` to make
-  sure that you've got a recent version [#1322]
+  sure that you've got a recent version #1322
 
 ## 1.14 - (August 6, 2017)
 
@@ -59,12 +59,12 @@ FEATURES:
   the following Vim setting: `set foldmethod=syntax`. Currently it folds blocks
   (`{ }`), `import`, `var`, and `const` blocks, and package-level comments.
   These can be individually disabled/enabled if desired. For more info please
-  read the documentation for the `g:go_fold_enable` setting. [#1339]
-  [#1377]
+  read the documentation for the `g:go_fold_enable` setting. #1339
+  #1377
 * `:GoFiles` accepts now an argument to change the type of files it can show.
   By default it shows`.go source files` but now it can be changed to show
   various kind of files. The full list can be seen via `go list --help` under
-  the `// Source Files` section [#1372] i.e:
+  the `// Source Files` section #1372 i.e:
 
 ```
 :GoFiles CgoFiles        // shows .go sources files that import "C"
@@ -77,47 +77,47 @@ IMPROVEMENTS
 
 * Files created with `_test.go` extension have a new template with a ready to
   go test function. The template can be changed with the
-  `g:go_template_test_file` setting. [#1318]
-* Improve performance for highly used operations by caching `go env` calls [#1320]
-* `:GoCoverage` can accept arguments now. i.e: `:GoCoverage -run TestFoo` [#1326]
+  `g:go_template_test_file` setting. #1318
+* Improve performance for highly used operations by caching `go env` calls #1320
+* `:GoCoverage` can accept arguments now. i.e: `:GoCoverage -run TestFoo` #1326
 * `:GoDecls` and `:GoDeclsDir` shows a warning if [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) is not installed
-* `:GoBuild` now compiles the package with the `-i` flag added. This means that subsequent calls are much more faster due caching of packages [#1330]
-* `:GoCoverage` echos now the progress if `g:go_echo_command_info` is enabled [#1333]
-* Add `g:go_doc_max_height` setting to control the maximum height of the window created by `:GoDoc` and `K` mapping [#1335]
-* The `af` text object is able to include the assignment variable for anonymous functions. Can be disabled with `g:go_textobj_include_variable = 0` [#1345]
-* Add `g:go_list_autoclose` setting to prevent closting the quickfix/location list after zero items [#1361]
-* Cursor is now adjusted and locked to the correct line when `goimports` is used for autosave [#1367]
-* Complement the path of command for different situations of Cygwin environment [#1394]
-* Show message when using :GoDef and opening a new buffer [#1385]
+* `:GoBuild` now compiles the package with the `-i` flag added. This means that subsequent calls are much more faster due caching of packages #1330
+* `:GoCoverage` echos now the progress if `g:go_echo_command_info` is enabled #1333
+* Add `g:go_doc_max_height` setting to control the maximum height of the window created by `:GoDoc` and `K` mapping #1335
+* The `af` text object is able to include the assignment variable for anonymous functions. Can be disabled with `g:go_textobj_include_variable = 0` #1345
+* Add `g:go_list_autoclose` setting to prevent closting the quickfix/location list after zero items #1361
+* Cursor is now adjusted and locked to the correct line when `goimports` is used for autosave #1367
+* Complement the path of command for different situations of Cygwin environment #1394
+* Show message when using :GoDef and opening a new buffer #1385
 
 
 BUG FIXES:
 
-* Fix obtaining package's import path for the current directory. This fixes some issues we had if the user was using multiple GOPATH's [#1321]
-* Fix documentation for vim-go & syntastic integration for errcheck using [#1323]
-* Fix showing an output if a test has finished when `:GoTest` is called [#1327]
-* Fix warning when goimports doesn't support srcdir [#1344]
-* Fix broken code folding with go_highlight_types [#1338]
-* Fix blocking the ui when swapfile is enabled and `:GoFmt` is called (either manually or via autosave) [#1362]
-* Fix getting bin paths for binaries if GOPATH was not set and Go version =>1.7 was used [#1363]
-* Fix picking up the correct list type for showing `:GoFmt` errors [#1365]
-* Fix auto detecting of GOPATH for import paths with string 'src' (i.e: `GOPATH/src/github.com/foo/src/bar`) [#1366]
-* Fix showing an empty window if `gogetdoc` was not found [#1379]
-* Fix commands not being executed if paths would include spaces (binary name, GOPATH, file itself, etc..)  [#1374]
-* Fix showing correct message when editing a new file [#1371]
-* Fix filepaths in the quickfix list for :GoVet [#1381]
-* Run :GoLint against the package of the open file [#1382]
+* Fix obtaining package's import path for the current directory. This fixes some issues we had if the user was using multiple GOPATH's #1321
+* Fix documentation for vim-go & syntastic integration for errcheck using #1323
+* Fix showing an output if a test has finished when `:GoTest` is called #1327
+* Fix warning when goimports doesn't support srcdir #1344
+* Fix broken code folding with go_highlight_types #1338
+* Fix blocking the ui when swapfile is enabled and `:GoFmt` is called (either manually or via autosave) #1362
+* Fix getting bin paths for binaries if GOPATH was not set and Go version =>1.7 was used #1363
+* Fix picking up the correct list type for showing `:GoFmt` errors #1365
+* Fix auto detecting of GOPATH for import paths with string 'src' (i.e: `GOPATH/src/github.com/foo/src/bar`) #1366
+* Fix showing an empty window if `gogetdoc` was not found #1379
+* Fix commands not being executed if paths would include spaces (binary name, GOPATH, file itself, etc..)  #1374
+* Fix showing correct message when editing a new file #1371
+* Fix filepaths in the quickfix list for :GoVet #1381
+* Run :GoLint against the package of the open file #1382
 
 BACKWARDS INCOMPATIBILITIES:
 
 * `:GoFmt` now uses `quickfix` to show formatting errors instead of
   `locationlist`. To change back to `locationlist` you can change it with the
-  setting `let g:go_list_type = "locationlist"` [#1365]
+  setting `let g:go_list_type = "locationlist"` #1365
 * `:GoLint` now runs against the package of the open file instead of the
   current working directory. This is so all commands behave the same relative
   to the current open buffer. For more info check the [comment
   here](https://github.com/fatih/vim-go/issues/1375#issuecomment-317535953)
-  [#1382]
+  #1382
 
 
 
@@ -125,7 +125,7 @@ BACKWARDS INCOMPATIBILITIES:
 
 FEATURES:
 
-* New `:GoKeyify` command that turns unkeyed struct literals into keyed struct literals. [#1258]. i.e:
+* New `:GoKeyify` command that turns unkeyed struct literals into keyed struct literals. #1258. i.e:
 
 ```
 Example{"foo", "bar", "qux"}
@@ -144,17 +144,17 @@ Example{
 Checkout the demo here: https://twitter.com/fatih/status/860410299714764802
 
 
-* New `g:go_addtags_transform` setting to change the transform rule (snakecase, camelcase, etc..) for `:GoAddTags` command [#1275]
-* New snippet shortcut assigned to `ife` that expands to `if err := foo(); err != nil { ... }` [#1268]
+* New `g:go_addtags_transform` setting to change the transform rule (snakecase, camelcase, etc..) for `:GoAddTags` command #1275
+* New snippet shortcut assigned to `ife` that expands to `if err := foo(); err != nil { ... }` #1268
 
 IMPROVEMENTS
 
-* :GoMetaLinter can now exclude linters with the new `g:go_metalinter_excludes` option [#1253]
-* Override `<C-LeftMouse>` mapping so `:GoDef` is used by default (as we do the same for `CTRL-]`, `gd`, etc. [#1264]
-* add support for `go_list_type` setting in `:GoFmt` and `:GoImports` commands [#1304]
-* add support for `go_list_type` setting in `:GoMetaLinter` commands [#1309]
+* :GoMetaLinter can now exclude linters with the new `g:go_metalinter_excludes` option #1253
+* Override `<C-LeftMouse>` mapping so `:GoDef` is used by default (as we do the same for `CTRL-]`, `gd`, etc. #1264
+* add support for `go_list_type` setting in `:GoFmt` and `:GoImports` commands #1304
+* add support for `go_list_type` setting in `:GoMetaLinter` commands #1309
 * `go_fmt_options` can be now a dictionary to allow us to specifcy the
-  options for multiple binaries [#1308]. i.e:
+  options for multiple binaries #1308. i.e:
 
 ```
   let g:go_fmt_options = {
@@ -162,28 +162,28 @@ IMPROVEMENTS
     \ 'goimports': '-local mycompany.com',
     \ }
 ```
-* If win-vim(x64) with Cygwin is used, `cygpath` is used for constructing the paths [#1092]
+* If win-vim(x64) with Cygwin is used, `cygpath` is used for constructing the paths #1092
 
 BUG FIXES:
 
-* job: fix race between channel close and job exit [#1247]
-* internal: fix system calls when using tcsh [#1276]
-* path: return the unmodified GOPATH if autodetect is disabled [#1280]
-* fix jumping to quickfix window when autom gometalinter on save was enabled [#1293]
-* fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled [#1301]
-* fix cwd for running `:GoRun` when used with neovim [#1296]
-* `:GoFmt` handles files that are symlinked into GOPATH better (note that this behaviour is discouraged, but we're trying our best to handle all edge case :)) [#1310]
-* `:GoTest` is able to parse error messages that include a colon `:` [#1316]
-* `:GoTestCompile` under the hood doesn't produces a test binary anymore. Sometimes a race condition would happen which would not delete the test binary. [#1317]
-* `:GoDef` jumps now to definition for build tags defined with `:GoBuildTags` (only guru) [#1319]
+* job: fix race between channel close and job exit #1247
+* internal: fix system calls when using tcsh #1276
+* path: return the unmodified GOPATH if autodetect is disabled #1280
+* fix jumping to quickfix window when autom gometalinter on save was enabled #1293
+* fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled #1301
+* fix cwd for running `:GoRun` when used with neovim #1296
+* `:GoFmt` handles files that are symlinked into GOPATH better (note that this behaviour is discouraged, but we're trying our best to handle all edge case :)) #1310
+* `:GoTest` is able to parse error messages that include a colon `:` #1316
+* `:GoTestCompile` under the hood doesn't produces a test binary anymore. Sometimes a race condition would happen which would not delete the test binary. #1317
+* `:GoDef` jumps now to definition for build tags defined with `:GoBuildTags` (only guru) #1319
  
 BACKWARDS INCOMPATIBILITIES:
 
-* `:GoLint` works on the whole directory instead of the current file. To use it for the current file give it as an argument, i.e `:GoLint foo.go` [#1295]
-* `go_snippet_case_type` is removed in favor of the new `go_addtags_transform` setting [#1299]
+* `:GoLint` works on the whole directory instead of the current file. To use it for the current file give it as an argument, i.e `:GoLint foo.go` #1295
+* `go_snippet_case_type` is removed in favor of the new `go_addtags_transform` setting #1299
 * `go_imports_bin` is removed to avoid confusion as it would lead to race
   conditions when set to `gofmt` along with the usage of `go_fmt_command`
-  [#1212] [#1308]
+  #1212 #1308
 * commands such as `:GoTest` has been refactored for easy maintainability. If
   you use any custom script that was using the function `go#cmd#Test`, it
   should be renamed to `go#test#Test`
@@ -196,8 +196,8 @@ FEATURES:
   [gomodifytags](https://github.com/fatih/gomodifytags). This fixes many old
   bugs that were due prior regexp based implementation. For the usage please
   read the docs and checkout the demo at:
-  https://github.com/fatih/vim-go/pull/1204 [#1204]
-* Add new `errl` snippet that expands to [#1185]:
+  https://github.com/fatih/vim-go/pull/1204 #1204
+* Add new `errl` snippet that expands to #1185:
 
 ```
 if err != nil {
@@ -206,46 +206,46 @@ if err != nil {
 ```
 * New `:GoBuildTags` command to change build tags for tools such as `guru`,
   `gorename`, etc ... There is also a new setting called `g:go_build_tags`
-  [#1232]
+  #1232
 
 IMPROVEMENTS:
 
-* vim-go works now even if GOPATH is not set (starting with Go 1.8) [#1248]
-* Lowercase `<Leader>` in mappings examples for consistent documentation across the README [#1192]
-* All of files should be written in utf-8 if the file will be passed to external command. [#1184]
+* vim-go works now even if GOPATH is not set (starting with Go 1.8) #1248
+* Lowercase `<Leader>` in mappings examples for consistent documentation across the README #1192
+* All of files should be written in utf-8 if the file will be passed to external command. #1184
 * `:GoAddTags` is now able to add options to existing tags with the syntax
-  `:GoAddTags key,option`, i.e: `:GoAddTags json,omitempty` [#985]
-* Document 'noshowmode' requirement for echo_go_info [#1197]
-* Improve godoc view for vertical splits [#1195]
-* Set GOPATH for both possible go guru execution paths (sync and async) [#1193]
-* Improve docs for :GoDef usage [#1242]
-* Highlight trimming syntax for Go templates [#1235]
+  `:GoAddTags key,option`, i.e: `:GoAddTags json,omitempty` #985
+* Document 'noshowmode' requirement for echo_go_info #1197
+* Improve godoc view for vertical splits #1195
+* Set GOPATH for both possible go guru execution paths (sync and async) #1193
+* Improve docs for :GoDef usage #1242
+* Highlight trimming syntax for Go templates #1235
 
 BUG FIXES:
 
-* Honor `g:go_echo_command_info` when dispatching builds in neovim [#1176]
+* Honor `g:go_echo_command_info` when dispatching builds in neovim #1176
 * Fix `:GoBuild` error in neovim due to invalid jobcontrol handler function
-  signatures (`s:on_stdout`, `s:on_stderr`)[#1176]
-* Update statusline before and after `go#jobcontrol#Spawn` command is executed [#1176]
-* Correctly report the value of the 'g:go_guru_tags' variable [#1177]
-* Ensure no trailing `:` exist in GOPATH detection if initial GOPATH is not set [#1194]
-* Fix `:GoAddTags` to allow modifying existing comments [#984]
-* Fix `:GoAddTags` to work with nested structs [#990]
-* Fix `:GoAddTags` adding tags twice for existing tags [#1064]
-* Fix `:GoAddTags` not working for fields of types `interface{}` [#1091]
-* Fix `:GoAddTags` not working for fields with one line comments [#1181]
-* Fix `:GoAddTags` not working if any field comment would contain `{}` [#1189]
-* Respect go_fmt_options when running goimports [#1211]
-* Set the filename in the location-list when there is an error with :GoFmt [#1199]
-* Fix `:GoInstall` to accept additional arguments if async mode was enabled [#1246]
+  signatures (`s:on_stdout`, `s:on_stderr`)#1176
+* Update statusline before and after `go#jobcontrol#Spawn` command is executed #1176
+* Correctly report the value of the 'g:go_guru_tags' variable #1177
+* Ensure no trailing `:` exist in GOPATH detection if initial GOPATH is not set #1194
+* Fix `:GoAddTags` to allow modifying existing comments #984
+* Fix `:GoAddTags` to work with nested structs #990
+* Fix `:GoAddTags` adding tags twice for existing tags #1064
+* Fix `:GoAddTags` not working for fields of types `interface{}` #1091
+* Fix `:GoAddTags` not working for fields with one line comments #1181
+* Fix `:GoAddTags` not working if any field comment would contain `{}` #1189
+* Respect go_fmt_options when running goimports #1211
+* Set the filename in the location-list when there is an error with :GoFmt #1199
+* Fix `:GoInstall` to accept additional arguments if async mode was enabled #1246
 
 BACKWARDS INCOMPATIBILITIES:
 
 * The command `:GoGuruTags` is removed in favour of the new command
   `:GoBuildTags`. This command will be used now not just for `guru`, also for
-  all new commands such as `gorename` [#1232]
+  all new commands such as `gorename` #1232
 * The setting `g:go_guru_tags` is removed in favour of the new setting
-  `g:go_build_tags` [#1232]
+  `g:go_build_tags` #1232
 
 
 ## 1.11 - (January 9, 2017)
@@ -256,38 +256,38 @@ FEATURES:
   `<name>_test.vim` will be automatically tested in for every Pull Request
   (just like how we add tests to Go with `_test.go`). Going forward this will
   tremendously increase the stability and decrease the maintenance burden of
-  vim-go. [#1157]
-* Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) [#1055]
-* Add new `g:go_template_use_pkg` setting to enable to use cwd as package name instead of basic template file [#1124]
+  vim-go. #1157
+* Add new `g:go_updatetime` setting to change the default updatetime (which was hardcoded previously) #1055
+* Add new `g:go_template_use_pkg` setting to enable to use cwd as package name instead of basic template file #1124
 
 IMPROVEMENTS:
 
-* Add `statusline` support for `:GoMetaLinter` [#1120]
-* Quickfix and Location lists contain now a descriptive title (requires at least Vim `7.4.2200`)[#1004]
-* Check `go env GOPATH` as well for `:GoInstallBinaries` as Go has now a default path for GOPATH ("~/go")starting with 1.8 [#1152]
-* `:GoDocBrowser` now also works on import paths [#1174]
+* Add `statusline` support for `:GoMetaLinter` #1120
+* Quickfix and Location lists contain now a descriptive title (requires at least Vim `7.4.2200`)#1004
+* Check `go env GOPATH` as well for `:GoInstallBinaries` as Go has now a default path for GOPATH ("~/go")starting with 1.8 #1152
+* `:GoDocBrowser` now also works on import paths #1174
 
 BUG FIXES:
 
-* Always use full path to detect packages to be shown in statusline [#1121]
-* Use `echom` to persist errors in case of multiple echos [#1122]
-* Fix a race condition where a quickfix window was not closed if a job has succeeded [#1123]
-* Do not expand coverage arguments for non job execution of `:GoCoverage` [#1127]
-* `:GoCoverage` doesn't mess up custom syntax anymore [#1128]
-* Disable autoformat for `asm` files as they might be non Go ASM format [#1141]
-* Fix indentation broken when using a action with a minus sign like `{{-` [#1143]
-* Fix breaking Neovim change of passing less arguments to callbacks [#1145]
-* Fix `guru` commands if custom build tags were set [#1136]
+* Always use full path to detect packages to be shown in statusline #1121
+* Use `echom` to persist errors in case of multiple echos #1122
+* Fix a race condition where a quickfix window was not closed if a job has succeeded #1123
+* Do not expand coverage arguments for non job execution of `:GoCoverage` #1127
+* `:GoCoverage` doesn't mess up custom syntax anymore #1128
+* Disable autoformat for `asm` files as they might be non Go ASM format #1141
+* Fix indentation broken when using a action with a minus sign like `{{-` #1143
+* Fix breaking Neovim change of passing less arguments to callbacks #1145
+* Fix `guru` commands if custom build tags were set #1136
 * Fix referencing a non defined variable for async commands when bang (!) was used
-* Fix `:GoDef` failing for a modified buffer if `hidden` was not set [#1132]
-* Fix `:GoDefStack` to allow popping from jump list when buffer is modified [#1133]
-* Improve internal defining of functions and referencing them for async operations [#1155]
-* Fix `:GoMetaLinter` failing if `go_metalinter_command` is set. [#1160]
-* Fix `:GoMetaLinter`'s `go_metalinter_deadline` setting for async mode [#1146]
+* Fix `:GoDef` failing for a modified buffer if `hidden` was not set #1132
+* Fix `:GoDefStack` to allow popping from jump list when buffer is modified #1133
+* Improve internal defining of functions and referencing them for async operations #1155
+* Fix `:GoMetaLinter` failing if `go_metalinter_command` is set. #1160
+* Fix `:GoMetaLinter`'s `go_metalinter_deadline` setting for async mode #1146
 
 BACKWARDS INCOMPATIBILITIES:
 
-* The following syntax options are now disabled by default. If you're using them be sure to set them in your .vimrc [#1167]
+* The following syntax options are now disabled by default. If you're using them be sure to set them in your .vimrc #1167
 
 ```viml
 g:go_highlight_array_whitespace_error
@@ -371,37 +371,37 @@ set statusline+=%*
 IMPROVEMENTS:
 
 * **:GoDocBrowser** is now capable to to understand the identifier under the cursor (just like :GoDoc)
-* Function calls are now highlighted as well when `g:go_highlight_functions` is enabled [#1048]
+* Function calls are now highlighted as well when `g:go_highlight_functions` is enabled #1048
 * Add completion support for un-imported packages. This allows to complete even
   if the package is not imported. By default it's disabled, enable by adding
-  `let g:go_gocode_unimported_packages = 1` [#1084]
+  `let g:go_gocode_unimported_packages = 1` #1084
 * Tools that embeds GOROOT into their binaries do not work when people update
   their Go version and the GOROOT contains the vesion as part of their path
   (i.e: `/usr/local/Cellar/go/1.7.2/libexec`, [more
   info](https://blog.filippo.io/stale-goroot-and-gorebuild/)) . This is now
   fixed by introducing automatic GOROOT set/unset before each tool invoke.
-  [#954]
+  #954
 * Added new setting `g:go_echo_go_info` to enable/disable printing identifier
-  information when completion is done [#1101]
+  information when completion is done #1101
 * Added new `go_echo_command_info` setting is added, which is enabled by
   default.  It's just a switch for disabling messages of commands, such as
   `:GoBuild`, `:GoTest`, etc.. Useful to *disable* if `go#statusline#Show()` is
   being used in Statusline, to prevent to see duplicates notifications.
 * goSameId highlighting is now linked to `Search`, which is much more clear as
   it changes according to the users colorscheme
-* Add plug mapping `(go-lint)` for :GoLint [#1089]
+* Add plug mapping `(go-lint)` for :GoLint #1089
 
 
 BUG FIXES:
 
-* Change back nil and iota highlighting color to the old type [#1049]
-* Fix passing arguments to `:GoBuild` while using NeoVim [#1062]
-* Do not open a split if `:GoDef` is used on a modified file [#1083]
-* Highlight nested structs correctly [#1075]
-* Highlight builtin functions correctly if `g:go_highlight_functions` is enabled [#1070]
-* Fix `:GoSameIds` highlighting if a new buffer is opened in the same window [#1067]
-* Internal: add `abort` to all vim function to return in case of errors [#1100]
-* Fix `:GoCoverage` to be executed if working dir is not inside the test dir [#1033]
+* Change back nil and iota highlighting color to the old type #1049
+* Fix passing arguments to `:GoBuild` while using NeoVim #1062
+* Do not open a split if `:GoDef` is used on a modified file #1083
+* Highlight nested structs correctly #1075
+* Highlight builtin functions correctly if `g:go_highlight_functions` is enabled #1070
+* Fix `:GoSameIds` highlighting if a new buffer is opened in the same window #1067
+* Internal: add `abort` to all vim function to return in case of errors #1100
+* Fix `:GoCoverage` to be executed if working dir is not inside the test dir #1033
 
 BACKWARDS INCOMPATIBILITIES:
 
@@ -418,73 +418,73 @@ IMPROVEMENTS:
 
 * **guru** uses now the `-modified` flag, which allows us use guru on modified
   buffers as well. This affects all commands where `guru` is used. Such as
-  `:GoDef`, `:GoReferrers`, etc.. [#944]
-* **:GoDoc** uses now the `-modified` flag under the hood (for `gogetdoc), which allows us to get documentation for the identifier under the cursor ina modified buffer. [#1014]
-* Cleanup and improve documentation [#987]
-* Add new `g:go_gocode_socket_type` setting to change the underlying socket type passed to `gocode`. Useful to fallback to `tcp` on cases such as Bash on Windows [#1000]
-* `:GoSameIds` is now automatically re-evaluated in cases of buffer reloads (such as `:GoRename`) [#998]
-* Improve docs about `go_auto_sameids` [#1017]
-* Improve error message by printing the full path if an incompatible `goimports` is being used [#1006]
-* `iota` and `nil` are now highlighted correctly and are not treated as booleans [#1030]
+  `:GoDef`, `:GoReferrers`, etc.. #944
+* **:GoDoc** uses now the `-modified` flag under the hood (for `gogetdoc), which allows us to get documentation for the identifier under the cursor ina modified buffer. #1014
+* Cleanup and improve documentation #987
+* Add new `g:go_gocode_socket_type` setting to change the underlying socket type passed to `gocode`. Useful to fallback to `tcp` on cases such as Bash on Windows #1000
+* `:GoSameIds` is now automatically re-evaluated in cases of buffer reloads (such as `:GoRename`) #998
+* Improve docs about `go_auto_sameids` #1017
+* Improve error message by printing the full path if an incompatible `goimports` is being used #1006
+* `iota` and `nil` are now highlighted correctly and are not treated as booleans #1030
 
 BUG FIXES:
 
-* Fix system calls on Windows [#988]
-* Fix :GoSameIds and :GoCoverage for light background and after changing color schemes [#983]
-* Fix TagBar and `GoCallers` for Windows user [#999]
-* Set updatetime for for `auto_sameids` feature as well [#1016]
-* Update docs about missing `go_highlight_generate_tags` setting [#1023]
-* Fix updating the jumplist if `:GoDef` is used [#1029]
-* Fix highlighting literal percent sign (`%%`) in strings [#1011]
-* Fix highlighting of nested fields [#1007]
-* Fix checking for `exepath` feature for the upcoming vim 8.0 release [#1046]
+* Fix system calls on Windows #988
+* Fix :GoSameIds and :GoCoverage for light background and after changing color schemes #983
+* Fix TagBar and `GoCallers` for Windows user #999
+* Set updatetime for for `auto_sameids` feature as well #1016
+* Update docs about missing `go_highlight_generate_tags` setting #1023
+* Fix updating the jumplist if `:GoDef` is used #1029
+* Fix highlighting literal percent sign (`%%`) in strings #1011
+* Fix highlighting of nested fields #1007
+* Fix checking for `exepath` feature for the upcoming vim 8.0 release #1046
 
 BACKWARDS INCOMPATIBILITIES:
 
-* Rename `GoMetalinterAutoSaveToggle` to `GoMetaLinterAutoSaveToggle` to make it compatible with the existing `:GoMetaLinter` command [#1020]
+* Rename `GoMetalinterAutoSaveToggle` to `GoMetaLinterAutoSaveToggle` to make it compatible with the existing `:GoMetaLinter` command #1020
 
 ## 1.8 (July 31, 2016)
 
 FEATURES:
-* New **`:GoAddTags`** command that adds field tags for the fields of a struct automatically based on the field names. Checkout the demo to see it in action: https://twitter.com/fatih/status/759822857773907968 [#971]
-* The snippet expansion `json` is now much more smarter. It pre populates the placeholder according to the first word and it also applies `snake_case` or `camelCase` conversion. Together with `:GoAddTags` it gives `vim-go` users flexible ways of populating a field tag. Checkout the demo to see it in action: https://twitter.com/fatih/status/754477622042689536 [#927]
-* New **`:GoSameIds`** command. When called highlights all same identifiers in the current file. Can be also enabled to highlight identifiers automatically (with `:GoSameIdsAutoToggle` or `g:go_auto_sameids`). Checkout the demo to see it in action: https://twitter.com/fatih/status/753673709278339072. [#936]
-* New **`:GoWhicherrs`** command. It shows all possible values of the selected error variable. [#948]
-* Add new `errp` snippet to expand an `if err != nil { panic() }` clause [#926]
-* If you open a new buffer with a Go filename it get automatically populated based on the directory. If there are no Go files a simple main package is created, otherwise the file will include the package declaration line based on the package in the current directory. Checkout the demo to see it in action: https://twitter.com/fatih/status/748333086643994624. This is enabled by default. Can be disabled with `let g:go_template_autocreate = 0`. You can use your own template with `let g:go_template_file = "foo.go"` and putting the file under the `templates/` folder. [#918]
+* New **`:GoAddTags`** command that adds field tags for the fields of a struct automatically based on the field names. Checkout the demo to see it in action: https://twitter.com/fatih/status/759822857773907968 #971
+* The snippet expansion `json` is now much more smarter. It pre populates the placeholder according to the first word and it also applies `snake_case` or `camelCase` conversion. Together with `:GoAddTags` it gives `vim-go` users flexible ways of populating a field tag. Checkout the demo to see it in action: https://twitter.com/fatih/status/754477622042689536 #927
+* New **`:GoSameIds`** command. When called highlights all same identifiers in the current file. Can be also enabled to highlight identifiers automatically (with `:GoSameIdsAutoToggle` or `g:go_auto_sameids`). Checkout the demo to see it in action: https://twitter.com/fatih/status/753673709278339072. #936
+* New **`:GoWhicherrs`** command. It shows all possible values of the selected error variable. #948
+* Add new `errp` snippet to expand an `if err != nil { panic() }` clause #926
+* If you open a new buffer with a Go filename it get automatically populated based on the directory. If there are no Go files a simple main package is created, otherwise the file will include the package declaration line based on the package in the current directory. Checkout the demo to see it in action: https://twitter.com/fatih/status/748333086643994624. This is enabled by default. Can be disabled with `let g:go_template_autocreate = 0`. You can use your own template with `let g:go_template_file = "foo.go"` and putting the file under the `templates/` folder. #918
 * Added new toggle commands to enable/disable feature that run for your
   automatic. For example if you have `let g:go_auto_type_info = 1` enabled, you
   can now easily enable/disable it on the fly. Support added with the following
   commands: `:GoAutoTypeInfoToggle`, `:GoFmtAutoSaveToggle`,
   `:GoAsmFmtAutoSaveToggle`, `:GoMetalinterAutoSaveToggle`,
-  `:GoTemplateAutoCreateToggle` [#945]
+  `:GoTemplateAutoCreateToggle` #945
 
 
 IMPROVEMENTS:
-* `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions [#894]
-* `:GoDef` works now for modified files as well [#910]
-* Internal: pass filename to the `--srcdir` flag to enable upcoming `goimports` features [#957]
-* Internal: fix indentations on all files to **2-spaces/no tabs**. This is now the default vim-go style across all VimL files [#915]
-* Internal: autocmd settings can be now dynamically enabled/disabled [#939]
-* Internal: automatically detect `GOPATH`  for :GoInstall [#980]
-* Internal: shell executions uses now by default `sh` and then resets it back to the user preference. [#967]
-* Syntax: improved syntax highglighting performance for methods, fields, structs and interface type declarations [#917]
-* Syntax: moved `:GoCoverage` highlight definition into go's syntax file for more customizability [#962]
+* `:GoDoc` accepts arguments now which are passed directly to `godoc`. So usages like `:GoDoc flag` works again (it was changed in previous versions #894
+* `:GoDef` works now for modified files as well #910
+* Internal: pass filename to the `--srcdir` flag to enable upcoming `goimports` features #957
+* Internal: fix indentations on all files to **2-spaces/no tabs**. This is now the default vim-go style across all VimL files #915
+* Internal: autocmd settings can be now dynamically enabled/disabled #939
+* Internal: automatically detect `GOPATH`  for :GoInstall #980
+* Internal: shell executions uses now by default `sh` and then resets it back to the user preference. #967
+* Syntax: improved syntax highglighting performance for methods, fields, structs and interface type declarations #917
+* Syntax: moved `:GoCoverage` highlight definition into go's syntax file for more customizability #962
 
 
 BUG FIXES:
 
-* Escape `#` characters when opening URL's, as it's handled as alternative file in vim [#895]
-* Fix typos in `doc/vim-go.txt` about usages of syntax highglightings [#897]
-* Fix `:GoCoverage` not running for Neovim [#899]
-* Fix `:GoFmt` not picking up `-srcdir` if the command was set to use `goimports` [#904]
-* Fix `:GoTestCompile` to not leave behind artifacts if the cwd and the test files's directory do not match [#909]
-* Fix `:GoDocBrowser` to not fail if godoc doesn't exist [#920]
-* Fix `:GoFmt` to not change the permissions of saved file. Now original file permissions are restored [#922]
+* Escape `#` characters when opening URL's, as it's handled as alternative file in vim #895
+* Fix typos in `doc/vim-go.txt` about usages of syntax highglightings #897
+* Fix `:GoCoverage` not running for Neovim #899
+* Fix `:GoFmt` not picking up `-srcdir` if the command was set to use `goimports` #904
+* Fix `:GoTestCompile` to not leave behind artifacts if the cwd and the test files's directory do not match #909
+* Fix `:GoDocBrowser` to not fail if godoc doesn't exist #920
+* Fix `:GoFmt` to not change the permissions of saved file. Now original file permissions are restored #922
 
 BACKWARDS INCOMPATIBILITIES:
 
-* `g:go_highlight_structs` and `g:go_highlight_interface` are removed in favor of `g:go_highlight_types` [#917]
+* `g:go_highlight_structs` and `g:go_highlight_interface` are removed in favor of `g:go_highlight_types` #917
 
 
 ## 1.7.1 (June 7, 2016)
@@ -496,39 +496,39 @@ BUG FIXES:
 
 FEATURES:
 
-* New **`:GoImpl`** command that generates method stubs for implementing an interface. Checkout the [demo](https://twitter.com/fatih/status/729991365581545472) to see how it works. [#846]
-* `godef` support is added back as an optional setting.  By default `:GoDef` still uses `guru`, but can be changed to `godef` by adding the option: `let g:go_def_mode = 'godef'` [#888]
-* New `<C-w><C-]>` and `<C-w>]>` shortcuts to split current window and jumpt to the identifier under cursor. [#838]
-* New syntax setting" `g:go_highlight_fields` that highlights struct field references [#854]
+* New **`:GoImpl`** command that generates method stubs for implementing an interface. Checkout the [demo](https://twitter.com/fatih/status/729991365581545472) to see how it works. #846
+* `godef` support is added back as an optional setting.  By default `:GoDef` still uses `guru`, but can be changed to `godef` by adding the option: `let g:go_def_mode = 'godef'` #888
+* New `<C-w><C-]>` and `<C-w>]>` shortcuts to split current window and jumpt to the identifier under cursor. #838
+* New syntax setting" `g:go_highlight_fields` that highlights struct field references #854
 
 IMPROVEMENTS:
 
-* Invoking `:GoRename` now reloads all files to reflect new changes automatically [#855]
-* Calling `:GoTestCompile` does not create any temporary binary file anymore [#879]
+* Invoking `:GoRename` now reloads all files to reflect new changes automatically #855
+* Calling `:GoTestCompile` does not create any temporary binary file anymore #879
 * Enable passing the `-tags` flag to `:GoDef`. Now you can pass build tags to `:GoDef` via `:GoGuruTags` or `g:go_guru_tags`
-* Internal refactoring to use custom `system()` function that wraps both the standard `system()` call and `vimproc`. Now all system calls will take advantage and will use `vimproc` if installed. [#801]
-* Completion enables now `gocode`'s `autobuild` and `propose-builtins` flags automatically. With these settings packages will be automatically build to get the freshest completion candidates and builtin keywords will be showed as well. By defaults these settings are enabled. Settings can be disabled/enabled via `g:go_gocode_autobuild` and `g:go_gocode_propose_builtins`. [#815]
-* Added new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts [#816]
-* Added new `Example` and `Benchmark` snippets with `example` and `benchmark` shortcuts [#836]
-* Search tool binaries first in `GOBIN` and then in `PATH` as most of vim-go users installs it to `GOBIN` mostly [#823]
-* Improve `guru` based commands by providing automatically detected GOPATHS, such as `gb`, `godep` to be used if possible [#861]
-* Add `<Plug>(go-imports)` mapping to make it assignable to other keys [#878]
-* Increase compatibility with tcsh [#869]
-* Improve `:GoInstallBinaries` for GOPATH's which don't have packages that work well with `go get -u`. We have a new `g:go_get_update` setting to disable it. By default it's enabled. [#883]
+* Internal refactoring to use custom `system()` function that wraps both the standard `system()` call and `vimproc`. Now all system calls will take advantage and will use `vimproc` if installed. #801
+* Completion enables now `gocode`'s `autobuild` and `propose-builtins` flags automatically. With these settings packages will be automatically build to get the freshest completion candidates and builtin keywords will be showed as well. By defaults these settings are enabled. Settings can be disabled/enabled via `g:go_gocode_autobuild` and `g:go_gocode_propose_builtins`. #815
+* Added new `http.HandlerFunc` snippets with `hf` and `hhf` shortcuts #816
+* Added new `Example` and `Benchmark` snippets with `example` and `benchmark` shortcuts #836
+* Search tool binaries first in `GOBIN` and then in `PATH` as most of vim-go users installs it to `GOBIN` mostly #823
+* Improve `guru` based commands by providing automatically detected GOPATHS, such as `gb`, `godep` to be used if possible #861
+* Add `<Plug>(go-imports)` mapping to make it assignable to other keys #878
+* Increase compatibility with tcsh #869
+* Improve `:GoInstallBinaries` for GOPATH's which don't have packages that work well with `go get -u`. We have a new `g:go_get_update` setting to disable it. By default it's enabled. #883
 
 
 
 BUG FIXES:
-* Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode [#832]
+* Fix `(go-freevars)` plug mapping to work as in visual mode instead of noncompatible normal mode #832
 * Commands based on guru now shows a more meaningful error message instead of just showing the exit status (-1)
-* Fix `:GoCoverage` accidentally enabling syntax highlighting for users who don't use syntax (i.e syntax off) [#827]
-* Fix `:GoCoverage` colors to work for xterm as well [#863]
-* Fix commenting out block of texts for Go templates (filetype gothtmltmpl) [#813]
+* Fix `:GoCoverage` accidentally enabling syntax highlighting for users who don't use syntax (i.e syntax off) #827
+* Fix `:GoCoverage` colors to work for xterm as well #863
+* Fix commenting out block of texts for Go templates (filetype gothtmltmpl) #813
 * Fix `:GoImplements` failing because of an empty scope definition. Now we default to current package to make it usable.
-* Fix `:GoPlay` posting to non HTTPS url. [#847]
-* Fix escaping the filenames for lint and motion commands [#862]
-* Fix escaping the filename to `:GoDef` completely for tcsh [#868]
-* Fix showing SUCCESS for `go test` related commands if no test files are available [#859]
+* Fix `:GoPlay` posting to non HTTPS url. #847
+* Fix escaping the filenames for lint and motion commands #862
+* Fix escaping the filename to `:GoDef` completely for tcsh #868
+* Fix showing SUCCESS for `go test` related commands if no test files are available #859
 
 
 
@@ -543,15 +543,15 @@ FEATURES:
   annotation. Use `:GoCoverageClear` to clear the coverage annotation.
   This is a pretty good addition to vim-go and I suggest to check out the gif
   that shows it in action: https://twitter.com/fatih/status/716722650383564800
-  [#786]
+  #786
 * **`:GoCoverageToggle`** just like `:GoCoverage` but acts as a toggle. If run
   again it clears the annotation.
 * **`:GoCoverageBrowser`** opens a new annotated HTML page. This is the old
-  `:GoCoverage` behavior [#786]
+  `:GoCoverage` behavior #786
 * **`:GoDoc`** uses now [gogetdoc](https://github.com/zmb3/gogetdoc) to
   lookup and display the comment documentation for the identifier under the
   cursor. This is more superior as it support looking up dot imports, named
-  imports and imports where package name and file name are different [#782]
+  imports and imports where package name and file name are different #782
 * **`guru support`**: `oracle` is replaced by the new tool `guru`. `oracle.vim`
   is therefore renamed to `guru.vim`. I've also refactored the code to make it
   much more easier to maintain and add additional features in future (such as
@@ -567,21 +567,21 @@ FEATURES:
   `:GoDefPop` or the mapping `CTRL-t`. To see the stack and jump between entries
   you can use the new command `:GoDefStack`, which shows the list of all stack
   entries. To reset the stack list anytime you can call `:GoDefStackClear`
-  [#776]
+  #776
 
 IMPROVEMENTS:
 
-* **`:GoCoverage`** is executed asynchronously when used within Neovim [#686]
-* **`:GoTestFunc`** supports now testable examples [#794]
+* **`:GoCoverage`** is executed asynchronously when used within Neovim #686
+* **`:GoTestFunc`** supports now testable examples #794
 * **`:GoDef`** can jump to existing buffers instead of opening a new window
   (split, vsplit or tab). By default it's disabled to not break the old
   behavior, can be enabled with `let g:go_def_reuse_buffer = 1`
 
 BUG FIXES:
 
-* Fix not showing documentation for dot, named and package/file name being different imports [#332]
-* Term mode: fix closing location list if result is successful after a failed attempt [#768]
-* Syntax: fix gotexttmpl identifier highlighting [#778]
+* Fix not showing documentation for dot, named and package/file name being different imports #332
+* Term mode: fix closing location list if result is successful after a failed attempt #768
+* Syntax: fix gotexttmpl identifier highlighting #778
 * Doc: fix wrong wording for `go-run` mapping. It's for the whole main package,
   not for the current file
 
@@ -601,7 +601,7 @@ BACKWARDS INCOMPATIBILITIES:
 
 FEATURES:
 * Introducing code name "motion". A new whole way of moving
-  around and navigating (#765). Checkout the following new changes:
+  around and navigating #765. Checkout the following new changes:
   * A vim-go specific tool, called [motion](https://github.com/fatih/motion) is being developed which
     provides us the underlying foundation for the following and upcoming
     new features.
@@ -614,37 +614,37 @@ FEATURES:
   * I wrote two blog posts about these new features in more detail. I recommend you to read it: [Treating Go types as objects in Vim](https://medium.com/@farslan/treating-go-types-as-objects-in-vim-ed6b3fad9287#.mbwaisevp) and [Navigation between functions and types in vim-go](https://medium.com/@farslan/navigation-between-functions-and-types-in-vim-go-f9dd7de8ca37#.2sdf8tbbe)
 * A new `:GoAlternate` command that toggles to the test
   file of the current file. It also has new appropriate mappings to open the
-  alternate file in split or tabs. (#704)
+  alternate file in split or tabs. #704
 * Now commands can choose whether they want to open a
   `quickfix` or a `location list` via the setting `g:go_list_type`. Also all
   the commands have now some sensible settings, some will open a qf window,
-  some will open a location list (#700)
+  some will open a location list #700
 
 IMPROVEMENTS:
 
-* Add support for goimport's new `-srcdir`. Goimports now succesfully suports `vendor/` folders with this release. (#735)
-* Add `g:go_gorename_prefill` setting which disabled pre filling the argument for `:GoRename` (#711)
-* Improve `:GoRun` to complete to filenames (#742)
-* Highlight `//go:generate` comment directives (#757)
-* Indent code in Go HTML templates (#709)
-* Improve negative numbers of all types, octals, imaginary numbers with exponents (#752)
-* Improved internal usage of retrieving offsets (#762)
-* Improve by substitute all backslashes to slashes for filename (#703)
-* Improve internal Go package path function (#702)
-* Improved typo and grammar errors in docs (#714)
-* Improved internal `:GoInfo` automatic call (#759)
+* Add support for goimport's new `-srcdir`. Goimports now succesfully suports `vendor/` folders with this release. #735
+* Add `g:go_gorename_prefill` setting which disabled pre filling the argument for `:GoRename` #711
+* Improve `:GoRun` to complete to filenames #742
+* Highlight `//go:generate` comment directives #757
+* Indent code in Go HTML templates #709
+* Improve negative numbers of all types, octals, imaginary numbers with exponents #752
+* Improved internal usage of retrieving offsets #762
+* Improve by substitute all backslashes to slashes for filename #703
+* Improve internal Go package path function #702
+* Improved typo and grammar errors in docs #714
+* Improved internal `:GoInfo` automatic call #759
 
 BUG FIXES:
 
-* Fix oracle scope not working if trailing slash exists in scope (#751) 
-* Fix `:GoErrCheck` checking abspath (#671)
-* Fix `:GoInstall` correctly parsing errors (#692)
-* Fix `:GoInstall` correctly parsing errors (#692)
-* Fix `:GoTestFunc` for neovim (#695)
-* Fix `:GoRun` accepting arguments for neovim (#730)
-* Fix `go run` mappings not working (#542)
+* Fix oracle scope not working if trailing slash exists in scope #751 
+* Fix `:GoErrCheck` checking abspath #671
+* Fix `:GoInstall` correctly parsing errors #692
+* Fix `:GoInstall` correctly parsing errors #692
+* Fix `:GoTestFunc` for neovim #695
+* Fix `:GoRun` accepting arguments for neovim #730
+* Fix `go run` mappings not working #542
 * Fix autodetect gopath picking up non existing GB vendor folder
-* Fix gofmt errors showing per buffer instead of per script (#721)
+* Fix gofmt errors showing per buffer instead of per script #721
 * Fix some of the neosnippet snippets
 
 ## 1.4 (Jan 18, 2016)
@@ -654,7 +654,7 @@ FEATURES:
 * You waited for it for a long time. And here you have it: **Neovim support!**
   This is a huge feature. It's fully compatible with Vim and kicks only in if
   vim-go is being used within Neovim. Checkout the full list of changes
-  (#607):
+  #607:
   * An async launcher and base foundation was implemented for the `go` command.
 	This will be used in the future for all upcoming subcommands of the `go`
 	tool.
@@ -689,83 +689,83 @@ FEATURES:
   enables us to have multiple, independent location lists per window (example
   usages: `:GoBuild` with errors that needs to be fixed, `:GoLint` with
   warnings that we want to check, `:GoReferrers` with a list of referred
-  identifiers) (#626)
-* a new **`:AsmFmt`** command which is integrated to work with [asmfmt](https://github.com/klauspost/asmfmt) (#673)
+  identifiers) #626
+* a new **`:AsmFmt`** command which is integrated to work with [asmfmt](https://github.com/klauspost/asmfmt) #673
 * the full identifier information of a completed identifier is echoed in
   statusline. This is very useful to see a function signatures arguments.
-  (#685)
+  #685
 
 IMPROVEMENTS:
 
-* Improve `:GoFmt` by checking if the binary is indeed installed on the system (#617)
+* Improve `:GoFmt` by checking if the binary is indeed installed on the system #617
 * Improve `:GoMetaLinter` by adding the option to run the metalinter on save
   and adding the option to limit the output to the currently active buffer. Set
   `let g:go_metalinter_autosave = 1` to enable autosave and use `let
   g:go_metalinter_autosave_enabled = ['vet', 'golint']` to change your options.
-  (#631)
-* Improved `:GoDef`. If `vimproc` is installed `godef` will make use of it (#670)
-* Improve completion of godoce when vimproc is used (#620)
-* Improve internal error matching prodecure to not match false positives (#618)
-* A new option to highlight interface variables with `go_highlight_interfaces` (#681)
+  #631
+* Improved `:GoDef`. If `vimproc` is installed `godef` will make use of it #670
+* Improve completion of godoce when vimproc is used #620
+* Improve internal error matching prodecure to not match false positives #618
+* A new option to highlight interface variables with `go_highlight_interfaces` #681
 
 BUG FIXES
 
-* Fix `:GoFmt` changing the fileformat of the current buffer (#615)
-* Fix `:GoRename` to output the original error if parsing fails (#675)
-* Fix `:GoTest` to output the original error if parsing fails (#676)
-* Fixed `fmt.Fprintln` not to highlight as builtin (#628)
-* Fixed wrong highlighting of channels of channels (#678)
+* Fix `:GoFmt` changing the fileformat of the current buffer #615
+* Fix `:GoRename` to output the original error if parsing fails #675
+* Fix `:GoTest` to output the original error if parsing fails #676
+* Fixed `fmt.Fprintln` not to highlight as builtin #628
+* Fixed wrong highlighting of channels of channels #678
 
 ## 1.3 (Nov 22, 2015)
 
 FEATURES:
 
-* A new `:GoOracleTags` command was added to pass build tags to Oracle's `-tags` flag. (#573)
+* A new `:GoOracleTags` command was added to pass build tags to Oracle's `-tags` flag. #573
 
 IMPROVEMENTS:
 
 * Change `:GoTest` command to timeout after 10 seconds. Vim UI is blocking and
   tests with large running times makes Vim blocking for a long time. This is
-  also customizable with the new option `g:go_test_timeout`. (#578)
+  also customizable with the new option `g:go_test_timeout`. #578
 * Improve `:GoRename` to collect and populate quickfix window with errors.
-  (#577)
+  #577
 * Improve `:GoRun` by dropping bad filenames from quickfix window. This allows
-  us to have only valid entries which can be jumped to (#547)
+  us to have only valid entries which can be jumped to #547
 * Improve `:GoMetaLinter` quickfix output by using absolute paths. This enables
-  us to jump to errors for all cases. (#565)
+  us to jump to errors for all cases. #565
 * Improve `:GoMetaLinter` command by adding a new option
   `g:go_metalinter_deadline` which cancels the linters after 5 seconds
-  (previous default).  (#576)
+  (previous default).  #576
 * Improve `:GoMetaLinter` by jumping to the first encountered error from the quickfix window.
-* Automatically resize quickfix window based on the number of errors (#602)
+* Automatically resize quickfix window based on the number of errors #602
 * Improve build constraints to show invalid cases (such as `// +buildfoo`, not
   having an empty line between the package statement, etc..). Also add missing
   `GOARCH` values sucha s `arm64`. There are many other useful improvements,
   for more detail please have a look at
-  ([#589](https://github.com/fatih/vim-go/pull/589))
-* Add support for all values of `GOARCH` (#601)
-* Add note about Syntastic usage as this problem comes up a lot (#580)
-* Add note about `:GoUpdateBinaries` (#606)
+  #589
+* Add support for all values of `GOARCH` #601
+* Add note about Syntastic usage as this problem comes up a lot #580
+* Add note about `:GoUpdateBinaries` #606
 
 BUG FIXES:
 
-* Fixed `:GoErrCheck` showing the correct output when executed inside the source folder (#564)
+* Fixed `:GoErrCheck` showing the correct output when executed inside the source folder #564
 * Fixed `:GoBuild` by not using `/dev/null` anymore for build output (not
-  supported by `go`). We pass a temporary file now. (#567)
+  supported by `go`). We pass a temporary file now. #567
 * Fixed `:GoFmt` passing `g:go_fmt_options` options to `goimports`. This option
-  is only valid with `gofmt`. (#590)
-* Fix vim-go for `cygwin` users. (#575)
-* Fixed identifier in template files to be highlighted correctly (#559)
-* Fixed character region in template files to be highlighted correctly (#603)
-* Fixed variables in template files to be highlighted correctly (#611)
+  is only valid with `gofmt`. #590
+* Fix vim-go for `cygwin` users. #575
+* Fixed identifier in template files to be highlighted correctly #559
+* Fixed character region in template files to be highlighted correctly #603
+* Fixed variables in template files to be highlighted correctly #611
 * Do not treat builtins as keywords. Now `make` will not highlighted but
-  `make()` will be highlighted (#605)
+  `make()` will be highlighted (gh-605)
 
 ## 1.2 (Oct 2, 2015)
 
 FEATURES:
 
-* A new `:GoMetaLinter` command which invokes [gometalinter](https://github.com/alecthomas/gometalinter). Please check the PR [#553](https://github.com/fatih/vim-go/pull/553) for more detail on customizing and usage of `:GoMetaLinter`.
+* A new `:GoMetaLinter` command which invokes [gometalinter](https://github.com/alecthomas/gometalinter). Please check the PR #553 for more detail on customizing and usage of `:GoMetaLinter`.
 
 IMPROVEMENTS:
 
