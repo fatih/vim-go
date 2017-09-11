@@ -16,6 +16,8 @@ IMPROVEMENTS:
 * `:GoDef` sets the path of new buffers as relative to the current directory
   when appropriate, instead of always using the full path [gh-1277].
 * Syntax highlighting for variable declarations (disabled by default) [gh-1426].
+* Add support for `:GoDecls[Dir]` in [unite.vim](https://github.com/Shougo/unite.vim) [gh-1391].
+* Support relative imports for `:GoImpl` [gh-1322].
 
 BUG FIXES:
 
@@ -44,6 +46,10 @@ BACKWARDS INCOMPATIBILITIES:
 * `:GoMetaLinter` now runs against the package of the open file instead of the
   current working directory. This is so all commands behave the same relative
   to the current open buffer. [gh-1414]
+
+* `:GoImpl` now requires [`impl`](https://github.com/josharian/impl) version
+  3fb19c2c or newer (released June 13, 2017); use `:GoUpdateBinaries` to make
+  sure that you've got a recent version [gh-1322]
 
 ## 1.14 - (August 6, 2017)
 
