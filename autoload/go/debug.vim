@@ -165,6 +165,7 @@ function! s:clearState() abort
   let s:state['currentThread'] = {}
   let s:state['localVars'] = {}
   let s:state['functionArgs'] = {}
+  silent! sign unplace 9999
 endfunction
 
 function! s:stop() abort
