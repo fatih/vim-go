@@ -668,18 +668,18 @@ CTRL-t
                                                                     *:GoDecls*
 :GoDecls [file]
 
-    Only enabled if `ctrlp.vim` is installed. If run shows all function and
-    type declarations for the current file. If [file] is non empty it parses
-    the given file.
+    If run shows all function and type declarations for the current file. If
+    [file] is non empty it parses the given file. Depends on `ctrlp.vim` or
+    `fzf`.
+    By default, `ctrlp.vim` is used. This can changed via |'g:go_decls_mode'|.
     By default `type` and `func` declarations are shown. This can be changed
     via |'g:go_decls_includes'|.
 
                                                                  *:GoDeclsDir*
 :GoDeclsDir [dir]
 
-    Only enabled if `ctrlp.vim` is installed. If run shows all function and
-    type declarations for the current directory. If [dir] is given it parses
-    the given directory.
+    If run shows all function and type declarations for the current directory.
+    If [dir] is given it parses the given directory.
 
                                                                  *unite-decls*
 :Unite decls[:file or dir]
@@ -1634,12 +1634,19 @@ By default the template file specified by |'g:go_template_file'| is used.
 <
                                                        *'g:go_decls_includes'*
 
-Only useful if `ctrlp.vim` or `unite.vim` are installed. This sets which
-declarations to show for |:GoDecls| (`ctrp.vim`) and |unite-decls|
+Only useful if `ctrlp.vim`, `unite.vim` or `fzf` are installed. This sets
+which declarations to show for |:GoDecls| (`ctrp.vim`) and |unite-decls|
 (`unite.vim`).  It is a Comma delimited list Possible options are:
 {func,type}.  The default is: >
 
       let g:go_decls_includes = 'func,type'
+<
+                                                       *'g:go_decls_mode'*
+
+Use this option to define the tool to be used for |:GoDecls|.
+Current valid options are: `[ctrlp.vim, fzf]`. The default is: >
+
+      let g:go_decls_mode = 'ctrlp.vim'
 <
                                                     *'g:go_echo_command_info'*
 
