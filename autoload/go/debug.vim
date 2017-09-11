@@ -376,6 +376,11 @@ function! s:starting(ch, msg) abort
 endfunction
 
 function! go#debug#StartWith(...) abort
+  if !go#util#has_job()
+    echoerr "This feature requires Vim 8.0.0087 or newer with +job."
+    return
+  endif
+
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
   endif
