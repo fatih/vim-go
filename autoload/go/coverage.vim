@@ -53,6 +53,7 @@ function! go#coverage#Buffer(bang, ...) abort
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname] + a:000,
           \ 'custom_cb': function('s:coverage_callback', [l:tmpname]),
           \ 'bang': a:bang,
+          \ 'for': 'GoTest',
           \ })
     return
   endif
@@ -108,6 +109,7 @@ function! go#coverage#Browser(bang, ...) abort
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
           \ 'custom_cb': function('s:coverage_browser_callback', [l:tmpname]),
           \ 'bang': a:bang,
+          \ 'for': 'GoTest',
           \ })
     return
   endif

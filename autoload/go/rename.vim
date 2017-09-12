@@ -117,7 +117,7 @@ function s:parse_errors(exit_val, bang, out)
   silent! checktime
   let &autoread = current_autoread
 
-  let l:listtype = "quickfix"
+  let l:listtype = go#list#Type("GoRename", "quickfix")
   if a:exit_val != 0
     call go#util#EchoError("FAILED")
     let errors = go#tool#ParseErrors(a:out)

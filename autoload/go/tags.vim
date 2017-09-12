@@ -95,7 +95,7 @@ func s:write_out(out) abort
 
   if has_key(result, 'errors')
     let l:winnr = winnr()
-    let l:listtype = go#list#Type("quickfix")
+    let l:listtype = go#list#Type("GoModifyTags", "quickfix")
     call go#list#ParseFormat(l:listtype, "%f:%l:%c:%m", result['errors'], "gomodifytags")
     call go#list#Window(l:listtype, len(result['errors']))
 

@@ -57,7 +57,7 @@ function! go#test#Test(bang, compile, ...) abort
     if get(g:, 'go_term_enabled', 0)
       let id = go#term#new(a:bang, ["go"] + args)
     else
-      let id = go#jobcontrol#Spawn(a:bang, "test", args)
+      let id = go#jobcontrol#Spawn(a:bang, "test", "GoTest", args)
     endif
 
     return id
@@ -69,7 +69,7 @@ function! go#test#Test(bang, compile, ...) abort
   let command = "go " . join(args, ' ')
   let out = go#tool#ExecuteInDir(command)
 
-  let l:listtype = "quickfix"
+  let l:listtype = go#list#Type("GoTest", "quickfix")
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
@@ -188,7 +188,7 @@ function s:test_job(args) abort
 
     call go#statusline#Update(status_dir, status)
 
-    let l:listtype = go#list#Type("quickfix")
+    let l:listtype = go#list#Type("GoTest", "quickfix")
     if a:exitval == 0
       call go#list#Clean(l:listtype)
       call go#list#Window(l:listtype)
@@ -224,7 +224,7 @@ endfunction
 " a quickfix compatible list of errors. It's intended to be used only for go
 " test output. 
 function! s:show_errors(args, exit_val, messages) abort
-  let l:listtype = go#list#Type("quickfix")
+  let l:listtype = go#list#Type("GoTest", "quickfix")
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   try
