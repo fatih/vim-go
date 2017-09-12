@@ -362,7 +362,6 @@ function! go#util#archive()
     return expand("%:p:gs!\\!/!") . "\n" . strlen(l:buffer) . "\n" . l:buffer
 endfunction
 
-
 " Make a named temporary directory which starts with "prefix".
 "
 " Unfortunately Vim's tempname() is not portable enough across various systems;

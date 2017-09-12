@@ -399,8 +399,8 @@ function! go#debug#StartWith(...) abort
     " current dir. We pass --wd= so the binary is still run from the current
     " dir.
     let original_dir = getcwd()
-    let tmp = fnamemodify(tempname(), ':h')
     let pkgname = go#package#FromPath(bufname(''))
+    let tmp = go#util#tempdir('vim-go-debug-')
     exe 'lcd ' . tmp
 
     echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
