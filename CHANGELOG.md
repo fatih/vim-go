@@ -41,6 +41,7 @@ type foo struct{
 * The `g:go_doc_command` and `g:go_doc_options` to configure the command for
   `:GoDoc` were documented but never referenced [[GH-1420]](https://github.com/fatih/vim-go/pull/1420).
 * `go#package#FromPath()` didn't work correctly [[GH-1435]](https://github.com/fatih/vim-go/pull/1435).
+* Fix race condition for `guru` based commands [[GH-1439]](https://github.com/fatih/vim-go/pull/1439).
 
 BACKWARDS INCOMPATIBILITIES:
 
