@@ -1469,6 +1469,12 @@ Supported keys are "GoBuild", "GoErrCheck", "GoFmt", "GoInstall", "GoLint",
 >
   let g:go_list_type_commands = {}
 <
+As an example, the following settings will change all list types to
+`locationlist` except for `:GoBuild` where `quickfix` is used:
+>
+  let g:go_list_type = "locationlist"
+  let g:go_list_type_commands = {"GoBuild": "quickfix"}
+<
 
                                                        *'g:go_list_autoclose'*
 
