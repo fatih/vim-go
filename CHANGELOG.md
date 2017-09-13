@@ -20,9 +20,7 @@ IMPROVEMENTS:
 * Support relative imports for `:GoImpl` [[GH-1322]](https://github.com/fatih/vim-go/pull/1322).
 * A new `g:go_list_type_commands` setting is added to individually set the list type for each command [[GH-1415]](https://github.com/fatih/vim-go/pull/1415). As en example:
 
-```
-let g:go_list_type_commands = {"GoBuild": "quickfix", "GoTest": "locationlist"}
-```
+        let g:go_list_type_commands = {"GoBuild": "quickfix", "GoTest": "locationlist"}
 
 BUG FIXES:
 
@@ -32,10 +30,8 @@ BUG FIXES:
 * Fix entering into insert mode after for term mode in nvim [[GH-1411]](https://github.com/fatih/vim-go/pull/1411)
 * When using :GoImpl on type foo struct{} it would work, but with:
 
-```
-type foo struct{
-}
-```
+        type foo struct{
+        }
 
   or with a struct with fields, it would create the generated methods inside the
   struct [[GH-1386]](https://github.com/fatih/vim-go/pull/1386)
@@ -47,6 +43,9 @@ type foo struct{
   `:GoDoc` were documented but never referenced [[GH-1420]](https://github.com/fatih/vim-go/pull/1420).
 * `go#package#FromPath()` didn't work correctly [[GH-1435]](https://github.com/fatih/vim-go/pull/1435).
 * Fix race condition for `guru` based commands [[GH-1439]](https://github.com/fatih/vim-go/pull/1439).
+* The `gohtmltmpl` filetype now sources the `html` ftplugin, so that `matchit`,
+  completion, and some other things work better.
+  [[GH-1442]](https://github.com/fatih/vim-go/pull/1442)
 
 BACKWARDS INCOMPATIBILITIES:
 
