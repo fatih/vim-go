@@ -22,6 +22,7 @@ let s:packages = [
       \ "github.com/zmb3/gogetdoc",
       \ "github.com/josharian/impl",
       \ "github.com/dominikh/go-tools/cmd/keyify",
+      \ "github.com/davidrjenni/reftools/cmd/fillstruct",
       \ ]
 
 " These commands are available on any filetypes

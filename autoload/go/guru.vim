@@ -34,8 +34,7 @@ function! s:guru_cmd(args) range abort
 
   let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
   if &modified
-    let content  = join(go#util#GetLines(), "\n")
-    let result.stdin_content = filename . "\n" . strlen(content) . "\n" . content
+    let result.stdin_content = go#util#archive()
     call add(cmd, "-modified")
   endif
 

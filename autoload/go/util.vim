@@ -296,6 +296,7 @@ function! go#util#EchoInfo(msg)
   call s:echo(a:msg, 'Debug')
 endfunction
 
+" Get all lines in the buffer as a a list.
 function! go#util#GetLines()
   let buf = getline(1, '$')
   if &encoding != 'utf-8'
@@ -307,6 +308,18 @@ function! go#util#GetLines()
     let buf = map(buf, 'v:val."\r"')
   endif
   return buf
+endfunction
+
+" Convert the current buffer to the "archive" format of
+" golang.org/x/tools/go/buildutil:
+" https://godoc.org/golang.org/x/tools/go/buildutil#ParseOverlayArchive
+"
+" > The archive consists of a series of files. Each file consists of a name, a
+" > decimal file size and the file contents, separated by newlinews. No newline
+" > follows after the file contents. 
+function! go#util#archive()
+    let l:buffer = join(go#util#GetLines(), "\n")
+    return expand("%:p:gs!\\!/!") . "\n" . strlen(l:buffer) . "\n" . l:buffer
 endfunction
 
 " vim: sw=2 ts=2 et

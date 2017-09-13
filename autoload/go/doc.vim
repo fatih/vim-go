@@ -150,18 +150,8 @@ function! s:gogetdoc(json) abort
   let command = join(cmd, " ")
 
   if &modified
-    " gogetdoc supports the same archive format as guru for dealing with
-    " modified buffers.
-    "   use the -modified flag
-    "   write each archive entry on stdin as:
-    "     filename followed by newline
-    "     file size followed by newline
-    "     file contents
-    let in = ""
-    let content = join(go#util#GetLines(), "\n")
-    let in = fname . "\n" . strlen(content) . "\n" . content
     let command .= " -modified"
-    let out = go#util#System(command, in)
+    let out = go#util#System(command, go#util#archive())
   else
     let out = go#util#System(command)
   endif

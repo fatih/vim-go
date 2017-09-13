@@ -796,6 +796,25 @@ CTRL-t
         Surname: "Smith",
       }
 <
+                                                               *:GoFillStruct*
+:GoFillStruct
+
+    Use `fillstruct` to fill a struct literal with default values. Existing
+    values (if any) are preserved. The cursor must be on the struct you wish
+    to fill.
+
+    For example:
+>
+      addr := net.Address{Name: "Ford Prefect"}
+<
+    Becomes:
+>
+      addr := net.Address{
+        Name: "Ford Prefect",
+        Email: "",
+      }
+<
+
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
