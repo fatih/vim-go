@@ -46,6 +46,7 @@ BUG FIXES:
 * The `gohtmltmpl` filetype now sources the `html` ftplugin, so that `matchit`,
   completion, and some other things work better.
   [[GH-1442]](https://github.com/fatih/vim-go/pull/1442)
+* Fix `:GoBuild` shell escaping [[GH-1450]](https://github.com/fatih/vim-go/pull/1450).
 
 BACKWARDS INCOMPATIBILITIES:
 
