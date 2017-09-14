@@ -49,7 +49,7 @@ function! go#cmd#Build(bang, ...) abort
   let default_makeprg = &makeprg
   let &makeprg = "go " . join(args, ' ')
 
-  let l:listtype = go#list#Type("GoBuild", "quickfix")
+  let l:listtype = go#list#Type("GoBuild")
   " execute make inside the source folder so we can parse the errors
   " correctly
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -150,7 +150,7 @@ function! go#cmd#Run(bang, ...) abort
     let &makeprg = "go run " . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
   endif
 
-  let l:listtype = go#list#Type("GoRun", "quickfix")
+  let l:listtype = go#list#Type("GoRun")
 
   if l:listtype == "locationlist"
     exe 'lmake!'
@@ -200,7 +200,7 @@ function! go#cmd#Install(bang, ...) abort
   let goargs = go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
   let &makeprg = "go install " . goargs
 
-  let l:listtype = go#list#Type("GoInstall", "quickfix")
+  let l:listtype = go#list#Type("GoInstall")
   " execute make inside the source folder so we can parse the errors
   " correctly
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -245,7 +245,7 @@ function! go#cmd#Generate(bang, ...) abort
     let &makeprg = "go generate " . goargs . ' ' . gofiles
   endif
 
-  let l:listtype = go#list#Type("GoGenerate", "quickfix")
+  let l:listtype = go#list#Type("GoGenerate")
 
   echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None
   if l:listtype == "locationlist"

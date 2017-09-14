@@ -128,8 +128,37 @@ function! s:listtype(listtype) abort
   return a:listtype
 endfunction
 
-function! go#list#Type(for, default) abort
-  let l:listtype = s:listtype(a:default)
+" s:default_list_type_commands is the defaults that will be used for each of
+" the supported commands (see documentation for g:go_list_type_commands). When
+" defining a default, quickfix should be used if the command operates on
+" multiple files, while locationlist should be used if the command operates on a
+" single file or buffer. Keys that begin with an underscore are not supported
+" in g:go_list_type_commands.
+let s:default_list_type_commands = {
+  "GoBuild": "quickfix",
+  "GoErrCheck": "quickfix",
+  "GoFmt": "locationlist",
+  "GoGenerate": "quickfix",
+  "GoInstall": "quickfix",
+  "GoLint": "quickfix",
+  "GoMetaLinter": "quickfix",
+  "GoModifyTags": "quickfix",
+  "GoRename": "quickfix",
+  "GoRun": "quickfix",
+  "GoTest", "quickfix",
+  "GoVet": "quickfix",
+  "_guru", "locationlist",
+  "_term": "locationlist",
+}
+
+function! go#list#Type(for) abort
+  let l:listtype = s:listtype(get(s:default_list_type_commands, a:for))
+  if l:listtype == 0
+    call go#util#EchoError(printf("unknown list type command value found ('%s)'. Please open a bug report in the vim-go repo.", a:for))
+    let l:listtype = "quickfix"
+  endif
+
   return get(g:go_list_type_commands, a:for, l:listtype)
 endfunction
+
 " vim: sw=2 ts=2 et

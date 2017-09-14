@@ -130,7 +130,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   call s:callback_handlers_on_exit(s:jobs[a:job_id], a:exit_status, std_combined)
 
-  let l:listtype = go#list#Type(self.for, "quickfix")
+  let l:listtype = go#list#Type(self.for)
   if a:exit_status == 0
     call go#list#Clean(l:listtype)
     call go#list#Window(l:listtype)

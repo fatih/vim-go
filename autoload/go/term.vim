@@ -105,7 +105,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
   endif
   let job = s:jobs[a:job_id]
 
-  let l:listtype = go#list#Type("_term", "locationlist")
+  let l:listtype = go#list#Type("_term")
 
   " usually there is always output so never branch into this clause
   if empty(job.stdout)

@@ -134,7 +134,7 @@ function! go#fmt#update_file(source, target)
   endif
 
   " clean up previous list
-  let l:listtype = go#list#Type("GoFmt", "locationlist")
+  let l:listtype = go#list#Type("GoFmt")
   if l:listtype == "quickfix"
     let l:list_title = getqflist({'title': 1})
   else
@@ -248,7 +248,7 @@ endfunction
 " show_errors opens a location list and shows the given errors. If the given
 " errors is empty, it closes the the location list
 function! s:show_errors(errors) abort
-  let l:listtype = go#list#Type("GoFmt", "locationlist")
+  let l:listtype = go#list#Type("GoFmt")
   if !empty(a:errors)
     call go#list#Populate(l:listtype, a:errors, 'Format')
     echohl Error | echomsg "Gofmt returned error" | echohl None
