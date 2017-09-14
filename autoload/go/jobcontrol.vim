@@ -37,7 +37,7 @@ endfunction
 " a job is started a reference will be stored inside s:jobs. spawn changes the
 " GOPATH when g:go_autodetect_gopath is enabled. The job is started inside the
 " current files folder.
-function! s:spawn(bang, desc, args, for) abort
+function! s:spawn(bang, desc, for, args) abort
   let status_type = a:args[0]
   let status_dir = expand('%:p:h')
   let started_at = reltime()
