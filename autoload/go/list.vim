@@ -149,12 +149,15 @@ let s:default_list_type_commands = {
       \ "GoVet":        "quickfix",
       \ "_guru":        "locationlist",
       \ "_term":        "locationlist",
+      \ "_job":         "locationlist",
   \ }
 
 function! go#list#Type(for) abort
   let l:listtype = s:listtype(get(s:default_list_type_commands, a:for))
-  if l:listtype == 0
-    call go#util#EchoError(printf("unknown list type command value found ('%s)'. Please open a bug report in the vim-go repo.", a:for))
+  if l:listtype == "0"
+    call go#util#EchoError(printf(
+          \ "unknown list type command value found ('%s'). Please open a bug report in the vim-go repo.",
+          \ a:for))
     let l:listtype = "quickfix"
   endif
 
