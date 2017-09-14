@@ -142,7 +142,7 @@ let s:default_list_type_commands = {
   "GoInstall": "quickfix",
   "GoLint": "quickfix",
   "GoMetaLinter": "quickfix",
-  "GoModifyTags": "quickfix",
+  "GoModifyTags": "locationlist",
   "GoRename": "quickfix",
   "GoRun": "quickfix",
   "GoTest", "quickfix",
