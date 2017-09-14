@@ -110,9 +110,10 @@ function! go#util#osarch() abort
   return go#util#env("goos") . '_' . go#util#env("goarch")
 endfunction
 
-" System runs a shell command. If possible, it will temporary set
-" the shell to /bin/sh for Unix-like systems providing a Bourne
-" POSIX like environment.
+" System runs a shell command "str". Every arguments after "str" are passed to
+" stdin.
+" If possible, it will temporary set the shell to /bin/sh for Unix-like systems
+" providing a Bourne POSIX like environment.
 function! go#util#System(str, ...) abort
   " Preserve original shell and shellredir values
   let l:shell = &shell
@@ -127,8 +128,45 @@ function! go#util#System(str, ...) abort
   endif
 
   try
-    let l:output = call('system', [a:str] + a:000)
-    return l:output
+    return call('system', [a:str] + a:000)
+  finally
+    " Restore original values
+    let &shell = l:shell
+    let &shellredir = l:shellredir
+  endtry
+endfunction
+
+" Exec runs a shell command "cmd", which must be a list, one argument per item.
+" Every list entry will be automatically shell-escaped
+" Every other argument is passed to stdin.
+function! go#util#Exec(cmd, ...) abort
+  if len(a:cmd) == 0
+    call go#util#EchoError "Exec called with empty command?"
+    return
+  endif
+
+  let l:bin = go#path#CheckBinPath(a:cmd[0])
+  if empty(l:bin)
+    return ["", 1]
+  endif
+
+  let l:cmd = go#util#Shelljoin([l:bin] + a:cmd[1:])
+
+  " Preserve original shell and shellredir values
+  let l:shell = &shell
+  let l:shellredir = &shellredir
+
+  " Use a Bourne POSIX like shell. Some parts of vim-go expect
+  " commands to be executed using bourne semantics #988 and #1276.
+  " Alter shellredir to match bourne. Especially important if login shell
+  " is set to any of the csh or zsh family #1276.
+  if !go#util#IsWin() && executable('/bin/sh')
+      set shell=/bin/sh shellredir=>%s\ 2>&1
+  endif
+
+  try
+    let l:out = call('system', [l:cmd] + a:000)
+    return [l:out, go#util#ShellError()]
   finally
     " Restore original values
     let &shell = l:shell

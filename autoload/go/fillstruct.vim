@@ -1,22 +1,17 @@
 function! go#fillstruct#FillStruct() abort
-  let binpath = go#path#CheckBinPath('fillstruct')
-  if empty(binpath)
-    return
-  endif
-
-  let l:cmd = [binpath,
+  let l:cmd = ['fillstruct',
       \ '-file', bufname(''),
       \ '-offset', go#util#OffsetCursor()]
 
   " Read from stdin if modified.
   if &modified
     call add(l:cmd, '-modified')
-    let l:out = go#util#System(go#util#Shelljoin(l:cmd), go#util#archive())
+    let [l:out, l:err] = go#util#Exec(l:cmd, go#util#archive())
   else
-    let l:out = go#util#System(go#util#Shelljoin(l:cmd))
+    let [l:out, l:err] = go#util#Exec(l:cmd)
   endif
 
-  if go#util#ShellError() != 0
+  if l:err
     call go#util#EchoError(l:out)
     return
   endif
