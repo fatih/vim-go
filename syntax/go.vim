@@ -89,6 +89,10 @@ if !exists("g:go_highlight_generate_tags")
   let g:go_highlight_generate_tags = 0
 endif
 
+if !exists("g:go_highlight_variable_assignments")
+  let g:go_highlight_variable_assignments = 0
+endif
+
 if !exists("g:go_highlight_variable_declarations")
   let g:go_highlight_variable_declarations = 0
 endif
@@ -403,6 +407,12 @@ hi def link     goTypeConstructor   Type
 hi def link     goTypeName          Type
 hi def link     goTypeDecl          Keyword
 hi def link     goDeclType          Keyword
+
+" Variable Assignments
+if g:go_highlight_variable_assignments != 0
+  syn match goVarAssign /\v[_.[:alnum:]]+(,\s*[_.[:alnum:]]+)*\ze(\s*\=)/
+  hi def link   goVarAssign         Special
+endif
 
 " Variable Declarations
 if g:go_highlight_variable_declarations != 0
