@@ -74,8 +74,7 @@ function go#job#Spawn(args)
 
     if !len(errors)
       " failed to parse errors, output the original content
-      call go#util#EchoError(join(self.messages, " "))
-      call go#util#EchoError(self.dir)
+      call go#util#EchoError(self.messages + [self.dir])
       return
     endif
 

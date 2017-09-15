@@ -261,30 +261,30 @@ function! go#util#camelcase(word) abort
   endif
 endfunction
 
-" TODO(arslan): I couldn't parameterize the highlight types. Check if we can
-" simplify the following functions
+" Echo a message to the screen and highlight it with the group in a:hi.
 "
-" NOTE(arslan): echon doesn't work well with redraw, thus echo doesn't print
-" even though we order it. However echom seems to be work fine.
-function! go#util#EchoSuccess(msg)
-  redraw | echohl Function | echom "vim-go: " . a:msg | echohl None
+" The message can be a list or string; every line with be :echomsg'd separately.
+function! s:echo(msg, hi)
+  let l:msg = a:msg
+  if type(l:msg) != v:t_list
+    let l:msg = split(l:msg, "\n")
+  endif
+
+  " Tabs display as ^I or <09>, so manually expand them.
+  let l:msg = map(l:msg, 'substitute(v:val, "\t", "        ", "")')
+
+  exe 'echohl ' . a:hi
+  for line in l:msg
+    echom "vim-go: " . line
+  endfor
+  echohl None
 endfunction
 
-function! go#util#EchoError(msg)
-  redraw | echohl ErrorMsg | echom "vim-go: " . a:msg | echohl None
-endfunction
-
-function! go#util#EchoWarning(msg)
-  redraw | echohl WarningMsg | echom "vim-go: " . a:msg | echohl None
-endfunction
-
-function! go#util#EchoProgress(msg)
-  redraw | echohl Identifier | echom "vim-go: " . a:msg | echohl None
-endfunction
-
-function! go#util#EchoInfo(msg)
-  redraw | echohl Debug | echom "vim-go: " . a:msg | echohl None
-endfunction
+fu! go#util#EchoSuccess(msg)  | call s:echo(a:msg, 'Function')   | endfu
+fu! go#util#EchoError(msg)    | call s:echo(a:msg, 'ErrorMsg')   | endfu
+fu! go#util#EchoWarning(msg)  | call s:echo(a:msg, 'WarningMsg') | endfu
+fu! go#util#EchoProgress(msg) | call s:echo(a:msg, 'Identifier') | endfu
+fu! go#util#EchoInfo(msg)     | call s:echo(a:msg, 'Debug')      | endfu
 
 function! go#util#GetLines()
   let buf = getline(1, '$')

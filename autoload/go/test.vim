@@ -237,7 +237,7 @@ function! s:show_errors(args, exit_val, messages) abort
 
   if !len(errors)
     " failed to parse errors, output the original content
-    call go#util#EchoError(join(a:messages, " "))
+    call go#util#EchoError(a:messages)
     call go#util#EchoError(a:args.dir)
     return
   endif

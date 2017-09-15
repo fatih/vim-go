@@ -127,7 +127,7 @@ function s:parse_errors(exit_val, bang, out)
       call go#list#JumpToFirst(l:listtype)
     elseif empty(errors)
       " failed to parse errors, output the original content
-      call go#util#EchoError(join(a:out, ""))
+      call go#util#EchoError(a:out)
     endif
 
     return
