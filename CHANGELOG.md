@@ -16,6 +16,7 @@ IMPROVEMENTS:
   gets pre-filled can be configured with `g:go_gorename_prefill` option.
   In addition `:GoRename <Tab>` now lists some common options.
   [[GH-1465]](https://github.com/fatih/vim-go/pull/1465).
+* Disable `g:go_autodetect_gopath` by default. [[GH-1461]](https://github.com/fatih/vim-go/pull/1461).
 
 ## 1.15 - (October 3, 2017)
 

@@ -1312,9 +1312,9 @@ the tool `godep` which has his own dependencies via the `Godeps` folder. What
 this means is that all tools are now working with the newly modified GOPATH.
 So |:GoDef| for example jumps to the source inside the `Godeps` (vendored)
 source. Currently `godep` and `gb` is supported, in the near future more tool
-supports will be added. By default it's enabled. >
+supports will be added. By default it's disabled. >
 
-  let g:go_autodetect_gopath = 1
+  let g:go_autodetect_gopath = 0
 <
                                                       *'g:go_textobj_enabled'*
 
