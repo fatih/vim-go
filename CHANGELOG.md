@@ -22,6 +22,8 @@ IMPROVEMENTS:
 
         let g:go_list_type_commands = {"GoBuild": "quickfix", "GoTest": "locationlist"}
 
+* Variable assignments are highlighted when `g:go_highlight_variable_assignments` is enabled [[GH-1458]](https://github.com/fatih/vim-go/pull/1458)
+
 BUG FIXES:
 
 * Include comments in import block when folding is enabled [[GH-1387]](https://github.com/fatih/vim-go/pull/1387)
