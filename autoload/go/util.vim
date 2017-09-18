@@ -280,11 +280,21 @@ function! s:echo(msg, hi)
   echohl None
 endfunction
 
-fu! go#util#EchoSuccess(msg)  | call s:echo(a:msg, 'Function')   | endfu
-fu! go#util#EchoError(msg)    | call s:echo(a:msg, 'ErrorMsg')   | endfu
-fu! go#util#EchoWarning(msg)  | call s:echo(a:msg, 'WarningMsg') | endfu
-fu! go#util#EchoProgress(msg) | call s:echo(a:msg, 'Identifier') | endfu
-fu! go#util#EchoInfo(msg)     | call s:echo(a:msg, 'Debug')      | endfu
+function! go#util#EchoSuccess(msg)
+  call s:echo(a:msg, 'Function')
+endfunction
+function! go#util#EchoError(msg)
+  call s:echo(a:msg, 'ErrorMsg')
+endfunction
+function! go#util#EchoWarning(msg)
+  call s:echo(a:msg, 'WarningMsg')
+endfunction
+function! go#util#EchoProgress(msg)
+  call s:echo(a:msg, 'Identifier')
+endfunction
+function! go#util#EchoInfo(msg)
+  call s:echo(a:msg, 'Debug')
+endfunction
 
 function! go#util#GetLines()
   let buf = getline(1, '$')
