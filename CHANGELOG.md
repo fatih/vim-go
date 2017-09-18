@@ -1,5 +1,11 @@
 ## unplanned
 
+FEATURES:
+
+* Add `:GoFillStruct` to fill a struct with all fields; uses
+  [`fillstruct`](https://github.com/davidrjenni/reftools/tree/master/cmd/fillstruct)
+  [[GH-1443]](https://github.com/fatih/vim-go/pull/1443).
+
 IMPROVEMENTS:
 
 * `:GoAddTags` and `:GoRemoveTags` now continue to process if there are

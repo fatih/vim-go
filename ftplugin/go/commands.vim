@@ -104,4 +104,7 @@ command! -nargs=0 GoTemplateAutoCreateToggle call go#template#ToggleAutoCreate()
 " -- keyify
 command! -nargs=0 GoKeyify call go#keyify#Keyify()
 
+" -- fillstruct
+command! -nargs=0 GoFillStruct call go#fillstruct#FillStruct()
+
 " vim: sw=2 ts=2 et
