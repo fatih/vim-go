@@ -3,16 +3,17 @@ if !exists("g:go_gorename_bin")
 endif
 
 if !exists("g:go_gorename_prefill")
-  let g:go_gorename_prefill = 1
+  let g:go_gorename_prefill = 'expand("<cword>") =~# "^[A-Z]"' .
+        \ '? go#util#camelcaseExported(expand("<cword>"))' .
+        \ ': go#util#camelcase(expand("<cword>"))'
 endif
 
 function! go#rename#Rename(bang, ...) abort
   let to_identifier = ""
   if a:0 == 0
-    let from = expand("<cword>")
-    let ask = printf("vim-go: rename '%s' to: ", from)
-    if g:go_gorename_prefill
-      let to_identifier = input(ask, from)
+    let ask = printf("vim-go: rename '%s' to: ", expand("<cword>"))
+    if g:go_gorename_prefill != ''
+      let to_identifier = input(ask, eval(g:go_gorename_prefill))
     else
       let to_identifier = input(ask)
     endif
@@ -24,7 +25,7 @@ function! go#rename#Rename(bang, ...) abort
     let to_identifier = a:1
   endif
 
-  "return with a warning if the bin doesn't exist
+  " return with a warning if the bin doesn't exist
   let bin_path = go#path#CheckBinPath(g:go_gorename_bin)
   if empty(bin_path)
     return
@@ -144,6 +145,15 @@ function s:parse_errors(exit_val, bang, out)
   " we need a way to get the list of changes from gorename upon an success
   " change.
   silent execute ":e"
+endfunction
+
+" Commandline completion: original, unexported camelCase, and exported
+" CamelCase.
+function! go#rename#Complete(lead, cmdline, cursor)
+  let l:word = expand('<cword>')
+  return filter(uniq(sort(
+        \ [l:word, go#util#camelcase(l:word), go#util#camelcaseExported(l:word)])),
+        \ 'strpart(v:val, 0, len(a:lead)) == a:lead')
 endfunction
 
 " vim: sw=2 ts=2 et

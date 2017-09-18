@@ -264,23 +264,31 @@ endfunction
 " snakecase converts a string to snake case. i.e: FooBar -> foo_bar
 " Copied from tpope/vim-abolish
 function! go#util#snakecase(word) abort
-  let word = substitute(a:word,'::','/','g')
-  let word = substitute(word,'\(\u\+\)\(\u\l\)','\1_\2','g')
-  let word = substitute(word,'\(\l\|\d\)\(\u\)','\1_\2','g')
-  let word = substitute(word,'[.-]','_','g')
+  let word = substitute(a:word, '::', '/', 'g')
+  let word = substitute(word, '\(\u\+\)\(\u\l\)', '\1_\2', 'g')
+  let word = substitute(word, '\(\l\|\d\)\(\u\)', '\1_\2', 'g')
+  let word = substitute(word, '[.-]', '_', 'g')
   let word = tolower(word)
   return word
 endfunction
 
-" camelcase converts a string to camel case. i.e: FooBar -> fooBar
-" Copied from tpope/vim-abolish
+" camelcase converts a string to camel case. e.g. FooBar or foo_bar will become
+" fooBar.
+" Copied from tpope/vim-abolish.
 function! go#util#camelcase(word) abort
   let word = substitute(a:word, '-', '_', 'g')
   if word !~# '_' && word =~# '\l'
-    return substitute(word,'^.','\l&','')
+    return substitute(word, '^.', '\l&', '')
   else
-    return substitute(word,'\C\(_\)\=\(.\)','\=submatch(1)==""?tolower(submatch(2)) : toupper(submatch(2))','g')
+    return substitute(word, '\C\(_\)\=\(.\)', '\=submatch(1)==""?tolower(submatch(2)) : toupper(submatch(2))','g')
   endif
+endfunction
+
+" camelcaseExported converts a string to exported camel case. e.g. fooBar or
+" foo_bar will become FooBar.
+function! go#util#camelcaseExported(word) abort
+  let word = go#util#camelcase(a:word)
+  return toupper(word[0]) . word[1:]
 endfunction
 
 " Echo a message to the screen and highlight it with the group in a:hi.
