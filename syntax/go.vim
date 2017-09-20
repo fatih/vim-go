@@ -410,7 +410,7 @@ hi def link     goDeclType          Keyword
 
 " Variable Assignments
 if g:go_highlight_variable_assignments != 0
-  syn match goVarAssign /\v[_.[:alnum:]]+(,\s*[_.[:alnum:]]+)*\ze(\s*\=)/
+  syn match goVarAssign /\v[_.[:alnum:]]+(,\s*[_.[:alnum:]]+)*\ze(\s*([-^+|^\/%&]|\*|\<\<|\>\>|\&\^)?\=[^=])/
   hi def link   goVarAssign         Special
 endif
 
