@@ -111,7 +111,8 @@ function! s:sync_guru(args) abort
 
   if !has_key(a:args, 'disable_progress')
     if a:args.needs_scope
-      call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
+      call go#util#EchoProgress("analysing with scope ". result.scope .
+            \ " (see ':help go-guru-scope' if this doesn't work)...")
     elseif a:args.mode !=# 'what'
       " the query might take time, let us give some feedback
       call go#util#EchoProgress("analysing ...")
@@ -149,7 +150,8 @@ function! s:async_guru(args) abort
 
   if !has_key(a:args, 'disable_progress')
     if a:args.needs_scope
-      call go#util#EchoProgress("analysing with scope ". result.scope . " ...")
+      call go#util#EchoProgress("analysing with scope " . result.scope .
+            \ " (see ':help go-guru-scope' if this doesn't work)...")
     endif
   endif
 
