@@ -810,7 +810,7 @@ CTRL-t
     Becomes:
 >
       addr := net.Address{
-        Name: "Ford Prefect",
+        Name:  "Ford Prefect",
         Email: "",
       }
 <
