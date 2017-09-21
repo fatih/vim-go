@@ -3,36 +3,13 @@
 " license that can be found in the LICENSE file.
 "
 " go.vim: Vim syntax file for Go.
-"
-" Options:
-"   There are some options for customizing the highlighting; the recommended
-"   settings are the default values, but you can write:
-"     let OPTION_NAME = 0
-"   in your ~/.vimrc file to disable particular options. You can also write:
-"     let OPTION_NAME = 1
-"   to enable particular options. At present, all options default to off:
-"
-"   - go_highlight_array_whitespace_error
-"     Highlights white space after "[]".
-"   - go_highlight_chan_whitespace_error
-"     Highlights white space around the communications operator that don't follow
-"     the standard style.
-"   - go_highlight_extra_types
-"     Highlights commonly used library types (io.Reader, etc.).
-"   - go_highlight_space_tab_error
-"     Highlights instances of tabs following spaces.
-"   - go_highlight_trailing_whitespace_error
-"     Highlights trailing white space.
-"   - go_highlight_string_spellcheck
-"     Specifies that strings should be spell checked
-"   - go_highlight_format_strings
-"     Highlights printf-style operators inside string literals.
 
 " Quit when a (custom) syntax file was already loaded
 if exists("b:current_syntax")
   finish
 endif
 
+" Set settings to default values.
 if !exists("g:go_highlight_array_whitespace_error")
   let g:go_highlight_array_whitespace_error = 0
 endif
