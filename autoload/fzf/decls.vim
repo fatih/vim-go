@@ -45,7 +45,7 @@ function! s:sink(str)
     let cmd = get({'ctrl-x': 'split',
           \ 'ctrl-v': 'vertical split',
           \ 'ctrl-t': 'tabe'}, a:str[0], 'e')
-    execute cmd filepath
+    execute cmd fnameescape(filepath)
     call cursor(line, col)
     silent! norm! zvzz
   finally
