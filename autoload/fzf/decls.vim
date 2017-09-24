@@ -1,11 +1,11 @@
-function! s:code(group, attr)
+function! s:code(group, attr) abort
   let code = synIDattr(synIDtrans(hlID(a:group)), a:attr, "cterm")
   if code =~ '^[0-9]\+$'
     return code
   endif
 endfunction
 
-function! s:color(str, group)
+function! s:color(str, group) abort
   let fg = s:code(a:group, "fg")
   let bg = s:code(a:group, "bg")
   let bold = s:code(a:group, "bold")
@@ -21,7 +21,7 @@ function! s:color(str, group)
   return printf("\x1b[%sm%s\x1b[m", color, a:str)
 endfunction
 
-function! s:sink(str)
+function! s:sink(str) abort
   if len(a:str) < 2
     return
   endif
@@ -30,7 +30,7 @@ function! s:sink(str)
   try
     " we jump to the file directory so we can get the fullpath via fnamemodify
     " below
-    execute cd . s:current_dir
+    execute cd . fnameescape(s:current_dir)
 
     let vals = matchlist(a:str[1], '|\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)|')
 
@@ -54,8 +54,8 @@ function! s:sink(str)
   endtry
 endfunction
 
-function! s:source(mode,...)
-  let s:current_dir = fnameescape(expand('%:p:h'))
+function! s:source(mode,...) abort
+  let s:current_dir = expand('%:p:h')
   let ret_decls = []
 
   let bin_path = go#path#CheckBinPath('motion')
@@ -74,14 +74,14 @@ function! s:source(mode,...)
       let fname = a:1
     endif
 
-    let command .= printf(" -file %s", fname)
+    let command .= printf(" -file %s", shellescape(fname))
   else
     " all functions mode
     if a:0 && !empty(a:1)
       let s:current_dir = a:1
     endif
 
-    let command .= printf(" -dir %s", s:current_dir)
+    let command .= printf(" -dir %s", shellescape(s:current_dir))
   endif
 
   let out = go#util#System(command)
@@ -132,7 +132,7 @@ function! s:source(mode,...)
   return ret_decls
 endfunc
 
-function! fzf#decls#cmd(...)
+function! fzf#decls#cmd(...) abort
   let normal_fg = s:code("Normal", "fg")
   let normal_bg = s:code("Normal", "bg")
   let cursor_fg = s:code("CursorLine", "fg")
