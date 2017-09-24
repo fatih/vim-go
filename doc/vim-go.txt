@@ -1765,8 +1765,10 @@ binaries).
 
 Vim becomes slow while editing Go files~
 
-Don't enable the |'g:go_highlight_types'| and |'g:go_highlight_operators'|
-options.
+This is usually caused by `g:go_hilight_*` options. Try disabling them if
+you've enabled some of them.
+
+Other common culprits are |'g:go_auto_sameids'| and |go#statusline#Show()|.
 
 
 I get errors when using GoInstallBinaries~
