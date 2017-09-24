@@ -104,26 +104,27 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     let l:platform = 'windows'
   endif
 
-  for [basename, pkg] in items(l:packages)
-    let binname = "go_" . basename . "_bin"
+  for [binary, pkg] in items(l:packages)
+    let l:importPath = pkg[0]
+    let l:goGetFlags = len(pkg) > 1 ? get(pkg[1], l:platform, '') : ''
 
-    let bin = basename
+    let binname = "go_" . binary . "_bin"
+
+    let bin = binary
     if exists("g:{binname}")
       let bin = g:{binname}
     endif
 
     if !executable(bin) || a:updateBinaries == 1
       if a:updateBinaries == 1
-        echo "vim-go: Updating ". basename .". Reinstalling ". pkg[0] . " to folder " . go_bin_path
+        echo "vim-go: Updating " . binary . ". Reinstalling ". importPath . " to folder " . go_bin_path
       else
-        echo "vim-go: ". basename ." not found. Installing ". pkg[0] . " to folder " . go_bin_path
+        echo "vim-go: ". binary ." not found. Installing ". importPath . " to folder " . go_bin_path
       endif
 
-      let out = go#util#System(cmd . 
-            \ (len(pkg) > 1 ? get(pkg[1], l:platform, '') : '') . ' ' .
-            \ shellescape(pkg[0]))
+      let out = go#util#System(cmd . l:goGetFlags . shellescape(importPath))
       if go#util#ShellError() != 0
-        echo "Error installing ". pkg[0] . ": " . out
+        echom "Error installing " . pkgimportPath . ": " . out
       endif
     endif
   endfor
