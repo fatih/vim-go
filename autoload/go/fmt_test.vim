@@ -11,7 +11,6 @@ func Test_run_fmt()
   let actual = join(readfile(actual_file), "\n")
 
   call assert_equal(expected, actual)
-  call assert_equal("fail", "this")
 endfunc
 
 func Test_update_file()
