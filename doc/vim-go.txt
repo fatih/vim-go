@@ -524,6 +524,8 @@ CTRL-t
     Under the hood, the patterns are all joined to a comma-separated list and
     passed to `guru`'s `-scope` flag.
 
+    Also see |go-guru-scope|.
+
                                                                   *:GoCallees*
 :GoCallees
 
@@ -1276,8 +1278,11 @@ Use this option to define the scope of the analysis to be passed for guru
 related commands, such as |:GoImplements|, |:GoCallers|, etc. You can change
 it on-the-fly with |:GoGuruScope|. The input should be a a list of package
 pattern. An example input might be:
-`["github.com/fatih/color","github.com/fatih/structs"]` By default it's not
-set, so the relevant commands defaults are being used.
+`["github.com/fatih/color","github.com/fatih/structs"]`
+
+Also see |go-guru-scope|.
+
+By default it's not set, so the relevant commands defaults are being used.
 >
   let g:go_guru_scope = []
 <
@@ -1771,6 +1776,37 @@ Before opening vim, check your current $PATH:
 After opening vim, run `:echo $PATH`, the output must be your current `$PATH`
 plus `$GOPATH/bin` (the location where |:GoInstallBinaries| installed the
 binaries).
+
+                                                               *go-guru-scope*
+What is the guru scope and how do I set it?~
+
+Many vim-go commands use the `guru` commandline tool to get information. Some
+`guru` commands require an expensive analysis of the source code. To still get
+a reasonable amount of performance `guru` limits this analysis to a selected
+list of packages. This is known as the "guru scope".
+
+The default is to use the package the curent buffer belongs to, but this may
+not always be correct. For example for the file `guthub.com/user/pkg/a/a.go`
+the scope will be set to `github.com/user/pkg/a`, but you probably want
+`github.com/user/pkg`
+
+Guessing what package(s) you do want is not easy so you may need to set this
+manually, usually from an |autocommand|:
+>
+  autocmd BufRead /home/martin/go/src/github.com/user/pkg/*.go
+        \ :GoGuruScope github.com/user/pkg
+<
+
+If you have a lot of packages with the same prefix (`github.com/user`) you can
+use a single autocommand:
+>
+  autocmd BufRead /home/martin/go/src/*.go 
+        \  let s:tmp = matchlist(expand('%:p'),
+            \ '/home/martin/go/src/\(github.com/user/[^/]\+\)')
+        \| if len(s:tmp) > 1 |  exe 'silent :GoGuruScope ' . s:tmp[1] | endif
+        \| unlet s:tmp
+<
+Also see |:GoGuruScope| and |'g:go_guru_scope'|.
 
 
 Vim becomes slow while editing Go files~
