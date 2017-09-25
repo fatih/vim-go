@@ -21,10 +21,11 @@ CONTENTS                                                         *go-contents*
   5. Text Objects.................................|go-text-objects|
   6. Functions....................................|go-functions|
   7. Settings.....................................|go-settings|
-  8. FAQ/Troubleshooting..........................|go-troubleshooting|
-  9. Development..................................|go-development|
- 10. Donation.....................................|go-donation|
- 11. Credits......................................|go-credits|
+  8. Syntax highlighting..........................|go-syntax|
+  9. FAQ/Troubleshooting..........................|go-troubleshooting|
+ 10. Development..................................|go-development|
+ 11. Donation.....................................|go-donation|
+ 12. Credits......................................|go-credits|
 
 ==============================================================================
 INTRO                                                               *go-intro*
@@ -1289,106 +1290,6 @@ remove build tags. By default it's not set.
 >
   let g:go_build_tags = ''
 <
-                                     *'g:go_highlight_array_whitespace_error'*
-
-Highlights white space after "[]". >
-
-  let g:go_highlight_array_whitespace_error = 1
-<
-                                      *'g:go_highlight_chan_whitespace_error'*
-
-Highlights white space around the communications operator (`<-`) that doesn't
-follow the standard style. >
-
-  let g:go_highlight_chan_whitespace_error = 1
-<
-                                                *'g:go_highlight_extra_types'*
-
-Highlights commonly used library types (io.Reader, etc.). >
-
-  let g:go_highlight_extra_types = 1
-<
-                                            *'g:go_highlight_space_tab_error'*
-
-Highlights instances of tabs following spaces. >
-
-  let g:go_highlight_space_tab_error = 1
-<
-                                  *'g:go_highlight_trailing_whitespace_error'*
-
-Highlights trailing white space. >
-
-  let g:go_highlight_trailing_whitespace_error = 1
-<
-                                                  *'g:go_highlight_operators'*
-
-Highlights operators such as `:=` , `==`, `-=`, etc. By default it's
-disabled. >
-
-  let g:go_highlight_operators = 0
-<
-                                                  *'g:go_highlight_functions'*
-
-Highlights function names. By default it's disabled. >
-
-  let g:go_highlight_functions = 0
-<
-                                                    *'g:go_highlight_methods'*
-
-Highlights method names. By default it's disabled. >
-
-  let g:go_highlight_methods = 0
-<
-                                                      *'g:go_highlight_types'*
-
-Highlights struct and interface names. By default it's disabled. >
-
-  let g:go_highlight_types = 0
-<
-                                                     *'g:go_highlight_fields'*
-
-Highlights field names. By default it's disabled. >
-
-  let g:go_highlight_fields = 0
-<
-                                          *'g:go_highlight_build_constraints'*
-
-Highlights build constraints. By default it's disabled. >
-
-  let g:go_highlight_build_constraints = 0
-<
-                                          *'g:go_highlight_generate_tags'*
-
-Highlights go:generate directives. By default it's disabled. >
-
-  let g:go_highlight_generate_tags = 0
-<
-                                          *'g:go_highlight_string_spellcheck'*
-
-Use this option to highlight spelling errors in strings when |spell| is
-also enabled. By default it's enabled. >
-
-  let g:go_highlight_string_spellcheck = 1
-<
-                                             *'g:go_highlight_format_strings'*
-
-Use this option to highlight printf-style operators inside string literals.
-By default it's enabled. >
-
-  let g:go_highlight_format_strings = 1
-<
-                                      *'g:go_highlight_variable_declarations'*
-
-Highlight variable declarations (`:=`). By default it's disabled. >
-
-  let g:go_highlight_variable_declarations = 0
-<
-                                      *'g:go_highlight_variable_assignments'*
-
-Highlight variable assignments (`=`). By default it's disabled. >
-
-  let g:go_highlight_variable_assignments = 0
-<
                                                     *'g:go_autodetect_gopath'*
 
 Automatically modifies GOPATH for certain directory structures, such as for
@@ -1698,17 +1599,28 @@ By default "snakecase" is used. Current values are: ["snakecase",
 >
       let g:go_addtags_transform = 'snakecase'
 <
-                                                        *'g:go_fold_enable'*
+
+==============================================================================
+SYNTAX HIGHLIGHTING                                 *ft-go-syntax* *go-syntax*
+
+Vim-go comes with an enhanced version of Vim's Go syntax highlighting. It
+comes with a number of features, most of which are disabled by default.
+
+The recommended settings are the default values. If you're experiencing
+slowdowns in Go files and you enabled some of these options then try disabling
+them; some can be resource intensive.
+
+                                                          *'g:go_fold_enable'*
 
 Control syntax-based folding which takes effect when 'foldmethod' is set to
 `syntax`.
 You can enable specific fold regions by setting an array. Possible values are:
 
-- "block"            `{` .. `}` blocks.
-- "import"           `import` block.
-- "varconst"         `var` and `const` blocks.
-- "package_comment"  The package comment.
-- "comment"          Any comment that is not the package comment.
+ block                `{` .. `}` blocks.
+ import               `import` block.
+ varconst             `var` and `const` blocks.
+ package_comment      The package comment.
+ comment              Any comment that is not the package comment.
 
 By default all except "comment" are enabled:
 >
@@ -1722,27 +1634,118 @@ Disable everything (same as not setting 'foldmethod' to `syntax`):
 >
   let g:go_fold_enable = []
 <
+                                     *'g:go_highlight_array_whitespace_error'*
+
+Highlight white space after `[]`. >
+
+  let g:go_highlight_array_whitespace_error = 0
+<
+                                      *'g:go_highlight_chan_whitespace_error'*
+
+Highlight white space around the receive operator (`<-`) that doesn't follow
+the standard style. >
+
+  let g:go_highlight_chan_whitespace_error = 0
+<
+                                                *'g:go_highlight_extra_types'*
+
+Highlight commonly used library types (`io.Reader`, etc.). >
+
+  let g:go_highlight_extra_types = 0
+<
+                                            *'g:go_highlight_space_tab_error'*
+
+Highlight instances of tabs following spaces. >
+
+  let g:go_highlight_space_tab_error = 0
+<
+                                  *'g:go_highlight_trailing_whitespace_error'*
+
+Highlight trailing white space. >
+
+  let g:go_highlight_trailing_whitespace_error = 0
+<
+                                                  *'g:go_highlight_operators'*
+
+Highlight operators such as `:=` , `==`, `-=`, etc.
+>
+  let g:go_highlight_operators = 0
+<
+                                                  *'g:go_highlight_functions'*
+
+Highlight function names.
+>
+  let g:go_highlight_functions = 0
+<
+                                                    *'g:go_highlight_methods'*
+
+Highlight method names.
+>
+  let g:go_highlight_methods = 0
+<
+                                                      *'g:go_highlight_types'*
+
+Highlight struct and interface names.
+>
+  let g:go_highlight_types = 0
+<
+                                                     *'g:go_highlight_fields'*
+
+Highlight struct field names.
+>
+  let g:go_highlight_fields = 0
+<
+                                          *'g:go_highlight_build_constraints'*
+
+Highlights build constraints.
+>
+  let g:go_highlight_build_constraints = 0
+<
+                                              *'g:go_highlight_generate_tags'*
+
+Highlight go:generate directives.
+>
+  let g:go_highlight_generate_tags = 0
+<
+                                          *'g:go_highlight_string_spellcheck'*
+
+Highlight spelling errors in strings when |spell| is enabled.
+>
+  let g:go_highlight_string_spellcheck = 1
+<
+                                             *'g:go_highlight_format_strings'*
+
+Highlight printf-style formatting verbs inside string literals.
+>
+  let g:go_highlight_format_strings = 1
+<
+                                      *'g:go_highlight_variable_declarations'*
+
+Highlight variable names in variable declarations (`x` in ` x :=`).
+>
+  let g:go_highlight_variable_declarations = 0
+<
+                                       *'g:go_highlight_variable_assignments'*
+
+Highlight variable names in variable assignments (`x` in `x =`).
+>
+  let g:go_highlight_variable_assignments = 0
+<
 
 ==============================================================================
-DEVELOPMENT                                               *go-development*
+                                           *gohtmltmpl* *ft-gohtmltmpl-syntax*
+                                           *gotexttmpl* *ft-gotexttmpl-syntax*
+Go template syntax~
 
-vim-go supports test files written in VimL. Please check `autoload` folder for
-examples. If you add a new feature be sure you also include the `_test.vim`
-file next to the script. Test functions should be starting with `Test_`,
-example:
->
- function Test_run_fmt()
-   call assert_equal(expected, actual)
-   ...
- endfunction
-<
-You can locally test it by running:
->
- make
-<
-This will run all tests and print either `PASS` or `FAIL` to indicate the
-final status of all tests. Additionally, each new pull request will trigger a
-new Travis-ci job.
+The `gotexttmpl` 'filetype' provides syntax highlighting and indentation for
+Go's `text/template` package.
+
+The `gohtmltmpl` filetype is for use with the `html/template` package and is
+identical to `gotexttmpl` except that it will also load the standard `html`
+filetype.
+
+The `gohtmltmpl` filetype is automatically set for `*.tmpl` files; the
+`gotexttmpl` is never automatically set and needs to be set manually.
 
 
 ==============================================================================
@@ -1772,11 +1775,11 @@ binaries).
 
 Vim becomes slow while editing Go files~
 
-Don't enable these options:
->
-  let g:go_highlight_types = 0
-  let g:go_highlight_operators = 0
-<
+This is usually caused by `g:go_hilight_*` options. Try disabling them if
+you've enabled some of them.
+
+Other common culprits are |'g:go_auto_sameids'| and |go#statusline#Show()|.
+
 
 I get errors when using GoInstallBinaries~
 
@@ -1858,6 +1861,28 @@ By default new terminals are opened in a vertical split. To change it
 >
  let g:go_term_mode = "split"
 >
+
+==============================================================================
+DEVELOPMENT                                               *go-development*
+
+vim-go supports test files written in VimL. Please check `autoload` folder for
+examples. If you add a new feature be sure you also include the `_test.vim`
+file next to the script. Test functions should be starting with `Test_`,
+example:
+>
+ function Test_run_fmt()
+   call assert_equal(expected, actual)
+   ...
+ endfunction
+<
+You can locally test it by running:
+>
+ make
+<
+This will run all tests and print either `PASS` or `FAIL` to indicate the
+final status of all tests. Additionally, each new pull request will trigger a
+new Travis-ci job.
+
 
 ==============================================================================
 DONATION                                                         *go-donation*
