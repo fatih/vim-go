@@ -24,8 +24,11 @@ IMPROVEMENTS:
 * Syntax highlighting for variable declarations and assignments (disabled by default)
   [[GH-1426]](https://github.com/fatih/vim-go/pull/1426) and
   [[GH-1458]](https://github.com/fatih/vim-go/pull/1458).
-
-* Add support for `:GoDecls[Dir]` in [unite.vim](https://github.com/Shougo/unite.vim) [[GH-1391]](https://github.com/fatih/vim-go/pull/1391).
+* Add support for `:GoDecls[Dir]` in [unite.vim](https://github.com/Shougo/unite.vim)
+  [[GH-1391]](https://github.com/fatih/vim-go/pull/1391).
+* Add support for [fzf.vim](https://github.com/junegunn/fzf.vim) in
+  `GoDecls[Dir]`.
+  [[GH-1437]](https://github.com/fatih/vim-go/pull/1437).
 * Support relative imports for `:GoImpl` [[GH-1322]](https://github.com/fatih/vim-go/pull/1322).
 * A new `g:go_list_type_commands` setting is added to individually set the list type for each command [[GH-1415]](https://github.com/fatih/vim-go/pull/1415). As en example:
 
