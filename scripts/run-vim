@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Run a "bare" Vim with just vim-go and ignoring ~/.vim
+#
+
+if [ -z "${1:-}" ]; then
+    echo "unknown version: '${1:-}'"
+    echo "First argument must be 'vim-7.4', 'vim-8.0', or 'nvim'."
+	exit 1
+fi
+
+dir="/tmp/vim-go-test/$1-install"
+shift
+
+if [ ! -f "$dir/bin/vim" ]; then
+	echo "$dir/bin/vim doesn't exist; did you install it with the install-vim script?"
+	exit 1
+fi
+
+vimgo="$(dirname "$(readlink -f .)")" # TODO: doesn't work on OSX I think.
+
+$dir/bin/vim --noplugin -u NONE -N \
+  +"set shm+=WAFI rtp=$dir/share/vim/vimgo packpath=$dir/share/vim/vimgo,$vimgo" \
+  +'filetype plugin indent on' \
+  +'packloadall!' \
+  "$@"
+
+
+# vim:ts=2:sts=2:sw=2:et

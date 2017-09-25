@@ -1,0 +1,75 @@
+#!/bin/sh
+#
+# Run all tests.
+#
+
+set -uC
+cd "$(dirname "$0")"
+
+### Setup Vim and other dependencies.
+#####################################
+out=$(./install-vim "${1:-}" 2>&1)
+if [ $? -ne 0 ]; then
+  echo "$out"
+  exit 4
+fi
+
+vim=$1
+vimdir=$(echo "$out" | tail -n1)
+vimgo="$(dirname "$(readlink -f .)")" # TODO: doesn't work on OSX I think.
+
+# Make sure all Go tools and other dependencies are installed.
+./run-vim $vim +':silent :GoInstallBinaries' +':qa'
+[ -d "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint" ] || \
+  git clone --quiet https://github.com/machakann/vim-vimhelplint \
+    "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint"
+
+
+### Run tests.
+##############
+# Clean stale log file.
+[ -f '/tmp/vim-go-test/test.log' ] && rm '/tmp/vim-go-test/test.log'
+[ -f '/tmp/vim-go-test/FAILED' ] && rm '/tmp/vim-go-test/FAILED'
+
+# Run the actual tests.
+fail=0
+for test_file in "$vimgo"/autoload/go/*_test.vim; do
+  ./run-vim $vim -e +"silent e $test_file" -S runtest.vim
+
+  # Append logs
+  cat '/tmp/vim-go-test/test.tmp' | tee '/tmp/vim-go-test/test.log'
+  rm '/tmp/vim-go-test/test.tmp'
+done
+
+echo
+if [ -f "/tmp/vim-go-test/FAILED" ]; then
+  echo 2>&1 "Some tests FAILED"
+  exit 1
+fi
+echo 2>&1 "All tests PASSED"
+
+
+### Run vimhelplint.
+####################
+# TODO: Doesn't work in nvim? Not sure why, just don't run it for now.
+if [ $1 != "nvim" ]; then
+  printf "\n\nRunning vimhelplint ... "
+  lint=$($vimdir/bin/vim -esNR \
+    --cmd "set rtp+=$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
+    +'filetype plugin on' \
+    +"e $vimgo/doc/vim-go.txt" \
+    +'verb VimhelpLintEcho' \
+    +q \
+    2>&1)
+  if [ "$lint" ]; then 
+    echo "FAILED"
+    echo "$lint"
+    exit 1
+  else
+    echo "PASSED"
+    exit 0
+  fi
+fi
+
+
+# vim:ts=2:sts=2:sw=2:et
