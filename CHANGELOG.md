@@ -35,6 +35,9 @@ IMPROVEMENTS:
         let g:go_list_type_commands = {"GoBuild": "quickfix", "GoTest": "locationlist"}
 * Show unexpected errors better by expanding newlines and tabs
   [[GH-1456]](https://github.com/fatih/vim-go/pull/1456).
+* `:GoInstallBinaries` and `:GoUpdateBinaries` can now install/update only the
+  selected binaries (e.g. `:GoUpdateBinaries guru golint`)
+  [[GH-1467]](https://github.com/fatih/vim-go/pull/1467).
 
 BUG FIXES:
 
