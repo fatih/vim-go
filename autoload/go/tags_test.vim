@@ -1,30 +1,89 @@
-func Test_add_tags()
-  let input_file = tempname()
-  call writefile(readfile("test-fixtures/tags/add_all_input.go"), input_file)
+func! Test_add_tags() abort
+  try
+    let l:tmp = gotest#loadFile('a/a.go', [
+          \ 'package main',
+          \ '',
+          \ 'type Server struct {',
+          \ '    Name          string',
+          \ '    ID            int',
+          \ '    MyHomeAddress string',
+          \ '    SubDomains    []string',
+          \ '    Empty         string',
+          \ '    Example       int64',
+          \ '    Example2      string',
+          \ '    Bar           struct {',
+          \ '        Four string',
+          \ '        Five string',
+          \ '    }',
+          \ '    Lala interface{}',
+          \ '}'])
 
-  let expected = join(readfile("test-fixtures/tags/add_all_golden.go"), "\n")
-
-  " run for offset 40, which is inside the struct
-  silent call go#tags#run(0, 0, 40, "add", input_file, 1)
-
-  let actual = join(readfile(input_file), "\n")
-
-  call assert_equal(expected, actual)
+    silent call go#tags#run(0, 0, 40, "add", bufname(''), 1)
+    call gotest#assert_buffer(0, [
+          \ 'package main',
+          \ '',
+          \ 'type Server struct {',
+          \ '    Name          string   `json:"name"`',
+          \ '    ID            int      `json:"id"`',
+          \ '    MyHomeAddress string   `json:"my_home_address"`',
+          \ '    SubDomains    []string `json:"sub_domains"`',
+          \ '    Empty         string   `json:"empty"`',
+          \ '    Example       int64    `json:"example"`',
+          \ '    Example2      string   `json:"example_2"`',
+          \ '    Bar           struct {',
+          \ '        Four string `json:"four"`',
+          \ '        Five string `json:"five"`',
+          \ '    } `json:"bar"`',
+          \ '    Lala interface{} `json:"lala"`',
+          \ '}'])
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
 endfunc
 
 
-func Test_remove_tags()
-  let input_file = tempname()
-  call writefile(readfile("test-fixtures/tags/remove_all_input.go"), input_file)
+func! Test_remove_tags() abort
+  try
+    let l:tmp = gotest#loadFile('a/a.go', [
+      \ 'package main',
+      \ '',
+      \ 'type Server struct {',
+      \ '  Name          string   `json:"name"`',
+      \ '  ID            int      `json:"id"`',
+      \ '  MyHomeAddress string   `json:"my_home_address"`',
+      \ '  SubDomains    []string `json:"sub_domains"`',
+      \ '  Empty         string   `json:"empty"`',
+      \ '  Example       int64    `json:"example"`',
+      \ '  Example2      string   `json:"example_2"`',
+      \ '  Bar           struct {',
+      \ '    Four string `json:"four"`',
+      \ '    Five string `json:"five"`',
+      \ '  } `json:"bar"`',
+      \ '  Lala interface{} `json:"lala"`',
+      \ '}'])
 
-  let expected = join(readfile("test-fixtures/tags/remove_all_golden.go"), "\n")
+    silent call go#tags#run(0, 0, 40, "remove", bufname(''), 1)
+    call gotest#assert_buffer(0, [
+      \ 'package main',
+      \ '',
+      \ 'type Server struct {',
+      \ '  Name          string',
+      \ '  ID            int',
+      \ '  MyHomeAddress string',
+      \ '  SubDomains    []string',
+      \ '  Empty         string',
+      \ '  Example       int64',
+      \ '  Example2      string',
+      \ '  Bar           struct {',
+      \ '    Four string',
+      \ '    Five string',
+      \ '  }',
+      \ '  Lala interface{}',
+      \ '}'])
 
-  " run for offset 40, which is inside the struct
-  silent call go#tags#run(0, 0, 40, "remove", input_file, 1)
-
-  let actual = join(readfile(input_file), "\n")
-
-  call assert_equal(expected, actual)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
 endfunc
 
-" vim: sw=2 ts=2 et
+" vim:ts=2:sts=2:sw=2:et
