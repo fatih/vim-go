@@ -110,30 +110,52 @@ function! go#util#osarch() abort
   return go#util#env("goos") . '_' . go#util#env("goarch")
 endfunction
 
-" System runs a shell command. If possible, it will temporary set
-" the shell to /bin/sh for Unix-like systems providing a Bourne
-" POSIX like environment.
-function! go#util#System(str, ...) abort
+" Run a shell command.
+"
+" It will temporary set the shell to /bin/sh for Unix-like systems if possible,
+" so that we always use a standard POSIX-compatible Bourne shell (and not e.g.
+" csh, fish, etc.) See #988 and #1276.
+function! s:system(cmd, ...) abort
   " Preserve original shell and shellredir values
   let l:shell = &shell
   let l:shellredir = &shellredir
 
-  " Use a Bourne POSIX like shell. Some parts of vim-go expect
-  " commands to be executed using bourne semantics #988 and #1276.
-  " Alter shellredir to match bourne. Especially important if login shell
-  " is set to any of the csh or zsh family #1276.
   if !go#util#IsWin() && executable('/bin/sh')
       set shell=/bin/sh shellredir=>%s\ 2>&1
   endif
 
   try
-    let l:output = call('system', [a:str] + a:000)
-    return l:output
+    return call('system', [a:cmd] + a:000)
   finally
     " Restore original values
     let &shell = l:shell
     let &shellredir = l:shellredir
   endtry
+endfunction
+
+" System runs a shell command "str". Every arguments after "str" is passed to
+" stdin.
+function! go#util#System(str, ...) abort
+  return call('s:system', [a:str] + a:000)
+endfunction
+
+" Exec runs a shell command "cmd", which must be a list, one argument per item.
+" Every list entry will be automatically shell-escaped
+" Every other argument is passed to stdin.
+function! go#util#Exec(cmd, ...) abort
+  if len(a:cmd) == 0
+    call go#util#EchoError("go#util#Exec() called with empty a:cmd")
+    return
+  endif
+
+  " CheckBinPath will show a warning for us.
+  let l:bin = go#path#CheckBinPath(a:cmd[0])
+  if empty(l:bin)
+    return ["", 1]
+  endif
+
+  let l:out = call('s:system', [go#util#Shelljoin([l:bin] + a:cmd[1:])] + a:000)
+  return [l:out, go#util#ShellError()]
 endfunction
 
 function! go#util#ShellError() abort
