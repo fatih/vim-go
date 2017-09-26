@@ -124,7 +124,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
       let out = go#util#System(cmd . l:goGetFlags . shellescape(importPath))
       if go#util#ShellError() != 0
-        echom "Error installing " . pkgimportPath . ": " . out
+        echom "Error installing " . importPath . ": " . out
       endif
     endif
   endfor
