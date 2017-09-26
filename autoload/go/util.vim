@@ -288,7 +288,7 @@ endfunction
 " The message can be a list or string; every line with be :echomsg'd separately.
 function! s:echo(msg, hi)
   let l:msg = a:msg
-  if type(l:msg) != v:t_list
+  if type(l:msg) != type([])
     let l:msg = split(l:msg, "\n")
   endif
 
