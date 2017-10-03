@@ -96,7 +96,7 @@ function! s:source(mode,...) abort
 
   let result = eval(out)
   if type(result) != 4 || !has_key(result, 'decls')
-    return
+    return ret_decls
   endif
 
   let decls = result.decls
