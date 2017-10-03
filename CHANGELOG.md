@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.15 - (October 3, 2017)
+
 FEATURES:
 
 * Add `:GoFillStruct` to fill a struct with all fields; uses
