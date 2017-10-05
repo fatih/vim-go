@@ -3,6 +3,10 @@
 # Run a "bare" Vim with just vim-go and ignoring ~/.vim
 #
 
+set -uC
+vimgodir=$(cd "$(dirname "$0")/.." && pwd)
+cd "$vimgodir"
+
 if [ -z "${1:-}" ]; then
     echo "unknown version: '${1:-}'"
     echo "First argument must be 'vim-7.4', 'vim-8.0', or 'nvim'."
@@ -10,6 +14,8 @@ if [ -z "${1:-}" ]; then
 fi
 
 dir="/tmp/vim-go-test/$1-install"
+export GOPATH=$dir
+export PATH=${GOPATH}/bin:$PATH
 shift
 
 if [ ! -f "$dir/bin/vim" ]; then
@@ -17,10 +23,8 @@ if [ ! -f "$dir/bin/vim" ]; then
 	exit 1
 fi
 
-vimgo="$(dirname "$(readlink -f .)")" # TODO: doesn't work on OSX I think.
-
 $dir/bin/vim --noplugin -u NONE -N \
-  +"set shm+=WAFI rtp=$dir/share/vim/vimgo packpath=$dir/share/vim/vimgo,$vimgo" \
+  +"set shm+=WAFI rtp=$dir/share/vim/vimgo packpath=$dir/share/vim/vimgo,$vimgodir" \
   +'filetype plugin indent on' \
   +'packloadall!' \
   "$@"

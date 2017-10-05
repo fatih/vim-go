@@ -1,13 +1,14 @@
 language: go
 cache:
   - /tmp/vim-go-test
-install:
-  - git config --global user.email "you@example.com"
-  - git config --global user.name "Your Name"
 matrix:
   include:
     - env: VIM_VERSION=vim-7.4
     - env: VIM_VERSION=vim-8.0
     - env: VIM_VERSION=nvim
+install:
+  - git config --global user.email "you@example.com"
+  - git config --global user.name "Your Name"
+  - ./scripts/install-vim $VIM_VERSION
 script:
   - ./scripts/test $VIM_VERSION

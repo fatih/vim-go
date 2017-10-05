@@ -8,11 +8,13 @@
 #   /some/path/src/vim
 
 set -euC
-cd "$(dirname "$0")"
 
-vimgodir="$(dirname "$(readlink -f .)")" # TODO: doesn't work on OSX I think.
+vimgodir=$(cd "$(dirname "$0")/.." && pwd)
+cd "$vimgodir"
 
-case "${1:-}" in
+vim=${1:-}
+
+case "$vim" in
   "vim-7.4")
     # This is what the most recent Ubuntu LTS (16.04) ships with.
     tag="v7.4.1689"
@@ -48,7 +50,7 @@ if [ -d "$installdir" ]; then
   echo "$installdir exists; skipping build."
 
   # The ./scripts/test script relies on this.
-  echo "$installdir"
+  echo "installed to: $installdir"
   exit 0
 fi
 
@@ -74,8 +76,12 @@ if [ "$1" = "nvim" ]; then
 
 # Build Vim from source.
 else
-  echo "Cloning $tag from $giturl"
-  git clone --branch "$tag" --depth 1 "$giturl" "$srcdir"
+  if [ -d "$srcdir/.git" ]; then
+    echo "Skipping clone as $srcdir/.git exists"
+  else
+    echo "Cloning $tag from $giturl"
+    git clone --branch "$tag" --depth 1 "$giturl" "$srcdir"
+  fi
 
   ./configure --prefix="$installdir" --with-features=huge --disable-gui
   make install
@@ -83,10 +89,18 @@ else
   ln -s "$vimgodir" "$installdir/share/vim/vimgo/pack/vim-go/start/vim-go"
 fi
 
+# Make sure all Go tools and other dependencies are installed.
+export GOPATH=$installdir
+export PATH=${GOPATH}/bin:$PATH
+"$vimgodir/scripts/run-vim" $vim +':silent :GoUpdateBinaries' +':qa'
+
+[ -d "$installdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint" ] || \
+  git clone --quiet https://github.com/machakann/vim-vimhelplint \
+    "$installdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint"
+
 # Don't really need source after successful install.
 rm -rf "$srcdir"
 
-# The ./scripts/test script relies on this.
-echo "$installdir"
+echo "installed to: $installdir"
 
 # vim:ts=2:sts=2:sw=2:et

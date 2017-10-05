@@ -1924,9 +1924,6 @@ roughly similar to Go tests:
 - A test is considered to be "failed" if |v:errors| has any entries. You can
   use one of the |test-functions| to set this, or append to it directly.
 
-If you add a new feature be sure you also include the `_test.vim` file next to
-the script.
-
 A simple example:
 >
  function Test_run_fmt()
@@ -1934,9 +1931,17 @@ A simple example:
    ...
  endfunction
 <
-You can locally test it by running `make`. This will run all tests with Vim
-8.0 and print either `PASS` or `FAIL` to indicate the final status of all
-tests. Use `./script/test` to test Vim 7.4 or Neovim.
+To run tests vim-go comes with three small helper scripts:
+
+  `scripts/install-vim`   Install a pristine Vim to `/tmp/vim-go-test/`.
+  `scripts/run-vim`       Run a Vim version from `/tmp/vim-go-test/`.
+  `scripts/test`          Run all tests with a Vim from `/tmp/vim-go-test/`.
+
+All scripts accept a Vim version as the first argument, which can be
+`vim-7.4`, `vim-8.0`, or `nvim`. You will need to install a Vim version with
+`install-vim` before you can use `run-vim` or `test`.
+
+You can install and test all Vim versions by running `make`.
 
 
 ==============================================================================

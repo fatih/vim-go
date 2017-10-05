@@ -4,26 +4,26 @@
 #
 
 set -uC
-cd "$(dirname "$0")"
+vimgodir=$(cd "$(dirname "$0")/.." && pwd)
+cd "$vimgodir"
 
 ### Setup Vim and other dependencies.
 #####################################
-out=$(./install-vim "${1:-}" 2>&1)
-if [ $? -ne 0 ]; then
-  echo "$out"
-  exit 4
+if [ -z "${1:-}" ]; then
+  echo "unknown version: '${1:-}'"
+  echo "First argument must be 'vim-7.4', 'vim-8.0', or 'nvim'."
+	exit 1
 fi
 
 vim=$1
-vimdir=$(echo "$out" | tail -n1)
-vimgo="$(dirname "$(readlink -f .)")" # TODO: doesn't work on OSX I think.
+vimdir="/tmp/vim-go-test/$vim-install"
+export GOPATH=$vimdir
+export PATH=${GOPATH}/bin:$PATH
 
-# Make sure all Go tools and other dependencies are installed.
-./run-vim $vim +':silent :GoInstallBinaries' +':qa'
-[ -d "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint" ] || \
-  git clone --quiet https://github.com/machakann/vim-vimhelplint \
-    "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint"
-
+if [ ! -f "$vimdir/bin/vim" ]; then
+	echo "$vimdir/bin/vim doesn't exist; did you install it with the install-vim script?"
+	exit 1
+fi
 
 ### Run tests.
 ##############
@@ -33,8 +33,8 @@ vimgo="$(dirname "$(readlink -f .)")" # TODO: doesn't work on OSX I think.
 
 # Run the actual tests.
 fail=0
-for test_file in "$vimgo"/autoload/go/*_test.vim; do
-  ./run-vim $vim -e +"silent e $test_file" -S runtest.vim
+for test_file in "$vimgodir"/autoload/go/*_test.vim; do
+  "$vimgodir/scripts/run-vim" $vim -e +"silent e $test_file" -S ./scripts/runtest.vim
 
   # Append logs
   cat '/tmp/vim-go-test/test.tmp' | tee '/tmp/vim-go-test/test.log'
@@ -57,7 +57,7 @@ if [ $1 != "nvim" ]; then
   lint=$($vimdir/bin/vim -esNR \
     --cmd "set rtp+=$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
     +'filetype plugin on' \
-    +"e $vimgo/doc/vim-go.txt" \
+    +"e $vimgodir/doc/vim-go.txt" \
     +'verb VimhelpLintEcho' \
     +q \
     2>&1)
