@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.15 - (October 3, 2017)
+
 FEATURES:
 
 * Add `:GoFillStruct` to fill a struct with all fields; uses
@@ -67,6 +69,7 @@ BUG FIXES:
   completion, and some other things work better.
   [[GH-1442]](https://github.com/fatih/vim-go/pull/1442)
 * Fix `:GoBuild` shell escaping [[GH-1450]](https://github.com/fatih/vim-go/pull/1450).
+* Ensure fmt list gets closed when title cannot be checked [[GH-1474]](https://github.com/fatih/vim-go/pull/1474).
 
 BACKWARDS INCOMPATIBILITIES:
 
