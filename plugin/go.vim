@@ -188,6 +188,11 @@ function! s:auto_sameids()
   endif
 endfunction
 
+function! s:fmt_quit()
+  " Setting a flag for suppressing formatting errors on quitting
+  let g:go_fmt_suppress_errors_quitting = 1
+endfunction
+
 function! s:fmt_autosave()
   " Go code formatting on save
   if get(g:, "go_fmt_autosave", 1)
@@ -228,6 +233,7 @@ augroup vim-go
     autocmd CompleteDone *.go call s:echo_go_info()
   endif
 
+  autocmd QuitPre *.go call s:fmt_quit()
   autocmd BufWritePre *.go call s:fmt_autosave()
   autocmd BufWritePre *.s call s:asmfmt_autosave()
   autocmd BufWritePost *.go call s:metalinter_autosave()
