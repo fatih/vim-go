@@ -475,18 +475,21 @@ CTRL-t
 :GoInstallBinaries [binaries]
 
     Download and install all necessary Go tool binaries such as `godef`,
-    `goimports`, `gocode`, etc. under `g:go_bin_path`. If one or more
-    [binaries] are given then it will only install those. The default is to
-    update everything.
+    `goimports`, `gocode`, etc. under |'g:go_bin_path'|. If [binaries] is
+    supplied, then only the specified binaries will be installed. The default
+    is to install everything.
+
     Set |'g:go_get_update'| to disable updating dependencies.
 
                                                            *:GoUpdateBinaries*
 :GoUpdateBinaries [binaries]
 
     Download and update previously installed Go tool binaries such as `godef`,
-    `goimports`, `gocode`, etc. under `g:go_bin_path`. If one or more
-    [binaries] are given then it will only update those. The
-    default is to update everything.
+    `goimports`, `gocode`, etc. under |'g:go_bin_path'|. If [binaries] is
+    supplied, then only the specified binaries will be updated. The default is
+    to update everything.
+
+    Set |'g:go_get_update'| to disable updating dependencies.
 
                                                                *:GoImplements*
 :GoImplements

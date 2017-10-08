@@ -34,10 +34,11 @@ fun! s:complete(lead, cmdline, cursor)
   return filter(keys(s:packages), 'strpart(v:val, 0, len(a:lead)) == a:lead')
 endfun
 
-" GoInstallBinaries downloads and install all necessary binaries stated in the
-" packages variable. It uses by default $GOBIN or $GOPATH/bin as the binary
-" target install directory. GoInstallBinaries doesn't install binaries if they
-" exist, to update current binaries pass 1 to the argument.
+" GoInstallBinaries downloads and installs binaries defined in s:packages to
+" $GOBIN or $GOPATH/bin. GoInstallBinaries will update already installed
+" binaries only if updateBinaries = 1. By default, all packages in s:packages
+" will be installed, but the set can be limited by passing the desired
+" packages in the unnamed arguments.
 function! s:GoInstallBinaries(updateBinaries, ...)
   let err = s:CheckBinaries()
   if err != 0
