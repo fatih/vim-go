@@ -34,10 +34,11 @@ This plugin adds Go language support for Vim, with the following main features:
 
 ## Install
 
-Master branch is a **development** branch. Please use with caution.
-I recommend to use the [**latest stable release**](https://github.com/fatih/vim-go/releases/latest)
+The [**latest stable release**](https://github.com/fatih/vim-go/releases/latest) is the
+recommended version to use. If you choose to use the master branch instead,
+please do so with caution; it is a _development_ branch.
 
-Vim-go follows the standard runtime path structure. Below are some helper lines
+vim-go follows the standard runtime path structure. Below are some helper lines
 for popular package managers:
 
 * [Vim 8 packages](http://vimhelp.appspot.com/repeat.txt.html#packages)
@@ -47,10 +48,11 @@ for popular package managers:
 * [vim-plug](https://github.com/junegunn/vim-plug)
   * `Plug 'fatih/vim-go'`
 
-You will also need to install all necessary binaries. We have a handy command
-for it: `:GoInstallBinaries`.
+You will also need to install all the necessary binaries. vim-go makes it easy
+to install all of them by providing a command, `:GoInstallBinaries`, which will
+`go get` all the required binaries.
 
-Check out the "Install" section in [the documentation](doc/vim-go.txt) for more
+Check out the Install section in [the documentation](doc/vim-go.txt) for more
 detailed instructions (`:help go-install`).
 
 ## Usage
@@ -58,9 +60,9 @@ detailed instructions (`:help go-install`).
 The full documentation can be found at [doc/vim-go.txt](doc/vim-go.txt). You can
 display it from within Vim with `:help vim-go`.
 
-You may have to generate the plugin's
+Depending on your installation method, you may have to generate the plugin's
 [`help tags`](http://vimhelp.appspot.com/helphelp.txt.html#%3Ahelptags)
-manually (e.g. `:helptags ALL`) depending on your installation method.
+manually (e.g. `:helptags ALL`).
 
 We also have an [official vim-go tutorial](https://github.com/fatih/vim-go-tutorial).
 
