@@ -287,9 +287,11 @@ endfunction
 "
 " The message can be a list or string; every line with be :echomsg'd separately.
 function! s:echo(msg, hi)
-  let l:msg = a:msg
-  if type(l:msg) != type([])
-    let l:msg = split(l:msg, "\n")
+  let l:msg = []
+  if type(a:msg) != type([])
+    let l:msg = split(a:msg, "\n")
+  else
+    let l:msg = a:msg
   endif
 
   " Tabs display as ^I or <09>, so manually expand them.
@@ -338,7 +340,7 @@ endfunction
 "
 " > The archive consists of a series of files. Each file consists of a name, a
 " > decimal file size and the file contents, separated by newlinews. No newline
-" > follows after the file contents. 
+" > follows after the file contents.
 function! go#util#archive()
     let l:buffer = join(go#util#GetLines(), "\n")
     return expand("%:p:gs!\\!/!") . "\n" . strlen(l:buffer) . "\n" . l:buffer
