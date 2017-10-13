@@ -1,5 +1,12 @@
 ## unplanned
 
+BUG FIXES:
+
+* Fix compatibility with Vim version before 7.4.1546
+  [[GH-1498]](https://github.com/fatih/vim-go/pull/1498).
+* Don't resize godoc window if it's already visible
+  [[GH-1488]](https://github.com/fatih/vim-go/pull/1488).
+
 ## 1.15 - (October 3, 2017)
 
 FEATURES:
