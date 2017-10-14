@@ -1474,7 +1474,7 @@ default it converts the identifier to camelCase or CamelCase, depending on
 whether the identifier is exported.
 >
   let g:go_gorename_prefill = 'expand("<cword>") =~# "^[A-Z]"' .
-        \ '? go#util#camelcaseExported(expand("<cword>"))' .
+        \ '? go#util#pascalcase(expand("<cword>"))' .
         \ ': go#util#camelcase(expand("<cword>"))'
 <
                                                      *'g:go_gocode_autobuild'*

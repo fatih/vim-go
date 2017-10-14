@@ -284,9 +284,9 @@ function! go#util#camelcase(word) abort
   endif
 endfunction
 
-" camelcaseExported converts a string to exported camel case. e.g. fooBar or
-" foo_bar will become FooBar.
-function! go#util#camelcaseExported(word) abort
+" pascalcase converts a string to 'PascalCase'. e.g. fooBar or foo_bar will
+" become FooBar.
+function! go#util#pascalcase(word) abort
   let word = go#util#camelcase(a:word)
   return toupper(word[0]) . word[1:]
 endfunction
