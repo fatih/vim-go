@@ -1472,10 +1472,15 @@ By default it is set to edit.
 <
                                                      *'g:go_gorename_prefill'*
 
-Specifies whether |:GoRename| prefills the new identifier name with the
-word under the cursor. By default it is enabled.
+Expression to prefill the new identifier when using |:GoRename| without any
+arguments. Use an empty string if you don't want to prefill anything. By
+default it converts the identifier to camel case but preserves the
+capitalisation of the first letter to ensure that the exported state stays the
+same.
 >
-  let g:go_gorename_prefill = 1
+  let g:go_gorename_prefill = 'expand("<cword>") =~# "^[A-Z]"' .
+        \ '? go#util#pascalcase(expand("<cword>"))' .
+        \ ': go#util#camelcase(expand("<cword>"))'
 <
                                                      *'g:go_gocode_autobuild'*
 
