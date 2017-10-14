@@ -43,6 +43,14 @@ function! go#util#IsWin() abort
   return 0
 endfunction
 
+" IsMac returns 1 if current OS is macOS or 0 otherwise.
+function! go#util#IsMac() abort
+  return has('mac') ||
+        \ has('macunix') ||
+        \ has('gui_macvim') ||
+        \ go#util#System('uname') =~? '^darwin'
+endfunction
+
  " Checks if using:
  " 1) Windows system,
  " 2) And has cygpath executable,

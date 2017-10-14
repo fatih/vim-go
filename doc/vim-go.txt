@@ -1100,10 +1100,14 @@ set to 10 seconds . >
 <
                                                  *'g:go_play_browser_command'*
 
-Use this option to change the browser that is used to open the snippet url
-posted to play.golang.org with |:GoPlay| or for the relevant documentation
-used with |:GoDocBrowser|. By default it tries to find it automatically for
-the current OS. >
+Browser to use for |:GoPlay| or |:GoDocBrowser|. The url must be added with
+`%URL%`, and it's advisable to include `&` to make sure the shell returns. For
+example:
+>
+  let g:go_play_browser_command = 'firefox-developer %URL% &'
+<
+
+By default it tries to find it automatically for the current OS. >
 
   let g:go_play_browser_command = ''
 <
