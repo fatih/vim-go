@@ -12,6 +12,11 @@ endif
 " If no or zero height is given it closes the window by default.  
 " To prevent this, set g:go_list_autoclose = 0
 function! go#list#Window(listtype, ...) abort
+  " Don't open the list when quiting; prevents orphaned window and Vim bug #1497.
+  if exists('g:_go_quiting') && g:_go_quiting
+    return
+  endif
+
   " we don't use lwindow to close the location list as we need also the
   " ability to resize the window. So, we are going to use lopen and lclose
   " for a better user experience. If the number of errors in a current
@@ -58,6 +63,15 @@ endfunction
 
 " Populate populate the list with the given items
 function! go#list#Populate(listtype, items, title) abort
+  " Echo the errors when quiting; prevents orphaned window and Vim bug #1497.
+  if exists('g:_go_quiting') && g:_go_quiting
+    for l:item in a:items
+      call go#util#EchoError(printf('%s | %s col %s | %s',
+            \ l:item['filename'], l:item['lnum'], l:item['col'], l:item['text']))
+    endfor
+    return
+  endif
+
   if a:listtype == "locationlist"
     call setloclist(0, a:items, 'r')
 

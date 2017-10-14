@@ -229,6 +229,7 @@ augroup vim-go
     autocmd CompleteDone *.go call s:echo_go_info()
   endif
 
+  autocmd QuitPre *.go let g:_go_quiting = 1
   autocmd BufWritePre *.go call s:fmt_autosave()
   autocmd BufWritePre *.s call s:asmfmt_autosave()
   autocmd BufWritePost *.go call s:metalinter_autosave()
