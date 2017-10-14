@@ -75,7 +75,7 @@ function! go#fmt#Format(withGoimport) abort
 
   if go#util#ShellError() == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
-  elseif g:go_fmt_fail_silently == 0
+  elseif g:go_fmt_fail_silently == 0 && !(exists('g:go_fmt_suppress_errors_quitting') && g:go_fmt_suppress_errors_quitting == 1)
     let errors = s:parse_errors(expand('%'), out)
     call s:show_errors(errors)
   endif
