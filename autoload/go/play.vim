@@ -70,26 +70,4 @@ function! s:get_visual_selection() abort
   return join(lines, "\n")
 endfunction
 
-" following two functions are from: https://github.com/mattn/gist-vim
-" thanks  @mattn
-function! s:get_browser_command() abort
-  let go_play_browser_command = get(g:, 'go_play_browser_command', '')
-  if go_play_browser_command == ''
-    if go#util#IsWin()
-      let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
-    elseif go#util#IsMac()
-      let go_play_browser_command = 'open %URL%'
-    elseif executable('xdg-open')
-      let go_play_browser_command = 'xdg-open %URL%'
-    elseif executable('firefox')
-      let go_play_browser_command = 'firefox %URL% &'
-    elseif executable('chromium')
-      let go_play_browser_command = 'chromium %URL% &'
-    else
-      let go_play_browser_command = ''
-    endif
-  endif
-  return go_play_browser_command
-endfunction
-
 " vim: sw=2 ts=2 et
