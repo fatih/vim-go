@@ -257,28 +257,71 @@ endfunction
 
 function! s:parse_errors(lines) abort
   let errors = []
+  let paniced = 0 " signals whether all remaining lines should be included in errors.
 
   " NOTE(arslan): once we get JSON output everything will be easier :)
   " https://github.com/golang/go/issues/2981
   for line in a:lines
-    let fatalerrors = matchlist(line, '^\(fatal error:.*\)$')
-    let tokens = matchlist(line, '^\s*\(.\{-}\.go\):\(\d\+\):\s*\(.*\)')
-
+    let fatalerrors = matchlist(line, '^\(\(fatal error\|panic\):.*\)$')
     if !empty(fatalerrors)
-      call add(errors, {"text": fatalerrors[1]})
-    elseif !empty(tokens)
+      let paniced = 1
+      call add(errors, {"text": line})
+      continue
+    endif
+
+    let tokens = []
+    if paniced
+      " Matches lines in stacktraces produced by panic. The lines always have
+      " one ore more leading tabs, followed by the path to the file. The file
+      " path is followed by a colon and then the line number within the file
+      " where the panic occurred. After that there's a space and hexadecimal
+      " number.
+      "
+      " e.g.:
+      "   '\t/usr/local/go/src/time.go:1313 +0x5d'
+      let tokens = matchlist(line, '^\t\+\(.\{-}\.go\):\(\d\+\) \(+0x.*\)')
+    else
+      " matches lines produced by `go test`. All lines produced by `go test`
+      " that we're interested in start with zero or more spaces (increasing
+      " depth of subtests is represented by a similar increase in the number
+      " of spaces at the start of output lines. Top level tests start with
+      " zero leading spaces). Lines that indicate test status (e.g. RUN, FAIL,
+      " PASS) start after the spaces. Lines that indicate test failure
+      " location or test log message location (e.g.  "testing.T".Log) begin
+      " with the appropriate number of spaces for the current test level,
+      " followed by a tab, a filename , a colon, the line number, another
+      " colon, a space, and the failure or log message.
+      "
+      " e.g.:
+      "   '\ttime_test.go:30: Likely problem: the time zone files have not been installed.'
+      let tokens = matchlist(line, '^ *\t\+\(.\{-}\.go\):\(\d\+\):\s*\(.*\)')
+    endif
+
+    if !empty(tokens) " Check whether the line may refer to a file.
       " strip endlines of form ^M
       let out = substitute(tokens[3], '\r$', '', '')
+      let file = fnamemodify(tokens[1], ':p')
+
+      " Preserve the line when the filename is not readable. This is an
+      " unusual case, but possible; any test that produces lines that match
+      " the pattern used in the matchlist assigned to tokens is a potential
+      " source of this condition. For instance, github.com/golang/mock/gomock
+      " will sometimes produce lines that satisfy this condition.
+      if !filereadable(file)
+        call add(errors, {"text": line})
+        continue
+      endif
 
       call add(errors, {
-            \ "filename" : fnamemodify(tokens[1], ':p'),
+            \ "filename" : file,
             \ "lnum"     : tokens[2],
             \ "text"     : out,
             \ })
+    elseif paniced
+      call add(errors, {"text": line})
     elseif !empty(errors)
-      " Preserve indented lines.
-      " This comes up especially with multi-line test output.
-      if match(line, '^\s') >= 0
+      " Preserve indented lines. This comes up especially with multi-line test output.
+      if match(line, '^ *\t\+') >= 0
         call add(errors, {"text": line})
       endif
     endif
