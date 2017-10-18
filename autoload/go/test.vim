@@ -6,9 +6,8 @@ function! go#test#Test(bang, compile, ...) abort
 
   " don't run the test, only compile it. Useful to capture and fix errors.
   if a:compile
-    " we're going to tell to run a test function that doesn't exist. This
-    " triggers a build of the test file itself but no tests will run.
-    call extend(args, ["-run", "499EE4A2-5C85-4D35-98FC-7377CD87F263"])
+    let testfile = tempname() . ".vim-go.test"
+    call extend(args, ["-c", "-o", testfile])
   endif
 
   if a:0
