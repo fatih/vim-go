@@ -73,7 +73,7 @@ function! go#path#Detect() abort
   let gopath = go#path#Default()
 
   " don't lookup for godeps if autodetect is disabled.
-  if !get(g:, "go_autodetect_gopath", 1)
+  if !get(g:, "go_autodetect_gopath", 0)
     return gopath
   endif
 
