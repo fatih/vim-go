@@ -11,7 +11,7 @@ let g:go_loaded_install = 1
 " Version 7.4.1689 was chosen because that's what the most recent Ubuntu LTS
 " release (16.04) uses.
 if
-      \ !exists('g:go_no_version_warning') &&
+      \ get(g:, 'go_no_version_warning', 0) != 1 &&
       \ (v:version < 704 || (v:version == 704 && !has('patch1689')))
       \ && !has('nvim')
   echohl Error
@@ -19,7 +19,7 @@ if
   echom "Please update your Vim for the best vim-go experience."
   echom "If you really want to continue you can set this to make the error go away:"
   echom "    let g:go_no_version_warning = 1"
-  echom "Note that some features may error out or behave incorrect."
+  echom "Note that some features may error out or behave incorrectly."
   echom "Please do not report bugs unless you're using Vim 7.4.1689 or newer."
   echohl None
 
