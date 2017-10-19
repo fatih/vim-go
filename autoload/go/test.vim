@@ -207,10 +207,6 @@ function s:test_job(args) abort
         \ 'exit_cb': funcref("s:exit_cb"),
         \ }
 
-  " modify GOPATH if needed
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
-
   " pre start
   let dir = getcwd()
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -221,7 +217,6 @@ function s:test_job(args) abort
 
   " post start
   execute cd . fnameescape(dir)
-  let $GOPATH = old_gopath
 endfunction
 
 " show_errors parses the given list of lines of a 'go test' output and returns

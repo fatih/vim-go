@@ -161,20 +161,10 @@ function! go#fmt#run(bin_name, source, target)
     return
   endif
 
-  if cmd[0] == "goimports"
-    " change GOPATH too, so goimports can pick up the correct library
-    let old_gopath = $GOPATH
-    let $GOPATH = go#path#Detect()
-  endif
-
   let command = join(cmd, " ")
 
   " execute our command...
   let out = go#util#System(command)
-
-  if cmd[0] == "goimports"
-    let $GOPATH = old_gopath
-  endif
 
   return out
 endfunction

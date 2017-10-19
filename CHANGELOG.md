@@ -6,6 +6,13 @@ BACKWARDS INCOMPATIBILITIES:
   still work, but are not supported. You can use `let g:go_version_warning = 0`
   to disable the warning.
   [[GH-1524]](https://github.com/fatih/vim-go/pull/1524).
+* Remove `g:go_autodetect_gopath`; support for `vendor` has been in Go for a
+  while. If you still need this you can still do it from an `autocmd`:
+
+      autocmd FileType /path/to/project/*.go let $GOPATH = '...'
+
+  [[GH-1461]](https://github.com/fatih/vim-go/pull/1461).
+  [[GH-1525]](https://github.com/fatih/vim-go/pull/1525).
 
 BUG FIXES:
 
@@ -30,7 +37,6 @@ IMPROVEMENTS:
   gets pre-filled can be configured with `g:go_gorename_prefill` option.
   In addition `:GoRename <Tab>` now lists some common options.
   [[GH-1465]](https://github.com/fatih/vim-go/pull/1465).
-* Disable `g:go_autodetect_gopath` by default. [[GH-1461]](https://github.com/fatih/vim-go/pull/1461).
 * Add support for `g:go_build_tags` to the `:GoTest` family of functions.
   [[GH-1562]](https://github.com/fatih/vim-go/pull/1562).
 * Pass `--tests` to gometalinter when autosaving and when a custom gometalinter
