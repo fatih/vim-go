@@ -26,3 +26,5 @@ func Test_remove_tags()
 
   call assert_equal(expected, actual)
 endfunc
+
+" vim: sw=2 ts=2 et

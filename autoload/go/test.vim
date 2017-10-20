@@ -283,4 +283,3 @@ function! s:parse_errors(lines) abort
 endfunction
 
 " vim: sw=2 ts=2 et
-"
