@@ -201,7 +201,7 @@ function! s:get_browser_command() abort
     if go_play_browser_command == ''
         if go#util#IsWin()
             let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
-        elseif go#util#isMac()
+        elseif go#util#IsMac()
             let go_play_browser_command = 'open %URL%'
         elseif executable('xdg-open')
             let go_play_browser_command = 'xdg-open %URL%'
