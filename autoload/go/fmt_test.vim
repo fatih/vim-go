@@ -45,3 +45,5 @@ func Test_goimports()
 
   call assert_equal(expected, actual)
 endfunc
+
+" vim: sw=2 ts=2 et

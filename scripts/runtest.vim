@@ -79,3 +79,5 @@ write
 
 " bye, bye!
 qall!
+
+" vim: sw=2 ts=2 et

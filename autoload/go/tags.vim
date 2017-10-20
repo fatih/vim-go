@@ -210,3 +210,5 @@ func s:create_cmd(args) abort
 
   return {'cmd': cmd}
 endfunc
+
+" vim: sw=2 ts=2 et
