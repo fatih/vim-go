@@ -9,7 +9,7 @@
 
 set -euC
 
-vimgodir=$(cd "$(dirname "$0")/.." && pwd)
+vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
 cd "$vimgodir"
 
 vim=${1:-}
@@ -71,7 +71,7 @@ if [ "$1" = "nvim" ]; then
   mv "$installdir/bin/nvim" "$installdir/bin/vim"
   mkdir -p "$installdir/share/vim/vimgo/pack"
   ln -s "$installdir/share/nvim/runtime/pack/vim-go" "$installdir/share/vim/vimgo/pack/vim-go"
-  
+
   #ln -s "$installdir/
 
 # Build Vim from source.

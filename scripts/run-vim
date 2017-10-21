@@ -4,7 +4,7 @@
 #
 
 set -uC
-vimgodir=$(cd "$(dirname "$0")/.." && pwd)
+vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
 cd "$vimgodir"
 
 if [ -z "${1:-}" ]; then
