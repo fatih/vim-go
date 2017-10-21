@@ -4,6 +4,29 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
+" Not using the has('patch-7.4.1689') syntax because that wasn't added until
+" 7.4.237, and we want to be sure this works for everyone (this is also why
+" we're not using utils#EchoError()).
+"
+" Version 7.4.1689 was chosen because that's what the most recent Ubuntu LTS
+" release (16.04) uses.
+if
+      \ get(g:, 'go_version_warning', 1) != 0 &&
+      \ (v:version < 704 || (v:version == 704 && !has('patch1689')))
+      \ && !has('nvim')
+  echohl Error
+  echom "vim-go requires Vim 7.4.1689 or Neovim, but you're using an older version."
+  echom "Please update your Vim for the best vim-go experience."
+  echom "If you really want to continue you can set this to make the error go away:"
+  echom "    let g:go_version_warning = 0"
+  echom "Note that some features may error out or behave incorrectly."
+  echom "Please do not report bugs unless you're using Vim 7.4.1689 or newer."
+  echohl None
+
+  " Make sure people see this.
+  sleep 2
+endif
+
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries
 let s:packages = {
