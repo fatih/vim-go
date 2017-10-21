@@ -1,6 +1,7 @@
 language: go
 cache:
-  - /tmp/vim-go-test
+  directories:
+    - /tmp/vim-go-test
 matrix:
   include:
     - env: SCRIPT=test VIM_VERSION=vim-7.4
