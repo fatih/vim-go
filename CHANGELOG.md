@@ -1,5 +1,12 @@
 ## unplanned
 
+BACKWARDS INCOMPATIBILITIES:
+
+* Display a warning for Vim versions older than 7.4.1689. Older versions may
+  still work, but are not supported. You can use `let g:go_version_warning = 0`
+  to disable the warning.
+  [[GH-1524]](https://github.com/fatih/vim-go/pull/1524).
+
 BUG FIXES:
 
 * Fix compatibility with Vim version before 7.4.1546
