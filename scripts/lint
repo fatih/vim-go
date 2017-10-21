@@ -32,13 +32,13 @@ lint=$($vimdir/bin/vim -esNR \
   --cmd "set rtp+=$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
   +'filetype plugin on' \
   +"e $vimgodir/doc/vim-go.txt" \
-  +'verb VimhelpLintEcho' \
+  +'verbose VimhelpLintEcho' \
   +q \
   2>&1)
 if [ "$lint" ]; then
   echo "FAILED"
   echo "$lint"
-  exit 1
+  exit 6
 else
   echo "PASSED"
   exit 0
