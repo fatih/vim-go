@@ -12,9 +12,13 @@ test:
 	@./scripts/test vim-8.0
 	@./scripts/test nvim
 
+lint:
+	@echo "==> Running linting tools"
+	@./scripts/lint vim-8.0
+
 clean:
 	@echo "==> Cleaning /tmp/vim-go-test"
 	@rm -rf /tmp/vim-go-test
 
 
-.PHONY: all test install clean
+.PHONY: all test install clean lint

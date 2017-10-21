@@ -48,28 +48,4 @@ if [ -f "/tmp/vim-go-test/FAILED" ]; then
 fi
 echo 2>&1 "All tests PASSED"
 
-
-### Run vimhelplint.
-####################
-# TODO: Doesn't work in nvim? Not sure why, just don't run it for now.
-if [ $1 != "nvim" ]; then
-  printf "\n\nRunning vimhelplint ... "
-  lint=$($vimdir/bin/vim -esNR \
-    --cmd "set rtp+=$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
-    +'filetype plugin on' \
-    +"e $vimgodir/doc/vim-go.txt" \
-    +'verb VimhelpLintEcho' \
-    +q \
-    2>&1)
-  if [ "$lint" ]; then
-    echo "FAILED"
-    echo "$lint"
-    exit 1
-  else
-    echo "PASSED"
-    exit 0
-  fi
-fi
-
-
 # vim:ts=2:sts=2:sw=2:et

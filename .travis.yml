@@ -3,12 +3,13 @@ cache:
   - /tmp/vim-go-test
 matrix:
   include:
-    - env: VIM_VERSION=vim-7.4
-    - env: VIM_VERSION=vim-8.0
-    - env: VIM_VERSION=nvim
+    - env: SCRIPT=test VIM_VERSION=vim-7.4
+    - env: SCRIPT=test VIM_VERSION=vim-8.0
+    - env: SCRIPT=test VIM_VERSION=nvim
+    - env: SCRIPT=lint VIM_VERSION=vim-8.0
 install:
   - git config --global user.email "you@example.com"
   - git config --global user.name "Your Name"
   - ./scripts/install-vim $VIM_VERSION
 script:
-  - ./scripts/test $VIM_VERSION
+  - ./scripts/$SCRIPT $VIM_VERSION
