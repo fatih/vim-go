@@ -1969,4 +1969,4 @@ CREDITS                                                         *go-credits*
 * vim-go contributors: https://github.com/fatih/vim-go/graphs/contributors.
 
 
-vim:ft=help:et:ts=2:sw=2:sts=2:norl
+ vim: ft=help tw=78 et ts=2 sw=2 sts=2 norl
