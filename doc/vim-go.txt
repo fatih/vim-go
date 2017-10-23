@@ -566,13 +566,13 @@ CTRL-t
                                                                  *:GoFreevars*
 :GoFreevars
 
-    Enumerates the free variables of the selection. “Free variables” is a
+    Enumerates the free variables of the selection. "Free variables" is a
     technical term meaning the set of variables that are referenced but not
     defined within the selection, or loosely speaking, its inputs.
 
-    This information is useful if you’re considering whether to refactor the
+    This information is useful when considering whether to refactor the
     selection into a function of its own, as the free variables would be the
-    necessary parameters of that function.  It’s also useful when you want to
+    necessary parameters of that function. It's also useful when you want to
     understand what the inputs are to a complex block of code even if you
     don’t plan to change it.
 
