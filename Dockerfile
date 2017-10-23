@@ -5,8 +5,9 @@ RUN apt-get update -y && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN useradd -ms /bin/bash -d /vim-go vim-go
+USER vim-go
 WORKDIR /vim-go
-
 COPY . /vim-go/
 
 ENTRYPOINT ["make"]
