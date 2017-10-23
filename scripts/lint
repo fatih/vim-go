@@ -28,8 +28,11 @@ fi
 ### Run vimhelplint.
 ####################
 printf "Running vimhelplint ... "
+
+# set modeline explicitly so that the modeline will be respected when run as root.
 lint=$($vimdir/bin/vim -esNR \
   --cmd "set rtp+=$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
+  --cmd 'set modeline' \
   +'filetype plugin on' \
   +"e $vimgodir/doc/vim-go.txt" \
   +'verbose VimhelpLintEcho' \
