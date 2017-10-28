@@ -548,11 +548,14 @@ function! go#guru#ClearSameIds() abort
 endfunction
 
 function! go#guru#ToggleSameIds() abort
-  if len(getmatches()) != 0
-    call go#guru#ClearSameIds()
-  else
-    call go#guru#SameIds()
-  endif
+  let m = getmatches()
+  for item in m
+    if item['group'] == 'goSameId'
+      call go#guru#ClearSameIds()
+      return
+    endif
+  endfor
+  call go#guru#SameIds()
 endfunction
 
 function! go#guru#AutoToogleSameIds() abort
