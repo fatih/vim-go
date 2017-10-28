@@ -534,10 +534,13 @@ function! s:same_ids_highlight(exit_val, output) abort
 endfunction
 
 function! go#guru#ClearSameIds() abort
+  let l:cleared = 0
+
   let m = getmatches()
   for item in m
     if item['group'] == 'goSameId'
       call matchdelete(item['id'])
+      let l:cleared = 1
     endif
   endfor
 
@@ -545,17 +548,14 @@ function! go#guru#ClearSameIds() abort
   if exists("#BufWinEnter#<buffer>")
     autocmd! BufWinEnter <buffer>
   endif
+
+  return cleared
 endfunction
 
 function! go#guru#ToggleSameIds() abort
-  let m = getmatches()
-  for item in m
-    if item['group'] == 'goSameId'
-      call go#guru#ClearSameIds()
-      return
-    endif
-  endfor
-  call go#guru#SameIds()
+  if !go#guru#ClearSameIds()
+    call go#guru#SameIds()
+  endif
 endfunction
 
 function! go#guru#AutoToogleSameIds() abort
