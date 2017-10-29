@@ -16,6 +16,9 @@ BUG FIXES:
 * `:GoTestCompile` produces a test binary again. The test binary will be
   written to a temporary directory to avoid polluting the user's working
   directory. [[GH-1519]](https://github.com/fatih/vim-go/pull/1519)
+* Fix incorrect `:GoSameIdsToggle` behavior when there were match groups
+  present, but none were goSameId.
+  [[GH-1538]](https://github.com/fatih/vim-go/pull/1538)
 
 IMPROVEMENTS:
 
