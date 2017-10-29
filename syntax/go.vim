@@ -444,8 +444,8 @@ function! s:hi()
   hi def link goSameId Search
 
   " :GoCoverage commands
-  hi def      goCoverageCovered    ctermfg=green guifg=#A6E22E
-  hi def      goCoverageUncover    ctermfg=red guifg=#F92672
+  hi def      goCoverageCovered    ctermfg=lightgreen guifg=#A6E22E
+  hi def      goCoverageUncover    ctermfg=darkred guifg=#F92672
 endfunction
 
 augroup vim-go-hi
