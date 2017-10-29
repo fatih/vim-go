@@ -533,19 +533,21 @@ function! s:same_ids_highlight(exit_val, output) abort
   endif
 endfunction
 
+" ClearSameIds returns 0 when it removes goSameId groups and non-zero if no
+" goSameId groups are found.
 function! go#guru#ClearSameIds() abort
-  let l:cleared = -1
+  let l:cleared = 0
 
   let m = getmatches()
   for item in m
     if item['group'] == 'goSameId'
       call matchdelete(item['id'])
-      let l:cleared = 0
+      let l:cleared = 1
     endif
   endfor
 
-  if l:cleared != 0
-    return -1
+  if !l:cleared
+    return 1
   endif
 
   " remove the autocmds we defined
