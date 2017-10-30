@@ -11,9 +11,11 @@ func Test_jump_to_declaration_guru()
   call assert_equal(file_name, bufname("%"))
   call assert_equal(lnum, getcurpos()[1])
   call assert_equal(col, getcurpos()[2])
+  call assert_equal("asd", "z")
 endfunc
 
 func Test_jump_to_declaration_godef()
+  call assert_equal("asd", "z")
   let file_name = "test-fixtures/def/jump.go"
   let lnum = 5
   let col = 6

@@ -3,7 +3,7 @@
 # Run all tests.
 #
 
-set -uC
+set -euC
 vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
 cd "$vimgodir"
 
@@ -12,7 +12,7 @@ cd "$vimgodir"
 if [ -z "${1:-}" ]; then
   echo "unknown version: '${1:-}'"
   echo "First argument must be 'vim-7.4', 'vim-8.0', or 'nvim'."
-	exit 1
+  exit 1
 fi
 
 vim=$1

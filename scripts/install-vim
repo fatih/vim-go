@@ -61,6 +61,8 @@ cd "$srcdir"
 # binary.
 # 0.2.0 doesn't have a binary build for Linux, so we use 0.2.1-dev for now.
 if [ "$1" = "nvim" ]; then
+
+  # TODO: Use macOS binaries on macOS
   curl -Ls https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz |
     tar xzf - -C /tmp/vim-go-test/
   mv /tmp/vim-go-test/nvim-linux64 /tmp/vim-go-test/nvim-install
@@ -71,8 +73,6 @@ if [ "$1" = "nvim" ]; then
   mv "$installdir/bin/nvim" "$installdir/bin/vim"
   mkdir -p "$installdir/share/vim/vimgo/pack"
   ln -s "$installdir/share/nvim/runtime/pack/vim-go" "$installdir/share/vim/vimgo/pack/vim-go"
-
-  #ln -s "$installdir/
 
 # Build Vim from source.
 else

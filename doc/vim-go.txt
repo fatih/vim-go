@@ -67,7 +67,9 @@ tools developed by the Go community to provide a seamless Vim experience.
   * Integrated with the Neovim terminal, launch |:GoRun| and other Go commands
     in a terminal buffer.
   * Switch between `file.go` and `file_test.go` code with |:GoAlternate|.
-  * Supports integration with the Tagbar and ctrlp.vim plugins.
+  * Supports integration with the Tagbar and ctrlp.vim plugins. Supports integration with the Tagbar and ctrlp.vim plugins.
+  * Supports integration with the Tagbar and ctrlp.vim plugins. Supports integration with the Tagbar and ctrlp.vim plugins.
+  * Supports integration with the Tagbar and ctrlp.vim plugins. Supports integration with the Tagbar and ctrlp.vim plugins.
   * ...and more...
 
 ==============================================================================
@@ -125,7 +127,7 @@ Supported Go plugins~                                         *vim-go-plugins*
 The following plugins are supported for use with vim-go:
 
 * Real-time completion (Vim):
-  https://github.com/Shougo/neocomplete.vim 
+  https://github.com/Shougo/neocomplete.vim
 
 * Real-time completion (Neovim):
   https://github.com/Shougo/deoplete.nvim and
@@ -1181,11 +1183,11 @@ used >
 Use this option to add additional options to the |'g:go_fmt_command'|. It's
 value type can be either a string or a dictionary. This is due backwards
 compatibility. The string version will be removed in the future so please use
-the dictionary version. Default is empty. 
+the dictionary version. Default is empty.
 >
   let g:go_fmt_options = ''
 
-  or 
+  or
 
   let g:go_fmt_options = {}
 <
@@ -1394,7 +1396,7 @@ Specifies the type of list to use for command outputs (such as errors from
 builds, results from static analysis commands, etc...). The list type for
 specific commands can be overridden with |'g:go_list_type_commands'|. The
 default value (empty) will use the appropriate kind of list for the command
-that was called. Supported values are "", "quickfix", and "locationlist". 
+that was called. Supported values are "", "quickfix", and "locationlist".
 >
   let g:go_list_type = ""
 <
@@ -1422,7 +1424,7 @@ As an example, the following settings will change all list types to
 
 Specifies whether the quickfix/location list should be closed automatically
 in the absence of errors.  The default value is 1.
-If you prefer to keep a long running error window open, you can disable 
+If you prefer to keep a long running error window open, you can disable
 this by setting the value to 0.
 >
   let g:go_list_autoclose = 1
@@ -1815,7 +1817,7 @@ manually, usually from an |autocommand|:
 If you have a lot of packages with the same prefix (`github.com/user`) you can
 use a single autocommand:
 >
-  autocmd BufRead /home/martin/go/src/*.go 
+  autocmd BufRead /home/martin/go/src/*.go
         \  let s:tmp = matchlist(expand('%:p'),
             \ '/home/martin/go/src/\(github.com/user/[^/]\+\)')
         \| if len(s:tmp) > 1 |  exe 'silent :GoGuruScope ' . s:tmp[1] | endif

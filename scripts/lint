@@ -3,7 +3,7 @@
 # Run all linting tools.
 #
 
-set -uC
+set -euC
 vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
 cd "$vimgodir"
 
