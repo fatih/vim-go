@@ -9,5 +9,6 @@ RUN useradd -ms /bin/bash -d /vim-go vim-go
 USER vim-go
 WORKDIR /vim-go
 COPY . /vim-go/
+RUN make install
 
 ENTRYPOINT ["make"]
