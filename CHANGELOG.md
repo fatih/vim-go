@@ -1028,3 +1028,7 @@ the community contributions).
 ## 0.0 (Mar 24, 2014)
 
 Initial commit: https://github.com/fatih/vim-go/commit/78c5caa82c111c50e9c219f222d65b07694f8f5a
+
+<!--
+ vim: et ts=2 sw=2
+-->
