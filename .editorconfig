@@ -11,3 +11,7 @@ trim_trailing_whitespace = true
 [*.go]
 indent_style = tab
 indent_size = 4
+
+[Makefile]
+indent_style = tab
+indent_size = 8
