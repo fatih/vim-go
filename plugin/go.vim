@@ -36,6 +36,7 @@ let s:packages = {
       \ 'gocode':        ['github.com/nsf/gocode', {'windows': '-ldflags -H=windowsgui'}],
       \ 'godef':         ['github.com/rogpeppe/godef'],
       \ 'gogetdoc':      ['github.com/zmb3/gogetdoc'],
+      \ 'goimport':      ['arp242.net/goimport'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports'],
       \ 'golint':        ['github.com/golang/lint/golint'],
       \ 'gometalinter':  ['github.com/alecthomas/gometalinter'],
