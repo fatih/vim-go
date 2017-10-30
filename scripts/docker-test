@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Run all tests inside a Docker container
+#
+
+set -uC
+vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
+cd "$vimgodir"
+
+if [ $(docker container ls -a --filter name=vim-go-test | wc -l) -eq 1 ]; then
+    docker build --tag carpetsmoker/vim-go:test .
+    docker run --detach --name vim-go-test carpetsmoker/vim-go:test
+else
+    docker container start vim-go-test
+fi
+
+# Make sure we stop/destroy the container.
+cleanup() {
+  docker container stop vim-go-test
+}
+trap cleanup EXIT
+
+
+# vim:ts=2:sts=2:sw=2:et

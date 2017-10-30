@@ -16,9 +16,13 @@ lint:
 	@echo "==> Running linting tools"
 	@./scripts/lint vim-8.0
 
+docker:
+	@echo "==> Building/starting Docker container"
+	@./scripts/docker-test
+
 clean:
 	@echo "==> Cleaning /tmp/vim-go-test"
 	@rm -rf /tmp/vim-go-test
 
 
-.PHONY: all test install clean lint
+.PHONY: all test install clean lint docker
