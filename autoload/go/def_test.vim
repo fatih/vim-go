@@ -1,17 +1,9 @@
 func! Test_jump_to_declaration_guru() abort
   try
-    let l:tmp = gotest#loadFile('a/a.go', [
-          \ 'package main',
-          \ '',
-          \ 'import "fmt"',
-          \ '',
-          \ 'func main() {',
-          \ '    fmt.Println("vim-go")',
-          \ '}'])
-
-    let filename = 'a/a.go'
+    let l:filename = 'def/jump.go'
     let lnum = 5
     let col = 6
+    let l:tmp = gotest#load_fixture(l:filename)
 
     let guru_out = printf("%s:%d:%d: defined here as func main", filename, lnum, col)
     call go#def#jump_to_declaration(guru_out, "", 'guru')
@@ -26,18 +18,10 @@ endfunc
 
 func! Test_jump_to_declaration_godef() abort
   try
-    let l:tmp = gotest#loadFile('a/a.go', [
-          \ 'package main',
-          \ '',
-          \ 'import "fmt"',
-          \ '',
-          \ 'func main() {',
-          \ '    fmt.Println("vim-go")',
-          \ '}'])
-
-    let filename = 'a/a.go'
+    let filename = 'def/jump.go'
     let lnum = 5
     let col = 6
+    let l:tmp = gotest#load_fixture(l:filename)
 
     let godef_out = printf("%s:%d:%d\ndefined here as func main", filename, lnum, col)
     call go#def#jump_to_declaration(godef_out, "", 'godef')

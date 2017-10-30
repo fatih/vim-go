@@ -18,6 +18,9 @@ let s:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
 let s:testfile = expand('%:t')
 execute s:cd . expand('%:p:h')
 
+" Export root path to vim-go dir.
+let g:vim_go_root = fnamemodify(getcwd(), ':p')
+
 " Get a list of all Test_ functions for the given file.
 redir @q
   silent function /^Test_

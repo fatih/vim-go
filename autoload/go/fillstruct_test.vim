@@ -1,6 +1,6 @@
 func! Test_fillstruct() abort
   try
-    let l:tmp = gotest#loadFile('a/a.go', [
+    let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
           \ 'import "net/mail"',
           \ 'var addr = mail.Address{}'])

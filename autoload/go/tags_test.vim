@@ -1,41 +1,8 @@
 func! Test_add_tags() abort
   try
-    let l:tmp = gotest#loadFile('a/a.go', [
-          \ 'package main',
-          \ '',
-          \ 'type Server struct {',
-          \ '    Name          string',
-          \ '    ID            int',
-          \ '    MyHomeAddress string',
-          \ '    SubDomains    []string',
-          \ '    Empty         string',
-          \ '    Example       int64',
-          \ '    Example2      string',
-          \ '    Bar           struct {',
-          \ '        Four string',
-          \ '        Five string',
-          \ '    }',
-          \ '    Lala interface{}',
-          \ '}'])
-
+    let l:tmp = gotest#load_fixture('tags/add_all_input.go')
     silent call go#tags#run(0, 0, 40, "add", bufname(''), 1)
-    call gotest#assert_buffer(0, [
-          \ 'package main',
-          \ '',
-          \ 'type Server struct {',
-          \ '    Name          string   `json:"name"`',
-          \ '    ID            int      `json:"id"`',
-          \ '    MyHomeAddress string   `json:"my_home_address"`',
-          \ '    SubDomains    []string `json:"sub_domains"`',
-          \ '    Empty         string   `json:"empty"`',
-          \ '    Example       int64    `json:"example"`',
-          \ '    Example2      string   `json:"example_2"`',
-          \ '    Bar           struct {',
-          \ '        Four string `json:"four"`',
-          \ '        Five string `json:"five"`',
-          \ '    } `json:"bar"`',
-          \ '    Lala interface{} `json:"lala"`',
-          \ '}'])
+    call gotest#assert_fixture('tags/add_all_golden.go')
   finally
     call delete(l:tmp, 'rf')
   endtry
@@ -44,43 +11,9 @@ endfunc
 
 func! Test_remove_tags() abort
   try
-    let l:tmp = gotest#loadFile('a/a.go', [
-      \ 'package main',
-      \ '',
-      \ 'type Server struct {',
-      \ '  Name          string   `json:"name"`',
-      \ '  ID            int      `json:"id"`',
-      \ '  MyHomeAddress string   `json:"my_home_address"`',
-      \ '  SubDomains    []string `json:"sub_domains"`',
-      \ '  Empty         string   `json:"empty"`',
-      \ '  Example       int64    `json:"example"`',
-      \ '  Example2      string   `json:"example_2"`',
-      \ '  Bar           struct {',
-      \ '    Four string `json:"four"`',
-      \ '    Five string `json:"five"`',
-      \ '  } `json:"bar"`',
-      \ '  Lala interface{} `json:"lala"`',
-      \ '}'])
-
+    let l:tmp = gotest#load_fixture('tags/remove_all_input.go')
     silent call go#tags#run(0, 0, 40, "remove", bufname(''), 1)
-    call gotest#assert_buffer(0, [
-      \ 'package main',
-      \ '',
-      \ 'type Server struct {',
-      \ '  Name          string',
-      \ '  ID            int',
-      \ '  MyHomeAddress string',
-      \ '  SubDomains    []string',
-      \ '  Empty         string',
-      \ '  Example       int64',
-      \ '  Example2      string',
-      \ '  Bar           struct {',
-      \ '    Four string',
-      \ '    Five string',
-      \ '  }',
-      \ '  Lala interface{}',
-      \ '}'])
-
+    call gotest#assert_fixture('tags/remove_all_golden.go')
   finally
     call delete(l:tmp, 'rf')
   endtry

@@ -7,13 +7,13 @@
 "
 " The full path to the created directory is returned, it is the caller's
 " responsibility to clean that up!
-fun! gotest#loadFile(path, contents) abort
+fun! gotest#write_file(path, contents) abort
   let l:dir = go#util#tempdir("vim-go-test/testrun/")
   let $GOPATH .= ':' . l:dir
-  let l:path = l:dir . '/src/' . a:path
+  let l:full_path = l:dir . '/src/' . a:path
 
-  call mkdir(fnamemodify(l:path, ':h'), 'p')
-  call writefile(a:contents, l:path)
+  call mkdir(fnamemodify(l:full_path, ':h'), 'p')
+  call writefile(a:contents, l:full_path)
   exe 'cd ' . l:dir . '/src'
   silent exe 'e ' . a:path
 
@@ -29,6 +29,24 @@ fun! gotest#loadFile(path, contents) abort
 
     let l:lnum += 1
   endfor
+
+  return l:dir
+endfun
+
+" Load a fixture file from test-fixtures.
+"
+" The file will be copied to a new GOPATH-compliant temporary directory and
+" loaded as the current buffer.
+fun! gotest#load_fixture(path) abort
+  let l:dir = go#util#tempdir("vim-go-test/testrun/")
+  let $GOPATH .= ':' . l:dir
+  let l:full_path = l:dir . '/src/' . a:path
+
+  call mkdir(fnamemodify(l:full_path, ':h'), 'p')
+  exe 'cd ' . l:dir . '/src'
+  silent exe 'noautocmd e ' . a:path
+  silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
+  silent noautocmd w!
 
   return l:dir
 endfun
@@ -74,6 +92,12 @@ fun! gotest#assert_buffer(skipHeader, want) abort
   if l:err || l:out != ''
     let v:errors = extend(v:errors, split(l:out, "\n"))
   endif
+endfun
+
+" Diff the contents of the current buffer to the fixture file in a:path.
+fun! gotest#assert_fixture(path) abort
+  let l:want = readfile(printf('%s/test-fixtures/%s', g:vim_go_root, a:path))
+  call gotest#assert_buffer(0, l:want)
 endfun
 
 
