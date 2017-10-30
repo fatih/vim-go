@@ -67,9 +67,7 @@ tools developed by the Go community to provide a seamless Vim experience.
   * Integrated with the Neovim terminal, launch |:GoRun| and other Go commands
     in a terminal buffer.
   * Switch between `file.go` and `file_test.go` code with |:GoAlternate|.
-  * Supports integration with the Tagbar and ctrlp.vim plugins. Supports integration with the Tagbar and ctrlp.vim plugins.
-  * Supports integration with the Tagbar and ctrlp.vim plugins. Supports integration with the Tagbar and ctrlp.vim plugins.
-  * Supports integration with the Tagbar and ctrlp.vim plugins. Supports integration with the Tagbar and ctrlp.vim plugins.
+  * Supports integration with the Tagbar and ctrlp.vim plugins.
   * ...and more...
 
 ==============================================================================
