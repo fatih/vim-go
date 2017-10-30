@@ -154,16 +154,18 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   endfor
 
   " Install gometalinter tools.
-  let cmd = ['gometalinter', '--install']
-  if a:updateBinaries == 2
-    let cmd = add(cmd, '--update')
-  endif
+  if has_key(l:packages, 'gometalinter')
+    let cmd = ['gometalinter', '--install']
+    if a:updateBinaries == 2
+      let cmd = add(cmd, '--update')
+    endif
 
-  echo "vim-go: Running " . join(l:cmd, " ")
-  let [out, err] = go#util#Exec(cmd)
-  if err
-    call go#util#EchoError("vim-go: gometalinter --install failed:")
-    call go#util#EchoError(out)
+    echo "vim-go: Running " . join(l:cmd, " ")
+    let [out, err] = go#util#Exec(cmd)
+    if err
+      call go#util#EchoError("vim-go: gometalinter --install failed:")
+      call go#util#EchoError(out)
+    endif
   endif
 
   " restore back!
