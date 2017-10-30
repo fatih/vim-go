@@ -153,6 +153,19 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     endif
   endfor
 
+  " Install gometalinter tools.
+  let cmd = ['gometalinter', '--install']
+  if a:updateBinaries == 2
+    let cmd = add(cmd, '--update')
+  endif
+
+  echo "vim-go: Running " . join(l:cmd, " ")
+  let [out, err] = go#util#Exec(cmd)
+  if err
+    call go#util#EchoError("vim-go: gometalinter --install failed:")
+    call go#util#EchoError(out)
+  endif
+
   " restore back!
   let $PATH = old_path
   if resetshellslash
