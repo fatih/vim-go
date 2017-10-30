@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# Run all linting tools.
+#
+
+set -euC
+vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
+cd "$vimgodir"
+
+### Setup Vim and other dependencies.
+#####################################
+if [ -z "${1:-}" ]; then
+  echo "unknown version: '${1:-}'"
+  echo "First argument must be 'vim-7.4', 'vim-8.0', or 'nvim'."
+	exit 1
+fi
+
+vim=$1
+vimdir="/tmp/vim-go-test/$vim-install"
+export GOPATH=$vimdir
+export PATH=${GOPATH}/bin:$PATH
+
+if [ ! -f "$vimdir/bin/vim" ]; then
+	echo "$vimdir/bin/vim doesn't exist; did you install it with the install-vim script?"
+	exit 1
+fi
+
+### Run vimhelplint.
+####################
+printf "Running vimhelplint ... "
+
+# set modeline explicitly so that the modeline will be respected when run as root.
+lint=$($vimdir/bin/vim -esNR \
+  --cmd "set rtp+=$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
+  --cmd 'set modeline' \
+  +'filetype plugin on' \
+  +"e $vimgodir/doc/vim-go.txt" \
+  +'verbose VimhelpLintEcho' \
+  +q \
+  2>&1)
+if [ "$lint" ]; then
+  echo "FAILED"
+  echo "$lint"
+  exit 6
+else
+  echo "PASSED"
+  exit 0
+fi
