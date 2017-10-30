@@ -19,6 +19,8 @@ BUG FIXES:
 * Fix incorrect `:GoSameIdsToggle` behavior when there were match groups
   present, but none were goSameId.
   [[GH-1538]](https://github.com/fatih/vim-go/pull/1538)
+* fix `gpl` snippet for UltiSnips.
+  [[GH-1535]](https://github.com/fatih/vim-go/pull/1535)
 
 IMPROVEMENTS:
 
@@ -234,7 +236,7 @@ BUG FIXES:
 * `:GoTest` is able to parse error messages that include a colon `:` [[GH-1316]](https://github.com/fatih/vim-go/pull/1316)
 * `:GoTestCompile` under the hood doesn't produces a test binary anymore. Sometimes a race condition would happen which would not delete the test binary. [[GH-1317]](https://github.com/fatih/vim-go/pull/1317)
 * `:GoDef` jumps now to definition for build tags defined with `:GoBuildTags` (only guru) [[GH-1319]](https://github.com/fatih/vim-go/pull/1319)
- 
+
 BACKWARDS INCOMPATIBILITIES:
 
 * `:GoLint` works on the whole directory instead of the current file. To use it for the current file give it as an argument, i.e `:GoLint foo.go` [[GH-1295]](https://github.com/fatih/vim-go/pull/1295)
@@ -694,7 +696,7 @@ IMPROVEMENTS:
 
 BUG FIXES:
 
-* Fix oracle scope not working if trailing slash exists in scope [[GH-751]](https://github.com/fatih/vim-go/pull/751) 
+* Fix oracle scope not working if trailing slash exists in scope [[GH-751]](https://github.com/fatih/vim-go/pull/751)
 * Fix `:GoErrCheck` checking abspath [[GH-671]](https://github.com/fatih/vim-go/pull/671)
 * Fix `:GoInstall` correctly parsing errors [[GH-692]](https://github.com/fatih/vim-go/pull/692)
 * Fix `:GoInstall` correctly parsing errors [[GH-692]](https://github.com/fatih/vim-go/pull/692)
@@ -716,13 +718,13 @@ FEATURES:
   * An async launcher and base foundation was implemented for the `go` command.
   This will be used in the future for all upcoming subcommands of the `go`
   tool.
-  * `:GoBuild` is now called asynchronously (it doesn't block the UI anymore). 
+  * `:GoBuild` is now called asynchronously (it doesn't block the UI anymore).
   * A new `go#jobcontrol#Statusline()` can be used to plug into the statusline.
   This will show the status of the job running asynchronously. The statusline
   is improved to show the status per package instead of file. Assume you have
   three files open, all belonging to the same package, if the package build
   (`:GoBuild`) is successful, all statusline's will be empty (means SUCCESS),
-  if it fails all files statusline's will show `FAILED`. 
+  if it fails all files statusline's will show `FAILED`.
   * `:GoRun` opens a new vertical terminal emulator inside Neovim and runs the
   command there. The terminal mode can be changed with `g:go_term_mode`,
   which is by default `vsplit`. Current options are `vsplit, split or tab`.
@@ -870,7 +872,7 @@ IMPROVEMENTS:
   github.com/fatih/color`. Useful if `:GoImport` fails and you want to download
   it.
 * Automatic GOPATH detections can now detect `gb` vendored folders. Some commands should now work without any problem when invoked on a `gb` project.
-* All command arguments are now properly escaped for shell invocation. 
+* All command arguments are now properly escaped for shell invocation.
 * Added the `-f` flag to :GoInstallBinaries command to support `git url.<base>.insteadOf` configuration
 * Improve width and precision highlighting, such as `%s %5s %-5s %5.5f %.5f`
 * Show an error if a region is not selected when `:GoFreeVars` is called
@@ -966,7 +968,7 @@ IMPROVEMENTS:
 * `referrer` mode is improved to show referring lines in the quickfix window
 * A new `errt` snippet is added, which expands to `if err != nil { t.Fatal(err) }`
 * A new `errh` snippet is added, useful to be used in a `http.Handler`
-* UltiSnips snippets are improved to take advance of Vim's `Visual` mode. For example selecting a block and typing `if` will create an if scope around the block. 
+* UltiSnips snippets are improved to take advance of Vim's `Visual` mode. For example selecting a block and typing `if` will create an if scope around the block.
 * Cleanup README.md
 
 BUG FIXES:
