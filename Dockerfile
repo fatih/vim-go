@@ -7,8 +7,12 @@ RUN apt-get update -y && \
 
 RUN useradd -ms /bin/bash -d /vim-go vim-go
 USER vim-go
-WORKDIR /vim-go
+
 COPY . /vim-go/
-RUN make install
+WORKDIR /vim-go
+
+RUN scripts/install-vim vim-7.4
+RUN scripts/install-vim vim-8.0
+RUN scripts/install-vim nvim
 
 ENTRYPOINT ["make"]
