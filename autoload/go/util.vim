@@ -362,4 +362,37 @@ function! go#util#archive()
     return expand("%:p:gs!\\!/!") . "\n" . strlen(l:buffer) . "\n" . l:buffer
 endfunction
 
+
+" Make a named temporary directory which starts with "prefix".
+"
+" Unfortunately Vim's tempname() is not portable enough across various systems;
+" see: https://github.com/mattn/vim-go/pull/3#discussion_r138084911
+function! go#util#tempdir(prefix) abort
+  " See :help tempfile
+  if go#util#IsWin()
+    let l:dirs = [$TMP, $TEMP, 'c:\tmp', 'c:\temp']
+  else
+    let l:dirs = [$TMPDIR, '/tmp', './', $HOME]
+  endif
+
+  let l:dir = ''
+  for l:d in dirs
+    if !empty(l:d) && filewritable(l:d) == 2
+      let l:dir = l:d
+      break
+    endif
+  endfor
+
+  if l:dir == ''
+    echoerr 'Unable to find directory to store temporary directory in'
+    return
+  endif
+
+  " Not great randomness, but "good enough" for our purpose here.
+  let l:rnd = sha256(printf('%s%s', localtime(), fnamemodify(bufname(''), ":p")))
+  let l:tmp = printf("%s/%s%s", l:dir, a:prefix, l:rnd)
+  call mkdir(l:tmp, 'p', 0700)
+  return l:tmp
+endfunction
+
 " vim: sw=2 ts=2 et
