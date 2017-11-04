@@ -260,6 +260,16 @@ augroup vim-go
   " in the same window doesn't highlight the most recently matched
   " identifier's positions.
   autocmd BufWinEnter *.go call go#guru#ClearSameIds()
-augroup END
+
+  autocmd BufEnter *.go
+        \  if get(g:, 'go_autodetect_gopath', 0)
+        \|   let b:old_gopath = $GOPATH
+        \|   let $GOPATH = go#path#Detect()
+        \| endif
+  autocmd BufLeave *.go
+        \  if get(g:, 'go_autodetect_gopath', 0)
+        \|   let $GOPATH = b:old_gopath
+        \| endif
+augroup end
 
 " vim: sw=2 ts=2 et

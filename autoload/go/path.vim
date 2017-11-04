@@ -12,7 +12,7 @@ function! go#path#GoPath(...) abort
   " no argument, show GOPATH
   if len(a:000) == 0
     echo go#path#Default()
-    return 
+    return
   endif
 
   " we have an argument, replace GOPATH
@@ -63,6 +63,60 @@ function! go#path#HasPath(path) abort
   let hasA = index(go_paths, withSep) != -1
   let hasB = index(go_paths, noSep) != -1
   return hasA || hasB
+endfunction
+
+" Detect returns the current GOPATH. If a package manager is used, such as
+" Godeps, GB, it will modify the GOPATH so those directories take precedence
+" over the current GOPATH. It also detects diretories whose are outside
+" GOPATH.
+function! go#path#Detect() abort
+  let gopath = go#path#Default()
+
+  let current_dir = fnameescape(expand('%:p:h'))
+
+  " TODO(arslan): this should be changed so folders or files should be
+  " fetched from a customizable list. The user should define any new package
+  " management tool by it's own.
+
+  " src folders outside $GOPATH
+  let src_roots = finddir("src", current_dir .";", -1)
+
+  " for cases like GOPATH/src/foo/src/bar, pick up GOPATH/src instead of
+  " GOPATH/src/foo/src
+  let src_root = ""
+  if len(src_roots) > 0
+    let src_root = src_roots[-1]
+  endif
+
+  if !empty(src_root)
+    let src_path = fnamemodify(src_root, ':p:h:h') . go#util#PathSep()
+
+    " gb vendor plugin
+    " (https://github.com/constabulary/gb/tree/master/cmd/gb-vendor)
+    let gb_vendor_root = src_path . "vendor" . go#util#PathSep()
+    if isdirectory(gb_vendor_root) && !go#path#HasPath(gb_vendor_root)
+      let gopath = gb_vendor_root . go#util#PathListSep() . gopath
+    endif
+
+    if !go#path#HasPath(src_path)
+      let gopath =  src_path . go#util#PathListSep() . gopath
+    endif
+  endif
+
+  " Godeps
+  let godeps_root = finddir("Godeps", current_dir .";")
+  if !empty(godeps_root)
+    let godeps_path = join([fnamemodify(godeps_root, ':p:h:h'), "Godeps", "_workspace" ], go#util#PathSep())
+
+    if !go#path#HasPath(godeps_path)
+      let gopath =  godeps_path . go#util#PathListSep() . gopath
+    endif
+  endif
+
+  " Fix up the case where initial $GOPATH is empty,
+  " and we end up with a trailing :
+  let gopath = substitute(gopath, ":$", "", "")
+  return gopath
 endfunction
 
 " BinPath returns the binary path of installed go tools.
