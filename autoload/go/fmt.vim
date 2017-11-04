@@ -131,7 +131,7 @@ function! go#fmt#update_file(source, target)
 
   " the title information was introduced with 7.4-2200
   " https://github.com/vim/vim/commit/d823fa910cca43fec3c31c030ee908a14c272640
-  if has('patch-7.4-2200')
+  if has('patch-7.4.2200')
     " clean up previous list
     if l:listtype == "quickfix"
       let l:list_title = getqflist({'title': 1})
