@@ -19,16 +19,25 @@ function! s:gocodeCommand(cmd, preargs, args) abort
     return
   endif
 
-  let socket_type = get(g:, 'go_gocode_socket_type', s:sock_type)
-  let cmd = printf('%s -sock %s %s %s %s',
-        \ go#util#Shellescape(bin_path),
-        \ socket_type,
-        \ join(a:preargs),
-        \ go#util#Shellescape(a:cmd),
-        \ join(a:args)
-        \ )
+  " We might hit cache problems, as gocode doesn't handle different GOPATHs
+  " well. See: https://github.com/nsf/gocode/issues/239
+  let old_goroot = $GOROOT
+  let $GOROOT = go#util#env("goroot")
 
-  let result = go#util#System(cmd)
+  try
+    let socket_type = get(g:, 'go_gocode_socket_type', s:sock_type)
+    let cmd = printf('%s -sock %s %s %s %s',
+          \ go#util#Shellescape(bin_path),
+          \ socket_type,
+          \ join(a:preargs),
+          \ go#util#Shellescape(a:cmd),
+          \ join(a:args)
+          \ )
+
+    let result = go#util#System(cmd)
+  finally
+    let $GOROOT = old_goroot
+  endtry
 
   if go#util#ShellError() != 0
     return "[\"0\", []]"
