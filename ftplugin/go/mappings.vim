@@ -54,10 +54,6 @@ nnoremap <silent> <Plug>(go-def-vertical) :<C-u>call go#def#Jump("vsplit")<CR>
 nnoremap <silent> <Plug>(go-def-split) :<C-u>call go#def#Jump("split")<CR>
 nnoremap <silent> <Plug>(go-def-tab) :<C-u>call go#def#Jump("tab")<CR>
 
-nnoremap <silent> <Plug>(go-def-pop) :<C-u>call go#def#StackPop()<CR>
-nnoremap <silent> <Plug>(go-def-stack) :<C-u>call go#def#Stack()<CR>
-nnoremap <silent> <Plug>(go-def-stack-clear) :<C-u>call go#def#StackClear()<CR>
-
 nnoremap <silent> <Plug>(go-doc) :<C-u>call go#doc#Open("new", "split")<CR>
 nnoremap <silent> <Plug>(go-doc-tab) :<C-u>call go#doc#Open("tabnew", "tabe")<CR>
 nnoremap <silent> <Plug>(go-doc-vertical) :<C-u>call go#doc#Open("vnew", "vsplit")<CR>
