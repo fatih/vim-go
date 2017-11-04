@@ -67,7 +67,9 @@ fun! gotest#assert_buffer(skipHeader, want) abort
     for l:lnum in range(0, len(l:buffer) - 1)
       " Bit rudimentary, but works reasonably well.
       if match(l:buffer[l:lnum], '^\v(func|var|const|import \(|\))') > -1
-        let l:buffer = l:buffer[l:lnum:]
+        " vint bug: https://github.com/Kuniwak/vint/issues/179
+        " vint: -ProhibitUsingUndeclaredVariable
+        let l:buffer = l:buffer[l:lnum:len(l:buffer)]
         break
       endif
     endfor
