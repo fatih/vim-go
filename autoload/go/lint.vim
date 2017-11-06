@@ -48,6 +48,13 @@ function! go#lint#Gometa(autosave, ...) abort
       let cmd += ["--exclude=".exclude]
     endfor
 
+    " gometalinter has a --tests flag to tell its linters whether to run
+    " against tests. While not all of its linters respect this flag, for those
+    " that do, it means if we don't pass --tests, the linter won't run against
+    " test files. One example of a linter that will not run against tests if
+    " we do not specify this flag is errcheck.
+    let cmd += ["--tests"]
+
     " path
     let cmd += [expand('%:p:h')]
   else
