@@ -30,7 +30,7 @@ fi
 failed=0
 printf "Running vint ... "
 if [ -x "$(command -v vint)" ]; then
-  lint=$(vint "$vimgodir" ||:)
+  lint=$(vint "$vimgodir" 2>&1 ||:)
   if [ -n "$lint" ]; then
     echo "FAILED"
     echo "$lint"
@@ -53,7 +53,8 @@ lint=$(sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint.sh"
   -u \
   -c func_abort=1 \
   -e EVL110=1 -e EVL103=1 -e EVL104=1 -e EVL102=1 \
-  "$vimgodir" ||:)
+  "$vimgodir" \
+  2>&1 ||:)
 if [ -n "$lint" ]; then
   echo "FAILED"
   echo "$lint"
