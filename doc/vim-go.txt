@@ -1826,7 +1826,7 @@ Also see |:GoGuruScope| and |'g:go_guru_scope'|.
 
 Vim becomes slow while editing Go files~
 
-This is usually caused by `g:go_hilight_*` options. Try disabling them if
+This is usually caused by `g:go_highlight_*` options. Try disabling them if
 you've enabled some of them.
 
 Other common culprits are |'g:go_auto_sameids'| and |go#statusline#Show()|.
