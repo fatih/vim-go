@@ -29,6 +29,11 @@ IMPROVEMENTS:
   In addition `:GoRename <Tab>` now lists some common options.
   [[GH-1465]](https://github.com/fatih/vim-go/pull/1465).
 * Disable `g:go_autodetect_gopath` by default. [[GH-1461]](https://github.com/fatih/vim-go/pull/1461).
+* Add support for 'g:go_build_tags' to the `:GoTest` family of functions.
+  [[GH-1562]](https://github.com/fatih/vim-go/pull/1562).
+* Pass `--tests` to gometalinter when autosaving and when a custom gometalinter
+  command has not been set.
+  [[GH-1563]](https://github.com/fatih/vim-go/pull/1563).
 
 ## 1.15 - (October 3, 2017)
 
