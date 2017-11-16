@@ -1,5 +1,7 @@
 " Make sure some options are set to sane defaults and output all messages in
 " English.
+
+" vint: -ProhibitSetNoCompatible
 set nocompatible nomore shellslash encoding=utf-8 shortmess+=WIF
 lang mess C
 

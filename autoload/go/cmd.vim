@@ -14,7 +14,7 @@ function! go#cmd#Build(bang, ...) abort
   " placeholder with the current folder (indicated with '.'). We also pass -i
   " that tries to install the dependencies, this has the side effect that it
   " caches the build results, so every other build is faster.
-  let args = 
+  let args =
         \ ["build"] +
         \ map(copy(a:000), "expand(v:val)") +
         \ ["-i", ".", "errors"]

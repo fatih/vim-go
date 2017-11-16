@@ -90,13 +90,19 @@ else
 fi
 
 # Make sure all Go tools and other dependencies are installed.
+echo "Installing Go binaries"
 export GOPATH=$installdir
 export PATH=${GOPATH}/bin:$PATH
 "$vimgodir/scripts/run-vim" $vim +':silent :GoUpdateBinaries' +':qa'
 
-[ -d "$installdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint" ] || \
-  git clone --depth 1 --quiet https://github.com/machakann/vim-vimhelplint \
-    "$installdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint"
+echo "Installing lint tools"
+(
+  mkdir -p "$installdir/share/vim/vimgo/pack/vim-go/start/"
+  cd "$installdir/share/vim/vimgo/pack/vim-go/start/"
+  [ -d "vim-vimhelplint" ] || git clone --depth 1 --quiet https://github.com/machakann/vim-vimhelplint
+  [ -d "vim-vimlparser" ]  || git clone --depth 1 --quiet https://github.com/ynkdir/vim-vimlparser
+  [ -d "vim-vimlint" ]     || git clone --depth 1 --quiet https://github.com/syngan/vim-vimlint
+)
 
 # Don't really need source after successful install.
 rm -rf "$srcdir"

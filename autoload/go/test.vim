@@ -226,7 +226,7 @@ endfunction
 
 " show_errors parses the given list of lines of a 'go test' output and returns
 " a quickfix compatible list of errors. It's intended to be used only for go
-" test output. 
+" test output.
 function! s:show_errors(args, exit_val, messages) abort
   let l:listtype = go#list#Type("GoTest")
 

@@ -100,7 +100,7 @@ func s:write_out(out) abort
     call go#list#Window(l:listtype, len(result['errors']))
 
     "prevent jumping to quickfix list
-    exe l:winnr . "wincmd w" 
+    exe l:winnr . "wincmd w"
   endif
 endfunc
 
