@@ -19,7 +19,7 @@ BUG FIXES:
 * Fix incorrect `:GoSameIdsToggle` behavior when there were match groups
   present, but none were goSameId.
   [[GH-1538]](https://github.com/fatih/vim-go/pull/1538)
-* fix `gpl` snippet for UltiSnips.
+* Fix `gpl` snippet for UltiSnips.
   [[GH-1535]](https://github.com/fatih/vim-go/pull/1535)
 
 IMPROVEMENTS:
@@ -34,6 +34,8 @@ IMPROVEMENTS:
 * Pass `--tests` to gometalinter when autosaving and when a custom gometalinter
   command has not been set.
   [[GH-1563]](https://github.com/fatih/vim-go/pull/1563).
+* Do not spam messages when command is run in a directory that does not exist.
+  [[GH-1527]](https://github.com/fatih/vim-go/pull/1527)
 
 ## 1.15 - (October 3, 2017)
 
