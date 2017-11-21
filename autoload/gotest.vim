@@ -102,5 +102,4 @@ fun! gotest#assert_fixture(path) abort
   call gotest#assert_buffer(0, l:want)
 endfun
 
-
 " vim: sw=2 ts=2 et
