@@ -1908,9 +1908,9 @@ rest of the commands become available after starting debug mode.
 
 
 
-                                                    *:GoDebugToggleBreakpoint*
-                                                *(go-debug-toggle-breakpoint)*
-:GoDebugToggleBreakpoint
+                                                          *:GoDebugBreakpoint*
+                                                       *(go-debug-breakpoint)*
+:GoDebugBreakpoint
 
     Toggle breakpoint for the current line. A line with a breakpoint will have
     the {godebugbreakpoint} |:sign| placed on it. The line the program is

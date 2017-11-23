@@ -322,32 +322,32 @@ function! s:start_cb(ch, json) abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  command! -nargs=0 GoDebugDiag call go#debug#Diag()
-  command! -nargs=0 GoDebugToggleBreakpoint call go#debug#ToggleBreakpoint()
-  command! -nargs=0 GoDebugContinue call go#debug#Stack('continue')
-  command! -nargs=0 GoDebugNext call go#debug#Stack('next')
-  command! -nargs=0 GoDebugStep call go#debug#Stack('step')
-  command! -nargs=0 GoDebugStepIn call go#debug#Stack('stepin')
-  command! -nargs=0 GoDebugStepOut call go#debug#Stack('stepout')
-  command! -nargs=0 GoDebugRestart call go#debug#Restart()
-  command! -nargs=0 GoDebugStop call go#debug#Stop()
-  command! -nargs=* GoDebugSet call go#debug#Set(<f-args>)
-  command! -nargs=1 GoDebugEval call go#debug#Eval(<q-args>)
-  command! -nargs=* GoDebugCommand call go#debug#Command(<f-args>)
+  command! -nargs=0 GoDebugDiag       call go#debug#Diag()
+  command! -nargs=0 GoDebugBreakpoint call go#debug#Breakpoint()
+  command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
+  command! -nargs=0 GoDebugNext       call go#debug#Stack('next')
+  command! -nargs=0 GoDebugStep       call go#debug#Stack('step')
+  command! -nargs=0 GoDebugStepIn     call go#debug#Stack('stepin')
+  command! -nargs=0 GoDebugStepOut    call go#debug#Stack('stepout')
+  command! -nargs=0 GoDebugRestart    call go#debug#Restart()
+  command! -nargs=0 GoDebugStop       call go#debug#Stop()
+  command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
+  command! -nargs=1 GoDebugEval       call go#debug#Eval(<q-args>)
+  command! -nargs=* GoDebugCommand    call go#debug#Command(<f-args>)
 
-  nnoremap <silent> <Plug>(go-debug-diag) :<C-u>call go#debug#Diag()<CR>
-  nnoremap <silent> <Plug>(go-debug-toggle-breakpoint) :<C-u>call go#debug#ToggleBreakpoint()<CR>
-  nnoremap <silent> <Plug>(go-debug-next) :<C-u>call go#debug#Stack('next')<CR>
-  nnoremap <silent> <Plug>(go-debug-step) :<C-u>call go#debug#Stack('step')<CR>
-  nnoremap <silent> <Plug>(go-debug-stepin) :<C-u>call go#debug#Stack('stepin')<CR>
-  nnoremap <silent> <Plug>(go-debug-stepout) :<C-u>call go#debug#Stack('stepout')<CR>
-  nnoremap <silent> <Plug>(go-debug-continue) :<C-u>call go#debug#Stack('continue')<CR>
-  nnoremap <silent> <Plug>(go-debug-stop) :<C-u>call go#debug#Stop()<CR>
-  nnoremap <silent> <Plug>(go-debug-eval) :<C-u>call go#debug#Eval(expand('<cword>'))<CR>
+  nnoremap <silent> <Plug>(go-debug-diag)       :<C-u>call go#debug#Diag()<CR>
+  nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
+  nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
+  nnoremap <silent> <Plug>(go-debug-step)       :<C-u>call go#debug#Stack('step')<CR>
+  nnoremap <silent> <Plug>(go-debug-stepin)     :<C-u>call go#debug#Stack('stepin')<CR>
+  nnoremap <silent> <Plug>(go-debug-stepout)    :<C-u>call go#debug#Stack('stepout')<CR>
+  nnoremap <silent> <Plug>(go-debug-continue)   :<C-u>call go#debug#Stack('continue')<CR>
+  nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
+  nnoremap <silent> <Plug>(go-debug-eval)       :<C-u>call go#debug#Eval(expand('<cword>'))<CR>
 
   nmap <F5> <Plug>(go-debug-continue)
   nmap <F6> <Plug>(go-debug-eval)
-  nmap <F9> <Plug>(go-debug-toggle-breakpoint)
+  nmap <F9> <Plug>(go-debug-breakpoint)
   nmap <F10> <Plug>(go-debug-next)
   nmap <F11> <Plug>(go-debug-step)
 
@@ -582,7 +582,7 @@ function! go#debug#Restart() abort
   endtry
 endfunction
 
-function! go#debug#ToggleBreakpoint() abort
+function! go#debug#Breakpoint() abort
   let filename = fnamemodify(expand('%'), ':p:gs!\\!/!')
   let linenr = line('.')
   try
