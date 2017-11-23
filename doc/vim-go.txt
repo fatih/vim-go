@@ -1944,9 +1944,6 @@ available after starting debug mode.
     Advance execution by one line. If the program is stopped it will start the
     program and halt on the first line.
 
-    TODO: If program hasn't started it will error out (but only if there is a
-    breakpoint, it will work if there are no breakpoints).
-
     Mapped to <F10> by default.
 
                                                                 *:GoDebugStep*

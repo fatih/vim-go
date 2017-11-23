@@ -14,13 +14,13 @@ endif
 
 if !exists('s:state')
   let s:state = {
-  \ 'rpcid': 1,
-  \ 'breakpoint': {},
-  \ 'currentThread': {},
-  \ 'localVars': {},
-  \ 'functionArgs': {},
-  \ 'message': [],
-  \}
+      \ 'rpcid': 1,
+      \ 'breakpoint': {},
+      \ 'currentThread': {},
+      \ 'localVars': {},
+      \ 'functionArgs': {},
+      \ 'message': [],
+      \}
 
   if go#util#HasDebug('debug')
     let g:go_debug_diag = s:state
@@ -686,21 +686,31 @@ function! s:stack_cb(ch, json) abort
   call s:update_variables()
 endfunction
 
+" Send a command change the cursor location to Delve.
+"
+" a:name must be one of continue, next, step, stepin, or stepout.
 function! go#debug#Stack(name) abort
   let name = a:name
-  if len(s:state['breakpoint']) == 0
+
+  " Run continue if the program hasn't started yet.
+  if s:state['rpcid'] <= 2
+    let name = 'continue'
+  endif
+
+  " Add a breakpoint to the main.Main if the user didn't define any.
+  if len(s:state['breakpoint']) is 0
     try
       let res = s:call_jsonrpc('RPCServer.FindLocation', {'loc': 'main.main'})
       let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'addr': res.result.Locations[0].pc}})
       let bt = res.result.Breakpoint
       let s:state['breakpoint'][bt.id] = bt
-      let name = 'continue'
     catch
       call go#util#EchoError(v:exception)
     endtry
   endif
+
   try
-    if name == 'next' && get(s:, 'stack_name', '') == 'next'
+    if name is# 'next' && get(s:, 'stack_name', '') is# 'next'
       call s:call_jsonrpc('RPCServer.CancelNext')
     endif
     let s:stack_name = name
