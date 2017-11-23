@@ -22,7 +22,7 @@ if !exists('s:state')
       \ 'message': [],
       \}
 
-  if go#util#HasDebug('debug')
+  if go#util#HasDebug('debugger-state')
     let g:go_debug_diag = s:state
   endif
 endif
@@ -69,6 +69,13 @@ function! s:logger(prefix, ch, msg) abort
 endfunction
 
 function! s:call_jsonrpc(method, ...) abort
+  if go#util#HasDebug('debugger-commands')
+    if !exists('g:go_debug_commands')
+      let g:go_debug_commands = []
+    endif
+    echom 'sending to dlv ' . a:method
+  endif
+
   if len(a:000) > 0 && type(a:000[0]) == v:t_func
      let Cb = a:000[0]
      let args = a:000[1:]
@@ -77,21 +84,39 @@ function! s:call_jsonrpc(method, ...) abort
      let args = a:000
   endif
   let s:state['rpcid'] += 1
-  let json = json_encode({
-  \  'id': s:state['rpcid'],
-  \  'method': a:method,
-  \  'params': args,
-  \})
+  let req_json = json_encode({
+      \  'id': s:state['rpcid'],
+      \  'method': a:method,
+      \  'params': args,
+      \})
+
   try
+    " Use callback
     if type(Cb) == v:t_func
       let s:ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'callback': Cb})
-      call ch_sendraw(s:ch, json)
+      call ch_sendraw(s:ch, req_json)
+
+      if go#util#HasDebug('debugger-commands')
+        let g:go_debug_commands = add(g:go_debug_commands, {
+              \ 'request':  req_json,
+              \ 'response': Cb,
+        \ })
+      endif
       return
     endif
+
     let ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'timeout': 20000})
-    call ch_sendraw(ch, json)
-    let json = ch_readraw(ch)
-    let obj = json_decode(json)
+    call ch_sendraw(ch, req_json)
+    let resp_json = ch_readraw(ch)
+
+    if go#util#HasDebug('debugger-commands')
+      let g:go_debug_commands = add(g:go_debug_commands, {
+            \ 'request':  req_json,
+            \ 'response': resp_json,
+      \ })
+    endif
+
+    let obj = json_decode(resp_json)
     if type(obj) == v:t_dict && has_key(obj, 'error') && !empty(obj.error)
       throw obj.error
     endif
@@ -101,19 +126,24 @@ function! s:call_jsonrpc(method, ...) abort
   endtry
 endfunction
 
+" Update the location of the current breakpoint or line we're halted on based on
+" response from dlv.
 function! s:update_breakpoint(res) abort
   if type(a:res) ==# v:t_none
     return
   endif
+
   let state = a:res.result.State
   if !has_key(state, 'currentThread')
     return
   endif
+
   let s:state['currentThread'] = state.currentThread
   let bufs = filter(map(range(1, winnr('$')), '[v:val,bufname(winbufnr(v:val))]'), 'v:val[1]=~"\.go$"')
   if len(bufs) == 0
     return
   endif
+
   exe bufs[0][0] 'wincmd w'
   let filename = state.currentThread.file
   let linenr = state.currentThread.line
@@ -392,8 +422,7 @@ function! s:start_cb(ch, json) abort
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugNext       call go#debug#Stack('next')
   command! -nargs=0 GoDebugStep       call go#debug#Stack('step')
-  command! -nargs=0 GoDebugStepIn     call go#debug#Stack('stepin')
-  command! -nargs=0 GoDebugStepOut    call go#debug#Stack('stepout')
+  command! -nargs=0 GoDebugStepOut    call go#debug#Stack('stepOut')
   command! -nargs=0 GoDebugRestart    call go#debug#Restart()
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
@@ -402,7 +431,6 @@ function! s:start_cb(ch, json) abort
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
   nnoremap <silent> <Plug>(go-debug-step)       :<C-u>call go#debug#Stack('step')<CR>
-  nnoremap <silent> <Plug>(go-debug-stepin)     :<C-u>call go#debug#Stack('stepin')<CR>
   nnoremap <silent> <Plug>(go-debug-stepout)    :<C-u>call go#debug#Stack('stepout')<CR>
   nnoremap <silent> <Plug>(go-debug-continue)   :<C-u>call go#debug#Stack('continue')<CR>
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
@@ -462,7 +490,7 @@ function! go#debug#Start(...) abort
     return
   endif
 
-  if go#util#HasDebug('debug')
+  if go#util#HasDebug('debugger-state')
     let g:go_debug_diag = s:state
   endif
 
@@ -696,6 +724,7 @@ function! s:stack_cb(ch, json) abort
     call go#debug#Restart()
     return
   endif
+
   if empty(res) || !has_key(res, 'result')
     return
   endif
@@ -706,7 +735,7 @@ endfunction
 
 " Send a command change the cursor location to Delve.
 "
-" a:name must be one of continue, next, step, stepin, or stepout.
+" a:name must be one of continue, next, step, or stepOut.
 function! go#debug#Stack(name) abort
   let name = a:name
 
@@ -732,7 +761,7 @@ function! go#debug#Stack(name) abort
       call s:call_jsonrpc('RPCServer.CancelNext')
     endif
     let s:stack_name = name
-    let res = s:call_jsonrpc('RPCServer.Command', function('s:stack_cb'), {'name': name})
+    call s:call_jsonrpc('RPCServer.Command', function('s:stack_cb'), {'name': name})
   catch
     call go#util#EchoError(v:exception)
   endtry
@@ -741,7 +770,7 @@ endfunction
 function! go#debug#Restart() abort
   try
     call s:clearState()
-    let res = s:call_jsonrpc('RPCServer.Restart')
+    call s:call_jsonrpc('RPCServer.Restart')
   catch
     call go#util#EchoError(v:exception)
   endtry

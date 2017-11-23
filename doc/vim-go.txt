@@ -1666,7 +1666,9 @@ A list of options to debug; useful for development and/or reporting bugs.
 
 Currently accepted values:
 
-  debug   Expose debugger state in 'g:go_debug_diag'.
+  debugger-state     Expose debugger state in 'g:go_debug_diag'.
+  debugger-commands  Echo communication between vim-go and `dlv`; requests and
+                     responses are recorded in `g:go_debug_commands`.
 
 ==============================================================================
 SYNTAX HIGHLIGHTING                                 *ft-go-syntax* *go-syntax*
@@ -1827,7 +1829,7 @@ The `gohtmltmpl` filetype is automatically set for `*.tmpl` files; the
 ==============================================================================
 DEBUGGER                                                            *go-debug*
 
-Vim-go comes with a special "debugger mode". This starts a `delve` process in
+Vim-go comes with a special "debugger mode". This starts a `dlv` process in
 the background and provides various commands to communicate with it.
 
 This debugger is similar to Visual Studio or Eclipse and has the following
@@ -1854,9 +1856,9 @@ example:
 >
     :GoDebugStart . -age 18
 <
-This may take few seconds. After compiling your code, You'll see three new
+This may take few seconds. After compiling your code you'll see three new
 windows: the stack trace on left side, the variable list on the bottom-left,
-and command output at the bottom.
+and program output at the bottom.
 
 You can now add breakpoints with |:GoDebugBreakpoint| (<F9>) and run your
 program with |:GoDebugContinue| (<F5>).
@@ -1869,7 +1871,8 @@ Struct values are displayed as `{...}`, array/slices as `[4]`. Use <CR> on the
 variable name to expand the values.
 
 Once you're done use |:GoDebugStop| to close the debugging windows and halt
-the `dlv` process, or |:GoDebugRestart| to reset everything and start anew.
+the `dlv` process, or |:GoDebugRestart| to recompile your code and start a new
+debugging session.
 
                                                            *go-debug-commands*
 DEBUGGER COMMANDS~
@@ -1895,15 +1898,12 @@ available after starting debug mode.
 
   Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
-
                                                              *:GoDebugRestart*
 :GoDebugRestart
 
     Stop the program (if running) and restart `dlv` which will recompiling the
     package.
     The current window layout and breakpoints will be left intact.
-
-    TODO: This is not how this command currently works!
 
                                                                 *:GoDebugStop*
                                                              *(go-debug-stop)*
@@ -1939,10 +1939,9 @@ available after starting debug mode.
                                                              *(go-debug-next)*
 :GoDebugNext
 
-    Step over to next source line.
-
-    Advance execution by one line. If the program is stopped it will start the
-    program and halt on the first line.
+    Advance execution by one line, also called "step over" by some other
+    debuggers.
+    It will behave as |:GoDebugContinue| if the program isn't started.
 
     Mapped to <F10> by default.
 
@@ -1950,25 +1949,20 @@ available after starting debug mode.
                                                              *(go-debug-step)*
 :GoDebugStep
 
-    Single step through program.
+    Advance execution by one step, stopping at the next line of code that will
+    be executed (regardless of location).
+    It will behave as |:GoDebugContinue| if the program isn't started.
 
     Mapped to <F11> by default.
-
-                                                              *:GoDebugStepIn*
-                                                           *(go-debug-stepin)*
-:GoDebugStepIn
-
-    TODO
-    TODO
 
                                                              *:GoDebugStepOut*
                                                           *(go-debug-stepout)*
 
-
 :GoDebugStepOut
 
-    TODO
-    TODO
+    Run all the code in the current function and halt when the function
+    returns ("step out of the current function").
+    It will behave as |:GoDebugContinue| if the program isn't started.
 
                                                                  *:GoDebugSet*
 :GoDebugSet {var} {value}
