@@ -392,6 +392,8 @@ function! go#debug#Start(...) abort
     return
   endif
 
+  let l:is_test = bufname('')[-8:] is# '_test.go'
+
   let dlv = go#path#CheckBinPath("dlv")
   if empty(dlv)
     return
@@ -416,16 +418,22 @@ function! go#debug#Start(...) abort
     " Run dlv from a temporary directory so it won't put the binary in the
     " current dir. We pass --wd= so the binary is still run from the current
     " dir.
-    let original_dir = getcwd()
-    let tmp = go#util#tempdir('vim-go-debug-')
-    exe 'lcd ' . tmp
+    if !l:is_test
+      let original_dir = getcwd()
+      let l:tmp = go#util#tempdir('vim-go-debug-')
+      exe 'lcd ' . l:tmp
+    endif
 
-    let l:cmd = [dlv, 'debug', l:pkgname,
+    if l:is_test
+      let l:cmd = [dlv, 'test', l:pkgname]
+    else
+      let l:cmd = [dlv, 'debug', l:pkgname, '--wd', l:original_dir]
+    endif
+    let l:cmd += [
           \ '--headless',
           \ '--api-version', '2',
           \ '--log',
           \ '--listen', g:go_debug_address,
-          \ '--wd', original_dir,
           \ '--accept-multiclient',
     \]
     if get(g:, 'go_build_tags', '') isnot ''
@@ -446,7 +454,9 @@ function! go#debug#Start(...) abort
   catch
     call go#util#EchoError(v:exception)
   finally
-    exe 'lcd ' . original_dir
+    if !l:is_test
+      exe 'lcd ' . original_dir
+    endif
   endtry
 endfunction
 
