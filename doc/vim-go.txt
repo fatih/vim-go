@@ -1994,13 +1994,6 @@ available after starting debug mode.
     Mapped to <F6> by default, which will evaluate the <cword> under the
     cursor.
 
-                                                             *:GoDebugCommand*
-:GoDebugCommand [command]
-
-    Send a direct command to `dlv` with the `RPCServer.Command` RPC command.
-
-    TODO: Document why this is useful.
-
                                                            *go-debug-settings*
 DEBUGGER SETTINGS~
 

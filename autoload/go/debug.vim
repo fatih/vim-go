@@ -398,7 +398,6 @@ function! s:start_cb(ch, json) abort
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
   command! -nargs=1 GoDebugPrint      call go#debug#Print(<q-args>)
-  command! -nargs=* GoDebugCommand    call go#debug#Command(<f-args>)
 
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
@@ -634,15 +633,6 @@ endfunction
 function! go#debug#Print(arg) abort
   try
     echo s:eval(a:arg)
-  catch
-    call go#util#EchoError(v:exception)
-  endtry
-endfunction
-
-function! go#debug#Command(...) abort
-  try
-    let res = s:call_jsonrpc('RPCServer.Command', {'name': join(a:000, ' ')})
-    call s:update_breakpoint(res)
   catch
     call go#util#EchoError(v:exception)
   endtry
