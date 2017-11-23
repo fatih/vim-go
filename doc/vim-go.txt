@@ -1973,27 +1973,26 @@ available after starting debug mode.
                                                                  *:GoDebugSet*
 :GoDebugSet {var} {value}
 
-    Set the variable {var} to {value}.
-
-    Setting an int value: >
+    Set the variable {var} to {value}. Example:
+>
       :GoDebugSet truth 42
 <
 
-    TODO: can not set variables of type string (not implemented)
-    TODO: Document more?
+    This only works for `float`, `int` and variants, `uint` and variants,
+    `bool`, and pointers (this is a `delve` limitation, not a vim-go
+    limitation).
 
-                                                                *:GoDebugEval*
-                                                             *(go-debug-eval)*
-:GoDebugEval {expr}
+                                                               *:GoDebugPrint*
+                                                            *(go-debug-print)*
+:GoDebugPrint {expr}
 
-    Evaluate a Go expression.
+    Print the result of a Go expression.
 >
-    :GoDebugEval truth == 42
+    :GoDebugPrint truth == 42
     truth == 42 true
 <
-    Mapped to <F6> by default, which will evaluate the current line.
-
-    TODO: Document what _exactly_ you can and can't do with this.
+    Mapped to <F6> by default, which will evaluate the <cword> under the
+    cursor.
 
                                                              *:GoDebugCommand*
 :GoDebugCommand [command]

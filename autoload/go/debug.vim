@@ -397,7 +397,7 @@ function! s:start_cb(ch, json) abort
   command! -nargs=0 GoDebugRestart    call go#debug#Restart()
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
-  command! -nargs=1 GoDebugEval       call go#debug#Eval(<q-args>)
+  command! -nargs=1 GoDebugPrint      call go#debug#Print(<q-args>)
   command! -nargs=* GoDebugCommand    call go#debug#Command(<f-args>)
 
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
@@ -407,13 +407,13 @@ function! s:start_cb(ch, json) abort
   nnoremap <silent> <Plug>(go-debug-stepout)    :<C-u>call go#debug#Stack('stepout')<CR>
   nnoremap <silent> <Plug>(go-debug-continue)   :<C-u>call go#debug#Stack('continue')<CR>
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
-  nnoremap <silent> <Plug>(go-debug-eval)       :<C-u>call go#debug#Eval(expand('<cword>'))<CR>
+  nnoremap <silent> <Plug>(go-debug-print)      :<C-u>call go#debug#Print(expand('<cword>'))<CR>
 
-  nmap <F5> <Plug>(go-debug-continue)
-  nmap <F6> <Plug>(go-debug-eval)
-  nmap <F9> <Plug>(go-debug-breakpoint)
-  nmap <F10> <Plug>(go-debug-next)
-  nmap <F11> <Plug>(go-debug-step)
+  nmap <F5>   <Plug>(go-debug-continue)
+  nmap <F6>   <Plug>(go-debug-print)
+  nmap <F9>   <Plug>(go-debug-breakpoint)
+  nmap <F10>  <Plug>(go-debug-next)
+  nmap <F11>  <Plug>(go-debug-step)
 
   set balloonexpr=go#debug#BalloonExpr()
   set ballooneval
@@ -616,19 +616,22 @@ function! s:eval(arg) abort
   try
     let res = s:call_jsonrpc('RPCServer.State')
     let goroutineID = res.result.State.currentThread.goroutineID
-    let res = s:call_jsonrpc('RPCServer.Eval', {'expr': a:arg, 'scope':{'GoroutineID': goroutineID}})
-    return s:eval_tree(res.result.Variable, 0)
+    let res = s:call_jsonrpc('RPCServer.Eval', {
+          \ 'expr':  a:arg,
+          \ 'scope': {'GoroutineID': goroutineID}
+      \ })
+    return substitute(s:eval_tree(res.result.Variable, 0), "\n$", "", 0)
   catch
     call go#util#EchoError(v:exception)
+    return ''
   endtry
-  return ''
 endfunction
 
 function! go#debug#BalloonExpr() abort
   return s:eval(v:beval_text)
 endfunction
 
-function! go#debug#Eval(arg) abort
+function! go#debug#Print(arg) abort
   try
     echo s:eval(a:arg)
   catch
@@ -673,10 +676,15 @@ function! go#debug#Set(symbol, value) abort
   try
     let res = s:call_jsonrpc('RPCServer.State')
     let goroutineID = res.result.State.currentThread.goroutineID
-    call s:call_jsonrpc('RPCServer.Set', {'symbol': a:symbol, 'value': a:value, 'scope':{'GoroutineID': goroutineID}})
+    call s:call_jsonrpc('RPCServer.Set', {
+          \ 'symbol': a:symbol,
+          \ 'value':  a:value,
+          \ 'scope':  {'GoroutineID': goroutineID}
+    \ })
   catch
     call go#util#EchoError(v:exception)
   endtry
+
   call s:update_variables()
 endfunction
 
