@@ -1860,8 +1860,8 @@ This may take few seconds. After compiling your code you'll see three new
 windows: the stack trace on left side, the variable list on the bottom-left,
 and program output at the bottom.
 
-You can now add breakpoints with |:GoDebugBreakpoint| (<F9>) and run your
-program with |:GoDebugContinue| (<F5>).
+You can add breakpoints with |:GoDebugBreakpoint| (<F9>) and run your program
+with |:GoDebugContinue| (<F5>).
 
 The program will halt on the breakpoint, at which point you can inspect the
 program state. You can go to the next line with |:GoDebugNext| (<F10>) or step
@@ -1877,8 +1877,8 @@ debugging session.
                                                            *go-debug-commands*
 DEBUGGER COMMANDS~
 
-Only |:GoDebugStart| is available by default; the rest of the commands become
-available after starting debug mode.
+Only |:GoDebugStart| and |:GoDebugBreakpoint| are available by default; the
+rest of the commands become available after starting debug mode.
 
                                                                *:GoDebugStart*
 :GoDebugStart [pkg] [program-args]

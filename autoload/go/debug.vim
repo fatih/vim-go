@@ -418,7 +418,6 @@ function! s:start_cb(ch, json) abort
   endif
 
   delcommand GoDebugStart
-  command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugNext       call go#debug#Stack('next')
   command! -nargs=0 GoDebugStep       call go#debug#Stack('step')
@@ -466,9 +465,17 @@ function! s:starting(ch, msg) abort
   let s:state['message'] += [a:msg]
   if stridx(a:msg, g:go_debug_address) != -1
     call ch_setoptions(a:ch, {
-    \ 'out_cb': function('s:logger', ['OUT: ']),
-    \ 'err_cb': function('s:logger', ['ERR: ']),
-    \})
+      \ 'out_cb': function('s:logger', ['OUT: ']),
+      \ 'err_cb': function('s:logger', ['ERR: ']),
+      \})
+
+    " Tell dlv about the breakpoints that the user added before delve started.
+    let l:breaks = copy(s:state.breakpoint)
+    let s:state['breakpoint'] = {}
+    for l:bt in values(l:breaks)
+      call go#debug#Breakpoint(bt.line)
+    endfor
+
     call s:call_jsonrpc('RPCServer.ListBreakpoints', function('s:start_cb'))
   endif
 endfunction
@@ -776,6 +783,11 @@ function! go#debug#Restart() abort
   endtry
 endfunction
 
+" Report if debugger mode is active.
+function! s:isActive()
+  return len(s:state['message']) > 0
+endfunction
+
 " Toggle breakpoint.
 function! go#debug#Breakpoint(...) abort
   let filename = fnamemodify(expand('%'), ':p:gs!\\!/!')
@@ -804,14 +816,22 @@ function! go#debug#Breakpoint(...) abort
     " Remove breakpoint.
     if type(found) == v:t_dict
       call remove(s:state['breakpoint'], bt.id)
-      let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': found.id})
       exe 'sign unplace '. found.id .' file=' . found.file
+      if s:isActive()
+        let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': found.id})
+      endif
     " Add breakpoint.
     else
-      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'file': filename, 'line': linenr}})
-      let bt = res.result.Breakpoint
-      let s:state['breakpoint'][bt.id] = bt
-      exe 'sign place '. bt.id .' line=' . bt.line . ' name=godebugbreakpoint file=' . bt.file
+      if s:isActive()
+        let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'file': filename, 'line': linenr}})
+        let bt = res.result.Breakpoint
+        exe 'sign place '. bt.id .' line=' . bt.line . ' name=godebugbreakpoint file=' . bt.file
+        let s:state['breakpoint'][bt.id] = bt
+      else
+        let id = len(s:state['breakpoint']) + 1
+        let s:state['breakpoint'][id] = {'id': id, 'file': filename, 'line': linenr}
+        exe 'sign place '. id .' line=' . linenr . ' name=godebugbreakpoint file=' . filename
+      endif
     endif
   catch
     call go#util#EchoError(v:exception)
