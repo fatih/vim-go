@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 if !exists('g:go_debug_windows')
   let g:go_debug_windows = {
         \ 'stack': 'leftabove 20vnew',
@@ -45,20 +47,25 @@ function! s:exit(job, status) abort
 endfunction
 
 function! s:logger(prefix, ch, msg) abort
-  let winnum = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
-  if winnum == -1
+  let l:cur_win = bufwinnr('')
+  let l:log_win = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
+  if l:log_win == -1
     return
   endif
-  exe winnum 'wincmd w'
-  setlocal modifiable
-  if getline(1) == ''
-    call setline('$', a:prefix . a:msg)
-  else
-    call append('$', a:prefix . a:msg)
-  endif
-  normal! G
-  setlocal nomodifiable
-  wincmd p
+  exe l:log_win 'wincmd w'
+
+  try
+    setlocal modifiable
+    if getline(1) == ''
+      call setline('$', a:prefix . a:msg)
+    else
+      call append('$', a:prefix . a:msg)
+    endif
+    normal! G
+    setlocal nomodifiable
+  finally
+    exe l:cur_win 'wincmd w'
+  endtry
 endfunction
 
 function! s:call_jsonrpc(method, ...) abort
@@ -133,7 +140,7 @@ function! s:show_stacktrace(res) abort
   silent %delete _
   for i in range(len(a:res.result.Locations))
     let loc = a:res.result.Locations[i]
-    call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':.p'), loc.line))
+    call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':p'), loc.line))
   endfor
   setlocal nomodifiable
   wincmd p
@@ -248,7 +255,7 @@ function! s:expand_var() abort
   " Get name from struct line.
   let name = matchstr(getline('.'), '^[^:]\+\ze: [a-zA-Z0-9\.·]\+{\.\.\.}$')
   " Anonymous struct
-  if name == '' 
+  if name == ''
     let name = matchstr(getline('.'), '^[^:]\+\ze: struct {.\{-}}$')
   endif
 

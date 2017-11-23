@@ -1666,7 +1666,7 @@ A list of options to debug; useful for development and/or reporting bugs.
 
 Currently accepted values:
 
-  debug   Expose debugger state in |'g:go_debug_diag'|.
+  debug   Expose debugger state in 'g:go_debug_diag'.
 
 ==============================================================================
 SYNTAX HIGHLIGHTING                                 *ft-go-syntax* *go-syntax*
