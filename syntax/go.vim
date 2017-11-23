@@ -229,14 +229,14 @@ endif
 " var, const
 if s:fold_varconst
   syn region    goVar               start='var ('   end='^\s*)$' transparent fold
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goParameters,goParameterName,goParameterType,goTypesList
   syn region    goConst             start='const (' end='^\s*)$' transparent fold
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goParameters,goParameterName,goParameterType,goTypesList
 else
   syn region    goVar               start='var ('   end='^\s*)$' transparent 
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goParameters,goParameterName,goParameterType,goTypesList
   syn region    goConst             start='const (' end='^\s*)$' transparent
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goParameters,goParameterName,goParameterType,goTypesList
 endif
 
 " Single-line var, const, and import.
@@ -349,8 +349,14 @@ if g:go_highlight_functions != 0
   syn match goReceiverVar       /\w\+/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
-  syn match goFunction          /\w\+/ contained
+  syn match goFunction          /\w\+/ nextgroup=goParameters contained skipwhite skipnl
   syn match goFunctionCall      /\w\+\ze(/ contains=GoBuiltins,goDeclaration
+  syn region goParameters       start='(' end=')' contained nextgroup=goParameters keepend contains=goTypesList,goParameterName skipwhite
+  syn match goParameterName     /\w\+\(\s*,\s*\w\+\)*/ contained nextgroup=goParameterType skipwhite skipnl
+  syn match goParameterType     /[^,]\+,\?/ contained nextgroup=goParameterName skipwhite skipnl
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiver,goReceiverType,goReceiverVar,goParameters,goParameterName,goTypesList
+  syn match goTypesList         /([^ ,]\+\(\s*,\s*[^ ,]\+\)*)/ contained skipwhite skipnl
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiver,goReceiverType,goReceiverVar,goParameters,goParameterName,goParameterType
 else
   syn keyword goDeclaration func
 endif
