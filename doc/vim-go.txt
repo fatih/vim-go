@@ -1888,8 +1888,6 @@ available after starting debug mode.
 
   Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
-  TODO: maybe "delcommand" this when debug mode is started?
-  TODO: Be clearer about compile errors; just a brief flash now.
 
                                                              *:GoDebugRestart*
 :GoDebugRestart

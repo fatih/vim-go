@@ -31,8 +31,7 @@ function! s:exit(job, status) abort
   endif
   call s:clearState()
   if a:status > 0
-    echohl Error | echo join(s:state['message'], "\n") . "\n" | echohl None
-    call getchar()
+    call go#util#EchoError(s:state['message'])
   endif
 
   if get(s:state, 'tmpdir', '') isnot ''
@@ -379,7 +378,7 @@ function! s:start_cb(ch, json) abort
 endfunction
 
 function! s:starting(ch, msg) abort
-  echomsg a:msg
+  call go#util#EchoProgress(a:msg)
   let s:state['message'] += [a:msg]
   if stridx(a:msg, g:go_debug_address) != -1
     call ch_setoptions(a:ch, {
@@ -394,11 +393,11 @@ endfunction
 " debug, anything else will be passed to the running program.
 function! go#debug#Start(...) abort
   if has('nvim')
-    echoerr 'This feature only works in Vim for now; Neovim is not (yet) supported. Sorry :-('
+    call go#util#EchoError('This feature only works in Vim for now; Neovim is not (yet) supported. Sorry :-(')
     return
   endif
   if !go#util#has_job()
-    echoerr "This feature requires Vim 8.0.0087 or newer with +job."
+    call go#util#EchoError('This feature requires Vim 8.0.0087 or newer with +job.')
     return
   endif
 
@@ -507,7 +506,7 @@ function! s:eval(arg) abort
     let res = s:call_jsonrpc('RPCServer.Eval', {'expr': a:arg, 'scope':{'GoroutineID': goroutineID}})
     return s:eval_tree(res.result.Variable, 0)
   catch
-    echohl Error | echomsg v:exception | echohl None
+    call go#util#EchoError(v:exception)
   endtry
   return ''
 endfunction
@@ -520,7 +519,7 @@ function! go#debug#Eval(arg) abort
   try
     echo s:eval(a:arg)
   catch
-    echohl Error | echomsg v:exception | echohl None
+    call go#util#EchoError(v:exception)
   endtry
 endfunction
 
@@ -529,7 +528,7 @@ function! go#debug#Command(...) abort
     let res = s:call_jsonrpc('RPCServer.Command', {'name': join(a:000, ' ')})
     call s:update_breakpoint(res)
   catch
-    echohl Error | echomsg v:exception | echohl None
+    call go#util#EchoError(v:exception)
   endtry
 endfunction
 
@@ -551,7 +550,7 @@ function! s:update_variables() abort
       let res = s:call_jsonrpc(v.method, {'scope':{'GoroutineID': s:groutineID()}})
       let s:state[v.kind] = res.result[v.bind]
     catch
-      echohl Error | echomsg v:exception | echohl None
+      call go#util#EchoError(v:exception)
     endtry
   endfor
   call s:show_variables()
@@ -563,7 +562,7 @@ function! go#debug#Set(symbol, value) abort
     let goroutineID = res.result.State.currentThread.goroutineID
     call s:call_jsonrpc('RPCServer.Set', {'symbol': a:symbol, 'value': a:value, 'scope':{'GoroutineID': goroutineID}})
   catch
-    echohl Error | echomsg v:exception | echohl None
+    call go#util#EchoError(v:exception)
   endtry
   call s:update_variables()
 endfunction
@@ -573,7 +572,7 @@ function! s:update_stacktrace() abort
     let res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:groutineID(), 'depth': 5})
     call s:show_stacktrace(res)
   catch
-    echohl Error | echomsg v:exception | echohl None
+    call go#util#EchoError(v:exception)
   endtry
 endfunction
 
@@ -581,7 +580,7 @@ function! s:stack_cb(ch, json) abort
   let s:stack_name = ''
   let res = json_decode(a:json)
   if type(res) == v:t_dict && has_key(res, 'error') && !empty(res.error)
-    echohl Error | echomsg res.error | echohl None
+    call go#util#EchoError(res.error)
     call s:clearState()
     call go#debug#Restart()
     return
@@ -604,7 +603,7 @@ function! go#debug#Stack(name) abort
       let s:state['breakpoint'][bt.id] = bt
       let name = 'continue'
     catch
-      echohl Error | echomsg v:exception | echohl None
+      call go#util#EchoError(v:exception)
     endtry
   endif
   try
@@ -614,8 +613,7 @@ function! go#debug#Stack(name) abort
     let s:stack_name = name
     let res = s:call_jsonrpc('RPCServer.Command', function('s:stack_cb'), {'name': name})
   catch
-    echohl Error | echomsg v:exception | echohl None
-    return
+    call go#util#EchoError(v:exception)
   endtry
 endfunction
 
@@ -624,7 +622,7 @@ function! go#debug#Restart() abort
     call s:clearState()
     let res = s:call_jsonrpc('RPCServer.Restart')
   catch
-    echohl Error | echomsg v:exception | echohl None
+    call go#util#EchoError(v:exception)
   endtry
 endfunction
 
@@ -651,7 +649,7 @@ function! go#debug#Breakpoint() abort
       exe 'sign place '. bt.id .' line=' . bt.line . ' name=godebugbreakpoint file=' . bt.file
     endif
   catch
-    echohl Error | echomsg v:exception | echohl None
+    call go#util#EchoError(v:exception)
   endtry
 endfunction
 
