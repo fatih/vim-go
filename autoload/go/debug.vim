@@ -245,28 +245,61 @@ function! s:delete_expands()
 endfunction
 
 function! s:expand_var() abort
-  let name = matchstr(getline('.'), '^[^:]\+\ze: {\.\.\.}$')
+  " Get name from struct line.
+  let name = matchstr(getline('.'), '^[^:]\+\ze: [a-zA-Z0-9\.·]\+{\.\.\.}$')
+  " Anonymous struct
+  if name == '' 
+    let name = matchstr(getline('.'), '^[^:]\+\ze: struct {.\{-}}$')
+  endif
+
   if name != ''
-    let op = getline(line('.')+1) !~ '^ '
     setlocal modifiable
+    let not_open = getline(line('.')+1) !~ '^ '
     let l = line('.')
     call s:delete_expands()
-    if op
+
+    if not_open
       call append(l, split(s:eval(name), "\n")[1:])
     endif
     silent! exe 'norm!' l.'G'
     setlocal nomodifiable
     return
   endif
-  let m = matchlist(getline('.'), '^\([^:]\+\)\ze: \[\([0-9]\+\)\]$')
+
+  " Expand maps
+  let m = matchlist(getline('.'), '^[^:]\+\ze: map.\{-}\[\(\d\+\)\]$')
   if len(m) > 0 && m[1] != ''
-    let op = getline(line('.')+1) !~ '^ '
     setlocal modifiable
+    let not_open = getline(line('.')+1) !~ '^ '
     let l = line('.')
     call s:delete_expands()
-    if op
+    if not_open
+      " TODO: Not sure how to do this yet... Need to get keys of the map.
+      " let vs = ''
+      " for i in range(0, min([10, m[1]-1]))
+      "   let vs .= ' ' . s:eval(printf("%s[%s]", m[0], ))
+      " endfor
+      " call append(l, split(vs, "\n"))
+    endif
+
+    silent! exe 'norm!' l.'G'
+    setlocal nomodifiable
+    return
+  endif
+
+  " Expand string and slice.
+  " TODO: Expand string, too
+  " g:go_debug_diag["localVars"][1].children[0].children[0]
+  let m = matchlist(getline('.'), '^\([^:]\+\)\ze: \(\[\]\w\{-}\|string\)\[\([0-9]\+\)\]$')
+  if len(m) > 0 && m[1] != ''
+    setlocal modifiable
+    let not_open = getline(line('.')+1) !~ '^ '
+    let l = line('.')
+    call s:delete_expands()
+
+    if not_open
       let vs = ''
-      for i in range(0, min([10, m[2]-1]))
+      for i in range(0, min([10, m[3]-1]))
         let vs .= ' ' . s:eval(m[1] . '[' . i . ']')
       endfor
       call append(l, split(vs, "\n"))
@@ -323,7 +356,7 @@ function! s:start_cb(ch, json) abort
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugvariables
     call append(0, ["# Local Variables", "", "# Function Arguments"])
-    nmap <buffer> <cr> :<c-u>call <SID>expand_var()<cr>
+    nmap <buffer> <silent> <cr> :<c-u>call <SID>expand_var()<cr>
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
@@ -475,28 +508,80 @@ function! go#debug#Start(...) abort
   endtry
 endfunction
 
+" Translate a reflect kind constant to a human string.
+function! s:reflect_kind(k)
+  " Kind constants from Go's reflect package.
+  return [
+        \ 'Invalid Kind',
+        \ 'Bool',
+        \ 'Int',
+        \ 'Int8',
+        \ 'Int16',
+        \ 'Int32',
+        \ 'Int64',
+        \ 'Uint',
+        \ 'Uint8',
+        \ 'Uint16',
+        \ 'Uint32',
+        \ 'Uint64',
+        \ 'Uintptr',
+        \ 'Float32',
+        \ 'Float64',
+        \ 'Complex64',
+        \ 'Complex128',
+        \ 'Array',
+        \ 'Chan',
+        \ 'Func',
+        \ 'Interface',
+        \ 'Map',
+        \ 'Ptr',
+        \ 'Slice',
+        \ 'String',
+        \ 'Struct',
+        \ 'UnsafePointer',
+  \ ][a:k]
+endfunction
+
 function! s:eval_tree(var, nest) abort
   if a:var.name =~ '^\~'
     return ''
   endif
   let nest = a:nest
   let v = ''
+  let kind = s:reflect_kind(a:var.kind)
   if !empty(a:var.name)
-    if a:var.kind == 25
-      let v .= repeat(' ', nest) . printf("%s: {...}\n", a:var.name)
-    elseif a:var.kind ==  23 || a:var.kind == 24
-      let v .= repeat(' ', nest) . printf("%s: [%d]\n", a:var.name, a:var.len)
-    elseif a:var.kind == 7
-      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, json_encode(nr2char(a:var.value)))
+    let v .= repeat(' ', nest) . a:var.name . ': '
+
+    if kind == 'Bool'
+      let v .= printf("%s\n", a:var.value)
+    elseif kind == 'Struct'
+      " Anonymous struct
+      if a:var.type[:8] == 'struct { '
+        let v .= printf("%s\n", a:var.type)
+      else
+        let v .= printf("%s{...}\n", a:var.type)
+      endif
+    elseif kind == 'Slice' || kind == 'String' || kind == 'Map' || kind == 'Array'
+      let v .= printf("%s[%d]\n", a:var.type, a:var.len)
+    elseif kind == 'Chan' || kind == 'Func' || kind == 'Interface'
+      let v .= printf("%s\n", a:var.type)
+    elseif kind == 'Ptr'
+      " TODO: We can do something more useful here.
+      let v .= printf("%s\n", a:var.type)
+    elseif kind == 'Complex64' || kind == 'Complex128'
+      let v .= printf("%s%s\n", a:var.type, a:var.value)
+    " Int, Float
     else
-      let v .= repeat(' ', nest) . printf("%s: %s\n", a:var.name, a:var.type == 'string' ? json_encode(a:var.value) : a:var.value)
+      let v .= printf("%s(%s)\n", a:var.type, a:var.value)
     endif
   else
     let nest -= 1
   endif
-  for c in a:var.children
-    let v .= s:eval_tree(c, nest+1)
-  endfor
+  if index(['Chan', 'Complex64', 'Complex128'], kind) == -1 && a:var.type != 'error'
+    for c in a:var.children
+      let v .= s:eval_tree(c, nest+1)
+    endfor
+  endif
   return v
 endfunction
 
