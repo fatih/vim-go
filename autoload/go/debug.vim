@@ -32,7 +32,12 @@ function! s:exit(job, status) abort
   call s:clearState()
   if a:status != 0
     echohl Error | echo join(s:state['message'], "\n") . "\n" | echohl None
-	call getchar()
+    call getchar()
+  endif
+
+  if get(s:state, 'tmpdir', '') isnot ''
+    call delete(s:state['tmpdir'], 'rf')
+    let s:state['tmpdir'] = ''
   endif
 endfunction
 
@@ -354,6 +359,13 @@ function! s:start_cb(ch, json) abort
   set balloonexpr=go#debug#BalloonExpr()
   set ballooneval
 
+  augroup GoDebugExit
+    autocmd VimLeave *
+          \  if get(s:state, 'tmpdir', '') isnot ''
+          \|   call delete(s:state['tmpdir'], 'rf')
+          \| endif
+  augroup end
+
   augroup GoDebugWindow
     au!
     au BufWipeout __GODEBUG_STACKTRACE__ call go#debug#Stop()
@@ -420,8 +432,8 @@ function! go#debug#Start(...) abort
     " dir.
     if !l:is_test
       let original_dir = getcwd()
-      let l:tmp = go#util#tempdir('vim-go-debug-')
-      exe 'lcd ' . l:tmp
+      let s:state['tmpdir'] = go#util#tempdir('vim-go-debug-')
+      exe 'lcd ' . s:state['tmpdir']
     endif
 
     if l:is_test
