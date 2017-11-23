@@ -157,16 +157,21 @@ function! s:show_variables() abort
 
   let v = []
   let v += ['# Local Variables']
-  for c in s:state['localVars']
-    let v += split(s:eval_tree(c, 0), "\n")
-  endfor
+  if type(get(s:state, 'localVars', [])) is type([])
+    for c in s:state['localVars']
+      let v += split(s:eval_tree(c, 0), "\n")
+    endfor
+  endif
+
   let v += ['']
   let v += ['# Function Arguments']
-  for c in s:state['functionArgs']
-    let v += split(s:eval_tree(c, 0), "\n")
-  endfor
-  call setline(1, v)
+  if type(get(s:state, 'functionArgs', [])) is type([])
+    for c in s:state['functionArgs']
+      let v += split(s:eval_tree(c, 0), "\n")
+    endfor
+  endif
 
+  call setline(1, v)
   setlocal nomodifiable
   wincmd p
 endfunction
