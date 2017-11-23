@@ -80,9 +80,9 @@ done
 
 echo
 if [ -f "/tmp/vim-go-test/FAILED" ]; then
-  echo 2>&1 "Some tests FAILED"
+  echo 2>&1 "Some ($vim) tests FAILED"
   exit 1
 fi
-echo 2>&1 "All tests PASSED"
+echo 2>&1 "All ($vim) tests PASSED"
 
 # vim:ts=2:sts=2:sw=2:et
