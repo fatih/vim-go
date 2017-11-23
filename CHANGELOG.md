@@ -21,6 +21,8 @@ BUG FIXES:
   [[GH-1538]](https://github.com/fatih/vim-go/pull/1538)
 * Fix `gpl` snippet for UltiSnips.
   [[GH-1535]](https://github.com/fatih/vim-go/pull/1535)
+* Fix test output processing to correctly handle panics and log statements.
+  [[GH-1513]](https://github.com/fatih/vim-go/pull/1513)
 
 IMPROVEMENTS:
 
