@@ -262,12 +262,12 @@ augroup vim-go
   autocmd BufWinEnter *.go call go#guru#ClearSameIds()
 
   autocmd BufEnter *.go
-        \  if get(g:, 'go_autodetect_gopath', 0)
+        \  if get(g:, 'go_autodetect_gopath', 0) && !exists('b:old_gopath')
         \|   let b:old_gopath = $GOPATH
         \|   let $GOPATH = go#path#Detect()
         \| endif
   autocmd BufLeave *.go
-        \  if get(g:, 'go_autodetect_gopath', 0)
+        \  if get(b:, 'old_gopath', '') isnot ''
         \|   let $GOPATH = b:old_gopath
         \| endif
 augroup end
