@@ -182,19 +182,21 @@ function! s:stop() abort
 endfunction
 
 function! go#debug#Stop() abort
-  sign unplace 9999
   for k in keys(s:state['breakpoint'])
     let bt = s:state['breakpoint'][k]
     if bt.id >= 0
       silent exe 'sign unplace ' . bt.id
     endif
   endfor
+
   for k in filter(map(split(execute('command GoDebug'), "\n")[1:], 'matchstr(v:val,"^\\s*\\zs\\S\\+")'), 'v:val!="GoDebugStart"')
     exe 'delcommand' k
   endfor
   for k in map(split(execute('map <Plug>(go-debug-'), "\n")[1:], 'matchstr(v:val,"^n\\s\\+\\zs\\S\\+")')
     exe 'unmap' k
   endfor
+
+  command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start(<f-args>)
 
   call s:stop()
 
@@ -327,6 +329,7 @@ function! s:start_cb(ch, json) abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
+  delcommand GoDebugStart
   command! -nargs=0 GoDebugDiag       call go#debug#Diag()
   command! -nargs=0 GoDebugBreakpoint call go#debug#Breakpoint()
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
