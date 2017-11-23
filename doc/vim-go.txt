@@ -1660,6 +1660,13 @@ By default "snakecase" is used. Current values are: ["snakecase",
 >
       let g:go_addtags_transform = 'snakecase'
 <
+                                                                *'g:go_debug'*
+
+A list of options to debug; useful for development and/or reporting bugs.
+
+Currently accepted values:
+
+  debug   Expose debugger state in |'g:go_debug_diag'|.
 
 ==============================================================================
 SYNTAX HIGHLIGHTING                                 *ft-go-syntax* *go-syntax*
@@ -1904,11 +1911,6 @@ available after starting debug mode.
 
     Stop `dlv` and remove all debug-specific commands, mappings, and windows.
 
-    TODO: GoDebugStop and GoDebugStart doesn't work very well; get loads of
-    strange errors.
-
-
-
                                                           *:GoDebugBreakpoint*
                                                        *(go-debug-breakpoint)*
 :GoDebugBreakpoint
@@ -2003,14 +2005,6 @@ available after starting debug mode.
 
     TODO: Document why this is useful.
 
-                                                                *:GoDebugDiag*
-                                                             *(go-debug-diag)*
-:GoDebugDiag
-
-    Show the current state of the debugger. Useful for development, bug
-    reports, etc.
-
-
                                                            *go-debug-settings*
 DEBUGGER SETTINGS~
 
@@ -2035,10 +2029,6 @@ Show only variables on the right-hand side: >
         \ 'vars':  'rightbelow 60vnew',
   \ }
 <
-
-TODO: Should probably allow re-creating a window later on. Also useful if you
-close one.
-
                                                         *'g:go_debug_address'*
 
 Server address `dlv` will listen on; must be in `hostname:port` format.

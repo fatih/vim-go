@@ -19,6 +19,10 @@ if !exists('s:state')
   \ 'functionArgs': {},
   \ 'message': [],
   \}
+
+  if go#util#HasDebug('debug')
+    let g:go_debug_diag = s:state
+  endif
 endif
 
 function! s:groutineID() abort
@@ -88,11 +92,6 @@ function! s:call_jsonrpc(method, ...) abort
   catch
     throw substitute(v:exception, '^Vim', '', '')
   endtry
-endfunction
-
-function! go#debug#Diag() abort
-  let g:go_debug_diag = s:state
-  echo s:state
 endfunction
 
 function! s:update_breakpoint(res) abort
@@ -329,7 +328,6 @@ function! s:start_cb(ch, json) abort
   endif
 
   delcommand GoDebugStart
-  command! -nargs=0 GoDebugDiag       call go#debug#Diag()
   command! -nargs=0 GoDebugBreakpoint call go#debug#Breakpoint()
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugNext       call go#debug#Stack('next')
@@ -342,7 +340,6 @@ function! s:start_cb(ch, json) abort
   command! -nargs=1 GoDebugEval       call go#debug#Eval(<q-args>)
   command! -nargs=* GoDebugCommand    call go#debug#Command(<f-args>)
 
-  nnoremap <silent> <Plug>(go-debug-diag)       :<C-u>call go#debug#Diag()<CR>
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
   nnoremap <silent> <Plug>(go-debug-step)       :<C-u>call go#debug#Stack('step')<CR>
@@ -404,6 +401,10 @@ function! go#debug#Start(...) abort
   " It's already running.
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
+  endif
+
+  if go#util#HasDebug('debug')
+    let g:go_debug_diag = s:state
   endif
 
   let l:is_test = bufname('')[-8:] is# '_test.go'
