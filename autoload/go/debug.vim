@@ -127,53 +127,68 @@ function! s:update_breakpoint(res) abort
   silent! exe 'sign place 9999 line=' . linenr . ' name=godebugcurline file=' . filename
 endfunction
 
+" Populate the stacktrace window.
 function! s:show_stacktrace(res) abort
   if !has_key(a:res, 'result')
     return
   endif
-  let winnum = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
-  if winnum == -1
+
+  let l:stack_win = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
+  if l:stack_win == -1
     return
   endif
-  exe winnum 'wincmd w'
-  setlocal modifiable
-  silent %delete _
-  for i in range(len(a:res.result.Locations))
-    let loc = a:res.result.Locations[i]
-    call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':p'), loc.line))
-  endfor
-  setlocal nomodifiable
-  wincmd p
+
+  let l:cur_win = bufwinnr('')
+  exe l:stack_win 'wincmd w'
+
+  try
+    setlocal modifiable
+    silent %delete _
+    for i in range(len(a:res.result.Locations))
+      let loc = a:res.result.Locations[i]
+      call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':p'), loc.line))
+    endfor
+  finally
+    setlocal nomodifiable
+    exe l:cur_win 'wincmd w'
+  endtry
 endfunction
 
+" Populate the variable window.
 function! s:show_variables() abort
-  let winnum = bufwinnr(bufnr('__GODEBUG_VARIABLES__'))
-  if winnum == -1
+  let l:var_win = bufwinnr(bufnr('__GODEBUG_VARIABLES__'))
+  if l:var_win == -1
     return
   endif
-  exe winnum 'wincmd w'
-  setlocal modifiable
-  silent %delete _
 
-  let v = []
-  let v += ['# Local Variables']
-  if type(get(s:state, 'localVars', [])) is type([])
-    for c in s:state['localVars']
-      let v += split(s:eval_tree(c, 0), "\n")
-    endfor
-  endif
+  let l:cur_win = bufwinnr('')
+  exe l:var_win 'wincmd w'
 
-  let v += ['']
-  let v += ['# Function Arguments']
-  if type(get(s:state, 'functionArgs', [])) is type([])
-    for c in s:state['functionArgs']
-      let v += split(s:eval_tree(c, 0), "\n")
-    endfor
-  endif
+  try
+    setlocal modifiable
+    silent %delete _
 
-  call setline(1, v)
-  setlocal nomodifiable
-  wincmd p
+    let v = []
+    let v += ['# Local Variables']
+    if type(get(s:state, 'localVars', [])) is type([])
+      for c in s:state['localVars']
+        let v += split(s:eval_tree(c, 0), "\n")
+      endfor
+    endif
+
+    let v += ['']
+    let v += ['# Function Arguments']
+    if type(get(s:state, 'functionArgs', [])) is type([])
+      for c in s:state['functionArgs']
+        let v += split(s:eval_tree(c, 0), "\n")
+      endfor
+    endif
+
+    call setline(1, v)
+  finally
+    setlocal nomodifiable
+    exe l:cur_win 'wincmd w'
+  endtry
 endfunction
 
 function! s:clearState() abort
