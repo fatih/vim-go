@@ -1866,22 +1866,20 @@ the `dlv` process, or |:GoDebugRestart| to reset everything and start anew.
                                                            *go-debug-commands*
 DEBUGGER COMMANDS~
 
-Only |:GoDebugStart| and |:GoDebugStartWith| are available by default; the
-rest of the commands become available after starting debug mode.
+Only |:GoDebugStart| is available by default; the rest of the commands become
+available after starting debug mode.
 
-                                           *:GoDebugStart* *:GoDebugStartWith*
-:GoDebugStart [program-args]
-:GoDebugStartWith [dlv-args]
+                                                               *:GoDebugStart*
+:GoDebugStart [pkg] [program-args]
 
-    Start the debug mode; this does several things:
+    Start the debug mode for [pkg]; this does several things:
 
-      * Start `dlv debug` on the package the current buffer belongs to.
+      * Start `dlv debug` for [pkg].
       * Setup the debug windows according to |'g:go_debug_windows'|.
       * Make the `:GoDebug*` command and `(go-debug-*)` mappings available.
 
-  `:GoDebugStart` will pass any arguments to the Go program, whereas
-  `GoDebugStartWith` will pass any arguments to `dlv`. `:GoDebugStart arg` is
-  equivalent to `:GoDebugStart -- arg`; it's just a convenience shortcut.
+  The current directory is used as the package if [pkg] is empty. Any other
+  arguments will be passed to the program.
 
   Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 

@@ -375,7 +375,9 @@ function! s:starting(ch, msg) abort
   endif
 endfunction
 
-function! go#debug#StartWith(...) abort
+" Start the debug mode. The first argument is the package name to compile and
+" debug, anything else will be passed to the running program.
+function! go#debug#Start(...) abort
   if has('nvim')
     echoerr 'This feature only works in Vim for now; Neovim is not (yet) supported. Sorry :-('
     return
@@ -385,6 +387,7 @@ function! go#debug#StartWith(...) abort
     return
   endif
 
+  " It's already running.
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
   endif
@@ -395,20 +398,43 @@ function! go#debug#StartWith(...) abort
   endif
 
   try
+    if len(a:000) > 0
+      let l:pkgname = a:1
+      " Expand .; otherwise this won't work from a tmp dir.
+      if l:pkgname[0] == '.'
+        let l:pkgname = go#package#FromPath(getcwd()) . l:pkgname[1:]
+      endif
+    else
+      let l:pkgname = go#package#FromPath(getcwd())
+    endif
+
+    let l:args = []
+    if len(a:000) > 1
+      let l:args = ['--'] + a:000[1:]
+    endif
+
     " Run dlv from a temporary directory so it won't put the binary in the
     " current dir. We pass --wd= so the binary is still run from the current
     " dir.
     let original_dir = getcwd()
-    let pkgname = go#package#FromPath(bufname(''))
     let tmp = go#util#tempdir('vim-go-debug-')
     exe 'lcd ' . tmp
 
-    echohl SpecialKey | echomsg 'Starting GoDebug...' | echohl None
+    let l:cmd = [dlv, 'debug', l:pkgname,
+          \ '--headless',
+          \ '--api-version', '2',
+          \ '--log',
+          \ '--listen', g:go_debug_address,
+          \ '--wd', original_dir,
+          \ '--accept-multiclient',
+    \]
+    if get(g:, 'go_build_tags', '') isnot ''
+      let l:cmd += ['--build-flags', '--tags=' . g:go_build_tags]
+    endif
+    let l:cmd += l:args
+
+    call go#util#EchoProgress('Starting GoDebug...')
     let s:state['message'] = []
-
-    let l:cmd = printf('%s debug --headless --api-version=2 --log --listen=%s --wd=%s --accept-multiclient %s %s',
-          \ dlv, g:go_debug_address, original_dir, pkgname, join(a:000, ' '))
-
     let job = job_start(l:cmd, {
       \ 'out_cb': function('s:starting'),
       \ 'err_cb': function('s:starting'),
@@ -418,15 +444,10 @@ function! go#debug#StartWith(...) abort
     let ch = job_getchannel(job)
     let s:state['job'] = job
   catch
-    echohl Error | echomsg v:exception | echohl None
-    return
+    call go#util#EchoError(v:exception)
   finally
     exe 'lcd ' . original_dir
   endtry
-endfunction
-
-function! go#debug#Start(...) abort
-  return call('go#debug#StartWith', ['--'] + a:000)
 endfunction
 
 function! s:eval_tree(var, nest) abort

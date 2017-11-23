@@ -383,7 +383,7 @@ function! go#util#tempdir(prefix) abort
   endfor
 
   if l:dir == ''
-    echoerr 'Unable to find directory to store temporary directory in'
+    call go#util#EchoError('Unable to find directory to store temporary directory in')
     return
   endif
 
