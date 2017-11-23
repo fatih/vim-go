@@ -1913,10 +1913,11 @@ available after starting debug mode.
 
                                                           *:GoDebugBreakpoint*
                                                        *(go-debug-breakpoint)*
-:GoDebugBreakpoint
+:GoDebugBreakpoint {linenr}
 
-    Toggle breakpoint for the current line. A line with a breakpoint will have
-    the {godebugbreakpoint} |:sign| placed on it. The line the program is
+    Toggle breakpoint for the {linenr}. {linenr} defaults to the current line
+    if it is omitted. A line with a breakpoint will have the
+    {godebugbreakpoint} |:sign| placed on it. The line the program is
     currently halted on will have the {godebugcurline} sign.
 
                                     *hl-GoDebugCurrent* *hl-GoDebugBreakpoint*

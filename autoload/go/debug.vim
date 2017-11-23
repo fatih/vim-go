@@ -418,7 +418,7 @@ function! s:start_cb(ch, json) abort
   endif
 
   delcommand GoDebugStart
-  command! -nargs=0 GoDebugBreakpoint call go#debug#Breakpoint()
+  command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugNext       call go#debug#Stack('next')
   command! -nargs=0 GoDebugStep       call go#debug#Stack('step')
@@ -776,10 +776,22 @@ function! go#debug#Restart() abort
   endtry
 endfunction
 
-function! go#debug#Breakpoint() abort
+" Toggle breakpoint.
+function! go#debug#Breakpoint(...) abort
   let filename = fnamemodify(expand('%'), ':p:gs!\\!/!')
-  let linenr = line('.')
+
+  if len(a:000) > 0
+    let linenr = str2nr(a:1)
+    if linenr is 0
+      call go#util#EchoError('not a number: ' . a:1)
+      return
+    endif
+  else
+    let linenr = line('.')
+  endif
+
   try
+    " Check if we already have a breakpoint for this line.
     let found = v:none
     for k in keys(s:state.breakpoint)
       let bt = s:state.breakpoint[k]
@@ -788,10 +800,13 @@ function! go#debug#Breakpoint() abort
         break
       endif
     endfor
+
+    " Remove breakpoint.
     if type(found) == v:t_dict
       call remove(s:state['breakpoint'], bt.id)
       let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': found.id})
       exe 'sign unplace '. found.id .' file=' . found.file
+    " Add breakpoint.
     else
       let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'file': filename, 'line': linenr}})
       let bt = res.result.Breakpoint
