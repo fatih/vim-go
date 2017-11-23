@@ -30,7 +30,7 @@ function! s:exit(job, status) abort
     call remove(s:state, 'job')
   endif
   call s:clearState()
-  if a:status != 0
+  if a:status > 0
     echohl Error | echo join(s:state['message'], "\n") . "\n" | echohl None
     call getchar()
   endif
