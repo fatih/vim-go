@@ -39,11 +39,6 @@ function! s:exit(job, status) abort
   if a:status > 0
     call go#util#EchoError(s:state['message'])
   endif
-
-  if get(s:state, 'tmpdir', '') isnot ''
-    call delete(s:state['tmpdir'], 'rf')
-    let s:state['tmpdir'] = ''
-  endif
 endfunction
 
 function! s:logger(prefix, ch, msg) abort
@@ -231,7 +226,7 @@ endfunction
 function! s:stop() abort
   call s:clearState()
   if has_key(s:state, 'job')
-    call job_stop(s:state['job'], 'kill')
+    call job_stop(s:state['job'])
     call remove(s:state, 'job')
   endif
 endfunction
@@ -444,13 +439,6 @@ function! s:start_cb(ch, json) abort
   set balloonexpr=go#debug#BalloonExpr()
   set ballooneval
 
-  augroup GoDebugExit
-    autocmd VimLeave *
-          \  if get(s:state, 'tmpdir', '') isnot ''
-          \|   call delete(s:state['tmpdir'], 'rf')
-          \| endif
-  augroup end
-
   augroup GoDebugWindow
     au!
     au BufWipeout __GODEBUG_STACKTRACE__ call go#debug#Stop()
@@ -524,21 +512,10 @@ function! go#debug#Start(...) abort
       let l:args = ['--'] + a:000[1:]
     endif
 
-    " Run dlv from a temporary directory so it won't put the binary in the
-    " current dir. We pass --wd= so the binary is still run from the current
-    " dir.
-    if !l:is_test
-      let original_dir = getcwd()
-      let s:state['tmpdir'] = go#util#tempdir('vim-go-debug-')
-      exe 'lcd ' . s:state['tmpdir']
-    endif
-
-    if l:is_test
-      let l:cmd = [dlv, 'test', l:pkgname]
-    else
-      let l:cmd = [dlv, 'debug', l:pkgname, '--wd', l:original_dir]
-    endif
-    let l:cmd += [
+    let l:cmd = [
+          \ dlv,
+          \ (l:is_test ? 'test' : 'debug'),
+          \ '--output', tempname(),
           \ '--headless',
           \ '--api-version', '2',
           \ '--log',
@@ -562,10 +539,6 @@ function! go#debug#Start(...) abort
     let s:state['job'] = job
   catch
     call go#util#EchoError(v:exception)
-  finally
-    if !l:is_test
-      exe 'lcd ' . original_dir
-    endif
   endtry
 endfunction
 
