@@ -663,7 +663,8 @@ function! s:eval(arg) abort
 endfunction
 
 function! go#debug#BalloonExpr() abort
-  return s:eval(v:beval_text)
+  silent! let l:v = s:eval(v:beval_text)
+  return l:v
 endfunction
 
 function! go#debug#Print(arg) abort
