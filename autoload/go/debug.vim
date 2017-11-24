@@ -27,6 +27,10 @@ if !exists('s:state')
   endif
 endif
 
+if !exists('s:start_args')
+  let s:start_args = []
+endif
+
 function! s:groutineID() abort
   return s:state['currentThread'].goroutineID
 endfunction
@@ -412,7 +416,7 @@ function! s:start_cb(ch, json) abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  delcommand GoDebugStart
+  silent! delcommand GoDebugStart
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugNext       call go#debug#Stack('next')
   command! -nargs=0 GoDebugStep       call go#debug#Stack('step')
@@ -439,12 +443,6 @@ function! s:start_cb(ch, json) abort
   set balloonexpr=go#debug#BalloonExpr()
   set ballooneval
 
-  augroup GoDebugWindow
-    au!
-    au BufWipeout __GODEBUG_STACKTRACE__ call go#debug#Stop()
-    au BufWipeout __GODEBUG_VARIABLES__ call go#debug#Stop()
-    au BufWipeout __GODEBUG_OUTPUT__ call go#debug#Stop()
-  augroup END
   exe bufwinnr(oldbuf) 'wincmd w'
 endfunction
 
@@ -484,6 +482,8 @@ function! go#debug#Start(...) abort
   if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
     return
   endif
+
+  let s:start_args = a:000
 
   if go#util#HasDebug('debugger-state')
     let g:go_debug_diag = s:state
@@ -529,14 +529,12 @@ function! go#debug#Start(...) abort
 
     call go#util#EchoProgress('Starting GoDebug...')
     let s:state['message'] = []
-    let job = job_start(l:cmd, {
+    let s:state['job'] = job_start(l:cmd, {
       \ 'out_cb': function('s:starting'),
       \ 'err_cb': function('s:starting'),
       \ 'exit_cb': function('s:exit'),
       \ 'stoponexit': 'kill',
     \})
-    let ch = job_getchannel(job)
-    let s:state['job'] = job
   catch
     call go#util#EchoError(v:exception)
   endtry
@@ -749,8 +747,28 @@ endfunction
 
 function! go#debug#Restart() abort
   try
-    call s:clearState()
-    call s:call_jsonrpc('RPCServer.Restart')
+    call job_stop(s:state['job'])
+    while has_key(s:state, 'job') && job_status(s:state['job']) is# 'run'
+      sleep 50m
+    endwhile
+
+    let l:breaks = s:state['breakpoint']
+    let s:state = {
+        \ 'rpcid': 1,
+        \ 'breakpoint': {},
+        \ 'currentThread': {},
+        \ 'localVars': {},
+        \ 'functionArgs': {},
+        \ 'message': [],
+        \}
+
+    " Preserve breakpoints.
+    for bt in values(l:breaks)
+      " TODO: should use correct filename
+      exe 'sign unplace '. bt.id .' file=' . bt.file
+      call go#debug#Breakpoint(bt.line)
+    endfor
+    call call('go#debug#Start', s:start_args)
   catch
     call go#util#EchoError(v:exception)
   endtry
