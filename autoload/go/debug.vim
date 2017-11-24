@@ -343,10 +343,29 @@ function! s:expand_var() abort
     return
   endif
 
-  " Expand string and slice.
-  " TODO: Expand string, too
-  " g:go_debug_diag["localVars"][1].children[0].children[0]
-  let m = matchlist(getline('.'), '^\([^:]\+\)\ze: \(\[\]\w\{-}\|string\)\[\([0-9]\+\)\]$')
+  " Expand string.
+  let m = matchlist(getline('.'), '^\([^:]\+\)\ze: \(string\)\[\([0-9]\+\)\]\(: .\{-}\)\?$')
+  if len(m) > 0 && m[1] != ''
+    setlocal modifiable
+    let not_open = getline(line('.')+1) !~ '^ '
+    let l = line('.')
+    call s:delete_expands()
+
+    if not_open
+      let vs = ''
+      for i in range(0, min([10, m[3]-1]))
+        let vs .= ' ' . s:eval(m[1] . '[' . i . ']')
+      endfor
+      call append(l, split(vs, "\n"))
+    endif
+
+    silent! exe 'norm!' l.'G'
+    setlocal nomodifiable
+    return
+  endif
+
+  " Expand slice.
+  let m = matchlist(getline('.'), '^\([^:]\+\)\ze: \(\[\]\w\{-}\)\[\([0-9]\+\)\]$')
   if len(m) > 0 && m[1] != ''
     setlocal modifiable
     let not_open = getline(line('.')+1) !~ '^ '
@@ -586,6 +605,7 @@ function! s:eval_tree(var, nest) abort
 
     if kind == 'Bool'
       let v .= printf("%s\n", a:var.value)
+
     elseif kind == 'Struct'
       " Anonymous struct
       if a:var.type[:8] == 'struct { '
@@ -593,15 +613,24 @@ function! s:eval_tree(var, nest) abort
       else
         let v .= printf("%s{...}\n", a:var.type)
       endif
+
+    elseif kind == 'String'
+      let v .= printf("%s[%d]%s\n", a:var.type, a:var.len,
+            \ len(a:var.value) > 0 ? ': ' . a:var.value : '')
+
     elseif kind == 'Slice' || kind == 'String' || kind == 'Map' || kind == 'Array'
       let v .= printf("%s[%d]\n", a:var.type, a:var.len)
+
     elseif kind == 'Chan' || kind == 'Func' || kind == 'Interface'
       let v .= printf("%s\n", a:var.type)
+
     elseif kind == 'Ptr'
       " TODO: We can do something more useful here.
       let v .= printf("%s\n", a:var.type)
+
     elseif kind == 'Complex64' || kind == 'Complex128'
       let v .= printf("%s%s\n", a:var.type, a:var.value)
+
     " Int, Float
     else
       let v .= printf("%s(%s)\n", a:var.type, a:var.value)
@@ -609,6 +638,7 @@ function! s:eval_tree(var, nest) abort
   else
     let nest -= 1
   endif
+
   if index(['Chan', 'Complex64', 'Complex128'], kind) == -1 && a:var.type != 'error'
     for c in a:var.children
       let v .= s:eval_tree(c, nest+1)
@@ -625,7 +655,7 @@ function! s:eval(arg) abort
           \ 'expr':  a:arg,
           \ 'scope': {'GoroutineID': goroutineID}
       \ })
-    return substitute(s:eval_tree(res.result.Variable, 0), "\n$", "", 0)
+    return s:eval_tree(res.result.Variable, 0)
   catch
     call go#util#EchoError(v:exception)
     return ''
@@ -638,33 +668,37 @@ endfunction
 
 function! go#debug#Print(arg) abort
   try
-    echo s:eval(a:arg)
+    echo substitute(s:eval(a:arg), "\n$", "", 0)
   catch
     call go#util#EchoError(v:exception)
   endtry
 endfunction
 
 function! s:update_variables() abort
-  let vars = [
-  \{
-  \  'method': 'RPCServer.ListLocalVars',
-  \  'kind': 'localVars',
-  \  'bind': 'Variables',
-  \},
-  \{
-  \  'method': 'RPCServer.ListFunctionArgs',
-  \  'kind': 'functionArgs',
-  \  'bind': 'Args',
-  \}
-  \]
-  for v in vars
-    try
-      let res = s:call_jsonrpc(v.method, {'scope':{'GoroutineID': s:groutineID()}})
-      let s:state[v.kind] = res.result[v.bind]
-    catch
-      call go#util#EchoError(v:exception)
-    endtry
-  endfor
+  " FollowPointers requests pointers to be automatically dereferenced.
+  " MaxVariableRecurse is how far to recurse when evaluating nested types.
+  " MaxStringLen is the maximum number of bytes read from a string
+  " MaxArrayValues is the maximum number of elements read from an array, a slice or a map.
+  " MaxStructFields is the maximum number of fields read from a struct, -1 will read all fields.
+  let l:cfg = {
+        \ 'scope': {'GoroutineID': s:groutineID()},
+        \ 'cfg':   {'MaxStringLen': 20, 'MaxArrayValues': 20}
+        \ }
+
+  try
+    let res = s:call_jsonrpc('RPCServer.ListLocalVars', l:cfg)
+    let s:state['localVars'] = res.result['Variables']
+  catch
+    call go#util#EchoError(v:exception)
+  endtry
+
+  try
+    let res = s:call_jsonrpc('RPCServer.ListFunctionArgs', l:cfg)
+    let s:state['functionArgs'] = res.result['Args']
+  catch
+    call go#util#EchoError(v:exception)
+  endtry
+
   call s:show_variables()
 endfunction
 
