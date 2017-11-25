@@ -101,6 +101,9 @@ function! go#fmt#Format(withGoimport) abort
 
   " be smart and jump to the line the new statement was added/removed
   call cursor(line('.') + diff_offset, current_col)
+
+  " Syntax highlighting breaks less often.
+  syntax sync fromstart
 endfunction
 
 " update_file updates the target file with the given formatted source
