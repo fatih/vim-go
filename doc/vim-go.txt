@@ -1315,13 +1315,12 @@ remove build tags. By default it's not set.
 <
                                                     *'g:go_autodetect_gopath'*
 
-Automatically modifies GOPATH for certain directory structures, such as for
-the tool `godep` which has his own dependencies via the `Godeps` folder. What
-this means is that all tools are now working with the newly modified GOPATH.
-So |:GoDef| for example jumps to the source inside the `Godeps` (vendored)
-source. Currently `godep` and `gb` is supported, in the near future more tool
-supports will be added. By default it's disabled. >
-
+Automatically modify GOPATH for certain directory structures, such as for
+the `godep` tool which stores dependencies in the `Godeps` folder. What this
+means is that all tools are now working with the newly modified GOPATH. So
+|:GoDef| for example jumps to the source inside the `Godeps` (vendored)
+source. Currently `godep` and `gb` are supported. By default it's disabled.
+>
   let g:go_autodetect_gopath = 0
 <
                                                       *'g:go_textobj_enabled'*
