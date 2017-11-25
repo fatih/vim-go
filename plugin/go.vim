@@ -263,11 +263,7 @@ augroup vim-go
 
   autocmd BufEnter *.go
         \  if get(g:, 'go_autodetect_gopath', 0) && !exists('b:old_gopath')
-        \|   if exists('$GOPATH')
-        \|     let b:old_gopath = $GOPATH
-        \|   else
-        \|     let b:old_gopath = -1
-        \|   endif
+        \|   let b:old_gopath = exists('$GOPATH') ? $GOPATH : -1
         \|   let $GOPATH = go#path#Detect()
         \| endif
   autocmd BufLeave *.go
