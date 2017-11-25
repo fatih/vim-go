@@ -270,6 +270,7 @@ augroup vim-go
         \  if get(b:, 'old_gopath', '') isnot ''
         \|   let $GOPATH = b:old_gopath
         \| endif
+        \| silent! unlet b:old_gopath
 augroup end
 
 " vim: sw=2 ts=2 et
