@@ -6,11 +6,13 @@ BACKWARDS INCOMPATIBILITIES:
   still work, but are not supported. You can use `let g:go_version_warning = 0`
   to disable the warning.
   [[GH-1524]](https://github.com/fatih/vim-go/pull/1524).
-* Disable `g:go_autodetect_gopath` by default; support for `vendor` has been in
-  Go for a while. Also rewrite support for this with a `BufEnter` and `BufLeave`
-  autocommand, rather than checking it before running every tool invocation.
-
-  [[GH-1461]](https://github.com/fatih/vim-go/pull/1461).
+* `g:go_autodetect_gopath` is *disabled* by default, as support for `vendor` has
+  been in Go for a while.<br>
+  Also change the implementation for `g:go_autodetect_gopath`; instead of manually
+  setting it before every command it will now be set with the `BufEnter` event,
+  and reset with the `BufLeave` event. This means that `$GOPATH` will be
+  changed for all commands run from Vim.
+  [[GH-1461]](https://github.com/fatih/vim-go/pull/1461) and
   [[GH-1525]](https://github.com/fatih/vim-go/pull/1525).
 
 BUG FIXES:
