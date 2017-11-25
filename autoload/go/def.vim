@@ -1,6 +1,3 @@
-let s:go_stack = []
-let s:go_stack_level = 0
-
 function! go#def#Jump(mode) abort
   let old_gopath = $GOPATH
   let $GOPATH = go#path#Detect()
@@ -121,21 +118,6 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let col = parts[2]
   let ident = parts[3]
 
-  " Remove anything newer than the current position, just like basic
-  " vim tag support
-  if s:go_stack_level == 0
-    let s:go_stack = []
-  else
-    let s:go_stack = s:go_stack[0:s:go_stack_level-1]
-  endif
-
-  " increment the stack counter
-  let s:go_stack_level += 1
-
-  " push it on to the jumpstack
-  let stack_entry = {'line': line("."), 'col': col("."), 'file': expand('%:p'), 'ident': ident}
-  call add(s:go_stack, stack_entry)
-
   " needed for restoring back user setting this is because there are two
   " modes of switchbuf which we need based on the split mode
   let old_switchbuf = &switchbuf
@@ -177,124 +159,6 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   normal! zz
 
   let &switchbuf = old_switchbuf
-endfunction
-
-function! go#def#SelectStackEntry() abort
-  let target_window = go#ui#GetReturnWindow()
-  if empty(target_window)
-    let target_window = winnr()
-  endif
-
-  let highlighted_stack_entry = matchstr(getline("."), '^..\zs\(\d\+\)')
-  if !empty(highlighted_stack_entry)
-    execute target_window . "wincmd w"
-    call go#def#Stack(str2nr(highlighted_stack_entry))
-  endif
-
-  call go#ui#CloseWindow()
-endfunction
-
-function! go#def#StackUI() abort
-  if len(s:go_stack) == 0
-    call go#util#EchoError("godef stack empty")
-    return
-  endif
-
-  let stackOut = ['" <Up>,<Down>:navigate <Enter>:jump <Esc>,q:exit']
-
-  let i = 0
-  while i < len(s:go_stack)
-    let entry = s:go_stack[i]
-    let prefix = ""
-
-    if i == s:go_stack_level
-      let prefix = ">"
-    else
-      let prefix = " "
-    endif
-
-    call add(stackOut, printf("%s %d %s|%d col %d|%s",
-          \ prefix, i+1, entry["file"], entry["line"], entry["col"], entry["ident"]))
-    let i += 1
-  endwhile
-
-  if s:go_stack_level == i
-    call add(stackOut, "> ")
-  endif
-
-  call go#ui#OpenWindow("GoDef Stack", stackOut, "godefstack")
-
-  noremap <buffer> <silent> <CR>  :<C-U>call go#def#SelectStackEntry()<CR>
-  noremap <buffer> <silent> <Esc> :<C-U>call go#ui#CloseWindow()<CR>
-  noremap <buffer> <silent> q     :<C-U>call go#ui#CloseWindow()<CR>
-endfunction
-
-function! go#def#StackClear(...) abort
-  let s:go_stack = []
-  let s:go_stack_level = 0
-endfunction
-
-function! go#def#StackPop(...) abort
-  if len(s:go_stack) == 0
-    call go#util#EchoError("godef stack empty")
-    return
-  endif
-
-  if s:go_stack_level == 0
-    call go#util#EchoError("at bottom of the godef stack")
-    return
-  endif
-
-  if !len(a:000)
-    let numPop = 1
-  else
-    let numPop = a:1
-  endif
-
-  let newLevel = str2nr(s:go_stack_level) - str2nr(numPop)
-  call go#def#Stack(newLevel + 1)
-endfunction
-
-function! go#def#Stack(...) abort
-  if len(s:go_stack) == 0
-    call go#util#EchoError("godef stack empty")
-    return
-  endif
-
-  if !len(a:000)
-    " Display interactive stack
-    call go#def#StackUI()
-    return
-  else
-    let jumpTarget = a:1
-  endif
-
-  if jumpTarget !~ '^\d\+$'
-    if jumpTarget !~ '^\s*$'
-      call go#util#EchoError("location must be a number")
-    endif
-    return
-  endif
-
-  let jumpTarget = str2nr(jumpTarget) - 1
-
-  if jumpTarget >= 0 && jumpTarget < len(s:go_stack)
-    let s:go_stack_level = jumpTarget
-    let target = s:go_stack[s:go_stack_level]
-
-    " jump
-    if expand('%:p') != target["file"]
-      if &modified
-        exec 'hide edit' target["file"]
-      else
-        exec 'edit' target["file"]
-      endif
-    endif
-    call cursor(target["line"], target["col"])
-    normal! zz
-  else
-    call go#util#EchoError("invalid location. Try :GoDefStack to see the list of valid entries")
-  endif
 endfunction
 
 function s:def_job(args) abort

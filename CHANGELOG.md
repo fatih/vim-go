@@ -6,6 +6,10 @@ BACKWARDS INCOMPATIBILITIES:
   still work, but are not supported. You can use `let g:go_version_warning = 0`
   to disable the warning.
   [[GH-1524]](https://github.com/fatih/vim-go/pull/1524).
+* Remove `:GoDefStack` and related commands and mappings. This reimplements
+  Vim's jumplist with little added benefits. See `:help jumplist`.
+  [[GH-1556]](https://github.com/fatih/vim-go/pull/1556).
+
 
 BUG FIXES:
 
