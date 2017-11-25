@@ -31,6 +31,8 @@ BUG FIXES:
   [[GH-1535]](https://github.com/fatih/vim-go/pull/1535)
 * Fix test output processing to correctly handle panics and log statements.
   [[GH-1513]](https://github.com/fatih/vim-go/pull/1513)
+* `:GoImpl` tab-completion would sometimes stop working
+  [[GH-1581]](https://github.com/fatih/vim-go/pull/1581).
 
 IMPROVEMENTS:
 
@@ -48,6 +50,9 @@ IMPROVEMENTS:
 * New setting `g:go_test_prepend_name` (off by default) to add the failing test
   name to the output of `:GoTest`
   [[GH-1578]](https://github.com/fatih/vim-go/pull/1578).
+* Run `syntax sync fromstart` after `:GoFmt`; this should make syntax
+  highlighting break slightly less often after formatting code
+  [[GH-1582]](https://github.com/fatih/vim-go/pull/1582).
 
 ## 1.15 - (October 3, 2017)
 
