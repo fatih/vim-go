@@ -11,8 +11,11 @@ let s:fail = 0
 let s:done = 0
 let s:logs = []
 let s:gopath = $GOPATH
-if !exists('g:test_verbose')
-  let g:test_verbose = 0
+let g:go_testdir = '/tmp/vim-go-test/testrun'
+let g:go_running_tests = 1
+let g:go_messages = []
+if !exists('g:go_test_verbose')
+  let g:go_test_verbose = 0
 endif
 
 " Source the passed test file.
@@ -41,7 +44,7 @@ for s:test in sort(s:tests)
   endif
 
   let s:started = reltime()
-  if g:test_verbose is 1
+  if g:go_test_verbose is 1
     call add(s:logs, printf("=== RUN  %s", s:test[:-3]))
   endif
   try
@@ -50,8 +53,9 @@ for s:test in sort(s:tests)
     let v:errors += [v:exception]
   endtry
 
-  " Restore GOPATH after each test.
+  " Restore GOPATH and g:go_messages after each test.
   let $GOPATH = s:gopath
+  let g:go_messages = []
 
   let s:elapsed_time = substitute(reltimestr(reltime(s:started)), '^\s*\(.\{-}\)\s*$', '\1', '')
   let s:done += 1
@@ -64,7 +68,7 @@ for s:test in sort(s:tests)
     " Reset so we can capture failures of the next test.
     let v:errors = []
   else
-    if g:test_verbose is 1
+    if g:go_test_verbose is 1
       call add(s:logs, printf("--- PASS %s (%ss)", s:test[:-3], s:elapsed_time))
     endif
   endif
@@ -92,7 +96,7 @@ call append(line('$'), printf("%s %s %s %ss / %s tests",
       \ s:testfile,
       \ repeat(' ', 25 - len(s:testfile)),
       \ s:total_elapsed_time, s:done))
-if g:test_verbose is 0
+if g:go_test_verbose is 0
   silent :g/^$/d
 endif
 silent! write

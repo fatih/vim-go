@@ -57,13 +57,16 @@ fi
 [ -f '/tmp/vim-go-test/test.log' ] && rm '/tmp/vim-go-test/test.log'
 [ -f '/tmp/vim-go-test/FAILED' ] && rm '/tmp/vim-go-test/FAILED'
 
+# Make sure we start with an empty testrun directory.
+rm -fr '/tmp/vim-go-test/testrun/'*
+
 # Run the actual tests.
 find "$vimgodir" -name '*_test.vim' | while read test_file; do
   [ -n "$run" -a "$(basename "$test_file")" != "$run" ] && continue
 
   "$vimgodir/scripts/run-vim" $vim -e \
     +"silent e $test_file" \
-    +"let g:test_verbose=$verbose" \
+    +"let g:go_test_verbose=$verbose" \
     -S ./scripts/runtest.vim || (
       # If Vim exits with non-0 it's almost certainly a bug in the test runner;
       # should very rarely happen in normal usage.
