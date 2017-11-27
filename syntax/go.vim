@@ -350,7 +350,7 @@ if g:go_highlight_functions != 0
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
   syn match goFunction          /\w\+/ contained
-  syn match goFunctionCall      /\w\+\ze(/ contains=GoBuiltins,goDeclaration
+  syn match goFunctionCall      /\w\+\ze(/ contains=goBuiltins,goDeclaration
 else
   syn keyword goDeclaration func
 endif
