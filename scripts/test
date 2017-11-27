@@ -93,7 +93,8 @@ echo 2>&1 "All tests PASSED"
 # Submit coverage reports
 if [ -n "$coverage" ]; then
   coverage xml --omit '*_test.vim'
-  codecov -X search gcov pycov -f coverage.xml --required
+  codecov -X search gcov pycov -f coverage.xml --required \
+    --flags "$(echo "$vim" | sed -s 's/[-.]//g')"
   rm coverage.xml
 fi
 
