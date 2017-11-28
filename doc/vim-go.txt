@@ -840,7 +840,7 @@ CTRL-t
         Name: "Ford Prefect",
         Email: "",
       }
-
+<
 
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -1669,6 +1669,9 @@ Currently accepted values:
   debugger-state     Expose debugger state in 'g:go_debug_diag'.
   debugger-commands  Echo communication between vim-go and `dlv`; requests and
                      responses are recorded in `g:go_debug_commands`.
+>
+      let g:go_debug = []
+<
 
 ==============================================================================
 SYNTAX HIGHLIGHTING                                 *ft-go-syntax* *go-syntax*
@@ -1842,10 +1845,12 @@ features:
   * Show balloon on the symbol.
   * Show output of stdout/stderr.
   * Toggle breakpoint.
-  * Stack operation continue/next/step in/step out.
+  * Stack operation continue/next/step out.
 
 This feature requires Vim 8.0.0087 or newer with the |+job| feature. Neovim
 does _not_ work (yet).
+This requires a fairly recent version of the Delve debugger (Nov 28 or newer).
+Use `|:GoUpdateBinaries| to install or update it.
 
                                                               *go-debug-intro*
 GETTING STARTED WITH THE DEBUGGER~
@@ -1854,9 +1859,9 @@ Use |:GoDebugStart| to start the debugger. The first argument is the package
 name, and any arguments after that will be passed on to the program; for
 example:
 >
-    :GoDebugStart . -age 18
+    :GoDebugStart . -someflag value
 <
-This may take few seconds. After compiling your code you'll see three new
+This may take few seconds. After the code is compiled you'll see three new
 windows: the stack trace on left side, the variable list on the bottom-left,
 and program output at the bottom.
 
@@ -1870,9 +1875,8 @@ in with |:GoDebugStep| (<F11>).
 Struct values are displayed as `{...}`, array/slices as `[4]`. Use <CR> on the
 variable name to expand the values.
 
-Once you're done use |:GoDebugStop| to close the debugging windows and halt
-the `dlv` process, or |:GoDebugRestart| to recompile your code and start a new
-debugging session.
+When you're done use |:GoDebugStop| to close the debugging windows and halt
+the `dlv` process, or |:GoDebugRestart| to recompile the code.
 
                                                            *go-debug-commands*
 DEBUGGER COMMANDS~
@@ -1885,24 +1889,23 @@ rest of the commands become available after starting debug mode.
 
     Start the debug mode for [pkg]; this does several things:
 
-      * Start `dlv debug` for [pkg] or `dlv test` if the current buffer's
+      * Start `dlv debug` for [pkg], or `dlv test` if the current buffer's
         filename ends with `_test.go`.
       * Setup the debug windows according to |'g:go_debug_windows'|.
-      * Make the `:GoDebug*` command and `(go-debug-*)` mappings available.
+      * Make the `:GoDebug*` commands and `(go-debug-*)` mappings available.
 
-  The current directory is used as the package if [pkg] is empty. Any other
-  arguments will be passed to the program.
+  The current directory is used if [pkg] is empty. Any other arguments will
+  be passed to the program.
 
   Use `-test.flag` to pass flags to `go test` when debugging a test; for
-  example `-test.v` or `-test.run TestFoo` .
+  example `-test.v` or `-test.run TestFoo`
 
   Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
                                                              *:GoDebugRestart*
 :GoDebugRestart
 
-    Stop the program (if running) and restart `dlv` which will recompiling the
-    package.
+    Stop the program (if running) and restart `dlv` to recompile the package.
     The current window layout and breakpoints will be left intact.
 
                                                                 *:GoDebugStop*
@@ -1913,9 +1916,9 @@ rest of the commands become available after starting debug mode.
 
                                                           *:GoDebugBreakpoint*
                                                        *(go-debug-breakpoint)*
-:GoDebugBreakpoint {linenr}
+:GoDebugBreakpoint [linenr]
 
-    Toggle breakpoint for the {linenr}. {linenr} defaults to the current line
+    Toggle breakpoint for the [linenr]. [linenr] defaults to the current line
     if it is omitted. A line with a breakpoint will have the
     {godebugbreakpoint} |:sign| placed on it. The line the program is
     currently halted on will have the {godebugcurline} sign.
@@ -1923,7 +1926,7 @@ rest of the commands become available after starting debug mode.
                                     *hl-GoDebugCurrent* *hl-GoDebugBreakpoint*
     A line with a breakpoint will be highlighted with the {GoDebugBreakpoint}
     group; the line the program is currently halted on will be highlighted
-    with {hl-GoDebugCurrent}.
+    with {GoDebugCurrent}.
 
     Mapped to <F9> by default.
 
@@ -1972,7 +1975,6 @@ rest of the commands become available after starting debug mode.
 >
       :GoDebugSet truth 42
 <
-
     This only works for `float`, `int` and variants, `uint` and variants,
     `bool`, and pointers (this is a `delve` limitation, not a vim-go
     limitation).
