@@ -38,6 +38,10 @@ if !exists("g:go_highlight_functions")
   let g:go_highlight_functions = 0
 endif
 
+if !exists("g:go_highlight_function_arguments")
+  let g:go_highlight_function_arguments = 0
+endif
+
 if !exists("g:go_highlight_methods")
   let g:go_highlight_methods = 0
 endif
@@ -350,12 +354,14 @@ if g:go_highlight_functions != 0
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goFunction          /\w\+/ nextgroup=goSimpleArguments contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
+if g:go_highlight_function_arguments != 0
   syn match goSimpleArguments   /(\(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goArgumentName nextgroup=goSimpleArguments skipwhite skipnl
   syn match goArgumentName      /\w\+\(\s*,\s*\w\+\)*\ze\s\+\(\w\|\.\|\*\|\[\)/ contained nextgroup=goArgumentType skipwhite skipnl
   syn match goArgumentType      /\([^,)]\|\_s\)\+,\?/ contained nextgroup=goArgumentName skipwhite skipnl
                         \ contains=goVarArgs,goType,goSignedInts,goUnsignedInts,goFloats,goComplexes,goDeclType,goBlock
+  hi def link   goReceiverVar       goArgumentName
+endif
   syn match goReceiver          /(\s*\w\+\(\s\+\*\?\s*\w\+\)\?\s*)\ze\s*\w/ contained nextgroup=goFunction contains=goReceiverVar skipwhite skipnl
-  hi def link goReceiverVar goArgumentName
 else
   syn keyword goDeclaration func
 endif
