@@ -350,7 +350,7 @@ if g:go_highlight_functions != 0
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goFunction          /\w\+/ nextgroup=goSimpleArguments contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
-  syn match goSimpleArguments   /(\(\w\|\_s\|[*\.\[\],\{\}<>-]\)\+)/ contained contains=goArgumentName nextgroup=goSimpleArguments skipwhite skipnl
+  syn match goSimpleArguments   /(\(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goArgumentName nextgroup=goSimpleArguments skipwhite skipnl
   syn match goArgumentName      /\w\+\(\s*,\s*\w\+\)*\ze\s\+\(\w\|\.\|\*\|\[\)/ contained nextgroup=goArgumentType skipwhite skipnl
   syn match goArgumentType      /\([^,)]\|\_s\)\+,\?/ contained nextgroup=goArgumentName skipwhite skipnl
                         \ contains=goVarArgs,goType,goSignedInts,goUnsignedInts,goFloats,goComplexes,goDeclType,goBlock
