@@ -347,7 +347,7 @@ endif
 hi def link     goOperator          Operator
 
 " Functions;
-if g:go_highlight_functions != 0
+if g:go_highlight_functions != 0 || go_highlight_function_arguments != 0
   syn match goFunctionCall      /\w\+\ze(/ contains=goBuiltins,goDeclaration
   syn match goDeclaration       /\<func\>/ nextgroup=goReceiver,goFunction,goSimpleArguments skipwhite skipnl
   syn match goReceiverVar       /\w\+\ze\s\+\(\w\|\*\)/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
