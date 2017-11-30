@@ -36,6 +36,8 @@ BUG FIXES:
 
 IMPROVEMENTS:
 
+* ':GoAlternate' respects `switchbuf` when the alternate is already loaded.
+  [[GH-1585]](https://github.com/fatih/vim-go/pull/1585).
 * `:GoRename` is a bit smarter when automatically pre-filling values, and what
   gets pre-filled can be configured with `g:go_gorename_prefill` option.
   In addition `:GoRename <Tab>` now lists some common options.
