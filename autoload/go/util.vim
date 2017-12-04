@@ -313,11 +313,6 @@ function! s:echo(msg, hi)
   " Tabs display as ^I or <09>, so manually expand them.
   let l:msg = map(l:msg, 'substitute(v:val, "\t", "        ", "")')
 
-  " Record messages for tests.
-  if get(g:, 'go_running_tests', 0)
-    let g:go_messages += [[a:hi, l:msg]]
-  endif
-
   exe 'echohl ' . a:hi
   for line in l:msg
     echom "vim-go: " . line

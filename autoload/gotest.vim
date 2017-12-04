@@ -1,21 +1,3 @@
-" Return a path relative to the test run directory. If the second parameter is 1
-" then it is fnameescaped()'d.
-fun! gotest#dir(path, ...) abort
-  if len(a:000) > 0 && a:1 is 1
-    return fnameescape(g:go_testdir . '/' . a:path)
-  else
-    return g:go_testdir . '/' . a:path
-  endif
-endfun
-
-" Return the last message as a string, or 0 (int) if there are no messages.
-fun! gotest#lastmsg() abort
-  if len(g:go_messages) is 0
-    return 0
-  endif
-  return join(g:go_messages[len(g:go_messages) - 1][1], '\n')
-endfun
-
 " Write a Go file to a temporary directory and append this directory to $GOPATH.
 "
 " The file will written to a:path, which is relative to the temporary directory,
