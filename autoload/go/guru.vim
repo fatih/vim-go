@@ -362,7 +362,7 @@ function! go#guru#DescribeInfo() abort
         \ 'mode': 'describe',
         \ 'format': 'json',
         \ 'selected': -1,
-        \ 'needs_scope': 1,
+        \ 'needs_scope': 0,
         \ 'custom_parse': function('s:info'),
         \ 'disable_progress': 1,
         \ }
