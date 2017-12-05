@@ -54,6 +54,20 @@ if [ ! -f "$vimdir/bin/vim" ]; then
   exit 1
 fi
 
+
+# Make sure all Go tools and other dependencies are installed.
+echo "Installing Go binaries"
+"$vimgodir/scripts/run-vim" $vim +':silent :GoUpdateBinaries' +':qa'
+
+echo "Installing lint tools"
+(
+  mkdir -p "$vimdir/share/vim/vimgo/pack/vim-go/start/"
+  cd "$vimdir/share/vim/vimgo/pack/vim-go/start/"
+  [ -d "vim-vimhelplint" ] || git clone --depth 1 --quiet https://github.com/machakann/vim-vimhelplint
+  [ -d "vim-vimlparser" ]  || git clone --depth 1 --quiet https://github.com/ynkdir/vim-vimlparser
+  [ -d "vim-vimlint" ]     || git clone --depth 1 --quiet https://github.com/syngan/vim-vimlint
+)
+
 ### Run tests.
 ##############
 # Clean stale log file.
