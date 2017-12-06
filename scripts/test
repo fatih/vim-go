@@ -7,7 +7,7 @@ set -euC
 vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
 cd "$vimgodir"
 
-usage() {
+_usage() {
   echo "Usage: ${0##*/} [-v] [-r file] vim_version"
   echo
   echo "Options:"
