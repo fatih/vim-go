@@ -55,6 +55,8 @@ IMPROVEMENTS:
 * Run `syntax sync fromstart` after `:GoFmt`; this should make syntax
   highlighting break slightly less often after formatting code
   [[GH-1582]](https://github.com/fatih/vim-go/pull/1582).
+* `:GoDescribe` doesn't require a scope anymore
+  [[GH-1596]](https://github.com/fatih/vim-go/pull/1596).
 
 ## 1.15 - (October 3, 2017)
 
