@@ -20,4 +20,10 @@ RUN /vim-go/scripts/install-vim nvim
 COPY . /vim-go/
 WORKDIR /vim-go
 
+# install the Go tools; any vim choice would work, but vim-8.0 is the current
+# best supported version, so use that. This needs to be done after the vim-go
+# sources are copied into the image, because it depends vim-go on the source
+# files.
+RUN /vim-go/scripts/install-go-tools vim-8.0
+
 ENTRYPOINT ["make"]
