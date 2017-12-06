@@ -30,7 +30,7 @@ function! go#doc#OpenBrowser(...) abort
     let decl = out["decl"]
 
     let godoc_url = get(g:, 'go_doc_url', 'https://godoc.org')
-    if godoc_url != 'https://godoc.org'
+    if godoc_url isnot 'https://godoc.org'
       " strip last '/' character if available
       let last_char = strlen(godoc_url) - 1
       if godoc_url[last_char] == '/'
