@@ -33,6 +33,8 @@ BUG FIXES:
   [[GH-1513]](https://github.com/fatih/vim-go/pull/1513)
 * `:GoImpl` tab-completion would sometimes stop working
   [[GH-1581]](https://github.com/fatih/vim-go/pull/1581).
+* Add `g:go_highlight_function_arguments` to highlight function arguments.
+  [[GH-1587]](https://github.com/fatih/vim-go/pull/1587).
 
 IMPROVEMENTS:
 
