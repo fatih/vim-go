@@ -59,6 +59,12 @@ IMPROVEMENTS:
   [[GH-1582]](https://github.com/fatih/vim-go/pull/1582).
 * `:GoDescribe` doesn't require a scope anymore
   [[GH-1596]](https://github.com/fatih/vim-go/pull/1596).
+* Add some standard snippets for
+  [vim-minisnip](https://github.com/joereynolds/vim-minisnip)
+  [[GH-1589]](https://github.com/fatih/vim-go/pull/1589).
+* `g:go_snippet_engine` now defaults to `automatic` to use the first installed
+  snippet engine it can find.
+  [[GH-1589]](https://github.com/fatih/vim-go/pull/1589).
 
 ## 1.15 - (October 3, 2017)
 

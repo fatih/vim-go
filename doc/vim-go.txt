@@ -57,7 +57,8 @@ tools developed by the Go community to provide a seamless Vim experience.
   * Advanced source analysis tools utilizing `guru`, such as |:GoImplements|,
     |:GoCallees|, and |:GoReferrers|.
   * Precise type-safe renaming of identifiers with |:GoRename|.
-  * Integrated and improved snippets, supporting `ultisnips` or `neosnippet`.
+  * Integrated and improved snippets, supporting `ultisnips`, `neosnippet`,
+    and `vim-minisnip`.
   * Share your current code to play.golang.org with |:GoPlay|.
   * On-the-fly information about the word under the cursor. Plug it into your
     custom Vim function.
@@ -136,7 +137,8 @@ The following plugins are supported for use with vim-go:
 
 * Snippets:
   https://github.com/Shougo/neosnippet.vim or
-  https://github.com/SirVer/ultisnips
+  https://github.com/SirVer/ultisnips or
+  https://github.com/joereynolds/vim-minisnip
 
 * For a better documentation viewer check out:
   https://github.com/garyburd/go-explorer
@@ -1278,10 +1280,16 @@ Use this option to change default path for vim-go tools when using
 <
                                                        *'g:go_snippet_engine'*
 
-Use this option to define the default snippet engine.  By default "ultisnips"
-is used. Use "neosnippet" for neosnippet.vim: >
+Define the snippet engine to use. The default is to auto-detect one. Valid
+values are:
 
-  let g:go_snippet_engine = "ultisnips"
+  automatic      Automatically detect a snippet engine.
+  ultisnips      https://github.com/SirVer/ultisnips
+  neosnippet     https://github.com/Shougo/neosnippet.vim
+  minisnip       https://github.com/joereynolds/vim-minisnip
+                 Note: the original at KeyboardFire/vim-minisnip won't work.
+>
+  let g:go_snippet_engine = "automatic"
 <
                                                            *'g:go_get_update'*
 
