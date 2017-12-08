@@ -1590,7 +1590,7 @@ By default the template file specified by |'g:go_template_file'| is used.
 Only useful if `ctrlp.vim`, `unite.vim`, `denite.nvim` or `fzf` are installed.
 This sets which declarations to show for |:GoDecls| (`ctrp.vim`),
 |unite-decls| (`unite.vim`) and |denite-decls| (`denite.nvim`).  It is a Comma
-delimited list Possible options are: {func,type}.  The default is: >
+delimited list.  Possible options are: {func,type}.  The default is: >
 
       let g:go_decls_includes = 'func,type'
 <
