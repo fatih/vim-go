@@ -199,7 +199,8 @@ COMMANDS                                                         *go-commands*
 :GoDocBrowser [word]
 
     Open the relevant GoDoc in browser for either the word[s] passed to the
-    command or by default, the word under the cursor.
+    command or by default, the word under the cursor. By default it opens the
+    documentation in 'https://godoc.org'. To change it see |'g:go_doc_url'|.
 
                                                                       *:GoFmt*
 :GoFmt
@@ -1236,6 +1237,14 @@ is enabled. >
 Maximum height for the GoDoc window created with |:GoDoc|. Default is 20. >
 
   let g:go_doc_max_height = 20
+<
+
+                                                              *'g:go_doc_url'*
+
+godoc server URL used when |:GoDocBrowser| is used. Change if you want to use
+a private internal service. Default is 'https://godoc.org'. 
+>
+  let g:go_doc_url = 'https://godoc.org'
 <
 
                                                              *'g:go_def_mode'*
