@@ -704,6 +704,8 @@ CTRL-t
     Only enabled if `unite.vim` or `denite.nvim` is installed. Show
     declarations for all functions and types on the current file or directory.
     If [:file or dir] is non empty, it parses the given one.
+
+    Note: `denite.nvim` requires NeoVim or Vim 8 with |:python3| enabled.
 >
     " show declarations on the parent directory of the current file
     :Unite decls
