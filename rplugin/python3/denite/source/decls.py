@@ -40,7 +40,7 @@ class Source(Base):
             return []
 
         expand = context['args'][0] if context['args'] else '%:p:h'
-        target = self.vim.call('expand', expand)
+        target = self.vim.funcs.expand(expand)
 
         if os.path.isdir(target):
             mode = 'dir'
@@ -49,7 +49,7 @@ class Source(Base):
         else:
             return []
 
-        if self.vim.call('exists', 'g:go_decls_includes'):
+        if self.vim.funcs.exists('g:go_decls_includes'):
             include = self.vim.eval('g:go_decls_includes')
         else:
             include = 'func,type'
@@ -68,7 +68,7 @@ class Source(Base):
         output = json.loads(txt, encoding='utf-8')
 
         def make_candidates(row):
-            name = self.vim.call('fnamemodify', row['filename'], ':~:.')
+            name = self.vim.funcs.fnamemodify(row['filename'], ':~:.')
             return {
                 'word': '{0} :{1} :{2}'.format(name, row['line'], row['full']),
                 'action__path': row['filename'],
