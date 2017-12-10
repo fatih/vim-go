@@ -227,8 +227,6 @@ BACKWARDS INCOMPATIBILITIES:
   here](https://github.com/fatih/vim-go/issues/1375#issuecomment-317535953)
   [[GH-1382]](https://github.com/fatih/vim-go/pull/1382)
 
-
-
 ## 1.13 - (June 6, 2017)
 
 FEATURES:
