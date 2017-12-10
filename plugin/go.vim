@@ -146,7 +146,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         echo "vim-go: ". binary ." not found. Installing ". importPath . " to folder " . go_bin_path
       endif
 
-      let out = go#util#System(cmd . l:goGetFlags . shellescape(importPath))
+      let out = go#util#System(printf('%s %s %s', cmd, l:goGetFlags, shellescape(importPath)))
       if go#util#ShellError() != 0
         echom "Error installing " . importPath . ": " . out
       endif
