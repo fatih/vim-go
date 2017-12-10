@@ -77,7 +77,6 @@ BACKWARDS INCOMPATIBILITIES:
   [[GH-1461]](https://github.com/fatih/vim-go/pull/1461) and
   [[GH-1525]](https://github.com/fatih/vim-go/pull/1525).
 
-
 ## 1.15 - (October 3, 2017)
 
 FEATURES:
