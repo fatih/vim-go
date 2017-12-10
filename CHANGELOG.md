@@ -35,7 +35,9 @@ IMPROVEMENTS:
 * `g:go_snippet_engine` now defaults to `automatic` to use the first installed
   snippet engine it can find.
   [[GH-1589]](https://github.com/fatih/vim-go/pull/1589).
-
+* Make sure temporary files created for `:GoFmt` end with `.go` suffix as this
+  is required by some Go formatting tools
+  [[GH-1601]](https://github.com/fatih/vim-go/pull/1601).
 
 BUG FIXES:
 
