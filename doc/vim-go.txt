@@ -1250,7 +1250,7 @@ Maximum height for the GoDoc window created with |:GoDoc|. Default is 20. >
                                                               *'g:go_doc_url'*
 
 godoc server URL used when |:GoDocBrowser| is used. Change if you want to use
-a private internal service. Default is 'https://godoc.org'. 
+a private internal service. Default is 'https://godoc.org'.
 >
   let g:go_doc_url = 'https://godoc.org'
 <
@@ -1725,7 +1725,7 @@ Highlight operators such as `:=` , `==`, `-=`, etc.
 <
                                                   *'g:go_highlight_functions'*
 
-Highlight function names.
+Highlight function and method declarations.
 >
   let g:go_highlight_functions = 0
 <
@@ -1737,11 +1737,11 @@ declarations. Setting this implies the functionality from
 >
   let g:go_highlight_function_arguments = 0
 <
-                                                    *'g:go_highlight_methods'*
+                                             *'g:go_highlight_function_calls'*
 
-Highlight method names.
+Highlight function and method calls.
 >
-  let g:go_highlight_methods = 0
+  let g:go_highlight_function_calls = 0
 <
                                                       *'g:go_highlight_types'*
 
