@@ -85,10 +85,10 @@ done
 
 echo
 if [ -f "/tmp/vim-go-test/FAILED" ]; then
-  echo 2>&1 "Some tests FAILED"
+  echo 2>&1 "Some ($vim) tests FAILED"
   exit 1
 fi
-echo 2>&1 "All tests PASSED"
+echo 2>&1 "All ($vim) tests PASSED"
 
 # Submit coverage reports
 if [ -n "$coverage" ]; then
