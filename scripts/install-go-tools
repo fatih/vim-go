@@ -4,6 +4,8 @@
 #
 
 set -euC
+export GOPATH=/tmp/vim-go-test
+
 vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
 cd "$vimgodir"
 
