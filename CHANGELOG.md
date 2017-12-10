@@ -8,6 +8,8 @@ FEATURES:
 * New setting `g:go_test_prepend_name` (off by default) to add the failing test
   name to the output of `:GoTest`
   [[GH-1578]](https://github.com/fatih/vim-go/pull/1578).
+* Support [denite.vim](https://github.com/Shougo/denite.nvim) for `:GoDecls[Dir]`
+  [[GH-1604]](https://github.com/fatih/vim-go/pull/1604).
 
 IMPROVEMENTS:
 

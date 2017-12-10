@@ -2,3 +2,4 @@
 /doc/tags
 /.coverage.covimerage
 /coverage.xml
+*.pyc
