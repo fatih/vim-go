@@ -3,13 +3,13 @@ VIMS ?= vim-7.4 vim-8.0 nvim
 all: install test lint
 
 install:
-	@echo "==> Installing Vims"
+	@echo "==> Installing Vims: $(VIMS)"
 	@for vim in $(VIMS); do \
 		./scripts/install-vim $$vim; \
 	done
 
 test:
-	@echo "==> Running tests"
+	@echo "==> Running tests for $(VIMS)"
 	@for vim in $(VIMS); do \
 		./scripts/test $$vim; \
 	done
