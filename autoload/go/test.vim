@@ -285,7 +285,7 @@ function! s:errorformat() abort
   "
   " e.g.:
   "   '--- FAIL: TestSomething (0.00s)'
-  if get(g:, 'go_test_prepend_name', 0)
+  if get(g:, 'go_test_show_name', 0)
     let format .= ",%+G" . indent . "--- FAIL: %.%#"
   else
     let format .= ",%-G" . indent . "--- FAIL: %.%#"
