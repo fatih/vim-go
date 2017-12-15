@@ -11,6 +11,5 @@ install:
   - ./scripts/install-vim $VIM_VERSION
   - ./scripts/install-go-tools $VIM_VERSION
   - pip install --user vim-vint covimerage codecov
-  - pip install --user vim-vint
 script:
   - ./scripts/$SCRIPT $VIM_VERSION
