@@ -61,6 +61,8 @@ BUG FIXES:
   [[GH-1587]](https://github.com/fatih/vim-go/pull/1587).
 * Fix installation of `gocode` on MS-Windows.
   [[GH-1606]](https://github.com/fatih/vim-go/pull/1606).
+* Fix template creation for files in directories that don't exist yet.
+  [[GH-1618]](https://github.com/fatih/vim-go/pull/1618).
 
 BACKWARDS INCOMPATIBILITIES:
 
