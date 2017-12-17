@@ -31,16 +31,23 @@ function! go#import#SwitchImport(add, alias, path, bang) abort
 
   let l:code = split(l:json['code'], "\n")
   let l:view = winsaveview()
+  let l:lastline = line('$')
   try
-    " Out with the old ...
-    silent exe 'normal! ' . l:json['start'] . 'gov' . l:json['end'] . 'gox'
-    " ... in with the new.
+    " No imports yet; go to the corect line.
+    if l:json['end'] is 0
+      exe 'normal! ' . l:json['start'] . 'go'
+    " Remove existing imports.
+    else
+      silent exe 'normal! ' . l:json['start'] . 'gov' . l:json['end'] . 'gox'
+    endif
+
+    " Add imports.
     call setline('.', l:code[0])
     call append('.', l:code[1:])
   finally
     " Adjust view for any changes.
-    let l:view.lnum += l:json['linedelta']
-    let l:view.topline += l:json['linedelta']
+    let l:view.lnum += line('$') - l:lastline
+    let l:view.topline += line('$') - l:lastline
     if l:view.topline < 0
       let l:view.topline = 0
     endif
