@@ -41,7 +41,7 @@ endfunc
 
 func! Test_GoTestCompilerError() abort
   let expected = [
-        \ {'lnum': 22, 'bufnr': 6, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'syntax error: unexpected newline, expecting comma or )'}
+        \ {'lnum': 6, 'bufnr': 6, 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'syntax error: unexpected newline, expecting comma or )'}
       \ ]
 
   call s:test('compilerror/compilerror_test.go', expected)
