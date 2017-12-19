@@ -88,7 +88,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
   if a:autosave
     " include only messages for the active buffer
-    let cmd += ["--include='^" . expand('%:p') . ".*$'"]
+    let cmd += ["--include='" . @% . ".*$'"]
   endif
 
 
