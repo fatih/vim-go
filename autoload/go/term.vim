@@ -54,11 +54,11 @@ function! go#term#newmode(bang, cmd, mode) abort
   let height = get(g:, 'go_term_height', winheight(0))
   let width = get(g:, 'go_term_width', winwidth(0))
 
-  " we are careful how to resize. for example it's vertical we don't change
+  " we are careful how to resize. for example it's vsplit we don't change
   " the height. The below command resizes the buffer
   if mode =~ "split"
     exe 'resize ' . height
-  elseif mode =~ "vertical"
+  elseif mode =~ "vsplit"
     exe 'vertical resize ' . width
   endif
 
