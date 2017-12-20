@@ -76,6 +76,11 @@ BACKWARDS INCOMPATIBILITIES:
   changed for all commands run from Vim.
   [[GH-1461]](https://github.com/fatih/vim-go/pull/1461) and
   [[GH-1525]](https://github.com/fatih/vim-go/pull/1525).
+* Update `:GoFillStruct` to check the current line (vs. the exact cursor
+  position) for a struct literal to fill. To support this, fillstruct made
+  [backwards imcompatible
+  changes](https://github.com/davidrjenni/reftools/pull/8).
+  [[GH-1607]](https://github.com/fatih/vim-go/pull/1607).
 
 ## 1.15 - (October 3, 2017)
 

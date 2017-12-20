@@ -259,12 +259,15 @@ function s:lint_job(args)
   function! s:callback(chan, msg) closure
     let old_errorformat = &errorformat
     let &errorformat = l:errformat
-    if l:listtype == "locationlist"
-      lad a:msg
-    elseif l:listtype == "quickfix"
-      caddexpr a:msg
-    endif
-    let &errorformat = old_errorformat
+    try
+      if l:listtype == "locationlist"
+        lad a:msg
+      elseif l:listtype == "quickfix"
+        caddexpr a:msg
+      endif
+    finally
+      let &errorformat = old_errorformat
+    endtry
 
     " TODO(jinleileiking): give a configure to jump or not
     let l:winnr = winnr()
