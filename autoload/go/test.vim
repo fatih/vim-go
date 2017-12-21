@@ -271,7 +271,7 @@ function! s:errorformat() abort
   let indent = " %#"
 
   " match compiler errors
-  let format = "%f:%l: %m"
+  let format = "%f:%l:%c: %m"
 
   " ignore `go test -v` output for starting tests
   let format .= ",%-G=== RUN   %.%#"
