@@ -62,6 +62,11 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += split(g:go_metalinter_command, " ")
   endif
 
+  " Include only messages for the active buffer for autosave.
+  if a:autosave
+    let cmd += [printf('--include=%s.*$', @%)]
+  endif
+
   " gometalinter has a default deadline of 5 seconds.
   "
   " For async mode (s:lint_job), we want to override the default deadline only
@@ -83,21 +88,11 @@ function! go#lint#Gometa(autosave, ...) abort
   endif
 
   " We're calling gometalinter synchronously.
-
   let cmd += ["--deadline=" . get(g:, 'go_metalinter_deadline', "5s")]
-
-  if a:autosave
-    " include only messages for the active buffer
-    let cmd += ["--include='" . @% . ".*$'"]
-  endif
-
-
-  let meta_command = join(cmd, " ")
-
-  let out = go#util#System(meta_command)
+  let [l:out, l:err] = go#util#Exec(cmd)
 
   let l:listtype = go#list#Type("GoMetaLinter")
-  if go#util#ShellError() == 0
+  if l:err == 0
     redraw | echo
     call go#list#Clean(l:listtype)
     call go#list#Window(l:listtype)
