@@ -58,7 +58,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   " the height. The below command resizes the buffer
   if mode =~ "split"
     exe 'resize ' . height
-  elseif mode =~ "vsplit"
+  elseif mode =~ "vsplit" || mode =~ "vertical"
     exe 'vertical resize ' . width
   endif
 
