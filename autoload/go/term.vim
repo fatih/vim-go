@@ -56,10 +56,11 @@ function! go#term#newmode(bang, cmd, mode) abort
 
   " we are careful how to resize. for example it's vsplit we don't change
   " the height. The below command resizes the buffer
-  if mode =~ "split"
-    exe 'resize ' . height
-  elseif mode =~ "vsplit" || mode =~ "vertical"
+
+  if mode =~ "vertical" || mode =~ "vsplit" || mode =~ "vnew"
     exe 'vertical resize ' . width
+  elseif mode =~ "split" || mode =~ "new"
+    exe 'resize ' . height
   endif
 
   " we also need to resize the pty, so there you go...
