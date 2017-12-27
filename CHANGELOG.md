@@ -63,6 +63,9 @@ BUG FIXES:
   [[GH-1606]](https://github.com/fatih/vim-go/pull/1606).
 * Fix template creation for files in directories that don't exist yet.
   [[GH-1618]](https://github.com/fatih/vim-go/pull/1618).
+* Fix behavior of terminal windows and resize terminal windows correctly for
+  all valid `g:go_term_mode` values.
+  [[GH-1611]](https://github.com/fatih/vim-go/pull/1611).
 
 BACKWARDS INCOMPATIBILITIES:
 
