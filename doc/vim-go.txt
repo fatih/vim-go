@@ -128,7 +128,7 @@ The following plugins are supported for use with vim-go:
 * Real-time completion (Vim):
   https://github.com/Shougo/neocomplete.vim
 
-* Real-time completion (Neovim):
+* Real-time completion (Neovim and Vim 8):
   https://github.com/Shougo/deoplete.nvim and
   https://github.com/zchee/deoplete-go
 
