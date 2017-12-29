@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.16 - (December 29, 2017)
+
 FEATURES:
 
 * Add `g:go_doc_url` to change the `godoc` server from `godoc.org` to a custom
