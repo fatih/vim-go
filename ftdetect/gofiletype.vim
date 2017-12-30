@@ -20,7 +20,7 @@ endfunction
 
 augroup vim-go-filetype
   autocmd!
-  au BufNewFile *.go setfiletype go | setlocal fileencoding=utf-8 fileformat=unix
+  au BufNewFile,BufRead *.go setfiletype go | setlocal fileencoding=utf-8 fileformat=unix
   au BufRead *.go call s:gofiletype_pre("go")
   au BufReadPost *.go call s:gofiletype_post()
 
