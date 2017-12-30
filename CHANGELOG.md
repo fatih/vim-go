@@ -1,5 +1,10 @@
 ## unplanned
 
+BUG FIXES:
+
+* apply `g:go_test_timeout` when running `:GoTestFunc`.
+  [[GH-1631]](https://github.com/fatih/vim-go/pull/1631)
+
 ## 1.16 - (December 29, 2017)
 
 FEATURES:
