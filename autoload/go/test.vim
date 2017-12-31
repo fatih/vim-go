@@ -318,6 +318,10 @@ function! s:errorformat() abort
 
   " set the format for panics.
 
+  " handle panics from test timeouts
+  let format .= ",%+Gpanic: test timed out after %.%\\+"
+
+  " handle non-timeout panics
   " In addition to 'panic', check for 'fatal error' to support older versions
   " of Go that used 'fatal error'.
   "
