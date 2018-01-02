@@ -29,7 +29,7 @@ function! go#doc#OpenBrowser(...) abort
     let name = out["name"]
     let decl = out["decl"]
 
-    let godoc_url = s:customGodocUrl()
+    let godoc_url = s:custom_godoc_url()
     let godoc_url .= "/" . import
     if decl !~ "^package"
       let godoc_url .= "#" . name
@@ -50,7 +50,7 @@ function! go#doc#OpenBrowser(...) abort
   let exported_name = pkgs[1]
 
   " example url: https://godoc.org/github.com/fatih/set#Set
-  let godoc_url = s:customGodocUrl() . "/" . pkg . "#" . exported_name
+  let godoc_url = s:custom_godoc_url() . "/" . pkg . "#" . exported_name
   call go#tool#OpenBrowser(godoc_url)
 endfunction
 
@@ -206,15 +206,7 @@ function! s:godocWord(args) abort
   return [pkg, exported_name]
 endfunction
 
-function! s:godocNotFound(content) abort
-  if len(a:content) == 0
-    return 1
-  endif
-
-  return a:content =~# '^.*: no such file or directory\n$'
-endfunction
-
-function! s:customGodocUrl() abort
+function! s:custom_godoc_url() abort
   let godoc_url = get(g:, 'go_doc_url', 'https://godoc.org')
   if godoc_url isnot 'https://godoc.org'
     " strip last '/' character if available
