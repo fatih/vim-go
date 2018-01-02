@@ -2,8 +2,11 @@
 
 BUG FIXES:
 
-* apply `g:go_test_timeout` when running `:GoTestFunc`.
+* Apply `g:go_test_timeout` when running `:GoTestFunc`.
   [[GH-1631]](https://github.com/fatih/vim-go/pull/1631)
+* The user's configured `g:go_doc_url` variable wasn't working correctly in the
+  case when the "gogetdoc" command isn't installed.
+  [[GH-1629]](https://github.com/fatih/vim-go/pull/1629)
 
 ## 1.16 - (December 29, 2017)
 
