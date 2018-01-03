@@ -47,6 +47,16 @@ func! Test_GoTestCompilerError() abort
   call s:test('compilerror/compilerror_test.go', expected)
 endfunc
 
+func! Test_GoTestTimeout() abort
+  let expected = [
+        \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'panic: test timed out after 500ms'}
+      \ ]
+
+  let g:go_test_timeout="500ms"
+  call s:test('timeout/timeout_test.go', expected)
+  unlet g:go_test_timeout
+endfunc
+
 func! s:test(file, expected, ...) abort
   if has('nvim')
     " nvim mostly shows test errors correctly, but the the expected errors are
