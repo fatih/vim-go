@@ -2,6 +2,8 @@
 
 BUG FIXES:
 
+* Create quickfix list correctly when tests timeout.
+  [[GH-1633]](https://github.com/fatih/vim-go/pull/1633)
 * Apply `g:go_test_timeout` when running `:GoTestFunc`.
   [[GH-1631]](https://github.com/fatih/vim-go/pull/1631)
 * The user's configured `g:go_doc_url` variable wasn't working correctly in the
