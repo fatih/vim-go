@@ -202,7 +202,7 @@ else
 endif
 
 if g:go_highlight_format_strings != 0
-  syn match       goFormatSpecifier   /\([^%]\(%%\)*\)\@<=%[-#0 +]*\%(\%(\%(\[\d\]\)\=\*\)\|\d\+\)\=\%(\.\%(\%(\%(\[\d\]\)\=\*\)\|\d\+\)\)\=\%(\[\d\]\)\=[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString,goRawString
+  syn match       goFormatSpecifier   /\([^%]\(%%\)*\)\@<=%[-#0 +]*\%(\%(\%(\[\d\]\)\=\*\)\|\d\+\)\=\%(\.\%(\%(\%(\[\d\]\)\=\*\)\|\d\+\)\)\=\%(\[\d\]\)\=[vTtbcdoqxXUeEfFgGsp]/ contained containedin=goString,goRawString
   hi def link     goFormatSpecifier   goSpecialString
 endif
 
