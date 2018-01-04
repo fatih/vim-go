@@ -57,6 +57,14 @@ func! Test_GoTestTimeout() abort
   unlet g:go_test_timeout
 endfunc
 
+func! Test_GoTestTestify() abort
+  let expected = [
+        \ {'lnum': 7, 'bufnr': 9, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': "\ntestify is not go test"},
+      \ ]
+
+  call s:test('testify/testify_test.go', expected)
+endfunc
+
 func! s:test(file, expected, ...) abort
   if has('nvim')
     " nvim mostly shows test errors correctly, but the the expected errors are
