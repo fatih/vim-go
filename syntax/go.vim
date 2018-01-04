@@ -202,7 +202,19 @@ else
 endif
 
 if g:go_highlight_format_strings != 0
-  syn match       goFormatSpecifier   /\([^%]\(%%\)*\)\@<=%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)*[vTtbcdoqxXUeEfgGsp]/ contained containedin=goString
+  " [n] notation is valid for specifying explicit argument indexes
+  " 1. Match a literal % not preceded by a %.
+  " 2. Match any number of -, #, 0, space, or +
+  " 3. Match * or [n]* or any number or nothing before a .
+  " 4. Match * or [n]* or any number or nothing after a .
+  " 5. Match [n] or nothing before a verb
+  " 6. Match a formatting verb
+  syn match       goFormatSpecifier   /\
+        \([^%]\(%%\)*\)\
+        \@<=%[-#0 +]*\
+        \%(\%(\%(\[\d\+\]\)\=\*\)\|\d\+\)\=\
+        \%(\.\%(\%(\%(\[\d\+\]\)\=\*\)\|\d\+\)\=\)\=\
+        \%(\[\d\+\]\)\=[vTtbcdoqxXUeEfFgGsp]/ contained containedin=goString,goRawString
   hi def link     goFormatSpecifier   goSpecialString
 endif
 

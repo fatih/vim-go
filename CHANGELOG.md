@@ -9,6 +9,8 @@ BUG FIXES:
 * The user's configured `g:go_doc_url` variable wasn't working correctly in the
   case when the "gogetdoc" command isn't installed.
   [[GH-1629]](https://github.com/fatih/vim-go/pull/1629)
+* Highlight format specifiers with an index (e.g. `%[2]d`).
+  [[GH-1634]](https://github.com/fatih/vim-go/pull/1634)
 
 ## 1.16 - (December 29, 2017)
 
