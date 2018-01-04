@@ -295,6 +295,13 @@ function! s:errorformat() abort
     let format .= ",%-G" . indent . "--- FAIL: %.%#"
   endif
 
+  " Match github.com/stretchr/testify output. We won't make a great effort
+  " (e.g. we won't try to match messages that contain embedded newlines), but
+  " we can hit the 80% case pretty easily. This has to be done before the
+  " entries for normal go test output.
+  let format .= ",%A" . indent . "%\\t%\\+%\\f%\\+:%\\d%\\+: %\\r %\\+%\\r%\\tError Trace:%\\t%f:%l"
+  let format .= ",%C" . indent . "%\\t%\\{2}%\\r%\\tError:      %\\t%m"
+
   " Matches test output lines.
   "
   " All test output lines start with the test indentation and a tab, followed
