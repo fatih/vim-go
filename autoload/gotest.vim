@@ -102,4 +102,29 @@ fun! gotest#assert_fixture(path) abort
   call gotest#assert_buffer(0, l:want)
 endfun
 
+func! gotest#assert_quickfix(got, want) abort
+  call assert_equal(len(a:want), len(a:got), "number of errors")
+  if len(a:want) != len(a:got)
+    call assert_equal(a:want, a:got)
+    return
+  endif
+
+  let i = 0
+  while i < len(a:want)
+    let want_item = a:want[i]
+    let got_item = a:got[i]
+    let i += 1
+
+    call assert_equal(want_item.bufnr, got_item.bufnr, "bufnr")
+    call assert_equal(want_item.lnum, got_item.lnum, "lnum")
+    call assert_equal(want_item.col, got_item.col, "col")
+    call assert_equal(want_item.vcol, got_item.vcol, "vcol")
+    call assert_equal(want_item.nr, got_item.nr, "nr")
+    call assert_equal(want_item.pattern, got_item.pattern, "pattern")
+    call assert_equal(want_item.text, got_item.text, "text")
+    call assert_equal(want_item.type, got_item.type, "type")
+    call assert_equal(want_item.valid, got_item.valid, "valid")
+  endwhile
+endfunc
+
 " vim: sw=2 ts=2 et
