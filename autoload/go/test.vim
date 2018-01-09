@@ -257,6 +257,7 @@ endfunction
 
 
 let s:efm= ""
+let s:go_test_show_name=0
 
 function! s:errorformat() abort
   " NOTE(arslan): once we get JSON output everything will be easier :).
@@ -265,14 +266,16 @@ function! s:errorformat() abort
   "   https://github.com/golang/go/issues/2981.
   let goroot = go#util#goroot()
 
-  if s:efm != ""
+  let show_name=get(g:, 'go_test_show_name', 0)
+  if s:efm != "" && s:go_test_show_name == show_name
     return s:efm
   endif
+  let s:go_test_show_name = show_name
 
-  " each level of test indents the test output 4 spaces.
-  " TODO(bc): figure out how to use 0 or more groups of four spaces for the
-  " indentation. '%\\(    %\\)%#' should work, but doesn't.
-  let indent = " %#"
+  " each level of test indents the test output 4 spaces. Capturing groups
+  " (e.g. \(\)) cannot be used in an errorformat, but non-capturing groups can
+  " (e.g. \%(\)).
+  let indent = '%\\%(    %\\)%#'
 
   " match compiler errors
   let format = "%f:%l:%c: %m"
@@ -289,8 +292,8 @@ function! s:errorformat() abort
   "
   " e.g.:
   "   '--- FAIL: TestSomething (0.00s)'
-  if get(g:, 'go_test_show_name', 0)
-    let format .= ",%+G" . indent . "--- FAIL: %.%#"
+  if show_name
+    let format .= ",%G" . indent . "--- FAIL: %m (%.%#)"
   else
     let format .= ",%-G" . indent . "--- FAIL: %.%#"
   endif
