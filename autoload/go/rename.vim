@@ -65,7 +65,7 @@ function! go#rename#Rename(bang, ...) abort
   endif
 
   let command = join(cmd, " ")
-  let out = go#tool#ExecuteInDir(command)
+  let out = go#tool#Execute(command)
 
   let splitted = split(out, '\n')
   call s:parse_errors(go#util#ShellError(), a:bang, splitted)
