@@ -64,7 +64,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
   " Include only messages for the active buffer for autosave.
   if a:autosave
-    let cmd += [printf('--include=%s.*$', @%)]
+    let cmd += [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
   endif
 
   " gometalinter has a default deadline of 5 seconds.
