@@ -38,7 +38,7 @@ function! go#rename#Rename(bang, ...) abort
     return
   endif
 
-  let fname = expand('%:p')
+  let fname = expand('%:t')
   let pos = go#util#OffsetCursor()
   let offset = printf('%s:#%d', fname, pos)
 
