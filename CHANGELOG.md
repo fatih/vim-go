@@ -1,5 +1,10 @@
 ## unplanned
 
+IMPROVEMENTS:
+
+* Add descriptions to neosnippet abbrevations
+  [[GH-1639]](https://github.com/fatih/vim-go/pull/1639)
+
 BUG FIXES:
 
 * Create quickfix list correctly when tests timeout.
