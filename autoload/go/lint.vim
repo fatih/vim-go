@@ -24,9 +24,9 @@ endif
 
 function! go#lint#Gometa(autosave, ...) abort
   if a:0 == 0
-    let goargs = shellescape(expand('%:p:h'))
+    let goargs = [expand('%:p:h')]
   else
-    let goargs = go#util#Shelljoin(a:000)
+    let goargs = a:000
   endif
 
   let bin_path = go#path#CheckBinPath("gometalinter")
@@ -54,12 +54,14 @@ function! go#lint#Gometa(autosave, ...) abort
     " test files. One example of a linter that will not run against tests if
     " we do not specify this flag is errcheck.
     let cmd += ["--tests"]
-
-    " path
-    let cmd += [expand('%:p:h')]
   else
     " the user wants something else, let us use it.
     let cmd += split(g:go_metalinter_command, " ")
+  endif
+
+  " Include only messages for the active buffer for autosave.
+  if a:autosave
+    let cmd += [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
   endif
 
   " gometalinter has a default deadline of 5 seconds.
@@ -78,26 +80,21 @@ function! go#lint#Gometa(autosave, ...) abort
       let cmd += ["--deadline=" . deadline]
     endif
 
+    let cmd += goargs
+
     call s:lint_job({'cmd': cmd})
     return
   endif
 
   " We're calling gometalinter synchronously.
-
   let cmd += ["--deadline=" . get(g:, 'go_metalinter_deadline', "5s")]
 
-  if a:autosave
-    " include only messages for the active buffer
-    let cmd += ["--include='^" . expand('%:p') . ".*$'"]
-  endif
+  let cmd += goargs
 
-
-  let meta_command = join(cmd, " ")
-
-  let out = go#util#System(meta_command)
+  let [l:out, l:err] = go#util#Exec(cmd)
 
   let l:listtype = go#list#Type("GoMetaLinter")
-  if go#util#ShellError() == 0
+  if l:err == 0
     redraw | echo
     call go#list#Clean(l:listtype)
     call go#list#Window(l:listtype)

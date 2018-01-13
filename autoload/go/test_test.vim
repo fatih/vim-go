@@ -12,7 +12,6 @@ func! Test_GoTest() abort
         \ {'lnum': 42, 'bufnr': 2, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'panic: worst ever [recovered]'}
       \ ]
   call s:test('play/play_test.go', expected)
-
 endfunc
 
 func! Test_GoTestConcurrentPanic()
@@ -43,7 +42,6 @@ func! Test_GoTestCompilerError() abort
   let expected = [
         \ {'lnum': 6, 'bufnr': 6, 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'syntax error: unexpected newline, expecting comma or )'}
       \ ]
-
   call s:test('compilerror/compilerror_test.go', expected)
 endfunc
 
@@ -80,7 +78,7 @@ func! s:test(file, expected, ...) abort
     " the tests will run for Neovim, too.
     return
   endif
-  let $GOPATH = fnameescape(expand("%:p:h")) . '/test-fixtures/test'
+  let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/test'
   silent exe 'e ' . $GOPATH . '/src/' . a:file
 
   " clear the quickfix lists
@@ -101,31 +99,15 @@ func! s:test(file, expected, ...) abort
     let actual = getqflist()
   endwhile
 
-  call assert_equal(len(a:expected), len(actual), "number of errors")
-  if len(a:expected) != len(actual)
-    return
-  endif
+  for item in actual
+    let item.text = s:normalize_durations(item.text)
+  endfor
 
-  let i = 0
-  while i < len(a:expected)
-    let expected_item = a:expected[i]
-    let actual_item = actual[i]
-    let i += 1
+  for item in a:expected
+    let item.text = s:normalize_durations(item.text)
+  endfor
 
-    call assert_equal(expected_item.bufnr, actual_item.bufnr, "bufnr")
-    call assert_equal(expected_item.lnum, actual_item.lnum, "lnum")
-    call assert_equal(expected_item.col, actual_item.col, "col")
-    call assert_equal(expected_item.vcol, actual_item.vcol, "vcol")
-    call assert_equal(expected_item.nr, actual_item.nr, "nr")
-    call assert_equal(expected_item.pattern, actual_item.pattern, "pattern")
-
-    let expected_text = s:normalize_durations(expected_item.text)
-    let actual_text = s:normalize_durations(actual_item.text)
-
-    call assert_equal(expected_text, actual_text, "text")
-    call assert_equal(expected_item.type, actual_item.type, "type")
-    call assert_equal(expected_item.valid, actual_item.valid, "valid")
-  endwhile
+  call gotest#assert_quickfix(actual, a:expected)
 endfunc
 
 func! s:normalize_durations(str) abort
