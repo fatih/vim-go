@@ -2,7 +2,7 @@
 
 IMPROVEMENTS:
 
-* Add descriptions to neosnippet abbrevations
+* Add descriptions to neosnippet abbrevations.
   [[GH-1639]](https://github.com/fatih/vim-go/pull/1639)
 
 BUG FIXES:
@@ -16,6 +16,11 @@ BUG FIXES:
   [[GH-1629]](https://github.com/fatih/vim-go/pull/1629)
 * Highlight format specifiers with an index (e.g. `%[2]d`).
   [[GH-1634]](https://github.com/fatih/vim-go/pull/1634)
+* Respect `g:go_test_show_name` change for `:GoTest` when it changes during a
+  Vim session.
+  [[GH-1641]](https://github.com/fatih/vim-go/pull/1641)
+* Show `g:go_test_show_name` value for `:GoTest` failures if it's available.
+  [[GH-1641]](https://github.com/fatih/vim-go/pull/1641)
 
 ## 1.16 - (December 29, 2017)
 
