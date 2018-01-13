@@ -57,6 +57,19 @@ func! Test_GoTestTimeout() abort
   unlet g:go_test_timeout
 endfunc
 
+func! Test_GoTestShowName() abort
+  let expected = [
+        \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'TestHelloWorld'},
+        \ {'lnum': 6, 'bufnr': 9, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'so long'},
+        \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'TestHelloWorld/sub'},
+        \ {'lnum': 9, 'bufnr': 9, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'thanks for all the fish'},
+      \ ]
+
+  let g:go_test_show_name=1
+  call s:test('showname/showname_test.go', expected)
+  let g:go_test_show_name=0
+endfunc
+
 func! s:test(file, expected, ...) abort
   if has('nvim')
     " nvim mostly shows test errors correctly, but the the expected errors are
@@ -86,17 +99,6 @@ func! s:test(file, expected, ...) abort
   while len(actual) == 0 && reltimefloat(reltime(start)) < 10
     sleep 100m
     let actual = getqflist()
-  endwhile
-
-  " for some reason, when run headless, the quickfix lists includes a line
-  " that should have been filtered out; remove it manually. The line is not
-  " present when run manually.
-  let i = 0
-  while i < len(actual)
-    if actual[i].text =~# '^=== RUN   .*'
-      call remove(actual, i)
-    endif
-    let i += 1
   endwhile
 
   call assert_equal(len(a:expected), len(actual), "number of errors")
