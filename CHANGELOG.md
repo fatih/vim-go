@@ -46,7 +46,7 @@ BACKWARDS INCOMPATIBILITIES:
     method calls, not anymore)
   * `go_highlight_function_calls`: This higlights now all all function and
     method calls.
-  [[GH-1640]](https://github.com/fatih/vim-go/pull/1640)
+  [[GH-1557]](https://github.com/fatih/vim-go/pull/1557)
 
 ## 1.16 - (December 29, 2017)
 
