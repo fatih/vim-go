@@ -31,6 +31,23 @@ BUG FIXES:
   given to :GoMetaLinter.
   [[GH-1640]](https://github.com/fatih/vim-go/pull/1640)
 
+BACKWARDS INCOMPATIBILITIES:
+
+* Highlighting function and method declarations/calls is fixed. To fix it we
+  had to remove the meaning of the previous settings. The following setting is
+  removed:
+
+  * `go_highlight_methods`
+
+  in favor of the following settings and changes: 
+
+  * `go_highlight_functions`: This highlights now all function and method
+    declarations (whereas previously it would also highlight function and
+    method calls, not anymore)
+  * `go_highlight_function_calls`: This higlights now all all function and
+    method calls.
+  [[GH-1640]](https://github.com/fatih/vim-go/pull/1640)
+
 ## 1.16 - (December 29, 2017)
 
 FEATURES:
