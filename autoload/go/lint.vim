@@ -10,8 +10,8 @@ if !exists("g:go_metalinter_enabled")
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 endif
 
-if !exists("g:go_metalinter_excludes")
-  let g:go_metalinter_excludes = []
+if !exists("g:go_metalinter_disabled")
+  let g:go_metalinter_disabled = []
 endif
 
 if !exists("g:go_golint_bin")
@@ -44,8 +44,8 @@ function! go#lint#Gometa(autosave, ...) abort
       let cmd += ["--enable=".linter]
     endfor
 
-    for exclude in g:go_metalinter_excludes
-      let cmd += ["--exclude=".exclude]
+    for linter in g:go_metalinter_disabled
+      let cmd += ["--disable=".linter]
     endfor
 
     " gometalinter has a --tests flag to tell its linters whether to run
