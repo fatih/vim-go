@@ -1384,17 +1384,17 @@ default it's using `vet` and `golint`.
 <
                                                    *'g:go_metalinter_enabled'*
 
-Specifies the currently enabled linters for the |:GoMetaLinter| command. By
-default it's using `vet`, `golint` and `errcheck`.
+Specifies the linters to enable for the |:GoMetaLinter| command. By default
+it's using `vet`, `golint` and `errcheck`.
 >
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
-                                                  *'g:go_metalinter_excludes'*
+                                                  *'g:go_metalinter_disabled'*
 
-Specifies the linters to be excluded from the |:GoMetaLinter| command. By
-default it's empty
+Specifies the linters to disable for the |:GoMetaLinter| command. By default
+it's empty
 >
-  let g:go_metalinter_excludes = []
+  let g:go_metalinter_disabled = []
 <
                                                    *'g:go_metalinter_command'*
 
