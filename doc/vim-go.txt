@@ -1437,9 +1437,9 @@ Specifies the type of list to use for command outputs (such as errors from
 builds, results from static analysis commands, etc...). When an expected key
 is not present in the dictionary, |'g:go_list_type'| will be used instead.
 Supported keys are "GoBuild", "GoErrCheck", "GoFmt", "GoInstall", "GoLint",
-"GoMetaLinter", "GoModifyTags" (used for both :GoAddTags and :GoRemoveTags),
-"GoRename", "GoRun", and "GoTest".  Supported values for each command are
-"quickfix" and "locationlist".
+"GoMetaLinter", "GoMetaLinterAutoSave", "GoModifyTags" (used for both
+:GoAddTags and :GoRemoveTags), "GoRename", "GoRun", and "GoTest".  Supported
+values for each command are "quickfix" and "locationlist".
 >
   let g:go_list_type_commands = {}
 <

@@ -82,7 +82,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
     let cmd += goargs
 
-    call s:lint_job({'cmd': cmd})
+    call s:lint_job({'cmd': cmd}, a:autosave)
     return
   endif
 
@@ -93,7 +93,12 @@ function! go#lint#Gometa(autosave, ...) abort
 
   let [l:out, l:err] = go#util#Exec(cmd)
 
-  let l:listtype = go#list#Type("GoMetaLinter")
+  if a:autosave
+    let l:listtype = go#list#Type("GoMetaLinterAutoSave")
+  else
+    let l:listtype = go#list#Type("GoMetaLinter")
+  endif
+
   if l:err == 0
     redraw | echo
     call go#list#Clean(l:listtype)
@@ -237,7 +242,7 @@ function! go#lint#ToggleMetaLinterAutoSave() abort
   call go#util#EchoProgress("auto metalinter enabled")
 endfunction
 
-function s:lint_job(args)
+function! s:lint_job(args, autosave)
   let status_dir = expand('%:p:h')
   let started_at = reltime()
 
@@ -250,7 +255,12 @@ function s:lint_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let l:listtype = go#list#Type("GoMetaLinter")
+  if a:autosave
+    let l:listtype = go#list#Type("GoMetaLinterAutoSave")
+  else
+    let l:listtype = go#list#Type("GoMetaLinter")
+  endif
+
   let l:errformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
 
   function! s:callback(chan, msg) closure
