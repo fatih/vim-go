@@ -59,8 +59,12 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += split(g:go_metalinter_command, " ")
   endif
 
-  " Include only messages for the active buffer for autosave.
   if a:autosave
+    " redraw so that any messages that were displayed while writing the file
+    " will be cleared
+    redraw
+
+    " Include only messages for the active buffer for autosave.
     let cmd += [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
   endif
 
@@ -95,7 +99,6 @@ function! go#lint#Gometa(autosave, ...) abort
 
   let l:listtype = go#list#Type("GoMetaLinter")
   if l:err == 0
-    redraw | echo
     call go#list#Clean(l:listtype)
     call go#list#Window(l:listtype)
     echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
