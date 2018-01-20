@@ -1,7 +1,56 @@
-" Spawn returns callbacks to be used with job_start.  It's abstracted to be
-" used with various go command, such as build, test, install, etc.. This avoid
-" us to write the same callback over and over for some commands. It's fully
-" customizable so each command can change it to it's own logic.
+" Spawn returns callbacks to be used with job_start. It is abstracted to be
+" used with various go commands, such as build, test, install, etc.. This
+" allows us to avoid writing the same callback over and over for some
+" commands. It's fully customizable so each command can change it to it's own
+" logic.
+"
+" args is a dictionary with the these keys:
+"   'cmd':
+"     The value to pass to job_start().
+"   'bang':
+"     Set to 0 to jump to the first error in the error list.
+"     Defaults to 0.
+"   'for':
+"     The g:go_list_type_command key to use to get the error list type to use.
+"     Defaults to '_job'
+"   'exit_cb':
+"     A function to call when the job exits. See job-exit_cb.
+"   'custom_cb':
+"     A function to call from the default exit_cb after the job exits. The
+"     function will be passed three arguments: the job, its exit code, and the
+"     list of messages received from the channel.
+"   'error_info_cb':
+"     A function to call from the default exit_cb after the job exits. The
+"     function will be passed three arguments: the job, its exit code, and the
+"     list of messages received from the channel.
+"   'callback':
+"     A function to call when there is a message to read from the job's
+"     channel. The function will be passed two arguments: the channel and a
+"     message. See job-callback.
+"
+" The return value is an object with these keys:
+"   'callback':
+"     A function suitable to be passed as a job callback handler. See
+"     job-callback.
+"   'exit_cb':
+"     A function suitable to be passed as a job exit_cb handler. See
+"     job-exit_cb.
+"   'winnr':
+"     The number of the current window.
+"   'dir':
+"     The current working directory.
+"   'jobdir':
+"     The directory of the current buffer.fnameescape(expand("%:p:h")),
+"   'messages':
+"     The list of messages received from the channel and filtered by args.
+"   'args':
+"     A dictionary with a single key, 'cmd', whose value is the a:args.cmd,
+"   'bang':
+"     Set to 0 when the first error will be jumped to after reading and
+"     processing all messages from the channel.
+"   'for':
+"     The g:go_list_type_command key to use to get the error list type to use.
+
 function go#job#Spawn(args)
   let cbs = {
         \ 'winnr': winnr(),
