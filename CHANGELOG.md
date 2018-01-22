@@ -32,6 +32,9 @@ BUG FIXES:
   [[GH-1640]](https://github.com/fatih/vim-go/pull/1640)
 * Do not run disabled linters with `gometalinter`.
   [[GH-1648]](https://github.com/fatih/vim-go/pull/1648)
+* Do not prompt user to press enter after when gometalinter is called in
+  autosave mode
+  [[GH-1654]](https://github.com/fatih/vim-go/pull/1654)
 
 BACKWARDS INCOMPATIBILITIES:
 
