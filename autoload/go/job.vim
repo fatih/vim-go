@@ -13,28 +13,27 @@
 "   'for':
 "     The g:go_list_type_command key to use to get the error list type to use.
 "     Defaults to '_job'
-"   'exit_cb':
-"     A function to call when the job exits. See job-exit_cb.
-"   'custom_cb':
-"     A function to call from the default exit_cb after the job exits. The
+"   'complete':
+"     A function to call after the job exits and the channel is closed. The
 "     function will be passed three arguments: the job, its exit code, and the
-"     list of messages received from the channel.
-"   'error_info_cb':
-"     A function to call from the default exit_cb after the job exits. The
-"     function will be passed three arguments: the job, its exit code, and the
-"     list of messages received from the channel.
+"     list of messages received from the channel. The default value will
+"     process the messages and manage the error list after the job exits and
+"     the channel is closed.
 "   'callback':
 "     A function to call when there is a message to read from the job's
 "     channel. The function will be passed two arguments: the channel and a
 "     message. See job-callback.
-"
-" The return value is an object with these keys:
+
+" The return value is a dictionary with these keys:
 "   'callback':
 "     A function suitable to be passed as a job callback handler. See
 "     job-callback.
 "   'exit_cb':
 "     A function suitable to be passed as a job exit_cb handler. See
 "     job-exit_cb.
+"   'close_cb':
+"     A function suitable to be passed as a job close_cb handler. See
+"     job-close_cb.
 "   'winnr':
 "     The number of the current window.
 "   'dir':
@@ -50,6 +49,10 @@
 "     processing all messages from the channel.
 "   'for':
 "     The g:go_list_type_command key to use to get the error list type to use.
+"   'complete':
+"     A function that will be called after the job exits and the channel is
+"     closed. It will process all the read messages and manage the error list
+"     and window.
 
 function go#job#Spawn(args)
   let cbs = {
@@ -70,24 +73,22 @@ function go#job#Spawn(args)
     let cbs.for = a:args.for
   endif
 
-  " add final callback to be called if async job is finished
-  " The signature should be in form: func(job, exit_status, messages)
-  if has_key(a:args, 'custom_cb')
-    let cbs.custom_cb = a:args.custom_cb
-  endif
-
-  if has_key(a:args, 'error_info_cb')
-    let cbs.error_info_cb = a:args.error_info_cb
-  endif
+  let l:exited = 0
+  let l:exit_status = 0
+  let l:closed = 0
 
   function cbs.callback(chan, msg) dict
     call add(self.messages, a:msg)
   endfunction
 
-  function cbs.exit_cb(job, exitval) dict
-    if has_key(self, 'error_info_cb')
-      call self.error_info_cb(a:job, a:exitval, self.messages)
-    endif
+  " override callback handler if user provided it
+  if has_key(a:args, 'callback')
+    let cbs.callback = a:args.callback
+  endif
+
+  function cbs.exit_cb(job, exitval) dict closure
+    let exit_status = a:exitval
+    let exited = 1
 
     if get(g:, 'go_echo_command_info', 1)
       if a:exitval == 0
@@ -97,21 +98,40 @@ function go#job#Spawn(args)
       endif
     endif
 
-    if has_key(self, 'custom_cb')
-      call self.custom_cb(a:job, a:exitval, self.messages)
+    if closed
+      if has_key(self, 'complete')
+        call self.complete(a:job, l:exit_status, self.messages)
+      endif
+      call self.show_errors(a:job, exit_status, self.messages)
     endif
+  endfunction
 
+  function cbs.close_cb(ch) dict closure
+    let closed = 1
+
+    if exited
+      if has_key(self, 'complete')
+        call self.complete(a:job, l:exit_status, self.messages)
+      endif
+      call self.show_errors(ch_getjob(a:ch), exit_status, self.messages)
+    endif
+  endfunction
+
+  function cbs.show_errors(job, exit_status, data) dict closure
     let l:listtype = go#list#Type(self.for)
-    if a:exitval == 0
+    if a:exit_status == 0
       call go#list#Clean(l:listtype)
       call go#list#Window(l:listtype)
       return
     endif
 
-    call self.show_errors(l:listtype)
-  endfunction
+    let l:listtype = go#list#Type(self.for)
+    if len(self.messages) == 0
+      call go#list#Clean(l:listtype)
+      call go#list#Window(l:listtype)
+      return
+    endif
 
-  function cbs.show_errors(listtype) dict
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     try
       execute cd self.jobdir
@@ -121,31 +141,40 @@ function go#job#Spawn(args)
       execute cd . fnameescape(self.dir)
     endtry
 
-    if !len(errors)
+    if empty(errors)
       " failed to parse errors, output the original content
       call go#util#EchoError(self.messages + [self.dir])
       return
     endif
 
     if self.winnr == winnr()
-      call go#list#Populate(a:listtype, errors, join(self.args))
-      call go#list#Window(a:listtype, len(errors))
-      if !empty(errors) && !self.bang
-        call go#list#JumpToFirst(a:listtype)
+      call go#list#Populate(l:listtype, errors, join(self.args))
+      call go#list#Window(l:listtype, len(errors))
+      if !self.bang
+        call go#list#JumpToFirst(l:listtype)
       endif
     endif
   endfunction
 
   " override callback handler if user provided it
-  if has_key(a:args, 'callback')
-    let cbs.callback = a:args.callback
+  if has_key(a:args, 'complete')
+    let cbs.complete = a:args.complete
+  endif
+
+  " override close_cb callback handler if user provided it
+  if has_key(a:args, 'close_cb')
+    " TODO(bc): wrap a.args.close_cb to make sure closed gets set.
+    let cbs.close_cb = a:args.close_cb
   endif
 
   " override exit callback handler if user provided it
   if has_key(a:args, 'exit_cb')
+    " TODO(bc): wrap a.args.exit_cb to make sure exited and exit_status gets
+    " set.
     let cbs.exit_cb = a:args.exit_cb
   endif
 
   return cbs
 endfunction
+
 " vim: sw=2 ts=2 et
