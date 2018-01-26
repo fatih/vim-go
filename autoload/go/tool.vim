@@ -161,6 +161,11 @@ function! go#tool#FilterValids(items) abort
   return filtered
 endfunction
 
+
+function! go#tool#Execute(cmd) abort
+  return go#util#System(a:cmd)
+endfunction
+
 function! go#tool#ExecuteInDir(cmd) abort
   " Verify that the directory actually exists. If the directory does not
   " exist, then assume that the a:cmd should not be executed. Callers expect
