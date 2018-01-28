@@ -18,6 +18,7 @@ func TestTopSubHelper(t *testing.T) {
 
 func TestMultiline(t *testing.T) {
 	t.Error("this is an error\nand a second line, too")
+	t.Error("\nthis is another error")
 }
 
 func TestSub(t *testing.T) {

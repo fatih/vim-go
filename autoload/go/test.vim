@@ -324,6 +324,12 @@ function! s:errorformat() abort
   " message. e.g.:
   "   '\ttime_test.go:30: Likely problem: the time zone files have not been installed.'
   let format .= ",%A" . indent . "%\\t%\\+%f:%l: %m"
+  " also match lines that don't have a message (i.e. the message begins with a
+  " newline or is the empty string):
+  " e.g.:
+  "     t.Errorf("\ngot %v; want %v", actual, expected)
+  "     t.Error("")
+  let format .= ",%A" . indent . "%\\t%\\+%f:%l: "
 
   " Match the 2nd and later lines of multi-line output. These lines are
   " indented the number of spaces for the level of nesting of the test,
