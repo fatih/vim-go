@@ -157,12 +157,19 @@ function! s:test_job(args) abort
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
+  let l:exited = 0
+  let l:closed = 0
+  let l:exitval = 0
   let messages = []
+
   function! s:callback(chan, msg) closure
     call add(messages, a:msg)
   endfunction
 
   function! s:exit_cb(job, exitval) closure
+    let exited = 1
+    let exitval = a:exitval
+
     let status = {
           \ 'desc': 'last status',
           \ 'type': "test",
@@ -196,21 +203,23 @@ function! s:test_job(args) abort
 
     call go#statusline#Update(status_dir, status)
 
-    let l:listtype = go#list#Type("GoTest")
-    if a:exitval == 0
-      call go#list#Clean(l:listtype)
-      call go#list#Window(l:listtype)
-      return
+    if closed
+      call s:show_errors(a:args, l:exitval, messages)
     endif
+  endfunction
 
-  " TODO(bc): When messages is JSON, the JSON should be run through a
-  " filter to produce lines that are more easily described by errorformat.
-    call s:show_errors(a:args, a:exitval, messages)
+  function! s:close_cb(ch) closure
+    let closed = 1
+
+    if exited
+      call s:show_errors(a:args, l:exitval, messages)
+    endif
   endfunction
 
   let start_options = {
         \ 'callback': funcref("s:callback"),
         \ 'exit_cb': funcref("s:exit_cb"),
+        \ 'close_cb': funcref("s:close_cb"),
         \ }
 
   " pre start
@@ -229,6 +238,16 @@ endfunction
 " a quickfix compatible list of errors. It's intended to be used only for go
 " test output.
 function! s:show_errors(args, exit_val, messages) abort
+    let l:listtype = go#list#Type("GoTest")
+    if a:exit_val == 0
+      call go#list#Clean(l:listtype)
+      call go#list#Window(l:listtype)
+      return
+    endif
+
+  " TODO(bc): When messages is JSON, the JSON should be run through a
+  " filter to produce lines that are more easily described by errorformat.
+
   let l:listtype = go#list#Type("GoTest")
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
