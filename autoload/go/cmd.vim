@@ -1,5 +1,5 @@
 function! go#cmd#autowrite() abort
-  if &autowrite == 1
+  if &autowrite == 1 || &autowriteall == 1
     silent! wall
   endif
 endfunction
