@@ -74,8 +74,10 @@ func! Test_GometaAutoSave() abort
         \ {'lnum': 5, 'bufnr': 2, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported (golint)'}
       \ ]
 
-  " clear the quickfix lists
-  call setqflist([], 'r')
+  let winnr = winnr()
+
+  " clear the location lists
+  call setloclist(l:winnr, [], 'r')
 
   " call go#lint#ToggleMetaLinterAutoSave from lint.vim so that the file will
   " be autoloaded and the default for g:go_metalinter_autosave_enabled will be
@@ -89,11 +91,11 @@ func! Test_GometaAutoSave() abort
 
   call go#lint#Gometa(1)
 
-  let actual = getqflist()
+  let actual = getloclist(l:winnr)
   let start = reltime()
   while len(actual) == 0 && reltimefloat(reltime(start)) < 10
     sleep 100m
-    let actual = getqflist()
+    let actual = getloclist(l:winnr)
   endwhile
 
   call gotest#assert_quickfix(actual, expected)
