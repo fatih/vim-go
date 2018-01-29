@@ -4,6 +4,10 @@ IMPROVEMENTS:
 
 * Add descriptions to neosnippet abbrevations.
   [[GH-1639]](https://github.com/fatih/vim-go/pull/1639)
+* Show messages in the location list instead of the quickfix list when
+  `gometalinter` is run automatically when saving a buffer. Whether the
+  location list or quickfix list is used can be customized in the usual ways.
+  [[GH-1652]](https://github.com/fatih/vim-go/pull/1652)
 
 BUG FIXES:
 
@@ -32,9 +36,18 @@ BUG FIXES:
   [[GH-1640]](https://github.com/fatih/vim-go/pull/1640)
 * Do not run disabled linters with `gometalinter`.
   [[GH-1648]](https://github.com/fatih/vim-go/pull/1648)
-* Do not prompt user to press enter after when gometalinter is called in
-  autosave mode
+* Do not prompt user to press enter after when `gometalinter` is called in
+  autosave mode.
   [[GH-1654]](https://github.com/fatih/vim-go/pull/1654)
+* Fix potential race conditions when using vim8 jobs.
+  [[GH-1656]](https://github.com/fatih/vim-go/pull/1656)
+* Treat `'autowriteall'` the same as `'autowrite'` when determining whether to
+  write a buffer before calling some commands.
+  [[GH-1653]](https://github.com/fatih/vim-go/pull/1653)
+* Show the file location of test errors when the message is empty or begins
+  with a newline.
+  [[GH-1664]](https://github.com/fatih/vim-go/pull/1664)
+
 
 BACKWARDS INCOMPATIBILITIES:
 
