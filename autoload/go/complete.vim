@@ -6,12 +6,12 @@ function! s:gocodeCurrentBuffer() abort
   return file
 endfunction
 
-function! s:gocodeCommand(cmd, preargs, args) abort
+function! s:gocodeCommand(cmd, options, args) abort
   for i in range(0, len(a:args) - 1)
     let a:args[i] = go#util#Shellescape(a:args[i])
   endfor
-  for i in range(0, len(a:preargs) - 1)
-    let a:preargs[i] = go#util#Shellescape(a:preargs[i])
+  for i in range(0, len(a:options) - 1)
+    let a:options[i] = go#util#Shellescape(a:options[i])
   endfor
 
   let bin_path = go#path#CheckBinPath("gocode")
@@ -29,7 +29,7 @@ function! s:gocodeCommand(cmd, preargs, args) abort
     let cmd = printf('%s -sock %s %s %s %s',
           \ go#util#Shellescape(bin_path),
           \ socket_type,
-          \ join(a:preargs),
+          \ join(a:options),
           \ go#util#Shellescape(a:cmd),
           \ join(a:args)
           \ )
