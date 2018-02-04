@@ -1266,6 +1266,21 @@ Use this option to define the command to be used for |:GoDef|. By default
 
   let g:go_def_mode = 'guru'
 <
+                                                         *'g:go_def_prefetch'*
+
+Use this option to enable continuous auto prefetching of |:GoDef| destination
+when the cursor is on rest. This is done in background and doesn't block the
+UI. If there is any prefetch candidate and the jump is executed via |:GoDef|
+or |gd|, the jump will happen instantaneously. This makes jumping *feel* even
+more faster as there is always couple of seconds hesitation before we jump to
+the destination.
+
+This is an experimental feature and is very power hungry due the continuous
+computation of the definitions. Only supported if |g:go_def_mode| is set to
+`guru` and Vim 8 is used. By default it's disabled.
+>
+  let g:go_def_prefetch = 0
+<
                                                   *'g:go_def_mapping_enabled'*
 
 Use this option to enable/disable the default mapping of CTRL-],
