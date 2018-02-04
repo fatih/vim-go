@@ -146,18 +146,19 @@ function! s:trim_bracket(val) abort
   return a:val
 endfunction
 
+let s:completions = ""
 function! go#complete#Complete(findstart, base) abort
   "findstart = 1 when we need to get the text length
   if a:findstart == 1
-    execute "silent let g:gocomplete_completions = " . s:gocodeAutocomplete()
-    return col('.') - g:gocomplete_completions[0] - 1
+    execute "silent let s:completions = " . s:gocodeAutocomplete()
+    return col('.') - s:completions[0] - 1
     "findstart = 0 when we need to return the list of completions
   else
     let s = getline(".")[col('.') - 1]
     if s =~ '[(){}\{\}]'
-      return map(copy(g:gocomplete_completions[1]), 's:trim_bracket(v:val)')
+      return map(copy(s:completions[1]), 's:trim_bracket(v:val)')
     endif
-    return g:gocomplete_completions[1]
+    return s:completions[1]
   endif
 endf
 
