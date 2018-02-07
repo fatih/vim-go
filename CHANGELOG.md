@@ -8,6 +8,8 @@ IMPROVEMENTS:
   `gometalinter` is run automatically when saving a buffer. Whether the
   location list or quickfix list is used can be customized in the usual ways.
   [[GH-1652]](https://github.com/fatih/vim-go/pull/1652)
+* Redraw the screen before executing blocking calls to gocode.
+  [[GH-1671]](https://github.com/fatih/vim-go/pull/1671)
 
 BUG FIXES:
 
