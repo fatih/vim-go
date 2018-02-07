@@ -34,6 +34,10 @@ function! s:gocodeCommand(cmd, preargs, args) abort
           \ join(a:args)
           \ )
 
+    " gocode can sometimes be slow, so redraw now to avoid waiting for gocode
+    " to return before redrawing automatically.
+    redraw
+
     let result = go#util#System(cmd)
   finally
     let $GOROOT = old_goroot
