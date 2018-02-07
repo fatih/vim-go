@@ -212,6 +212,22 @@ function! s:auto_sameids()
   endif
 endfunction
 
+function! s:auto_definition_prefetch()
+  if !get(g:, "go_def_prefetch", 0)
+    return
+  endif
+
+  if !go#util#has_job() || get(g:, 'go_def_mode', "") != 'guru'
+    " disable auto_definition so we don't spam the users statusline with the
+    " same message over and over again
+    let g:go_def_prefetch = 0
+    echohl Error | echomsg "g:go_def_prefetch requires at least Vim 8.0.0087 and g:go_def_mode set to 'guru'" | echohl None
+    return
+  endif
+
+  call go#def#Compute('', 0)
+endfunction
+
 function! s:fmt_autosave()
   " Go code formatting on save
   if get(g:, "go_fmt_autosave", 1)
@@ -245,6 +261,7 @@ augroup vim-go
 
   autocmd CursorHold *.go call s:auto_type_info()
   autocmd CursorHold *.go call s:auto_sameids()
+  autocmd CursorHold *.go call s:auto_definition_prefetch()
 
   " Echo the identifier information when completion is done. Useful to see
   " the signature of a function, etc...

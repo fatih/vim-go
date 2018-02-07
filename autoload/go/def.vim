@@ -1,7 +1,10 @@
 let s:go_stack = []
 let s:go_stack_level = 0
 
-function! go#def#Jump(mode) abort
+let s:last_res = {}
+let s:last_job = test_null_job()
+
+function! go#def#Compute(mode, jump) abort
   let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
 
   " so guru right now is slow for some people. previously we were using
@@ -19,7 +22,7 @@ function! go#def#Jump(mode) abort
 
     let bin_path = go#path#CheckBinPath("godef")
     if empty(bin_path)
-      return
+      return {'err': "godef path not found"}
     endif
     let command = printf("%s -f=%s -o=%s -t", go#util#Shellescape(bin_path),
       \ go#util#Shellescape(fname), go#util#OffsetCursor())
@@ -30,7 +33,7 @@ function! go#def#Jump(mode) abort
   elseif bin_name == 'guru'
     let bin_path = go#path#CheckBinPath("guru")
     if empty(bin_path)
-      return
+      return {'err': "guru not found"}
     endif
 
     let cmd = [bin_path]
@@ -51,19 +54,22 @@ function! go#def#Jump(mode) abort
     call extend(cmd, ["definition", fname])
 
     if go#util#has_job()
-      let l:spawn_args = {
-            \ 'cmd': cmd,
-            \ 'complete': function('s:jump_to_declaration_cb', [a:mode, bin_name]),
-            \ }
+      let l:spawn_args = {'cmd': cmd}
+      let l:spawn_args.complete = function('s:store_result_cb', [a:mode, bin_name])
+      if a:jump
+        let l:spawn_args.complete = function('s:jump_to_declaration_cb', [a:mode, bin_name])
+      endif
 
       if &modified
         let l:spawn_args.input = stdin_content
       endif
 
-      call go#util#EchoProgress("searching declaration ...")
+      if get(g:, 'go_echo_command_info', 1)
+        call go#util#EchoProgress("searching declaration ...")
+      endif
 
-      call s:def_job(spawn_args)
-      return
+      let s:last_job = s:def_job(spawn_args)
+      return {'is_job': 1}
     endif
 
     let command = join(cmd, " ")
@@ -73,16 +79,53 @@ function! go#def#Jump(mode) abort
       let out = go#util#System(command)
     endif
   else
-    call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, guru]')
-    return
+    return {'err': printf("go_def_mode value: %s is not valid. Valid values are: [godef, guru]", bin_name)}
   endif
 
   if go#util#ShellError() != 0
-    call go#util#EchoError(out)
+    return {'err': out}
+  endif
+
+  return {"out": out, "bin_name": bin_name}
+endfunction
+
+
+function! go#def#Jump(mode) abort
+  " if there is a job running that was already triggered by the auto
+  " definition event, cancel it and re-trigger the computation from start
+  " below. This is so we avoid race conditions between a manual trigger and
+  " auto trigger. Later we can improve it even further by intercepting
+  " `store_result_cb` to not store the result and instead to jump directly if
+  " we try to jump in midflight. This needs more work imho.
+  if !empty(s:last_job) && job_status(s:last_job) == "run"
+    call job_stop(s:last_job) 
+
+    " clear any old cache entries
+    let s:last_res = {}
+    let s:last_job = test_null_job()
+  endif
+
+  " use the pre-fetched result, if there is any.
+  let result = s:last_res
+  if !empty(s:last_res)
+    call go#def#jump_to_declaration(result.out, a:mode, result.bin_name)
     return
   endif
 
-  call go#def#jump_to_declaration(out, a:mode, bin_name)
+  let result = go#def#Compute(a:mode, 1)
+  if has_key(result, 'err')
+    call go#util#EchoError(result.err)
+    return -1
+  endif
+
+  " this is the case if auto trigger was cancelled above or if there is no
+  " auto definition enabled at all. In both cases we're going to jump through
+  " the jump callback
+  if has_key(result, 'is_job')
+    return 0
+  endif
+
+  call go#def#jump_to_declaration(result.out, a:mode, result.bin_name)
 endfunction
 
 function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data) abort
@@ -92,6 +135,14 @@ function! s:jump_to_declaration_cb(mode, bin_name, job, exit_status, data) abort
 
   call go#def#jump_to_declaration(a:data[0], a:mode, a:bin_name)
   call go#util#EchoSuccess(fnamemodify(a:data[0], ":t"))
+endfunction
+
+function! s:store_result_cb(mode, bin_name, job, exit_status, data) abort
+  if a:exit_status != 0
+    return
+  endif
+
+  let s:last_res = {'out': a:data[0], 'bin_name': a:bin_name}
 endfunction
 
 function! go#def#jump_to_declaration(out, mode, bin_name) abort
@@ -291,7 +342,7 @@ function! go#def#Stack(...) abort
   endif
 endfunction
 
-function s:def_job(args) abort
+function s:def_job(args)
   let callbacks = go#job#Spawn(a:args)
 
   let start_options = {
@@ -307,7 +358,8 @@ function s:def_job(args) abort
     let l:start_options.in_name = l:tmpname
   endif
 
-  call job_start(a:args.cmd, start_options)
+  let job = job_start(a:args.cmd, start_options)
+  return job
 endfunction
 
 " vim: sw=2 ts=2 et

@@ -123,6 +123,11 @@ function go#job#Spawn(args)
     endtry
 
     if empty(errors)
+      " don't output this error as this is not useful at all
+      if messages[0] == "guru: no identifier here" 
+        return
+      endif
+
       " failed to parse errors, output the original content
       call go#util#EchoError(messages + [dir])
       return
