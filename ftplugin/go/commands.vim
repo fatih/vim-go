@@ -98,4 +98,7 @@ command! -nargs=0 GoKeyify call go#keyify#Keyify()
 " -- fillstruct
 command! -nargs=0 GoFillStruct call go#fillstruct#FillStruct()
 
+" -- expanderr
+command! -nargs=0 GoExpandErr call go#expanderr#ExpandErr()
+
 " vim: sw=2 ts=2 et
