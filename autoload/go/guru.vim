@@ -78,7 +78,7 @@ function! s:guru_cmd(args) range abort
     let scopes = go#util#StripTrailingSlash(scopes)
 
     " create shell-safe entries of the list
-    if !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
+    if !has("nvim") && !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
 
     " guru expect a comma-separated list of patterns, construct it
     let l:scope = join(scopes, ",")
@@ -129,13 +129,40 @@ function! s:sync_guru(args) abort
   endif
 
   if has_key(a:args, 'custom_parse')
-    call a:args.custom_parse(go#util#ShellError(), out)
+    call a:args.custom_parse(go#util#ShellError(), out, a:args.mode)
   else
     call s:parse_guru_output(go#util#ShellError(), out, a:args.mode)
   endif
 
   return out
 endfunc
+
+" use vim or neovim job api as appropriate
+function! s:job_start(cmd, start_options) abort
+  if go#util#has_job()
+    return job_start(a:cmd, a:start_options)
+  endif
+
+  let opts = {'stdout_buffered': v:true, 'stderr_buffered': v:true}
+  function opts.on_stdout(job_id, data, event) closure
+    call a:start_options.callback(a:job_id, join(a:data, "\n"))
+  endfunction
+  function opts.on_stderr(job_id, data, event) closure
+    call a:start_options.callback(a:job_id, join(a:data, "\n"))
+  endfunction
+  function opts.on_exit(job_id, exit_code, event) closure
+    call a:start_options.exit_cb(a:job_id, a:exit_code)
+    call a:start_options.close_cb(a:job_id)
+  endfunction
+
+  " use a shell for input redirection if needed
+  let cmd = a:cmd
+  if has_key(a:start_options, 'in_io') && a:start_options.in_io ==# 'file' && !empty(a:start_options.in_name)
+    let cmd = ['/bin/sh', '-c', join(a:cmd, ' ') . ' <' . a:start_options.in_name]
+  endif
+
+  return jobstart(cmd, opts)
+endfunction
 
 " async_guru runs guru in async mode with the given arguments
 function! s:async_guru(args) abort
@@ -161,12 +188,9 @@ function! s:async_guru(args) abort
         \ 'exitval': 0,
         \ 'closed': 0,
         \ 'exited': 0,
-        \ 'messages': []
+        \ 'messages': [],
+        \ 'parse' : get(a:args, 'custom_parse', funcref("s:parse_guru_output"))
       \ }
-
-  if has_key(a:args, 'custom_parse')
-    let state.custom_parse = a:args.custom_parse
-  endif
 
   function! s:callback(chan, msg) dict
     call add(self.messages, a:msg)
@@ -204,11 +228,7 @@ function! s:async_guru(args) abort
   function state.complete() dict
     let out = join(self.messages, "\n")
 
-    if has_key(self, 'custom_parse')
-      call self.custom_parse(self.exitval, out)
-    else
-      call s:parse_guru_output(self.exitval, out, self.mode)
-    endif
+    call self.parse(self.exitval, out, self.mode)
   endfunction
 
   " explicitly bind the callbacks to state so that self within them always
@@ -232,12 +252,12 @@ function! s:async_guru(args) abort
         \ 'state': "analysing",
         \})
 
-  return job_start(result.cmd, start_options)
+  return s:job_start(result.cmd, start_options)
 endfunc
 
 " run_guru runs the given guru argument
 function! s:run_guru(args) abort
-  if go#util#has_job()
+  if has('nvim') || go#util#has_job()
     let res = s:async_guru(a:args)
   else
     let res = s:sync_guru(a:args)
@@ -298,7 +318,7 @@ function! go#guru#DescribeInfo() abort
     return
   endif
 
-  function! s:info(exit_val, output)
+  function! s:info(exit_val, output, mode)
     if a:exit_val != 0
       return
     endif
@@ -500,7 +520,7 @@ function! go#guru#SameIds() abort
   call s:run_guru(args)
 endfunction
 
-function! s:same_ids_highlight(exit_val, output) abort
+function! s:same_ids_highlight(exit_val, output, mode) abort
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
   if a:output[0] !=# '{'
