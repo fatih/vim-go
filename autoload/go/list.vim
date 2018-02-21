@@ -44,6 +44,7 @@ function! go#list#Window(listtype, ...) abort
   else
     exe 'copen ' . height
   endif
+  wincmd p " the cursor jumped to qf: go back to the active window
 endfunction
 
 
