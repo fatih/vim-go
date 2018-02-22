@@ -122,6 +122,8 @@ function! go#lint#Gometa(autosave, ...) abort
 
     if !a:autosave
       call go#list#JumpToFirst(l:listtype)
+    else
+      wincmd p " the cursor jumped to qf: go back to the active window
     endif
   endif
 endfunction
@@ -248,6 +250,7 @@ endfunction
 function! s:lint_job(args, autosave)
   let status_dir = expand('%:p:h')
   let started_at = reltime()
+  let autosave = a:autosave
 
   call go#statusline#Update(status_dir, {
         \ 'desc': "current status",
@@ -324,6 +327,9 @@ function! s:lint_job(args, autosave)
 
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
+    if autosave
+      wincmd p " the cursor jumped to qf: go back to the active window
+    endif
 
     if get(g:, 'go_echo_command_info', 1)
       call go#util#EchoSuccess("linting finished")
