@@ -91,6 +91,7 @@ function! go#complete#Info(auto) abort
   endif
 endfunction
 
+
 function! s:async_info(auto)
   if exists("s:async_info_job")
     call job_stop(s:async_info_job)
@@ -194,7 +195,7 @@ function! s:async_info(auto)
         \ 'close_cb': funcref("s:close_cb", [], state)
       \ }
 
-  call job_start(cmd, options)
+  let s:async_info_job = job_start(cmd, options)
 endfunction
 
 function! s:gocodeFile()
