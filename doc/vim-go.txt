@@ -47,8 +47,7 @@ tools developed by the Go community to provide a seamless Vim experience.
   * Go to symbol/declaration with |:GoDef|.
   * Look up documentation with |:GoDoc| or |:GoDocBrowser|.
   * Easily import packages via |:GoImport|, remove them via |:GoDrop|.
-  * Automatic `GOPATH` detection which works with `gb` and `godep`. Change or
-    display `GOPATH` with |:GoPath|.
+  * Precise type-safe renaming of identifiers with |:GoRename|.
   * See which code is covered by tests with |:GoCoverage|.
   * Add or remove tags on struct fields with |:GoAddTags| and |:GoRemoveTags|.
   * Call `gometalinter` with |:GoMetaLinter| to invoke all possible linters
@@ -58,7 +57,8 @@ tools developed by the Go community to provide a seamless Vim experience.
     static errors, or make sure errors are checked with |:GoErrCheck|.
   * Advanced source analysis tools utilizing `guru`, such as |:GoImplements|,
     |:GoCallees|, and |:GoReferrers|.
-  * Precise type-safe renaming of identifiers with |:GoRename|.
+  * Automatic `GOPATH` detection which works with `gb` and `godep`. Change or
+    display `GOPATH` with |:GoPath|.
   * Integrated and improved snippets, supporting `ultisnips`, `neosnippet`,
     and `vim-minisnip`.
   * Share your current code to play.golang.org with |:GoPlay|.
@@ -1849,8 +1849,8 @@ features:
 
 This feature requires Vim 8.0.0087 or newer with the |+job| feature. Neovim
 does _not_ work (yet).
-This requires a fairly recent version of the Delve debugger (Nov 28 or newer).
-Use `|:GoUpdateBinaries| to install or update it.
+This requires Delve 1.0.0 or newer, and it is recommended to use Go 1.10 or
+newer, as its new caching will speed up recompiles.
 
                                                               *go-debug-intro*
 GETTING STARTED WITH THE DEBUGGER~
@@ -1872,8 +1872,15 @@ The program will halt on the breakpoint, at which point you can inspect the
 program state. You can go to the next line with |:GoDebugNext| (<F10>) or step
 in with |:GoDebugStep| (<F11>).
 
-Struct values are displayed as `{...}`, array/slices as `[4]`. Use <CR> on the
-variable name to expand the values.
+The variable window in the bottom left (`GODEBUG_VARIABLES`) will display all
+local variables. Struct values are displayed as `{...}`, array/slices as
+`[4]`. Use <CR> on the variable name to expand the values.
+
+The `GODEBUG_OUTPUT` window displays output from the program and the Delve
+debugger.
+
+The `GODEBUG_STACKTRACE` window can be used to jump to different places in the
+call stack.
 
 When you're done use |:GoDebugStop| to close the debugging windows and halt
 the `dlv` process, or |:GoDebugRestart| to recompile the code.
@@ -1882,7 +1889,7 @@ the `dlv` process, or |:GoDebugRestart| to recompile the code.
 DEBUGGER COMMANDS~
 
 Only |:GoDebugStart| and |:GoDebugBreakpoint| are available by default; the
-rest of the commands become available after starting debug mode.
+rest of the commands and mappings become available after starting debug mode.
 
                                                                *:GoDebugStart*
 :GoDebugStart [pkg] [program-args]

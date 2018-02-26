@@ -18,8 +18,7 @@ This plugin adds Go language support for Vim, with the following main features:
 * Go to symbol/declaration with `:GoDef`.
 * Look up documentation with `:GoDoc` or `:GoDocBrowser`.
 * Easily import packages via `:GoImport`, remove them via `:GoDrop`.
-* Automatic `GOPATH` detection which works with `gb` and `godep`. Change or
-  display `GOPATH` with `:GoPath`.
+* Precise type-safe renaming of identifiers with `:GoRename`.
 * See which code is covered by tests with `:GoCoverage`.
 * Add or remove tags on struct fields with `:GoAddTags` and `:GoRemoveTags`.
 * Call `gometalinter` with `:GoMetaLinter` to invoke all possible linters
