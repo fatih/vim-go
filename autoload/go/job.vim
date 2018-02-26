@@ -46,11 +46,11 @@ function go#job#Spawn(args)
       \ }
 
   if has_key(a:args, 'bang')
-    let l:bang = a:args.bang
+    let state.bang = a:args.bang
   endif
 
   if has_key(a:args, 'for')
-    let l:for = a:args.for
+    let state.for = a:args.for
   endif
 
   " do nothing in state.complete by default.
@@ -135,7 +135,7 @@ function go#job#Spawn(args)
     if self.winnr == winnr()
       call go#list#Populate(l:listtype, errors, join(self.args))
       call go#list#Window(l:listtype, len(errors))
-      if !bang
+      if !self.bang
         call go#list#JumpToFirst(l:listtype)
       endif
     endif
