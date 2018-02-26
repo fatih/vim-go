@@ -145,8 +145,6 @@ function! s:async_guru(args) abort
     return
   endif
 
-  let status_dir =  expand('%:p:h')
-  let statusline_type = printf("%s", a:args.mode)
 
   if !has_key(a:args, 'disable_progress')
     if a:args.needs_scope
@@ -155,60 +153,71 @@ function! s:async_guru(args) abort
     endif
   endif
 
-  let messages = []
-  function! s:callback(chan, msg) closure
-    call add(messages, a:msg)
+  let state = {
+        \ 'status_dir': expand('%:p:h'),
+        \ 'statusline_type': printf("%s", a:args.mode),
+        \ 'mode': a:args.mode,
+        \ 'status': {},
+        \ 'exitval': 0,
+        \ 'closed': 0,
+        \ 'exited': 0,
+        \ 'messages': []
+      \ }
+
+  if has_key(a:args, 'custom_parse')
+    let state.custom_parse = a:args.custom_parse
+  endif
+
+  function! s:callback(chan, msg) dict
+    call add(self.messages, a:msg)
   endfunction
 
-  let status = {}
-  let exitval = 0
-  let closed = 0
-  let exited = 0
-
-  function! s:exit_cb(job, exitval) closure
-    let exited = 1
+  function! s:exit_cb(job, exitval) dict
+    let self.exited = 1
 
     let status = {
           \ 'desc': 'last status',
-          \ 'type': statusline_type,
+          \ 'type': self.statusline_type,
           \ 'state': "finished",
           \ }
 
     if a:exitval
-      let exitval = a:exitval
+      let self.exitval = a:exitval
       let status.state = "failed"
     endif
 
-    call go#statusline#Update(status_dir, status)
+    call go#statusline#Update(self.status_dir, status)
 
-    if closed
-      call s:complete()
+    if self.closed
+      call self.complete()
     endif
   endfunction
 
-  function! s:close_cb(ch) closure
-    let closed = 1
+  function! s:close_cb(ch) dict
+    let self.closed = 1
 
-    if exited
-      call s:complete()
+    if self.exited
+      call self.complete()
     endif
   endfunction
 
-  function! s:complete() closure
-    let out = join(messages, "\n")
+  function state.complete() dict
+    let out = join(self.messages, "\n")
 
-    if has_key(a:args, 'custom_parse')
-      call a:args.custom_parse(exitval, out)
+    if has_key(self, 'custom_parse')
+      call self.custom_parse(self.exitval, out)
     else
-      call s:parse_guru_output(exitval, out, a:args.mode)
+      call s:parse_guru_output(self.exitval, out, self.mode)
     endif
   endfunction
 
+  " explicitly bind the callbacks to state so that self within them always
+  " refers to state. See :help Partial for more information.
   let start_options = {
-        \ 'callback': funcref("s:callback"),
-        \ 'exit_cb': funcref("s:exit_cb"),
-        \ 'close_cb': funcref("s:close_cb"),
-        \ }
+        \ 'callback': function('s:callback', [], state),
+        \ 'exit_cb': function('s:exit_cb', [], state),
+        \ 'close_cb': function('s:close_cb', [], state)
+       \ }
 
   if has_key(result, 'stdin_content')
     let l:tmpname = tempname()
@@ -217,9 +226,9 @@ function! s:async_guru(args) abort
     let l:start_options.in_name = l:tmpname
   endif
 
-  call go#statusline#Update(status_dir, {
+  call go#statusline#Update(state.status_dir, {
         \ 'desc': "current status",
-        \ 'type': statusline_type,
+        \ 'type': state.statusline_type,
         \ 'state': "analysing",
         \})
 
@@ -462,10 +471,6 @@ function! go#guru#Referrers(selected) abort
         \ }
 
   call s:run_guru(args)
-endfunction
-
-function! go#guru#SameIdsTimer() abort
-  call timer_start(200, function('go#guru#SameIds'), {'repeat': -1})
 endfunction
 
 function! go#guru#SameIds() abort
