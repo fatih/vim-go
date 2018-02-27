@@ -2,10 +2,6 @@ if !exists("g:go_list_type")
   let g:go_list_type = ""
 endif
 
-if !exists("g:go_list_type_commands")
-  let g:go_list_type_commands = {}
-endif
-
 " Window opens the list with the given height up to 10 lines maximum.
 " Otherwise g:go_loclist_height is used.
 "
@@ -169,7 +165,7 @@ function! go#list#Type(for) abort
     let l:listtype = "quickfix"
   endif
 
-  return get(g:go_list_type_commands, a:for, l:listtype)
+  return get(go#config#ListTypeCommands(), a:for, l:listtype)
 endfunction
 
 " vim: sw=2 ts=2 et
