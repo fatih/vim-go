@@ -11,7 +11,7 @@ let g:go_loaded_install = 1
 " Version 7.4.1689 was chosen because that's what the most recent Ubuntu LTS
 " release (16.04) uses.
 if
-      \ get(g:, 'go_version_warning', 1) != 0 &&
+      \ go#config#VersionWarning() != 0 &&
       \ (v:version < 704 || (v:version == 704 && !has('patch1689')))
       \ && !has('nvim')
   echohl Error
