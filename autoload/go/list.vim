@@ -42,7 +42,7 @@ function! go#list#Window(listtype, ...) abort
   if a:listtype == "locationlist"
     exe 'lopen ' . height
   else
-    exe 'copen ' . height
+    exe 'botright copen ' . height
   endif
 endfunction
 
