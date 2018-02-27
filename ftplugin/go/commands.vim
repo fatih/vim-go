@@ -98,4 +98,10 @@ command! -nargs=0 GoKeyify call go#keyify#Keyify()
 " -- fillstruct
 command! -nargs=0 GoFillStruct call go#fillstruct#FillStruct()
 
+" -- debug
+if !exists(':GoDebugStart')
+  command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start(<f-args>)
+  command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
+endif
+
 " vim: sw=2 ts=2 et
