@@ -1,6 +1,6 @@
 let s:sock_type = (has('win32') || has('win64')) ? 'tcp' : 'unix'
 
-function! s:gocodeCommand(cmd, options, args) abort
+function! s:gocodeCommand(cmd, args) abort
   let bin_path = go#path#CheckBinPath("gocode")
   if empty(bin_path)
     return []
@@ -10,21 +10,21 @@ function! s:gocodeCommand(cmd, options, args) abort
 
   let cmd = [bin_path]
   let cmd = extend(cmd, ['-sock', socket_type])
-  let cmd = extend(cmd, a:options)
+  let cmd = extend(cmd, ['-f', 'vim'])
   let cmd = extend(cmd, [a:cmd])
   let cmd = extend(cmd, a:args)
 
   return cmd
 endfunction
 
-function! s:sync_gocode(cmd, options, args, input) abort
+function! s:sync_gocode(cmd, args, input) abort
   " We might hit cache problems, as gocode doesn't handle different GOPATHs
   " well. See: https://github.com/nsf/gocode/issues/239
   let old_goroot = $GOROOT
   let $GOROOT = go#util#env("goroot")
 
   try
-    let cmd = s:gocodeCommand(a:cmd, a:options, a:args)
+    let cmd = s:gocodeCommand(a:cmd, a:args)
     " gocode can sometimes be slow, so redraw now to avoid waiting for gocode
     " to return before redrawing automatically.
     redraw
@@ -72,7 +72,6 @@ function! s:gocodeAutocomplete() abort
   call s:gocodeEnableOptions()
 
   return s:sync_gocode('autocomplete',
-        \ ['-f=vim'],
         \ [expand('%:p'), go#util#OffsetCursor()],
         \ go#util#GetLines())
 endfunction
@@ -90,7 +89,6 @@ function! go#complete#Info(auto) abort
     return s:sync_info(a:auto)
   endif
 endfunction
-
 
 function! s:async_info(auto)
   if exists("s:async_info_job")
@@ -135,38 +133,8 @@ function! s:async_info(auto)
       return
     endif
 
-    " first line is: Charcount,,NumberOfCandidates, i.e: 8,,1
-    " following lines are candiates, i.e:  func foo(name string),,foo(
-
-    " no candidates are found
-    if len(self.messages) == 1
-      return s:info_complete(self.auto, "")
-    endif
-
-    " only one candidate is found
-    if len(self.messages) == 2
-      let result = split(self.messages[1], ',,')[0]
-      return s:info_complete(self.auto, result)
-    endif
-
-    " too many candidates are available, pick one that matches the word under
-    " the cursor
-    let infos = []
-    for info in self.messages[1:]
-      call add(infos, split(info, ',,')[0])
-    endfor
-
-    let wordMatch = '\<' . expand("<cword>") . '\>'
-    " escape single quotes in wordMatch before passing it to filter
-    let wordMatch = substitute(wordMatch, "'", "''", "g")
-    let filtered =  filter(infos, "v:val =~ '".wordMatch."'")
-
-    let result = ""
-    if len(filtered) == 1
-      let result = filtered[0]
-    endif
-
-    return s:info_complete(self.auto, result)
+    let result = s:info_filter(self.auto, join(self.messages, "\n"))
+    call s:info_complete(self.auto, result)
   endfunction
 
   let offset = go#util#OffsetCursor()+1
@@ -177,9 +145,7 @@ function! s:async_info(auto)
     \ "GOROOT": go#util#env("goroot")
     \ }
 
-  " TODO(bc): refactor to use `-f vim` instead of `-f=godit`.
   let cmd = s:gocodeCommand('autocomplete',
-        \ ['-f=godit'],
         \ [expand('%:p'), offset])
 
   " TODO(bc): Don't write the buffer to a file; pass the buffer directrly to
@@ -208,58 +174,52 @@ function! s:sync_info(auto)
   " auto is true if we were called by g:go_auto_type_info's autocmd
   let offset = go#util#OffsetCursor()+1
 
-  " TODO(bc): refactor to use `-f vim` instead of `-f=godit`.
   let result = s:sync_gocode('autocomplete',
-        \ ['-f=godit'],
         \ [expand('%:p'), offset],
         \ go#util#GetLines())
 
-  " first line is: Charcount,,NumberOfCandidates, i.e: 8,,1
-  " following lines are candiates, i.e:  func foo(name string),,foo(
-  let out = split(result, '\n')
+  let result = s:info_filter(a:auto, result)
+  call s:info_complete(a:auto, result)
+endfunction
 
-  " no candidates are found
-  if len(out) == 1
-    return s:info_complete(a:auto, "")
+function! s:info_filter(auto, result) abort
+  if empty(a:result)
+    return ""
   endif
 
-  " only one candidate is found
-  if len(out) == 2
-    let result = split(out[1], ',,')[0]
-    return s:info_complete(a:auto, result)
+  let l:result = eval(a:result)
+  if len(l:result) != 2
+    return ""
   endif
 
-  " too many candidates are available, pick one that maches the word under the
-  " cursor
-  let infos = []
-  for info in out[1:]
-    call add(infos, split(info, ',,')[0])
-  endfor
+  let l:candidates = l:result[1]
+  if len(l:candidates) == 1
+    " When gocode panics in vim mode, it returns
+    "     [0, [{'word': 'PANIC', 'abbr': 'PANIC PANIC PANIC', 'info': 'PANIC PANIC PANIC'}]]
+    if a:auto && l:candidates[0].info ==# "PANIC PANIC PANIC"
+      return ""
+    endif
 
+    return l:candidates[0].info
+  endif
+
+  let filtered = []
   let wordMatch = '\<' . expand("<cword>") . '\>'
   " escape single quotes in wordMatch before passing it to filter
   let wordMatch = substitute(wordMatch, "'", "''", "g")
-  let filtered =  filter(infos, "v:val =~ '".wordMatch."'")
+  let filtered = filter(l:candidates, "v:val.info =~ '".wordMatch."'")
 
-  let result = ""
-  if len(filtered) == 1
-    let result = filtered[0]
+  if len(l:filtered) != 1
+    return ""
   endif
 
-  return s:info_complete(a:auto, result)
+  return l:filtered[0].info
 endfunction
 
 function! s:info_complete(auto, result) abort
   if !empty(a:result)
-    " if auto, and the result is a PANIC by gocode, hide it
-    if a:auto && a:result ==# 'PANIC PANIC PANIC'
-      return ""
-    endif
-
     echo "vim-go: " | echohl Function | echon a:result | echohl None
   endif
-
-  return a:result
 endfunction
 
 function! s:trim_bracket(val) abort
@@ -282,7 +242,7 @@ function! go#complete#Complete(findstart, base) abort
 
     return s:completions[1]
   endif
-endf
+endfunction
 
 function! go#complete#ToggleAutoTypeInfo() abort
   if get(g:, "go_auto_type_info", 0)
@@ -294,6 +254,5 @@ function! go#complete#ToggleAutoTypeInfo() abort
   let g:go_auto_type_info = 1
   call go#util#EchoProgress("auto type info enabled")
 endfunction
-
 
 " vim: sw=2 ts=2 et
