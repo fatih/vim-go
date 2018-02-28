@@ -31,7 +31,7 @@ function! go#test#Test(bang, compile, ...) abort
     call extend(args, goargs, 1)
   else
     " only add this if no custom flags are passed
-    let timeout  = get(g:, 'go_test_timeout', '10s')
+    let timeout = go#config#TestTimeout()
     call add(args, printf("-timeout=%s", timeout))
   endif
 
@@ -130,7 +130,7 @@ function! go#test#Func(bang, ...) abort
     call extend(args, a:000)
   else
     " only add this if no custom flags are passed
-    let timeout  = get(g:, 'go_test_timeout', '10s')
+    let timeout = go#config#TestTimeout()
     call add(args, printf("-timeout=%s", timeout))
   endif
 

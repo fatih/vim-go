@@ -25,4 +25,8 @@ function! go#config#SetBuildTags(value) abort
   let g:go_build_tags = a:value
 endfunction
 
+function! go#config#TestTimeout() abort
+ return get(g:, 'go_test_timeout', '10s')
+endfunction
+
 " vim: sw=2 ts=2 et
