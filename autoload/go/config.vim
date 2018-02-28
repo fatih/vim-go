@@ -69,4 +69,8 @@ function! go#config#StatuslineDuration() abort
   return get(g:, 'go_statusline_duration', 60000)
 endfunction
 
+function! go#config#SnippetEngine() abort
+  return get(g:, 'go_snippet_engine', 'automatic')
+endfunction
+
 " vim: sw=2 ts=2 et
