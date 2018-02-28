@@ -562,8 +562,10 @@ function! go#debug#Start(is_test, ...) abort
           \ '--listen', g:go_debug_address,
           \ '--accept-multiclient',
     \]
-    if get(g:, 'go_build_tags', '') isnot ''
-      let l:cmd += ['--build-flags', '--tags=' . g:go_build_tags]
+
+    let buildtags = go#config#BuildTags()
+    if buildtags isnot ''
+      let l:cmd += ['--build-flags', '--tags=' . buildtags]
     endif
     let l:cmd += l:args
 

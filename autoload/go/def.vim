@@ -42,8 +42,8 @@ function! go#def#Jump(mode) abort
       call add(cmd, "-modified")
     endif
 
-    if exists('g:go_build_tags')
-      let tags = get(g:, 'go_build_tags')
+    let tags = go#config#BuildTags()
+    if !empty(tags)
       call extend(cmd, ["-tags", tags])
     endif
 

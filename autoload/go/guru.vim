@@ -44,8 +44,8 @@ function! s:guru_cmd(args) range abort
   endif
 
   " check for any tags
-  if exists('g:go_build_tags')
-    let tags = get(g:, 'go_build_tags')
+  let tags = go#config#BuildTags()
+  if !empty(tags)
     call extend(cmd, ["-tags", tags])
     let result.tags = tags
   endif

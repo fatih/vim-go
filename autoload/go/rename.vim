@@ -50,8 +50,8 @@ function! go#rename#Rename(bang, ...) abort
   let cmd = [bin_path, "-offset", offset, "-to", to_identifier]
 
   " check for any tags
-  if exists('g:go_build_tags')
-    let tags = get(g:, 'go_build_tags')
+  let tags = go#config#BuildTags()
+  if !empty(tags)
     call extend(cmd, ["-tags", tags])
   endif
 

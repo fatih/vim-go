@@ -10,8 +10,8 @@ function! go#test#Test(bang, compile, ...) abort
     call extend(args, ["-c", "-o", testfile])
   endif
 
-  if exists('g:go_build_tags')
-    let tags = get(g:, 'go_build_tags')
+  let tags = go#config#BuildTags()
+  if !empty(tags)
     call extend(args, ["-tags", tags])
   endif
 

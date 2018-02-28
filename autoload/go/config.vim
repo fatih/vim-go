@@ -10,4 +10,19 @@ function! go#config#VersionWarning() abort
   return get(g:, 'go_version_warning', 1)
 endfunction
 
+function! go#config#BuildTags() abort
+  return get(g:, 'go_build_tags', '')
+endfunction
+
+function! go#config#SetBuildTags(value) abort
+  if a:value == ""
+    if exists('g:go_build_tags')
+      unlet g:go_build_tags
+    endif
+    return
+  endif
+
+  let g:go_build_tags = a:value
+endfunction
+
 " vim: sw=2 ts=2 et
