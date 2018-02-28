@@ -453,16 +453,16 @@ function! s:start_cb(ch, json) abort
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
   nnoremap <silent> <Plug>(go-debug-print)      :<C-u>call go#debug#Print(expand('<cword>'))<CR>
 
-  nmap <F5>   <Plug>(go-debug-continue)
-  nmap <F6>   <Plug>(go-debug-print)
-  nmap <F9>   <Plug>(go-debug-breakpoint)
-  nmap <F10>  <Plug>(go-debug-next)
-  nmap <F11>  <Plug>(go-debug-step)
-
   set balloonexpr=go#debug#BalloonExpr()
   set ballooneval
 
   exe bufwinnr(oldbuf) 'wincmd w'
+
+  nmap <buffer> <F5>   <Plug>(go-debug-continue)
+  nmap <buffer> <F6>   <Plug>(go-debug-print)
+  nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
+  nmap <buffer> <F10>  <Plug>(go-debug-next)
+  nmap <buffer> <F11>  <Plug>(go-debug-step)
 endfunction
 
 function! s:starting(ch, msg) abort
