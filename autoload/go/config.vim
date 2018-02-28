@@ -91,4 +91,16 @@ function! go#config#PlayBrowserCommand() abort
     return get(g:, 'go_play_browser_command', go_play_browser_command)
 endfunction
 
+function! go#config#MetalinterDeadline() abort
+  " gometalinter has a default deadline of 5 seconds only when asynchronous
+  " jobs are not supported.
+
+  let deadline = '5s'
+  if go#util#has_job() && has('lambda')
+    let deadline = ''
+  endif
+
+  return get(g:, 'go_metalinter_deadline', deadline)
+endfunction
+
 " vim: sw=2 ts=2 et

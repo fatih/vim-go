@@ -68,32 +68,18 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
   endif
 
-  " gometalinter has a default deadline of 5 seconds.
-  "
-  " For async mode (s:lint_job), we want to override the default deadline only
-  " if we have a deadline configured.
-  "
-  " For sync mode (go#util#System), always explicitly pass the 5 seconds
-  " deadline if there is no other deadline configured. If a deadline is
-  " configured, then use it.
-
   " Call gometalinter asynchronously.
+  let deadline = go#config#MetalinterDeadline()
+  if deadline != ''
+    let cmd += ["--deadline=" . deadline]
+  endif
+
+  let cmd += goargs
+
   if go#util#has_job() && has('lambda')
-    let deadline = get(g:, 'go_metalinter_deadline', 0)
-    if deadline != 0
-      let cmd += ["--deadline=" . deadline]
-    endif
-
-    let cmd += goargs
-
     call s:lint_job({'cmd': cmd}, a:autosave)
     return
   endif
-
-  " We're calling gometalinter synchronously.
-  let cmd += ["--deadline=" . get(g:, 'go_metalinter_deadline', "5s")]
-
-  let cmd += goargs
 
   let [l:out, l:err] = go#util#Exec(cmd)
 
