@@ -21,7 +21,7 @@ function! go#template#create() abort
     if l:filename =~ "_test.go$"
       let l:template_file = go#config#TemplateTestFile()
     else
-      let l:template_file = get(g:, 'go_template_file', "hello_world.go")
+      let l:template_file = go#config#TemplateFile()
     endif
     let l:template_path = go#util#Join(l:root_dir, "templates", l:template_file)
     silent exe 'keepalt 0r ' . fnameescape(l:template_path)
