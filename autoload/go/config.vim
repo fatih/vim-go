@@ -73,4 +73,22 @@ function! go#config#SnippetEngine() abort
   return get(g:, 'go_snippet_engine', 'automatic')
 endfunction
 
+function! go#config#PlayBrowserCommand() abort
+    if go#util#IsWin()
+        let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
+    elseif go#util#IsMac()
+        let go_play_browser_command = 'open %URL%'
+    elseif executable('xdg-open')
+        let go_play_browser_command = 'xdg-open %URL%'
+    elseif executable('firefox')
+        let go_play_browser_command = 'firefox %URL% &'
+    elseif executable('chromium')
+        let go_play_browser_command = 'chromium %URL% &'
+    else
+        let go_play_browser_command = ''
+    endif
+
+    return get(g:, 'go_play_browser_command', go_play_browser_command)
+endfunction
+
 " vim: sw=2 ts=2 et
