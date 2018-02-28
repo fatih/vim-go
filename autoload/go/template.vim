@@ -19,7 +19,7 @@ function! go#template#create() abort
   if l:package_name == -1 && l:go_template_use_pkg != 1
     let l:filename = fnamemodify(expand("%"), ':t')
     if l:filename =~ "_test.go$"
-      let l:template_file = get(g:, 'go_template_test_file', "hello_world_test.go")
+      let l:template_file = go#config#TemplateTestFile()
     else
       let l:template_file = get(g:, 'go_template_file', "hello_world.go")
     endif

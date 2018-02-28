@@ -57,4 +57,8 @@ function! go#config#TemplateUsePkg() abort
   return get(g:, 'go_template_use_pkg', 0)
 endfunction
 
+function! go#config#TemplateTestFile() abort
+  return get(g:, 'go_template_test_file', "hello_world_test.go")
+endfunction
+
 " vim: sw=2 ts=2 et
