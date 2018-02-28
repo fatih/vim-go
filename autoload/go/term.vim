@@ -52,8 +52,8 @@ function! go#term#newmode(bang, cmd, mode) abort
   execute cd . fnameescape(dir)
 
   " resize new term if needed.
-  let height = get(g:, 'go_term_height', winheight(0))
-  let width = get(g:, 'go_term_width', winwidth(0))
+  let height = go#config#TermHeight()
+  let width = go#config#TermWidth()
 
   " Adjust the window width or height depending on whether it's a vertical or
   " horizontal split.

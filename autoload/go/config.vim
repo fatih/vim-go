@@ -33,4 +33,12 @@ function! go#config#TestShowName() abort
   return get(g:, 'go_test_show_name', 0)
 endfunction
 
+function! go#config#TermHeight() abort
+  return get(g:, 'go_term_height', winheight(0))
+endfunction
+
+function! go#config#TermWidth() abort
+  return get(g:, 'go_term_width', winwidth(0))
+endfunction
+
 " vim: sw=2 ts=2 et
