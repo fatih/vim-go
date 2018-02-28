@@ -111,4 +111,8 @@ function! go#config#ListAutoclose() abort
   return get(g:, 'go_list_autoclose', 1)
 endfunction
 
+function! go#config#InfoMode() abort
+  return get(g:, 'go_info_mode', 'gocode')
+endfunction
+
 " vim: sw=2 ts=2 et

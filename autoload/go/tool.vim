@@ -75,7 +75,7 @@ function! go#tool#Imports() abort
 endfunction
 
 function! go#tool#Info(auto) abort
-  let l:mode = get(g:, 'go_info_mode', 'gocode')
+  let l:mode = go#config#InfoMode()
   if l:mode == 'gocode'
     call go#complete#Info(a:auto)
   elseif l:mode == 'guru'
