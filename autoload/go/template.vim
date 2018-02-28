@@ -1,7 +1,7 @@
 let s:current_file = expand("<sfile>")
 
 function! go#template#create() abort
-  let l:go_template_use_pkg = get(g:, 'go_template_use_pkg', 0)
+  let l:go_template_use_pkg = go#config#TemplateUsePkg()
   let l:root_dir = fnamemodify(s:current_file, ':h:h:h')
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '

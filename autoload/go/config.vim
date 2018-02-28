@@ -53,4 +53,8 @@ function! go#config#SetTermEnabled(value) abort
   let g:go_term_enabled = a:value
 endfunction
 
+function! go#config#TemplateUsePkg() abort
+  return get(g:, 'go_template_use_pkg', 0)
+endfunction
+
 " vim: sw=2 ts=2 et
