@@ -103,4 +103,8 @@ function! go#config#MetalinterDeadline() abort
   return get(g:, 'go_metalinter_deadline', deadline)
 endfunction
 
+function! go#config#ListType() abort
+  return get(g:, 'go_list_type', '')
+endfunction
+
 " vim: sw=2 ts=2 et

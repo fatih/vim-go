@@ -1,7 +1,3 @@
-if !exists("g:go_list_type")
-  let g:go_list_type = ""
-endif
-
 " Window opens the list with the given height up to 10 lines maximum.
 " Otherwise g:go_loclist_height is used.
 "
@@ -122,13 +118,12 @@ function! go#list#Close(listtype) abort
 endfunction
 
 function! s:listtype(listtype) abort
-  if g:go_list_type == "locationlist"
-    return "locationlist"
-  elseif g:go_list_type == "quickfix"
-    return "quickfix"
+  let listtype = go#config#ListType()
+  if empty(listtype)
+    return a:listtype
   endif
 
-  return a:listtype
+  return listtype
 endfunction
 
 " s:default_list_type_commands is the defaults that will be used for each of
