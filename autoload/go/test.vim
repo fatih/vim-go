@@ -58,7 +58,7 @@ function! go#test#Test(bang, compile, ...) abort
     return
   elseif has('nvim')
     " use nvims's job functionality
-    if get(g:, 'go_term_enabled', 0)
+    if go#config#TermEnabled()
       let id = go#term#new(a:bang, ["go"] + args)
     else
       let id = go#jobcontrol#Spawn(a:bang, "test", "GoTest", args)

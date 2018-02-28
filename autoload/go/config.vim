@@ -45,4 +45,12 @@ function! go#config#TermMode() abort
   return get(g:, 'go_term_mode', 'vsplit')
 endfunction
 
+function! go#config#TermEnabled() abort
+  return get(g:, 'go_term_enabled', 0)
+endfunction
+
+function! go#config#SetTermEnabled(value) abort
+  let g:go_term_enabled = a:value
+endfunction
+
 " vim: sw=2 ts=2 et
