@@ -41,4 +41,8 @@ function! go#config#TermWidth() abort
   return get(g:, 'go_term_width', winwidth(0))
 endfunction
 
+function! go#config#TermMode() abort
+  return get(g:, 'go_term_mode', 'vsplit')
+endfunction
+
 " vim: sw=2 ts=2 et

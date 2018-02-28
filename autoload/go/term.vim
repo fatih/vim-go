@@ -1,18 +1,14 @@
-if has('nvim') && !exists("g:go_term_mode")
-  let g:go_term_mode = 'vsplit'
-endif
-
 " new creates a new terminal with the given command. Mode is set based on the
 " global variable g:go_term_mode, which is by default set to :vsplit
 function! go#term#new(bang, cmd) abort
-  return go#term#newmode(a:bang, a:cmd, g:go_term_mode)
+  return go#term#newmode(a:bang, a:cmd, go#config#TermMode())
 endfunction
 
 " new creates a new terminal with the given command and window mode.
 function! go#term#newmode(bang, cmd, mode) abort
   let mode = a:mode
   if empty(mode)
-    let mode = g:go_term_mode
+    let mode = go#config#TermMode()
   endif
 
   let state = {
