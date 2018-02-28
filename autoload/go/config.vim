@@ -65,4 +65,8 @@ function! go#config#TemplateFile() abort
   return get(g:, 'go_template_file', "hello_world.go")
 endfunction
 
+function! go#config#StatuslineDuration() abort
+  return get(g:, 'go_statusline_duration', 60000)
+endfunction
+
 " vim: sw=2 ts=2 et
