@@ -107,4 +107,8 @@ function! go#config#ListType() abort
   return get(g:, 'go_list_type', '')
 endfunction
 
+function! go#config#ListAutoclose() abort
+  return get(g:, 'go_list_autoclose', 1)
+endfunction
+
 " vim: sw=2 ts=2 et

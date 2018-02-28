@@ -105,7 +105,7 @@ endfunction
 
 " Close closes the location list
 function! go#list#Close(listtype) abort
-  let autoclose_window = get(g:, 'go_list_autoclose', 1)
+  let autoclose_window = go#config#ListAutoclose()
   if !autoclose_window
     return
   endif
