@@ -278,8 +278,8 @@ function! s:show_errors(args, exit_val, messages) abort
 endfunction
 
 
-let s:efm= ""
-let s:go_test_show_name=0
+let s:efm = ""
+let s:go_test_show_name = 0
 
 function! s:errorformat() abort
   " NOTE(arslan): once we get JSON output everything will be easier :).
@@ -288,7 +288,7 @@ function! s:errorformat() abort
   "   https://github.com/golang/go/issues/2981.
   let goroot = go#util#goroot()
 
-  let show_name=get(g:, 'go_test_show_name', 0)
+  let show_name = go#config#TestShowName()
   if s:efm != "" && s:go_test_show_name == show_name
     return s:efm
   endif

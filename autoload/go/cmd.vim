@@ -77,7 +77,7 @@ endfunction
 " BuildTags sets or shows the current build tags used for tools
 function! go#cmd#BuildTags(bang, ...) abort
   if a:0
-    go#config#SetBuildTags(a:1)
+    call go#config#SetBuildTags(a:1)
     let tags = go#config#BuildTags()
     if empty(tags)
       call go#util#EchoSuccess("build tags are cleared")

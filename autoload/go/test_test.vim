@@ -69,7 +69,7 @@ func! Test_GoTestShowName() abort
 
   let g:go_test_show_name=1
   call s:test('showname/showname_test.go', expected)
-  let g:go_test_show_name=0
+  unlet g:go_test_show_name
 endfunc
 
 func! s:test(file, expected, ...) abort

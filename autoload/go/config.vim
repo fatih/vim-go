@@ -29,4 +29,8 @@ function! go#config#TestTimeout() abort
  return get(g:, 'go_test_timeout', '10s')
 endfunction
 
+function! go#config#TestShowName() abort
+  return get(g:, 'go_test_show_name', 0)
+endfunction
+
 " vim: sw=2 ts=2 et
