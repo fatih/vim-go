@@ -15,6 +15,7 @@ endif
 if !exists('s:state')
   let s:state = {
       \ 'rpcid': 1,
+      \ 'running': 0,
       \ 'breakpoint': {},
       \ 'currentThread': {},
       \ 'localVars': {},
@@ -746,22 +747,23 @@ function! s:stack_cb(ch, json) abort
   call s:update_variables()
 endfunction
 
-" Send a command change the cursor location to Delve.
+" Send a command to change the cursor location to Delve.
 "
 " a:name must be one of continue, next, step, or stepOut.
 function! go#debug#Stack(name) abort
-  let name = a:name
+  let l:name = a:name
 
   " Run continue if the program hasn't started yet.
-  if s:state['rpcid'] <= 2
-    let name = 'continue'
+  if s:state.running is 0
+    let s:state.running = 1
+    let l:name = 'continue'
   endif
 
   " Add a breakpoint to the main.Main if the user didn't define any.
   if len(s:state['breakpoint']) is 0
     try
       let res = s:call_jsonrpc('RPCServer.FindLocation', {'loc': 'main.main'})
-      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint':{'addr': res.result.Locations[0].pc}})
+      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint': {'addr': res.result.Locations[0].pc}})
       let bt = res.result.Breakpoint
       let s:state['breakpoint'][bt.id] = bt
     catch
@@ -770,11 +772,12 @@ function! go#debug#Stack(name) abort
   endif
 
   try
-    if name is# 'next' && get(s:, 'stack_name', '') is# 'next'
+    " TODO: document why this is needed.
+    if l:name is# 'next' && get(s:, 'stack_name', '') is# 'next'
       call s:call_jsonrpc('RPCServer.CancelNext')
     endif
-    let s:stack_name = name
-    call s:call_jsonrpc('RPCServer.Command', function('s:stack_cb'), {'name': name})
+    let s:stack_name = l:name
+    call s:call_jsonrpc('RPCServer.Command', function('s:stack_cb'), {'name': l:name})
   catch
     call go#util#EchoError(v:exception)
   endtry
@@ -790,6 +793,7 @@ function! go#debug#Restart() abort
     let l:breaks = s:state['breakpoint']
     let s:state = {
         \ 'rpcid': 1,
+        \ 'running': 0,
         \ 'breakpoint': {},
         \ 'currentThread': {},
         \ 'localVars': {},
