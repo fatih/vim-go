@@ -18,6 +18,8 @@ IMPROVEMENTS:
   [[GH-1652]](https://github.com/fatih/vim-go/pull/1652)
 * Redraw the screen before executing blocking calls to gocode.
   [[GH-1671]](https://github.com/fatih/vim-go/pull/1671)
+* Add `fe` -> `fmt.Errorf()` snippet for NeoSnippet and UltiSnippets.
+  [[GH-1677]](https://github.com/fatih/vim-go/pull/1677)
 
 BUG FIXES:
 
@@ -59,6 +61,8 @@ BUG FIXES:
   [[GH-1664]](https://github.com/fatih/vim-go/pull/1664)
 * Fix minisnip on Windows.
   [[GH-1698]](https://github.com/fatih/vim-go/pull/1698)
+* Keep alternate filename when loading an autocreate template.
+  [[GH-1675]](https://github.com/fatih/vim-go/pull/1675)
 
 
 BACKWARDS INCOMPATIBILITIES:
