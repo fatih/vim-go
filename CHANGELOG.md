@@ -2,10 +2,11 @@
 
 FEATURES:
 
-* **Debugger support!**. Add integrated support for the [`delve`](https://github.com/derekparker/delve)
-  debugger. Use `:GoInstallBinaries` to install `dlv`, and see `:help go-debug`
-  to get started.
-  [[GH-1390]](https://github.com/fatih/vim-go/pull/1390).
+* **Debugger support!** Add integrated support for the
+  [`delve`](https://github.com/derekparker/delve) debugger. Use
+  `:GoInstallBinaries` to install `dlv`, and see `:help go-debug` to get
+  started.
+  [[GH-1390]](https://github.com/fatih/vim-go/pull/1390)
 
 IMPROVEMENTS:
 
@@ -56,6 +57,8 @@ BUG FIXES:
 * Show the file location of test errors when the message is empty or begins
   with a newline.
   [[GH-1664]](https://github.com/fatih/vim-go/pull/1664)
+* Fix minisnip on Windows.
+  [[GH-1698]](https://github.com/fatih/vim-go/pull/1698)
 
 
 BACKWARDS INCOMPATIBILITIES:
