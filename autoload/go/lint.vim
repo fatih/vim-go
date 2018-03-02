@@ -253,7 +253,8 @@ function! s:lint_job(args, autosave)
         \ 'exited': 0,
         \ 'closed': 0,
         \ 'exit_status': 0,
-        \ 'winnr': winnr()
+        \ 'winnr': winnr(),
+        \ 'autosave': a:autosave
       \ }
 
   call go#statusline#Update(state.status_dir, {
@@ -311,6 +312,8 @@ function! s:lint_job(args, autosave)
 
 
   function state.show_errors()
+    let l:winnr = winnr()
+
     " make sure the current window is the window from which gometalinter was
     " run when the listtype is locationlist so that the location list for the
     " correct window will be populated.
@@ -323,6 +326,15 @@ function! s:lint_job(args, autosave)
 
     let errors = go#list#Get(self.listtype)
     call go#list#Window(self.listtype, len(errors))
+
+    " move to the window that was active before processing the errors, because
+    " the user may have moved around within the window or even moved to a
+    " different window since saving. Moving back to current window as of the
+    " start of this function avoids the perception that the quickfix window
+    " steals focus when linting takes a while.
+    if self.autosave
+      exe l:winnr . "wincmd w"
+    endif
 
     if get(g:, 'go_echo_command_info', 1)
       call go#util#EchoSuccess("linting finished")
