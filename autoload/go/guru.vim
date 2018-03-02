@@ -500,6 +500,51 @@ function! go#guru#SameIds() abort
   call s:run_guru(args)
 endfunction
 
+function! go#guru#NextId() abort
+  let same_ids = getmatches()
+  if len(same_ids) < 2
+    return
+  endif
+
+  let curpos = getcurpos()
+  let current_idx = 0
+  for item in same_ids
+    let itempos = item['pos1']
+    if curpos[1] == itempos[0] && curpos[2] >= itempos[1] && curpos[2] < itempos[1] + itempos[2]
+      break
+    endif
+    let current_idx += 1
+  endfor
+
+  if current_idx + 1 < len(same_ids)
+    let next_id = same_ids[current_idx + 1]
+    call setpos('.', [0] + next_id['pos1'])
+  endif
+endfunction
+
+function! go#guru#PrevId() abort
+  let same_ids = getmatches()
+  if len(same_ids) < 2
+    return
+  endif
+
+  let curpos = getcurpos()
+  let current_idx = 0
+  for item in same_ids
+    let itempos = item['pos1']
+    if curpos[1] == itempos[0] && curpos[2] >= itempos[1] && curpos[2] < itempos[1] + itempos[2]
+      break
+    endif
+    let current_idx += 1
+  endfor
+
+  if current_idx - 1 >= 0
+    let prev_id = same_ids[current_idx - 1]
+    call setpos('.', [0] + prev_id['pos1'])
+  endif
+endfunction
+
+
 function! s:same_ids_highlight(exit_val, output) abort
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
