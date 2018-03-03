@@ -20,6 +20,8 @@ IMPROVEMENTS:
   [[GH-1671]](https://github.com/fatih/vim-go/pull/1671)
 * Add `fe` -> `fmt.Errorf()` snippet for NeoSnippet and UltiSnippets.
   [[GH-1677]](https://github.com/fatih/vim-go/pull/1677)
+* Use the async api when calling guru from neovim.
+  [[GH-1677]](https://github.com/fatih/vim-go/pull/1678)
 
 BUG FIXES:
 
