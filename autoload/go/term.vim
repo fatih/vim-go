@@ -18,6 +18,11 @@ function! go#term#newmode(bang, cmd, mode) abort
     let mode = g:go_term_mode
   endif
 
+  if exists("b:goterm_buf_id") && bufloaded(b:goterm_buf_id)
+    execute("bd! " . b:goterm_buf_id)
+    unlet b:goterm_buf_id
+  endif
+
   " execute go build in the files directory
   let l:winnr = winnr()
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -70,7 +75,9 @@ function! go#term#newmode(bang, cmd, mode) abort
   stopinsert
 
   if l:winnr !=# winnr()
+    let l:bufid = bufnr('%')
     exe l:winnr . "wincmd w"
+    let b:goterm_buf_id = l:bufid
   endif
 
   return id
@@ -115,7 +122,12 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   if !empty(errors)
     " close terminal we don't need it anymore
-    close
+    if exists("b:goterm_buf_id") && bufloaded(b:goterm_buf_id)
+      execute('bd! ' . b:goterm_buf_id)
+      unlet b:goterm_buf_id
+    else
+      close
+    endif
 
     call go#list#Populate(l:listtype, errors, job.cmd)
     call go#list#Window(l:listtype, len(errors))
