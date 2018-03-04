@@ -137,4 +137,8 @@ function! go#config#SetGuruScope(scope) abort
   endif
 endfunction
 
+function! go#config#GocodeUnimportedPackages() abort
+  return get(g:, 'go_gocode_unimported_packages', 0)
+endfunction
+
 " vim: sw=2 ts=2 et
