@@ -73,7 +73,7 @@ function go#job#Spawn(args)
     let self.exit_status = a:exitval
     let self.exited = 1
 
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       if a:exitval == 0
         call go#util#EchoSuccess("SUCCESS")
       else

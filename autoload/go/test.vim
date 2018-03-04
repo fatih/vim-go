@@ -35,7 +35,7 @@ function! go#test#Test(bang, compile, ...) abort
     call add(args, printf("-timeout=%s", timeout))
   endif
 
-  if get(g:, 'go_echo_command_info', 1)
+  if go#config#EchoCommandInfo()
     if a:compile
       call go#util#EchoProgress("compiling tests ...")
     else
@@ -186,7 +186,7 @@ function! s:test_job(args) abort
       let status.state = "failed"
     endif
 
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       if a:exitval == 0
         if self.compile_test
           call go#util#EchoSuccess("[test] SUCCESS")

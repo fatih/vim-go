@@ -44,7 +44,7 @@ function! go#coverage#Buffer(bang, ...) abort
   let s:toggle = 1
   let l:tmpname = tempname()
 
-  if get(g:, 'go_echo_command_info', 1)
+  if go#config#EchoCommandInfo()
     call go#util#EchoProgress("testing...")
   endif
 

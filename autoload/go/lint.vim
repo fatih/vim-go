@@ -320,7 +320,7 @@ function! s:lint_job(args, autosave)
       exe l:winnr . "wincmd w"
     endif
 
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       call go#util#EchoSuccess("linting finished")
     endif
   endfunction
@@ -335,7 +335,7 @@ function! s:lint_job(args, autosave)
 
   call job_start(a:args.cmd, start_options)
 
-  if get(g:, 'go_echo_command_info', 1)
+  if go#config#EchoCommandInfo()
     call go#util#EchoProgress("linting started ...")
   endif
 endfunction

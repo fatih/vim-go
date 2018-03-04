@@ -129,7 +129,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
     let self.state = "SUCCESS"
 
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       call go#util#EchoSuccess("[" . self.status_type . "] SUCCESS")
     endif
 
@@ -139,7 +139,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   let self.state = "FAILED"
 
-  if get(g:, 'go_echo_command_info', 1)
+  if go#config#EchoCommandInfo()
     call go#util#EchoError("[" . self.status_type . "] FAILED")
   endif
 

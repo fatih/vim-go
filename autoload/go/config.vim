@@ -153,4 +153,9 @@ endfunction
 function! go#config#GocodeAutobuild() abort
   return get(g:, 'go_gocode_autobuild', 1)
 endfunction
+
+function! go#config#EchoCommandInfo() abort
+  return get(g:, 'go_echo_command_info', 1)
+endfunction
+
 " vim: sw=2 ts=2 et

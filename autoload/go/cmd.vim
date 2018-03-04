@@ -21,7 +21,7 @@ function! go#cmd#Build(bang, ...) abort
 
   " Vim async.
   if go#util#has_job()
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       call go#util#EchoProgress("building dispatched ...")
     endif
 
@@ -33,7 +33,7 @@ function! go#cmd#Build(bang, ...) abort
 
   " Nvim async.
   elseif has('nvim')
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       call go#util#EchoProgress("building dispatched ...")
     endif
 
@@ -171,7 +171,7 @@ function! go#cmd#Install(bang, ...) abort
     " expand all wildcards(i.e: '%' to the current file name)
     let goargs = map(copy(a:000), "expand(v:val)")
 
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       call go#util#EchoProgress("installing dispatched ...")
     endif
 
