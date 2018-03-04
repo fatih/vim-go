@@ -146,4 +146,8 @@ function! go#config#GocodeSocketType() abort
   return get(g:, 'go_gocode_socket_type', s:sock_type)
 endfunction
 
+function! go#config#GocodeProposeBuiltins() abort
+  return get(g:, 'go_gocode_propose_builtins', 1)
+endfunction
+
 " vim: sw=2 ts=2 et
