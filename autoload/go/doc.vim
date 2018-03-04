@@ -148,6 +148,11 @@ function! s:gogetdoc(json) abort
   let pos = shellescape(fname.':#'.offset)
 
   let cmd += ["-pos", pos]
+
+  if exists('g:go_build_tags')
+    let cmd += ["-tags", get(g:, 'go_build_tags')]
+  endif
+
   if a:json
     let cmd += ["-json"]
   endif
