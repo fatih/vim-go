@@ -50,33 +50,17 @@ function! s:guru_cmd(args) range abort
     let result.tags = tags
   endif
 
-  " some modes require scope to be defined (such as callers). For these we
-  " choose a sensible setting, which is using the current file's package
-  let scopes = []
-  if needs_scope
-    let scopes = [pkg]
-  endif
-
-  " check for any user defined scope setting. users can define the scope,
-  " in package pattern form. examples:
-  "  golang.org/x/tools/cmd/guru # a single package
-  "  golang.org/x/tools/...      # all packages beneath dir
-  "  ...                         # the entire workspace.
-  if exists('g:go_guru_scope')
-    " check that the setting is of type list
-    if type(get(g:, 'go_guru_scope')) != type([])
-      return {'err' : "go_guru_scope should of type list"}
+  let scopes = go#config#GuruScope()
+  if empty(scopes)
+    " some modes require scope to be defined (such as callers). For these we
+    " choose a sensible setting, which is using the current file's package
+    if needs_scope
+      let scopes = [pkg]
     endif
-
-    let scopes = get(g:, 'go_guru_scope')
   endif
 
-  " now add the scope to our command if there is any
+    " now add the scope to our command if there is any
   if !empty(scopes)
-    " strip trailing slashes for each path in scoped. bug:
-    " https://github.com/golang/go/issues/14584
-    let scopes = go#util#StripTrailingSlash(scopes)
-
     " create shell-safe entries of the list
     if !has("nvim") && !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
 
@@ -648,21 +632,26 @@ endfun
 
 function! go#guru#Scope(...) abort
   if a:0
+    let scope = a:000
     if a:0 == 1 && a:1 == '""'
-      unlet g:go_guru_scope
+      let scope = []
+    endif
+
+    call go#config#SetGuruScope(scope)
+    if empty(scope)
       call go#util#EchoSuccess("guru scope is cleared")
     else
-      let g:go_guru_scope = a:000
       call go#util#EchoSuccess("guru scope changed to: ". join(a:000, ","))
     endif
 
     return
   endif
 
-  if !exists('g:go_guru_scope')
+  let scope = go#config#GuruScope()
+  if empty(scope)
     call go#util#EchoError("guru scope is not set")
   else
-    call go#util#EchoSuccess("current guru scope: ". join(g:go_guru_scope, ","))
+    call go#util#EchoSuccess("current guru scope: ". join(scope, ","))
   endif
 endfunction
 
