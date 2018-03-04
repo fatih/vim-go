@@ -141,4 +141,9 @@ function! go#config#GocodeUnimportedPackages() abort
   return get(g:, 'go_gocode_unimported_packages', 0)
 endfunction
 
+let s:sock_type = (has('win32') || has('win64')) ? 'tcp' : 'unix'
+function! go#config#GocodeSocketType() abort
+  return get(g:, 'go_gocode_socket_type', s:sock_type)
+endfunction
+
 " vim: sw=2 ts=2 et

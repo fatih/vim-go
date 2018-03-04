@@ -1,12 +1,10 @@
-let s:sock_type = (has('win32') || has('win64')) ? 'tcp' : 'unix'
-
 function! s:gocodeCommand(cmd, args) abort
   let bin_path = go#path#CheckBinPath("gocode")
   if empty(bin_path)
     return []
   endif
 
-  let socket_type = get(g:, 'go_gocode_socket_type', s:sock_type)
+  let socket_type = go#config#GocodeSocketType()
 
   let cmd = [bin_path]
   let cmd = extend(cmd, ['-sock', socket_type])
