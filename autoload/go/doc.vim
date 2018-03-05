@@ -29,13 +29,11 @@ function! go#doc#OpenBrowser(...) abort
     let name = out["name"]
     let decl = out["decl"]
 
-    let godoc_url = s:custom_godoc_url()
+    let godoc_url = go#config#DocUrl()
     let godoc_url .= "/" . import
     if decl !~ "^package"
       let godoc_url .= "#" . name
     endif
-
-    echo godoc_url
 
     call go#tool#OpenBrowser(godoc_url)
     return
@@ -50,7 +48,7 @@ function! go#doc#OpenBrowser(...) abort
   let exported_name = pkgs[1]
 
   " example url: https://godoc.org/github.com/fatih/set#Set
-  let godoc_url = s:custom_godoc_url() . "/" . pkg . "#" . exported_name
+  let godoc_url = go#config#DocUrl() . "/" . pkg . "#" . exported_name
   call go#tool#OpenBrowser(godoc_url)
 endfunction
 
@@ -204,20 +202,6 @@ function! s:godocWord(args) abort
   endif
 
   return [pkg, exported_name]
-endfunction
-
-function! s:custom_godoc_url() abort
-  let godoc_url = get(g:, 'go_doc_url', 'https://godoc.org')
-  if godoc_url isnot 'https://godoc.org'
-    " strip last '/' character if available
-    let last_char = strlen(godoc_url) - 1
-    if godoc_url[last_char] == '/'
-      let godoc_url = strpart(godoc_url, 0, last_char)
-    endif
-    " custom godoc installations expect /pkg before package names
-    let godoc_url .= "/pkg"
-  endif
-  return godoc_url
 endfunction
 
 " vim: sw=2 ts=2 et

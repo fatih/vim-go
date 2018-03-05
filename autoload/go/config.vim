@@ -158,4 +158,18 @@ function! go#config#EchoCommandInfo() abort
   return get(g:, 'go_echo_command_info', 1)
 endfunction
 
+function! go#config#DocUrl() abort
+  let godoc_url = get(g:, 'go_doc_url', 'https://godoc.org')
+  if godoc_url isnot 'https://godoc.org'
+    " strip last '/' character if available
+    let last_char = strlen(godoc_url) - 1
+    if godoc_url[last_char] == '/'
+      let godoc_url = strpart(godoc_url, 0, last_char)
+    endif
+    " custom godoc installations expect /pkg before package names
+    let godoc_url .= "/pkg"
+  endif
+  return godoc_url
+endfunction
+
 " vim: sw=2 ts=2 et
