@@ -8,7 +8,7 @@ function! go#def#Jump(mode) abort
   " godef which also has it's own quirks. But this issue come up so many
   " times I've decided to support both. By default we still use guru as it
   " covers all edge cases, but now anyone can switch to godef if they wish
-  let bin_name = get(g:, 'go_def_mode', 'guru')
+  let bin_name = go#config#DefMode()
   if bin_name == 'godef'
     if &modified
       " Write current unsaved buffer to a temp file and use the modified content

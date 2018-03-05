@@ -176,4 +176,8 @@ function! go#config#DefReuseBuffer() abort
   return get(g:, 'go_def_reuse_buffer', 0)
 endfunction
 
+function! go#config#DefMode() abort
+  return get(g:, 'go_def_mode', 'guru')
+endfunction
+
 " vim: sw=2 ts=2 et
