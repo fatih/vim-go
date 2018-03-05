@@ -65,7 +65,7 @@ function! ctrlp#decls#enter() abort
     return
   endif
   let command = printf("%s -format vim -mode decls", bin_path)
-  let command .= " -include ".  get(g:, "go_decls_includes", "func,type")
+  let command .= " -include ".  go#config#DeclsIncludes()
 
   call go#cmd#autowrite()
 

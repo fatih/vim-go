@@ -180,4 +180,8 @@ function! go#config#DefMode() abort
   return get(g:, 'go_def_mode', 'guru')
 endfunction
 
+function! go#config#DeclsIncludes() abort
+  return get(g:, 'go_decls_includes', 'func,type')
+endfunction
+
 " vim: sw=2 ts=2 et
