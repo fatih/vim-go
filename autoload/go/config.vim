@@ -172,4 +172,8 @@ function! go#config#DocUrl() abort
   return godoc_url
 endfunction
 
+function! go#config#DefReuseBuffer() abort
+  return get(g:, 'go_def_reuse_buffer', 0)
+endfunction
+
 " vim: sw=2 ts=2 et
