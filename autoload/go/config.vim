@@ -224,4 +224,12 @@ function! go#config#AddtagsTransform() abort
   return get(g:, 'go_addtags_transform', "snakecase")
 endfunction
 
+function! go#config#TemplateAutocreate() abort
+  return get(g:, "go_template_autocreate", 1)
+endfunction
+
+function! go#config#SetTemplateAutocreate(value) abort
+  let g:go_template_autocreate = a:value
+endfunction
+
 " vim: sw=2 ts=2 et

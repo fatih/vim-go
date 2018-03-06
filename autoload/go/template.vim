@@ -40,13 +40,13 @@ function! go#template#create() abort
 endfunction
 
 function! go#template#ToggleAutoCreate() abort
-  if get(g:, "go_template_autocreate", 1)
-    let g:go_template_autocreate = 0
+  if go#config#TemplateAutocreate()
+    call go#config#SetTemplateAutocreate(0)
     call go#util#EchoProgress("auto template create disabled")
     return
   end
 
-  let g:go_template_autocreate = 1
+  call go#config#SetTemplateAutocreate(1)
   call go#util#EchoProgress("auto template create enabled")
 endfunction
 
