@@ -188,4 +188,14 @@ function! go#config#Debug() abort
   return get(g:, 'go_debug', [])
 endfunction
 
+function! go#config#DebugWindows() abort
+  return get(g:, 'go_debug_windows', {
+            \ 'stack': 'leftabove 20vnew',
+            \ 'out':   'botright 10new',
+            \ 'vars':  'leftabove 30vnew',
+            \ }
+         \ )
+
+endfunction
+
 " vim: sw=2 ts=2 et

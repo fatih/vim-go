@@ -1,13 +1,5 @@
 scriptencoding utf-8
 
-if !exists('g:go_debug_windows')
-  let g:go_debug_windows = {
-        \ 'stack': 'leftabove 20vnew',
-        \ 'out':   'botright 10new',
-        \ 'vars':  'leftabove 30vnew',
-        \ }
-endif
-
 if !exists('g:go_debug_address')
   let g:go_debug_address = '127.0.0.1:8181'
 endif
@@ -416,8 +408,9 @@ function! s:start_cb(ch, json) abort
     return
   endif
 
-  if exists('g:go_debug_windows["stack"]') && g:go_debug_windows['stack'] != ''
-    exe 'silent ' . g:go_debug_windows['stack']
+  let debugwindows = go#config#DebugWindows()
+  if has_key(debugwindows, "stack") && debugwindows['stack'] != ''
+    exe 'silent ' . debugwindows['stack']
     silent file `='__GODEBUG_STACKTRACE__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugstacktrace
@@ -425,16 +418,16 @@ function! s:start_cb(ch, json) abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  if exists('g:go_debug_windows["out"]') && g:go_debug_windows['out'] != ''
-    exe 'silent ' . g:go_debug_windows['out']
+  if has_key(debugwindows, "out") && debugwindows['out'] != ''
+    exe 'silent ' . debugwindows['out']
     silent file `='__GODEBUG_OUTPUT__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugoutput
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  if exists('g:go_debug_windows["vars"]') && g:go_debug_windows['vars'] != ''
-    exe 'silent ' . g:go_debug_windows['vars']
+  if has_key(debugwindows, "vars") && debugwindows['vars'] != ''
+    exe 'silent ' . debugwindows['vars']
     silent file `='__GODEBUG_VARIABLES__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugvariables
