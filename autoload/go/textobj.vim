@@ -1,7 +1,3 @@
-if !exists("g:go_textobj_enabled")
-  let g:go_textobj_enabled = 1
-endif
-
 if !exists("g:go_textobj_include_function_doc")
   let g:go_textobj_include_function_doc = 1
 endif
