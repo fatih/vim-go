@@ -198,4 +198,8 @@ function! go#config#DebugWindows() abort
 
 endfunction
 
+function! go#config#DebugAddress() abort
+  return get(g:, 'go_debug_address', '127.0.0.1:8181')
+endfunction
+
 " vim: sw=2 ts=2 et

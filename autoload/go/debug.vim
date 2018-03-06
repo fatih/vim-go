@@ -1,9 +1,5 @@
 scriptencoding utf-8
 
-if !exists('g:go_debug_address')
-  let g:go_debug_address = '127.0.0.1:8181'
-endif
-
 if !exists('s:state')
   let s:state = {
       \ 'rpcid': 1,
@@ -477,7 +473,7 @@ function! s:out_cb(ch, msg) abort
   let s:state['message'] += [a:msg]
 
   " TODO: why do this in this callback?
-  if stridx(a:msg, g:go_debug_address) != -1
+  if stridx(a:msg, go#config#DebugAddress()) != -1
     call ch_setoptions(a:ch, {
       \ 'out_cb': function('s:logger', ['OUT: ']),
       \ 'err_cb': function('s:logger', ['ERR: ']),
@@ -552,7 +548,7 @@ function! go#debug#Start(is_test, ...) abort
           \ '--headless',
           \ '--api-version', '2',
           \ '--log',
-          \ '--listen', g:go_debug_address,
+          \ '--listen', go#config#DebugAddress(),
           \ '--accept-multiclient',
     \]
 
