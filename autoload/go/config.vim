@@ -220,4 +220,8 @@ function! go#config#SetAutoSameids(value) abort
   let g:go_auto_sameids = a:value
 endfunction
 
+function! go#config#AddtagsTransform() abort
+  return get(g:, 'go_addtags_transform', "snakecase")
+endfunction
+
 " vim: sw=2 ts=2 et

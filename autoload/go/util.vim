@@ -259,7 +259,7 @@ endfunction
 " snippetcase converts the given word to given preferred snippet setting type
 " case.
 function! go#util#snippetcase(word) abort
-  let l:snippet_case = get(g:, 'go_addtags_transform', "snakecase")
+  let l:snippet_case = go#config#AddtagsTransform()
   if l:snippet_case == "snakecase"
     return go#util#snakecase(a:word)
   elseif l:snippet_case == "camelcase"

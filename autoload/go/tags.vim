@@ -122,7 +122,7 @@ func s:create_cmd(args) abort
   let l:offset = a:args.offset
   let l:mode = a:args.mode
   let l:cmd_args = a:args.cmd_args
-  let l:modifytags_transform = get(g:, 'go_addtags_transform', "snakecase")
+  let l:modifytags_transform = go#config#AddtagsTransform()
 
   " start constructing the command
   let cmd = [bin_path]
