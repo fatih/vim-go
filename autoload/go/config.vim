@@ -212,4 +212,12 @@ function! go#config#SetDebugDiag(value) abort
   let g:go_debug_diag = a:value
 endfunction
 
+function! go#config#AutoSameids() abort
+    return get(g:, 'go_auto_sameids', 0)
+endfunction
+
+function! go#config#SetAutoSameids(value) abort
+  let g:go_auto_sameids = a:value
+endfunction
+
 " vim: sw=2 ts=2 et

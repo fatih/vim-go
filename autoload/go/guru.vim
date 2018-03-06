@@ -508,20 +508,20 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
   if a:output[0] !=# '{'
-    if !get(g:, 'go_auto_sameids', 0)
+    if !go#config#AutoSameids()
       call go#util#EchoError(a:output)
     endif
     return
   endif
 
   let result = json_decode(a:output)
-  if type(result) != type({}) && !get(g:, 'go_auto_sameids', 0)
+  if type(result) != type({}) && !go#config#AutoSameids()
     call go#util#EchoError("malformed output from guru")
     return
   endif
 
   if !has_key(result, 'sameids')
-    if !get(g:, 'go_auto_sameids', 0)
+    if !go#config#AutoSameids()
       call go#util#EchoError("no same_ids founds for the given identifier")
     endif
     return
@@ -547,7 +547,7 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
     call matchaddpos('goSameId', [[str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)]])
   endfor
 
-  if get(g:, "go_auto_sameids", 0)
+  if go#config#AutoSameids()
     " re-apply SameIds at the current cursor position at the time the buffer
     " is redisplayed: e.g. :edit, :GoRename, etc.
     augroup vim-go-sameids
@@ -589,15 +589,15 @@ function! go#guru#ToggleSameIds() abort
 endfunction
 
 function! go#guru#AutoToogleSameIds() abort
-  if get(g:, "go_auto_sameids", 0)
+  if go#config#AutoSameids()
     call go#util#EchoProgress("sameids auto highlighting disabled")
     call go#guru#ClearSameIds()
-    let g:go_auto_sameids = 0
+    call go#config#SetAutoSameids(0)
     return
   endif
 
   call go#util#EchoSuccess("sameids auto highlighting enabled")
-  let g:go_auto_sameids = 1
+  call go#config#SetAutoSameids(1)
 endfunction
 
 
