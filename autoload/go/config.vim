@@ -184,4 +184,8 @@ function! go#config#DeclsIncludes() abort
   return get(g:, 'go_decls_includes', 'func,type')
 endfunction
 
+function! go#config#Debug() abort
+  return get(g:, 'go_debug', [])
+endfunction
+
 " vim: sw=2 ts=2 et
