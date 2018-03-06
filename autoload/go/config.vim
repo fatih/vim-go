@@ -202,4 +202,10 @@ function! go#config#DebugAddress() abort
   return get(g:, 'go_debug_address', '127.0.0.1:8181')
 endfunction
 
+function! go#config#DebugCommands() abort
+  " make sure g:go_debug_commands is set so that it can be added to easily.
+  let g:go_debug_commands = get(g:, 'go_debug_commands', {})
+  return g:go_debug_commands
+endfunction
+
 " vim: sw=2 ts=2 et

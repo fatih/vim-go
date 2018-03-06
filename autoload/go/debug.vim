@@ -59,9 +59,6 @@ endfunction
 
 function! s:call_jsonrpc(method, ...) abort
   if go#util#HasDebug('debugger-commands')
-    if !exists('g:go_debug_commands')
-      let g:go_debug_commands = []
-    endif
     echom 'sending to dlv ' . a:method
   endif
 
