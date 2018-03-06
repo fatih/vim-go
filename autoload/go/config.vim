@@ -208,4 +208,8 @@ function! go#config#DebugCommands() abort
   return g:go_debug_commands
 endfunction
 
+function! go#config#SetDebugDiag(value) abort
+  let g:go_debug_diag = a:value
+endfunction
+
 " vim: sw=2 ts=2 et

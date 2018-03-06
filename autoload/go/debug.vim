@@ -13,7 +13,7 @@ if !exists('s:state')
       \}
 
   if go#util#HasDebug('debugger-state')
-    let g:go_debug_diag = s:state
+     call go#config#SetDebugDiag(s:state)
   endif
 endif
 
@@ -507,7 +507,7 @@ function! go#debug#Start(is_test, ...) abort
   let s:start_args = a:000
 
   if go#util#HasDebug('debugger-state')
-    let g:go_debug_diag = s:state
+    call go#config#DebugDiag(s:state)
   endif
 
   " cd in to test directory; this is also what running "go test" does.
