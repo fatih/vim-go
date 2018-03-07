@@ -1,7 +1,3 @@
-if !exists("g:go_golint_bin")
-  let g:go_golint_bin = "golint"
-endif
-
 if !exists("g:go_errcheck_bin")
   let g:go_errcheck_bin = "errcheck"
 endif
@@ -98,7 +94,7 @@ endfunction
 " Golint calls 'golint' on the current directory. Any warnings are populated in
 " the location list
 function! go#lint#Golint(...) abort
-  let bin_path = go#path#CheckBinPath(g:go_golint_bin)
+  let bin_path = go#path#CheckBinPath(go#config#GolintBin())
   if empty(bin_path)
     return
   endif

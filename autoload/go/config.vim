@@ -248,5 +248,8 @@ function! go#config#MetalinterDisabled() abort
   return get(g:, "go_metalinter_disabled", [])
 endfunction
 
+function! go#config#GolintBin() abort
+  return get(g:, "go_golint_bin", "golint")
+endfunction
 
 " vim: sw=2 ts=2 et
