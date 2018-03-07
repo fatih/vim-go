@@ -86,7 +86,6 @@ func! Test_GometaAutoSave() abort
   " And restore it back to its previous value
   call go#lint#ToggleMetaLinterAutoSave()
 
-  let orig_go_metalinter_autosave_enabled = g:go_metalinter_autosave_enabled
   let g:go_metalinter_autosave_enabled = ['golint']
 
   call go#lint#Gometa(1)
@@ -99,7 +98,7 @@ func! Test_GometaAutoSave() abort
   endwhile
 
   call gotest#assert_quickfix(actual, expected)
-  let g:go_metalinter_autosave_enabled = orig_go_metalinter_autosave_enabled
+  unlet g:go_metalinter_autosave_enabled
 endfunc
 
 func! Test_Vet()
