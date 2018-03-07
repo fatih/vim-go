@@ -284,4 +284,8 @@ function! go#config#SetAsmfmtAutosave(value) abort
   let g:go_asmfmt_autosave = a:value
 endfunction
 
+function! go#config#DocMaxHeight() abort
+  return get(g:, "go_doc_max_height", 20)
+endfunction
+
 " vim: sw=2 ts=2 et

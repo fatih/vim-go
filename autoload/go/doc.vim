@@ -95,7 +95,7 @@ function! s:GodocView(newposition, position, content) abort
   if !is_visible
     if a:position == "split"
       " cap window height to 20, but resize it for smaller contents
-      let max_height = get(g:, "go_doc_max_height", 20)
+      let max_height = go#config#DocMaxHeight()
       let content_height = len(split(a:content, "\n"))
       if content_height > max_height
         exe 'resize ' . max_height
