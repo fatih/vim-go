@@ -71,6 +71,8 @@ endfunction
 function! s:gocodeAutocomplete() abort
   call s:gocodeEnableOptions()
 
+  " use the offset as is, because the cursor position is the position for
+  " which autocomplete candidates are needed.
   return s:sync_gocode('autocomplete',
         \ [expand('%:p'), go#util#OffsetCursor()],
         \ go#util#GetLines())
@@ -137,6 +139,8 @@ function! s:async_info(auto)
     call s:info_complete(self.auto, result)
   endfunction
 
+  " add 1 to the offset, so that the position at the cursor will be included
+  " in gocode's search
   let offset = go#util#OffsetCursor()+1
 
   " We might hit cache problems, as gocode doesn't handle different GOPATHs
@@ -172,6 +176,9 @@ endfunction
 
 function! s:sync_info(auto)
   " auto is true if we were called by g:go_auto_type_info's autocmd
+
+  " add 1 to the offset, so that the position at the cursor will be included
+  " in gocode's search
   let offset = go#util#OffsetCursor()+1
 
   let result = s:sync_gocode('autocomplete',
