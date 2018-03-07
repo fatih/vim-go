@@ -252,4 +252,8 @@ function! go#config#GolintBin() abort
   return get(g:, "go_golint_bin", "golint")
 endfunction
 
+function! go#config#ErrcheckBin() abort
+  return get(g:, "go_errcheck_bin", "errcheck")
+endfunction
+
 " vim: sw=2 ts=2 et

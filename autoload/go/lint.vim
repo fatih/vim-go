@@ -1,7 +1,3 @@
-if !exists("g:go_errcheck_bin")
-  let g:go_errcheck_bin = "errcheck"
-endif
-
 function! go#lint#Gometa(autosave, ...) abort
   if a:0 == 0
     let goargs = [expand('%:p:h')]
@@ -158,7 +154,7 @@ function! go#lint#Errcheck(...) abort
     let import_path = go#util#Shelljoin(a:000)
   endif
 
-  let bin_path = go#path#CheckBinPath(g:go_errcheck_bin)
+  let bin_path = go#path#CheckBinPath(go#config#ErrcheckBin())
   if empty(bin_path)
     return
   endif
