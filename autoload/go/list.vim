@@ -14,7 +14,7 @@ function! go#list#Window(listtype, ...) abort
     return
   endif
 
-  let height = get(g:, "go_list_height", 0)
+  let height = go#config#ListHeight()
   if height == 0
     " prevent creating a large location height for a large set of numbers
     if a:1 > 10

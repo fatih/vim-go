@@ -264,4 +264,8 @@ function! go#config#SetMetalinterAutosave(value) abort
   let g:go_metalinter_autosave = a:value
 endfunction
 
+function! go#config#ListHeight() abort
+  return get(g:, "go_list_height", 0)
+endfunction
+
 " vim: sw=2 ts=2 et
