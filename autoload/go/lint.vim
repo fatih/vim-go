@@ -195,13 +195,13 @@ function! go#lint#Errcheck(...) abort
 endfunction
 
 function! go#lint#ToggleMetaLinterAutoSave() abort
-  if get(g:, "go_metalinter_autosave", 0)
-    let g:go_metalinter_autosave = 0
+  if go#config#MetalinterAutosave()
+    call go#config#SetMetalinterAutosave(0)
     call go#util#EchoProgress("auto metalinter disabled")
     return
   end
 
-  let g:go_metalinter_autosave = 1
+  call go#config#SetMetalinterAutosave(1)
   call go#util#EchoProgress("auto metalinter enabled")
 endfunction
 
