@@ -1,7 +1,3 @@
-if !exists("g:go_metalinter_command")
-  let g:go_metalinter_command = ""
-endif
-
 if !exists("g:go_metalinter_autosave_enabled")
   let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 endif
@@ -37,7 +33,7 @@ function! go#lint#Gometa(autosave, ...) abort
   let cmd = [bin_path]
   let cmd += ["--disable-all"]
 
-  if a:autosave || empty(g:go_metalinter_command)
+  if a:autosave || empty(go#config#MetalinterCommand())
     " linters
     let linters = a:autosave ? g:go_metalinter_autosave_enabled : g:go_metalinter_enabled
     for linter in linters
@@ -56,7 +52,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += ["--tests"]
   else
     " the user wants something else, let us use it.
-    let cmd += split(g:go_metalinter_command, " ")
+    let cmd += split(go#config#MetalinterCommand(), " ")
   endif
 
   if a:autosave

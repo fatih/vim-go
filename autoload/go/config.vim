@@ -232,4 +232,8 @@ function! go#config#SetTemplateAutocreate(value) abort
   let g:go_template_autocreate = a:value
 endfunction
 
+function! go#config#MetalinterCommand() abort
+  return get(g:, "go_metalinter_command", "")
+endfunction
+
 " vim: sw=2 ts=2 et
