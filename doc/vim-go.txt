@@ -1102,7 +1102,7 @@ cleaned for each package after `60` seconds. This can be changed with the
                                                        *go#complete#GetInfo()*
 
 Returns the description of the identifer under the cursor. Can be used to plug
-into the statusline. This function is also used for |'g:go_auto_type_info'|.
+into the statusline.
 
 ==============================================================================
 SETTINGS                                                        *go-settings*
