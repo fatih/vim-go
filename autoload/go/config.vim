@@ -244,4 +244,9 @@ function! go#config#MetalinterEnabled() abort
   return get(g:, "go_metalinter_enabled", ['vet', 'golint', 'errcheck'])
 endfunction
 
+function! go#config#MetalinterDisabled() abort
+  return get(g:, "go_metalinter_disabled", [])
+endfunction
+
+
 " vim: sw=2 ts=2 et
