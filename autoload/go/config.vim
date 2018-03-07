@@ -288,4 +288,12 @@ function! go#config#DocMaxHeight() abort
   return get(g:, "go_doc_max_height", 20)
 endfunction
 
+function! go#config#AutoTypeInfo() abort
+  return get(g:, "go_auto_type_info", 0)
+endfunction
+
+function! go#config#SetAutoTypeInfo(value) abort
+  let g:go_auto_type_info = a:value
+endfunction
+
 " vim: sw=2 ts=2 et

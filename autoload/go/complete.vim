@@ -250,13 +250,13 @@ function! go#complete#Complete(findstart, base) abort
 endfunction
 
 function! go#complete#ToggleAutoTypeInfo() abort
-  if get(g:, "go_auto_type_info", 0)
-    let g:go_auto_type_info = 0
+  if go#config#AutoTypeInfo()
+    call go#config#SetAutoTypeInfo(0)
     call go#util#EchoProgress("auto type info disabled")
     return
   end
 
-  let g:go_auto_type_info = 1
+  call go#config#SetAutoTypeInfo(1)
   call go#util#EchoProgress("auto type info enabled")
 endfunction
 
