@@ -240,4 +240,8 @@ function! go#config#MetalinterAutosaveEnabled() abort
   return get(g:, 'go_metalinter_autosave_enabled', ['vet', 'golint'])
 endfunction
 
+function! go#config#MetalinterEnabled() abort
+  return get(g:, "go_metalinter_enabled", ['vet', 'golint', 'errcheck'])
+endfunction
+
 " vim: sw=2 ts=2 et

@@ -16,7 +16,6 @@ func! Test_Gometa() abort
   " And restore it back to its previous value
   call go#lint#ToggleMetaLinterAutoSave()
 
-  let orig_go_metalinter_enabled = g:go_metalinter_enabled
   let g:go_metalinter_enabled = ['golint']
 
   call go#lint#Gometa(0, $GOPATH . '/src/foo')
@@ -29,7 +28,7 @@ func! Test_Gometa() abort
   endwhile
 
   call gotest#assert_quickfix(actual, expected)
-  let g:go_metalinter_enabled = orig_go_metalinter_enabled
+  unlet g:go_metalinter_enabled
 endfunc
 
 func! Test_GometaWithDisabled() abort

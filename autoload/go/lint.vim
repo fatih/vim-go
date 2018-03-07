@@ -1,7 +1,3 @@
-if !exists("g:go_metalinter_enabled")
-  let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
-endif
-
 if !exists("g:go_metalinter_disabled")
   let g:go_metalinter_disabled = []
 endif
@@ -31,7 +27,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
   if a:autosave || empty(go#config#MetalinterCommand())
     " linters
-    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : g:go_metalinter_enabled
+    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
     for linter in linters
       let cmd += ["--enable=".linter]
     endfor
