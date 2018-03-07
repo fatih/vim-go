@@ -268,4 +268,12 @@ function! go#config#ListHeight() abort
   return get(g:, "go_list_height", 0)
 endfunction
 
+function! go#config#FmtAutosave() abort
+	return get(g:, "go_fmt_autosave", 1)
+endfunction
+
+function! go#config#SetFmtAutosave(value) abort
+  let g:go_fmt_autosave = a:value
+endfunction
+
 " vim: sw=2 ts=2 et

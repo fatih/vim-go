@@ -254,13 +254,13 @@ function! s:show_errors(errors) abort
 endfunction
 
 function! go#fmt#ToggleFmtAutoSave() abort
-  if get(g:, "go_fmt_autosave", 1)
-    let g:go_fmt_autosave = 0
+  if go#config#FmtAutosave()
+    call go#config#FmtAutosave(0)
     call go#util#EchoProgress("auto fmt disabled")
     return
   end
 
-  let g:go_fmt_autosave = 1
+  call go#config#FmtAutosave(1)
   call go#util#EchoProgress("auto fmt enabled")
 endfunction
 
