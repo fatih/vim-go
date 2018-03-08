@@ -5,10 +5,6 @@
 " fmt.vim: Vim command to format Go files with gofmt (and gofmt compatible
 " toorls, such as goimports).
 
-if !exists('g:go_fmt_fail_silently')
-  let g:go_fmt_fail_silently = 0
-endif
-
 if !exists("g:go_fmt_experimental")
   let g:go_fmt_experimental = 0
 endif
@@ -67,7 +63,7 @@ function! go#fmt#Format(withGoimport) abort
 
   if go#util#ShellError() == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
-  elseif g:go_fmt_fail_silently == 0
+  elseif go#config#FmtFailSilently()
     let errors = s:parse_errors(expand('%'), out)
     call s:show_errors(errors)
   endif

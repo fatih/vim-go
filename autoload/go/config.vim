@@ -316,4 +316,8 @@ function! go#config#FmtOptions() abort
   return get(g:, "go_fmt_options", {})
 endfunction
 
+function! go#config#FmtFailSilently() abort
+  return get(g:, "go_fmt_fail_silently", 0)
+endfunction
+
 " vim: sw=2 ts=2 et
