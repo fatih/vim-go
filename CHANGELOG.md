@@ -21,7 +21,9 @@ IMPROVEMENTS:
 * Add `fe` -> `fmt.Errorf()` snippet for NeoSnippet and UltiSnippets.
   [[GH-1677]](https://github.com/fatih/vim-go/pull/1677)
 * Use the async api when calling guru from neovim.
-  [[GH-1677]](https://github.com/fatih/vim-go/pull/1678)
+  [[GH-1678]](https://github.com/fatih/vim-go/pull/1678)
+* Use the async api when calling gocode to get type info.
+  [[GH-1697]](https://github.com/fatih/vim-go/pull/1697)
 
 BUG FIXES:
 
