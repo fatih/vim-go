@@ -4,10 +4,6 @@
 
 let s:buf_nr = -1
 
-if !exists("g:go_doc_command")
-  let g:go_doc_command = ["godoc"]
-endif
-
 function! go#doc#OpenBrowser(...) abort
   " check if we have gogetdoc as it gives us more and accurate information.
   " Only supported if we have json_decode as it's not worth to parse the plain
@@ -55,11 +51,11 @@ endfunction
 function! go#doc#Open(newmode, mode, ...) abort
   " With argument: run "godoc [arg]".
   if len(a:000)
-    if empty(go#path#CheckBinPath(g:go_doc_command[0]))
+    if empty(go#path#CheckBinPath(go#config#DocCommand()[0]))
       return
     endif
 
-    let command = printf("%s %s", go#util#Shelljoin(g:go_doc_command), join(a:000, ' '))
+    let command = printf("%s %s", go#util#Shelljoin(go#config#DocCommand()), join(a:000, ' '))
     let out = go#util#System(command)
   " Without argument: run gogetdoc on cursor position.
   else
