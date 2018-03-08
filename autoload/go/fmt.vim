@@ -5,10 +5,6 @@
 " fmt.vim: Vim command to format Go files with gofmt (and gofmt compatible
 " toorls, such as goimports).
 
-if !exists("g:go_fmt_experimental")
-  let g:go_fmt_experimental = 0
-endif
-
 "  we have those problems :
 "  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
 "  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
@@ -18,7 +14,7 @@ endif
 "  this and have VimL experience, please look at the function for
 "  improvements, patches are welcome :)
 function! go#fmt#Format(withGoimport) abort
-  if g:go_fmt_experimental == 1
+  if go#config#FmtExperimental()
     " Using winsaveview to save/restore cursor state has the problem of
     " closing folds on save:
     "   https://github.com/fatih/vim-go/issues/502
@@ -71,7 +67,7 @@ function! go#fmt#Format(withGoimport) abort
   " We didn't use the temp file, so clean up
   call delete(l:tmpname)
 
-  if g:go_fmt_experimental == 1
+  if go#config#FmtExperimental()
     " restore our undo history
     silent! exe 'rundo ' . tmpundofile
     call delete(tmpundofile)
