@@ -300,4 +300,8 @@ function! go#config#AlternateMode() abort
   return get(g:, "go_alternate_mode", "edit")
 endfunction
 
+function! go#config#DeclsMode() abort
+  return get(g:, "go_decls_mode", "")
+endfunction
+
 " vim: sw=2 ts=2 et
