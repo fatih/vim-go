@@ -296,4 +296,8 @@ function! go#config#SetAutoTypeInfo(value) abort
   let g:go_auto_type_info = a:value
 endfunction
 
+function! go#config#AlternateMode() abort
+  return get(g:, "go_alternate_mode", "edit")
+endfunction
+
 " vim: sw=2 ts=2 et
