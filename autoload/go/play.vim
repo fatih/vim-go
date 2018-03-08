@@ -1,8 +1,3 @@
-if !exists("g:go_play_open_browser")
-  let g:go_play_open_browser = 1
-endif
-
-
 function! go#play#Share(count, line1, line2) abort
   if !executable('curl')
     echohl ErrorMsg | echomsg "vim-go: require 'curl' command" | echohl None
@@ -34,7 +29,7 @@ function! go#play#Share(count, line1, line2) abort
     let @+ = url
   endif
 
-  if g:go_play_open_browser != 0
+  if go#config#PlayOpenBrowser()
     call go#tool#OpenBrowser(url)
   endif
 
