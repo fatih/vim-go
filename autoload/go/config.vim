@@ -332,4 +332,16 @@ function! go#config#GorenameBin() abort
   return get(g:, "go_gorename_bin", "gorename")
 endfunction
 
+function! go#config#GorenamePrefill() abort
+  return get(g:, "go_gorename_prefill", 'expand("<cword>") =~# "^[A-Z]"' .
+          \ '? go#util#pascalcase(expand("<cword>"))' .
+          \ ': go#util#camelcase(expand("<cword>"))')
+endfunction
+
+" Set the default value. A value of "1" is a shortcut for this, for
+" compatibility reasons.
+if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
+  unlet g:go_gorename_prefill
+endif
+
 " vim: sw=2 ts=2 et
