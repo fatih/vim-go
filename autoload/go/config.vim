@@ -328,4 +328,8 @@ function! go#config#PlayOpenBrowser() abort
   return get(g:, "go_play_open_browser", 1)
 endfunction
 
+function! go#config#GorenameBin() abort
+  return get(g:, "go_gorename_bin", "gorename")
+endfunction
+
 " vim: sw=2 ts=2 et

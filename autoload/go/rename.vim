@@ -1,7 +1,3 @@
-if !exists("g:go_gorename_bin")
-  let g:go_gorename_bin = "gorename"
-endif
-
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 function! s:default() abort
@@ -33,7 +29,7 @@ function! go#rename#Rename(bang, ...) abort
   endif
 
   " return with a warning if the bin doesn't exist
-  let bin_path = go#path#CheckBinPath(g:go_gorename_bin)
+  let bin_path = go#path#CheckBinPath(go#config#GorenameBin())
   if empty(bin_path)
     return
   endif
