@@ -5,10 +5,6 @@
 " fmt.vim: Vim command to format Go files with gofmt (and gofmt compatible
 " toorls, such as goimports).
 
-if !exists("g:go_fmt_command")
-  let g:go_fmt_command = "gofmt"
-endif
-
 if !exists('g:go_fmt_options')
   let g:go_fmt_options = ''
 endif
@@ -64,7 +60,7 @@ function! go#fmt#Format(withGoimport) abort
     let l:tmpname = tr(l:tmpname, '\', '/')
   endif
 
-  let bin_name = g:go_fmt_command
+  let bin_name = go#config#FmtCommand()
   if a:withGoimport == 1
     let bin_name = "goimports"
   endif

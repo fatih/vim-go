@@ -308,4 +308,8 @@ function! go#config#DocCommand() abort
   return get(g:, "go_doc_command", ["godoc"])
 endfunction
 
+function! go#config#FmtCommand() abort
+  return get(g:, "go_fmt_command", "gofmt")
+endfunction
+
 " vim: sw=2 ts=2 et
