@@ -1,7 +1,3 @@
-if !exists("g:go_textobj_include_variable")
-  let g:go_textobj_include_variable = 1
-endif
-
 " ( ) motions
 " { } motions
 " s for sentence
@@ -57,7 +53,7 @@ function! go#textobj#Function(mode) abort
     " want's to include doc comments for function declarations
     if has_key(info, 'doc') && go#config#TextobjIncludeFunctionDoc()
       call cursor(info.doc.line, info.doc.col)
-    elseif info['sig']['name'] == '' && g:go_textobj_include_variable
+    elseif info['sig']['name'] == '' && go#config#TextobjIncludeVariable()
       " one liner anonymous functions
       if info.lbrace.line == info.rbrace.line
         " jump to first nonblack char, to get the correct column
