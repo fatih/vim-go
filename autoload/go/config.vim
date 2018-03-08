@@ -338,6 +338,10 @@ function! go#config#GorenamePrefill() abort
           \ ': go#util#camelcase(expand("<cword>"))')
 endfunction
 
+function! go#config#TextobjIncludeFunctionDoc() abort
+  return get(g:, "go_textobj_include_function_doc", 1)
+endfunction
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
