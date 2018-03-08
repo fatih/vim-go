@@ -312,4 +312,8 @@ function! go#config#FmtCommand() abort
   return get(g:, "go_fmt_command", "gofmt")
 endfunction
 
+function! go#config#FmtOptions() abort
+  return get(g:, "go_fmt_options", {})
+endfunction
+
 " vim: sw=2 ts=2 et

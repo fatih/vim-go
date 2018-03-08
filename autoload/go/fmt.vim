@@ -5,10 +5,6 @@
 " fmt.vim: Vim command to format Go files with gofmt (and gofmt compatible
 " toorls, such as goimports).
 
-if !exists('g:go_fmt_options')
-  let g:go_fmt_options = ''
-endif
-
 if !exists('g:go_fmt_fail_silently')
   let g:go_fmt_fail_silently = 0
 endif
@@ -182,9 +178,9 @@ function! s:fmt_cmd(bin_name, source, target)
   " add the options for binary (if any). go_fmt_options was by default of type
   " string, however to allow customization it's now a dictionary of binary
   " name mapping to options.
-  let opts = g:go_fmt_options
-  if type(g:go_fmt_options) == type({})
-    let opts = has_key(g:go_fmt_options, a:bin_name) ? g:go_fmt_options[a:bin_name] : ""
+  let opts = go#config#FmtOptions()
+  if type(opts) == type({})
+    let opts = has_key(opts, a:bin_name) ? opts[a:bin_name] : ""
   endif
   call extend(cmd, split(opts, " "))
 
