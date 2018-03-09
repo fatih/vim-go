@@ -361,19 +361,19 @@ hi def link     goOperator          Operator
 " Functions;
 if g:go_highlight_functions isnot 0 || g:go_highlight_function_arguments isnot 0
   syn match goDeclaration       /\<func\>/ nextgroup=goReceiver,goFunction,goSimpleArguments skipwhite skipnl
-  syn match goReceiverVar       /\w\+\ze\s\+\(\w\|\*\)/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
+  syn match goReceiverVar       /\(\h\w*\)\+\ze\s\+\(\w\|\*\)/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
-  syn match goFunction          /\w\+/ nextgroup=goSimpleArguments contained skipwhite skipnl
-  syn match goReceiverType      /\w\+/ contained
+  syn match goFunction          /\(\h\w*\)\+/ nextgroup=goSimpleArguments contained skipwhite skipnl
+  syn match goReceiverType      /\(\h\w*\)\+/ contained
 if g:go_highlight_function_arguments isnot 0
   syn match goSimpleArguments   /(\(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goArgumentName nextgroup=goSimpleArguments skipwhite skipnl
-  syn match goArgumentName      /\w\+\(\s*,\s*\w\+\)*\ze\s\+\(\w\|\.\|\*\|\[\)/ contained nextgroup=goArgumentType skipwhite skipnl
+  syn match goArgumentName      /\(\h\w*\)\+\(\s*,\s*\(\h\w*\)\+\)*\ze\s\+\(\w\|\.\|\*\|\[\)/ contained nextgroup=goArgumentType skipwhite skipnl
   syn match goArgumentType      /\([^,)]\|\_s\)\+,\?/ contained nextgroup=goArgumentName skipwhite skipnl
                         \ contains=goVarArgs,goType,goSignedInts,goUnsignedInts,goFloats,goComplexes,goDeclType,goBlock
   hi def link   goReceiverVar       goArgumentName
   hi def link   goArgumentName      Identifier
 endif
-  syn match goReceiver          /(\s*\w\+\(\s\+\*\?\s*\w\+\)\?\s*)\ze\s*\w/ contained nextgroup=goFunction contains=goReceiverVar skipwhite skipnl
+  syn match goReceiver          /(\s*\(\h\w*\)\+\(\s\+\*\?\s*\(\h\w*\)\+\)\?\s*)\ze\s*\w/ contained nextgroup=goFunction contains=goReceiverVar skipwhite skipnl
 else
   syn keyword goDeclaration func
 endif
@@ -381,21 +381,21 @@ hi def link     goFunction          Function
 
 " Function calls;
 if g:go_highlight_function_calls != 0
-  syn match goFunctionCall      /\w\+\ze(/ contains=goBuiltins,goDeclaration
+  syn match goFunctionCall      /\(\h\w*\)\+\ze(/ contains=goBuiltins,goDeclaration
 endif
 hi def link     goFunctionCall      Type
 
 " Fields;
 if g:go_highlight_fields != 0
-  syn match goField                 /\.\w\+\([.\ \n\r\:\)\[,]\)\@=/hs=s+1
+  syn match goField                 /\.\(\h\w*\)\+\([.\ \n\r\:\)\[,]\)\@=/hs=s+1
 endif
 hi def link    goField              Identifier
 
 " Structs & Interfaces;
 if g:go_highlight_types != 0
-  syn match goTypeConstructor      /\<\w\+{\@=/
+  syn match goTypeConstructor      /\<\(\h\w*\)\+{\@=/
   syn match goTypeDecl             /\<type\>/ nextgroup=goTypeName skipwhite skipnl
-  syn match goTypeName             /\w\+/ contained nextgroup=goDeclType skipwhite skipnl
+  syn match goTypeName             /\(\h\w*\)\+/ contained nextgroup=goDeclType skipwhite skipnl
   syn match goDeclType             /\<\(interface\|struct\)\>/ skipwhite skipnl
   hi def link     goReceiverType      Type
 else
@@ -409,13 +409,13 @@ hi def link     goDeclType          Keyword
 
 " Variable Assignments
 if g:go_highlight_variable_assignments != 0
-  syn match goVarAssign /\v[_.[:alnum:]]+(,\s*[_.[:alnum:]]+)*\ze(\s*([-^+|^\/%&]|\*|\<\<|\>\>|\&\^)?\=[^=])/
+  syn match goVarAssign /\v(\h\w*)+(,\s*(\h\w*)+)*\ze(\s*([-^+|^\/%&]|\*|\<\<|\>\>|\&\^)?\=[^=])/
   hi def link   goVarAssign         Special
 endif
 
 " Variable Declarations
 if g:go_highlight_variable_declarations != 0
-  syn match goVarDefs /\v\w+(,\s*\w+)*\ze(\s*:\=)/
+  syn match goVarDefs /\v(\h\w*)+(,\s*(\h\w*)+)*\ze(\s*:\=)/
   hi def link   goVarDefs           Special
 endif
 
