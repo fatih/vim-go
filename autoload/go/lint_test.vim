@@ -105,9 +105,10 @@ endfunc
 func! Test_Vet()
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint'
   silent exe 'e ' . $GOPATH . '/src/vet/vet.go'
+  compiler go
 
   let expected = [
-        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 0, 'valid': 1, 'vcol': 0, 'nr': 0, 'type': '', 'pattern': '', 'text': 'arg str for printf verb %d of wrong type: string'}
+        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'arg str for printf verb %d of wrong type: string'}
       \ ]
 
   let winnr = winnr()
