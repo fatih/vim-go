@@ -6,7 +6,7 @@ func! Test_GoBuildErrors()
 
     " set the compiler type so that the errorformat option will be set
     " correctly.
-    compiler! go
+    compiler go
 
     let expected = [{'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'undefined: notafunc'}]
     " clear the quickfix lists
