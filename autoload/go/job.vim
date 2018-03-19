@@ -65,7 +65,7 @@ function go#job#Spawn(args)
   function! s:callback(chan, msg) dict
     call add(self.messages, a:msg)
   endfunction
-  " explicitly bind callback so that to state so that within it, self will
+  " explicitly bind callback to state so that within it, self will
   " always refer to state. See :help Partial for more information.
   let cbs.callback = function('s:callback', [], state)
 
@@ -86,8 +86,8 @@ function go#job#Spawn(args)
       call self.show_errors(a:job, self.exit_status, self.messages)
     endif
   endfunction
-  " explicitly bind exit_cb so that to state so that within it, self will
-  " always refer to state. See :help Partial for more information.
+  " explicitly bind exit_cb to state so that within it, self will always refer
+  " to state. See :help Partial for more information.
   let cbs.exit_cb = function('s:exit_cb', [], state)
 
   function! s:close_cb(ch) dict
@@ -99,7 +99,7 @@ function go#job#Spawn(args)
       call self.show_errors(job, self.exit_status, self.messages)
     endif
   endfunction
-  " explicitly bind close_cb so that to state so that within it, self will
+  " explicitly bind close_cb to state so that within it, self will
   " always refer to state. See :help Partial for more information.
   let cbs.close_cb = function('s:close_cb', [], state)
 
