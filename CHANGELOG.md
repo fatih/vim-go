@@ -67,6 +67,11 @@ BUG FIXES:
   [[GH-1698]](https://github.com/fatih/vim-go/pull/1698)
 * Keep alternate filename when loading an autocreate template.
   [[GH-1675]](https://github.com/fatih/vim-go/pull/1675)
+* Parse the column number in errors correctly in vim8 and neovim.
+  [[GH-1716]](https://github.com/fatih/vim-go/pull/1716)
+* Fix race conditions in the terminal handling for neovim.
+  [[GH-1721]](https://github.com/fatih/vim-go/pull/1721)
+
 
 
 BACKWARDS INCOMPATIBILITIES:
