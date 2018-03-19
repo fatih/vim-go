@@ -89,8 +89,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   " usually there is always output so never branch into this clause
   if empty(self.stdout)
-    call go#list#Clean(l:listtype)
-    call go#list#Window(l:listtype)
+    call s:cleanlist(self.winnr, l:listtype)
     return
   endif
 
@@ -114,13 +113,17 @@ function! s:on_exit(job_id, exit_status, event) dict abort
     return
   endif
 
+  call s:cleanlist(self.winnr, l:listtype)
+endfunction
+
+function s:cleanlist(winnr, listtype) abort
   " There are no errors. Clean and close the list. Jump to the window to which
   " the location list is attached, close the list, and then jump back to the
   " current window.
   let l:winnr = winnr()
-  execute self.winnr . "wincmd w"
-  call go#list#Clean(l:listtype)
-  call go#list#Window(l:listtype)
+  execute a:winnr . "wincmd w"
+  call go#list#Clean(a:listtype)
+  call go#list#Window(a:listtype)
   execute l:winnr . "wincmd w"
 endfunction
 
