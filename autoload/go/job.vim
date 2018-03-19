@@ -42,7 +42,8 @@ function go#job#Spawn(args)
         \ 'for': "_job",
         \ 'exited': 0,
         \ 'exit_status': 0,
-        \ 'closed': 0
+        \ 'closed': 0,
+        \ 'errorformat': &errorformat
       \ }
 
   if has_key(a:args, 'bang')
@@ -117,14 +118,18 @@ function go#job#Spawn(args)
       return
     endif
 
+    let out = join(self.messages, "\n")
+
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     try
+      " parse the errors relative to self.jobdir
       execute cd self.jobdir
-      let errors = go#tool#ParseErrors(a:data)
-      let errors = go#tool#FilterValids(errors)
+      call go#list#ParseFormat(l:listtype, self.errorformat, out, self.for)
+      let errors = go#list#Get(l:listtype)
     finally
       execute cd . fnameescape(self.dir)
     endtry
+
 
     if empty(errors)
       " failed to parse errors, output the original content
@@ -133,7 +138,6 @@ function go#job#Spawn(args)
     endif
 
     if self.winnr == winnr()
-      call go#list#Populate(l:listtype, errors, join(self.args))
       call go#list#Window(l:listtype, len(errors))
       if !self.bang
         call go#list#JumpToFirst(l:listtype)

@@ -147,7 +147,7 @@ function! go#lint#Golint(...) abort
   endif
 
   let l:listtype = go#list#Type("GoLint")
-  call go#list#Parse(l:listtype, out)
+  call go#list#Parse(l:listtype, out, "GoLint")
   let errors = go#list#Get(l:listtype)
   call go#list#Window(l:listtype, len(errors))
   call go#list#JumpToFirst(l:listtype)
@@ -166,8 +166,9 @@ function! go#lint#Vet(bang, ...) abort
 
   let l:listtype = go#list#Type("GoVet")
   if go#util#ShellError() != 0
-    let errors = go#tool#ParseErrors(split(out, '\n'))
-    call go#list#Populate(l:listtype, errors, 'Vet')
+    let errorformat="%-Gexit status %\\d%\\+," . &errorformat
+    call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet")
+    let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !a:bang
       call go#list#JumpToFirst(l:listtype)
