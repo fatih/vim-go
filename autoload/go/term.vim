@@ -18,9 +18,8 @@ function! go#term#newmode(bang, cmd, mode) abort
   let state = {
         \ 'cmd': a:cmd,
         \ 'bang' : a:bang,
-        \ 'winnr': winnr(),
-        \ 'stdout': [],
-        \ 'stderr': []
+        \ 'winid': win_getid(winnr()),
+        \ 'stdout': []
       \ }
 
   " execute go build in the files directory
@@ -39,18 +38,18 @@ function! go#term#newmode(bang, cmd, mode) abort
 
   " explicitly bind callbacks to state so that within them, self will always
   " refer to state. See :help Partial for more information.
+  "
+  " Don't set an on_stderr, because it will be passed the same data as
+  " on_stdout. See https://github.com/neovim/neovim/issues/2836
   let job = {
         \ 'on_stdout': function('s:on_stdout', [], state),
-        \ 'on_stderr': function('s:on_stderr', [], state),
         \ 'on_exit' : function('s:on_exit', [], state),
-        \ }
+      \ }
 
   let state.id = termopen(a:cmd, job)
-  let state.termwinnr = winnr()
+  let state.termwinid = win_getid(winnr())
 
   execute cd . fnameescape(dir)
-
-  startinsert
 
   " resize new term if needed.
   let height = get(g:, 'go_term_height', winheight(0))
@@ -67,11 +66,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   " we also need to resize the pty, so there you go...
   call jobresize(state.id, width, height)
 
-  stopinsert
-
-  if state.winnr !=# winnr()
-    exe state.winnr . "wincmd w"
-  endif
+  call win_gotoid(state.winid)
 
   return state.id
 endfunction
@@ -80,16 +75,12 @@ function! s:on_stdout(job_id, data, event) dict abort
   call extend(self.stdout, a:data)
 endfunction
 
-function! s:on_stderr(job_id, data, event) dict abort
-    call extend(self.stderr, a:data)
-endfunction
-
 function! s:on_exit(job_id, exit_status, event) dict abort
   let l:listtype = go#list#Type("_term")
 
   " usually there is always output so never branch into this clause
   if empty(self.stdout)
-    call s:cleanlist(self.winnr, l:listtype)
+    call s:cleanlist(self.winid, l:listtype)
     return
   endif
 
@@ -98,11 +89,10 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   if !empty(errors)
     " close terminal; we don't need it anymore
-    execute self.termwinnr . "close"
+    call win_gotoid(self.termwinid)
+    close
 
-    if self.winnr !=# winnr()
-      execute self.winnr . "wincmd w"
-    endif
+    call win_gotoid(self.winid)
 
     call go#list#Populate(l:listtype, errors, self.cmd)
     call go#list#Window(l:listtype, len(errors))
@@ -113,17 +103,17 @@ function! s:on_exit(job_id, exit_status, event) dict abort
     return
   endif
 
-  call s:cleanlist(self.winnr, l:listtype)
+  call s:cleanlist(self.winid, l:listtype)
 endfunction
 
-function s:cleanlist(winnr, listtype) abort
+function! s:cleanlist(winid, listtype) abort
   " There are no errors. Clean and close the list. Jump to the window to which
   " the location list is attached, close the list, and then jump back to the
   " current window.
-  let l:winnr = winnr()
-  execute a:winnr . "wincmd w"
+  let winid = win_getid(winnr())
+  call win_gotoid(a:winid)
   call go#list#Clean(a:listtype)
-  execute l:winnr . "wincmd w"
+  call win_gotoid(l:winid)
 endfunction
 
 " vim: sw=2 ts=2 et
