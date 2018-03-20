@@ -105,7 +105,6 @@ function! go#lint#Gometa(autosave, ...) abort
 
   if l:err == 0
     call go#list#Clean(l:listtype)
-    call go#list#Window(l:listtype)
     echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
   else
     " GoMetaLinter can output one of the two, so we look for both:
@@ -176,7 +175,6 @@ function! go#lint#Vet(bang, ...) abort
     echon "vim-go: " | echohl ErrorMsg | echon "[vet] FAIL" | echohl None
   else
     call go#list#Clean(l:listtype)
-    call go#list#Window(l:listtype)
     redraw | echon "vim-go: " | echohl Function | echon "[vet] PASS" | echohl None
   endif
 endfunction
@@ -229,7 +227,6 @@ function! go#lint#Errcheck(...) abort
     endif
   else
     call go#list#Clean(l:listtype)
-    call go#list#Window(l:listtype)
     echon "vim-go: " | echohl Function | echon "[errcheck] PASS" | echohl None
   endif
 

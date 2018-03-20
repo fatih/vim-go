@@ -18,14 +18,7 @@ function! go#list#Window(listtype, ...) abort
   " location list increases/decreases, cwindow will not resize when a new
   " updated height is passed. lopen in the other hand resizes the screen.
   if !a:0 || a:1 == 0
-    let autoclose_window = get(g:, 'go_list_autoclose', 1)
-    if autoclose_window
-      if a:listtype == "locationlist"
-        lclose
-      else
-        cclose
-      endif
-    endif
+    call go#list#Close(a:listtype)
     return
   endif
 
@@ -107,12 +100,28 @@ function! go#list#JumpToFirst(listtype) abort
   endif
 endfunction
 
-" Clean cleans the location list
+" Clean cleans and closes the location list 
 function! go#list#Clean(listtype) abort
   if a:listtype == "locationlist"
     lex []
   else
     cex []
+  endif
+
+  call go#list#Close(a:listtype)
+endfunction
+
+" Close closes the location list
+function! go#list#Close(listtype) abort
+  let autoclose_window = get(g:, 'go_list_autoclose', 1)
+  if !autoclose_window
+    return
+  endif
+
+  if a:listtype == "locationlist"
+    lclose
+  else
+    cclose
   endif
 endfunction
 

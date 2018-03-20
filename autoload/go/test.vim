@@ -94,7 +94,6 @@ function! go#test#Test(bang, compile, ...) abort
     call go#util#EchoError("[test] FAIL")
   else
     call go#list#Clean(l:listtype)
-    call go#list#Window(l:listtype)
 
     if a:compile
       call go#util#EchoSuccess("[test] SUCCESS")
@@ -246,7 +245,6 @@ function! s:show_errors(args, exit_val, messages) abort
     let l:listtype = go#list#Type("GoTest")
     if a:exit_val == 0
       call go#list#Clean(l:listtype)
-      call go#list#Window(l:listtype)
       return
     endif
 

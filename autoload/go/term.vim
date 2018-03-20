@@ -123,7 +123,6 @@ function s:cleanlist(winnr, listtype) abort
   let l:winnr = winnr()
   execute a:winnr . "wincmd w"
   call go#list#Clean(a:listtype)
-  call go#list#Window(a:listtype)
   execute l:winnr . "wincmd w"
 endfunction
 
