@@ -73,8 +73,9 @@ BUG FIXES:
   [[GH-1716]](https://github.com/fatih/vim-go/pull/1716)
 * Fix race conditions in the terminal handling for neovim.
   [[GH-1721]](https://github.com/fatih/vim-go/pull/1721)
-
-
+* Put the user back in the original window regardless of the value of
+  `splitright` after starting a neovim terminal window.
+  [[GH-1725]](https://github.com/fatih/vim-go/pull/1725)
 
 BACKWARDS INCOMPATIBILITIES:
 
