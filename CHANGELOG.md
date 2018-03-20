@@ -24,6 +24,8 @@ IMPROVEMENTS:
   [[GH-1678]](https://github.com/fatih/vim-go/pull/1678)
 * Use the async api when calling gocode to get type info.
   [[GH-1697]](https://github.com/fatih/vim-go/pull/1697)
+* Cache import path lookups to improve responsiveness.
+  [[GH-1713]](https://github.com/fatih/vim-go/pull/1713)
 
 BUG FIXES:
 
