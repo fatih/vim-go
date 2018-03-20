@@ -19,8 +19,7 @@ function! go#term#newmode(bang, cmd, mode) abort
         \ 'cmd': a:cmd,
         \ 'bang' : a:bang,
         \ 'winnr': winnr(),
-        \ 'stdout': [],
-        \ 'stderr': []
+        \ 'stdout': []
       \ }
 
   " execute go build in the files directory
@@ -39,11 +38,13 @@ function! go#term#newmode(bang, cmd, mode) abort
 
   " explicitly bind callbacks to state so that within them, self will always
   " refer to state. See :help Partial for more information.
+  "
+  " Don't set an on_stderr, because it will be passed the same data as
+  " on_stdout. See https://github.com/neovim/neovim/issues/2836
   let job = {
         \ 'on_stdout': function('s:on_stdout', [], state),
-        \ 'on_stderr': function('s:on_stderr', [], state),
         \ 'on_exit' : function('s:on_exit', [], state),
-        \ }
+      \ }
 
   let state.id = termopen(a:cmd, job)
   let state.termwinnr = winnr()
@@ -78,10 +79,6 @@ endfunction
 
 function! s:on_stdout(job_id, data, event) dict abort
   call extend(self.stdout, a:data)
-endfunction
-
-function! s:on_stderr(job_id, data, event) dict abort
-    call extend(self.stderr, a:data)
 endfunction
 
 function! s:on_exit(job_id, exit_status, event) dict abort
