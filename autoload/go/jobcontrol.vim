@@ -126,7 +126,6 @@ function! s:on_exit(job_id, exit_status, event) dict abort
   let l:listtype = go#list#Type(self.for)
   if a:exit_status == 0
     call go#list#Clean(l:listtype)
-    call go#list#Window(l:listtype)
 
     let self.state = "SUCCESS"
 

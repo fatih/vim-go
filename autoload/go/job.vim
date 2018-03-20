@@ -107,14 +107,12 @@ function go#job#Spawn(args)
     let l:listtype = go#list#Type(self.for)
     if a:exit_status == 0
       call go#list#Clean(l:listtype)
-      call go#list#Window(l:listtype)
       return
     endif
 
     let l:listtype = go#list#Type(self.for)
     if len(a:data) == 0
       call go#list#Clean(l:listtype)
-      call go#list#Window(l:listtype)
       return
     endif
 

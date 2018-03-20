@@ -107,12 +107,21 @@ function! go#list#JumpToFirst(listtype) abort
   endif
 endfunction
 
-" Clean cleans the location list
+" Clean cleans and closes the location list 
 function! go#list#Clean(listtype) abort
   if a:listtype == "locationlist"
     lex []
   else
     cex []
+  endif
+
+  let autoclose_window = get(g:, 'go_list_autoclose', 1)
+  if autoclose_window
+    if a:listtype == "locationlist"
+      lclose
+    else
+      cclose
+    endif
   endif
 endfunction
 

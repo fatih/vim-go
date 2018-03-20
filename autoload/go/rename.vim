@@ -160,7 +160,6 @@ function s:parse_errors(exit_val, bang, out)
   " strip out newline on the end that gorename puts. If we don't remove, it
   " will trigger the 'Hit ENTER to continue' prompt
   call go#list#Clean(l:listtype)
-  call go#list#Window(l:listtype)
   call go#util#EchoSuccess(a:out[0])
 
   " refresh the buffer so we can see the new content
