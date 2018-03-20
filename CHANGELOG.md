@@ -92,8 +92,6 @@ BACKWARDS INCOMPATIBILITIES:
   [[GH-1557]](https://github.com/fatih/vim-go/pull/1557)
 * Rename g`g:go_metalinter_excludes` to `g:go_metalinter_disabled`.
   [[GH-1648]](https://github.com/fatih/vim-go/pull/1648)
-* Rename g`g:go_metalinter_excludes` to `g:go_metalinter_disabled`.
-  [[GH-1648]](https://github.com/fatih/vim-go/pull/1648)
 * `:GoBuild` doesn't append the `-i` flag anymore due the recent Go 1.10
   changes that introduced a build cache.
   [[GH-1701]](https://github.com/fatih/vim-go/pull/1701)
