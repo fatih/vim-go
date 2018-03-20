@@ -51,8 +51,6 @@ function! go#term#newmode(bang, cmd, mode) abort
 
   execute cd . fnameescape(dir)
 
-  startinsert
-
   " resize new term if needed.
   let height = get(g:, 'go_term_height', winheight(0))
   let width = get(g:, 'go_term_width', winwidth(0))
@@ -67,8 +65,6 @@ function! go#term#newmode(bang, cmd, mode) abort
 
   " we also need to resize the pty, so there you go...
   call jobresize(state.id, width, height)
-
-  stopinsert
 
   if state.winnr !=# winnr()
     exe state.winnr . "wincmd w"
