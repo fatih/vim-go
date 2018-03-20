@@ -18,7 +18,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   let state = {
         \ 'cmd': a:cmd,
         \ 'bang' : a:bang,
-        \ 'winnr': winnr(),
+        \ 'winid': win_getid(winnr()),
         \ 'stdout': []
       \ }
 
@@ -47,7 +47,7 @@ function! go#term#newmode(bang, cmd, mode) abort
       \ }
 
   let state.id = termopen(a:cmd, job)
-  let state.termwinnr = winnr()
+  let state.termwinid = win_getid(winnr())
 
   execute cd . fnameescape(dir)
 
@@ -66,9 +66,7 @@ function! go#term#newmode(bang, cmd, mode) abort
   " we also need to resize the pty, so there you go...
   call jobresize(state.id, width, height)
 
-  if state.winnr !=# winnr()
-    exe state.winnr . "wincmd w"
-  endif
+  call win_gotoid(state.winid)
 
   return state.id
 endfunction
@@ -82,7 +80,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   " usually there is always output so never branch into this clause
   if empty(self.stdout)
-    call s:cleanlist(self.winnr, l:listtype)
+    call s:cleanlist(self.winid, l:listtype)
     return
   endif
 
@@ -91,11 +89,10 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   if !empty(errors)
     " close terminal; we don't need it anymore
-    execute self.termwinnr . "close"
+    call win_gotoid(self.termwinid)
+    close
 
-    if self.winnr !=# winnr()
-      execute self.winnr . "wincmd w"
-    endif
+    call win_gotoid(self.winid)
 
     call go#list#Populate(l:listtype, errors, self.cmd)
     call go#list#Window(l:listtype, len(errors))
@@ -106,17 +103,17 @@ function! s:on_exit(job_id, exit_status, event) dict abort
     return
   endif
 
-  call s:cleanlist(self.winnr, l:listtype)
+  call s:cleanlist(self.winid, l:listtype)
 endfunction
 
-function s:cleanlist(winnr, listtype) abort
+function! s:cleanlist(winid, listtype) abort
   " There are no errors. Clean and close the list. Jump to the window to which
   " the location list is attached, close the list, and then jump back to the
   " current window.
-  let l:winnr = winnr()
-  execute a:winnr . "wincmd w"
+  let winid = win_getid(winnr())
+  call win_gotoid(a:winid)
   call go#list#Clean(a:listtype)
-  execute l:winnr . "wincmd w"
+  call win_gotoid(l:winid)
 endfunction
 
 " vim: sw=2 ts=2 et
