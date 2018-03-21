@@ -21,6 +21,7 @@ if !exists('s:state')
       \ 'localVars': {},
       \ 'functionArgs': {},
       \ 'message': [],
+      \ 'is_test': 0,
       \}
 
   if go#util#HasDebug('debugger-state')
@@ -521,6 +522,8 @@ function! go#debug#Start(is_test, ...) abort
     lcd %:p:h
   endif
 
+  let s:state.is_test = a:is_test
+
   let dlv = go#path#CheckBinPath("dlv")
   if empty(dlv)
     return
@@ -772,10 +775,28 @@ function! go#debug#Stack(name) abort
   " Add a breakpoint to the main.Main if the user didn't define any.
   if len(s:state['breakpoint']) is 0
     try
-      let res = s:call_jsonrpc('RPCServer.FindLocation', {'loc': 'main.main'})
-      let res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint': {'addr': res.result.Locations[0].pc}})
-      let bt = res.result.Breakpoint
-      let s:state['breakpoint'][bt.id] = bt
+      let l:fun = 'main.main'
+      if s:state.is_test
+        let l:pkg = split(go#package#FromPath(expand('%')), '/')
+        let l:f =  go#textobj#FunctionLocation('prev', 0)
+        if !l:f
+          let l:f =  go#textobj#FunctionLocation('next', 0)
+
+          if !l:f
+            " TODO?
+          endif
+        endif
+
+        let l:fun =
+              \ l:pkg[len(l:pkg) - 1] .
+              \ '.' .
+              \ l:f['fn']['sig']['name']
+      endif
+
+      let l:res = s:call_jsonrpc('RPCServer.FindLocation', {'loc': l:fun})
+      let l:res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint': {'addr': l:res.result.Locations[0].pc}})
+      let l:bt = l:res.result.Breakpoint
+      let s:state['breakpoint'][l:bt.id] = l:bt
     catch
       call go#util#EchoError(v:exception)
     endtry
