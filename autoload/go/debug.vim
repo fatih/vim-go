@@ -250,7 +250,8 @@ function! go#debug#Stop() abort
   for k in map(split(execute('command GoDebug'), "\n")[1:], 'matchstr(v:val, "^\\s*\\zs\\S\\+")')
     exe 'delcommand' k
   endfor
-  command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start(<f-args>)
+  command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start(0, <f-args>)
+  command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start(1, <f-args>)
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
 
   " Remove all mappings.
@@ -442,6 +443,7 @@ function! s:start_cb(ch, json) abort
   endif
 
   silent! delcommand GoDebugStart
+  silent! delcommand GoDebugTest
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugNext       call go#debug#Stack('next')
   command! -nargs=0 GoDebugStep       call go#debug#Stack('step')
@@ -493,7 +495,7 @@ endfunction
 
 " Start the debug mode. The first argument is the package name to compile and
 " debug, anything else will be passed to the running program.
-function! go#debug#Start(...) abort
+function! go#debug#Start(is_test, ...) abort
   if has('nvim')
     call go#util#EchoError('This feature only works in Vim for now; Neovim is not (yet) supported. Sorry :-(')
     return
@@ -514,10 +516,8 @@ function! go#debug#Start(...) abort
     let g:go_debug_diag = s:state
   endif
 
-  let l:is_test = bufname('')[-8:] is# '_test.go'
-
   " cd in to test directory; this is also what running "go test" does.
-  if l:is_test
+  if a:is_test
     lcd %:p:h
   endif
 
@@ -544,7 +544,7 @@ function! go#debug#Start(...) abort
 
     let l:cmd = [
           \ dlv,
-          \ (l:is_test ? 'test' : 'debug'),
+          \ (a:is_test ? 'test' : 'debug'),
           \ '--output', tempname(),
           \ '--headless',
           \ '--api-version', '2',
