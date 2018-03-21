@@ -48,7 +48,7 @@ function! go#test#Test(bang, compile, ...) abort
     let job_args = {
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
-          \ 'winnr': winnr(),
+          \ 'winid': win_getid(winnr()),
           \ 'dir': getcwd(),
           \ 'compile_test': a:compile,
           \ 'jobdir': fnameescape(expand("%:p:h")),
@@ -242,11 +242,16 @@ endfunction
 " a quickfix compatible list of errors. It's intended to be used only for go
 " test output.
 function! s:show_errors(args, exit_val, messages) abort
-    let l:listtype = go#list#Type("GoTest")
-    if a:exit_val == 0
-      call go#list#Clean(l:listtype)
-      return
-    endif
+  let l:winid = win_getid(winnr())
+
+  call win_gotoid(a:args.winid)
+
+  let l:listtype = go#list#Type("GoTest")
+  if a:exit_val == 0
+    call go#list#Clean(l:listtype)
+    call win_gotoid(l:winid)
+    return
+  endif
 
   " TODO(bc): When messages is JSON, the JSON should be run through a
   " filter to produce lines that are more easily described by errorformat.
@@ -266,14 +271,18 @@ function! s:show_errors(args, exit_val, messages) abort
     " failed to parse errors, output the original content
     call go#util#EchoError(a:messages)
     call go#util#EchoError(a:args.dir)
+    call win_gotoid(l:winid)
     return
   endif
 
-  if a:args.winnr == winnr()
-    call go#list#Window(l:listtype, len(errors))
-    if !empty(errors) && !a:args.bang
-      call go#list#JumpToFirst(l:listtype)
-    endif
+  if a:args.winid != l:winid
+    call win_gotoid(l:winid)
+    return
+  endif
+
+  call go#list#Window(l:listtype, len(errors))
+  if !empty(errors) && !a:args.bang
+    call go#list#JumpToFirst(l:listtype)
   endif
 endfunction
 
