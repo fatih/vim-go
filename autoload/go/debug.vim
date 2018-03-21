@@ -774,32 +774,10 @@ function! go#debug#Stack(name) abort
 
   " Add a breakpoint to the main.Main if the user didn't define any.
   if len(s:state['breakpoint']) is 0
-    try
-      let l:fun = 'main.main'
-      if s:state.is_test
-        let l:pkg = split(go#package#FromPath(expand('%')), '/')
-        let l:f =  go#textobj#FunctionLocation('prev', 0)
-        if !l:f
-          let l:f =  go#textobj#FunctionLocation('next', 0)
-
-          if !l:f
-            " TODO?
-          endif
-        endif
-
-        let l:fun =
-              \ l:pkg[len(l:pkg) - 1] .
-              \ '.' .
-              \ l:f['fn']['sig']['name']
-      endif
-
-      let l:res = s:call_jsonrpc('RPCServer.FindLocation', {'loc': l:fun})
-      let l:res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint': {'addr': l:res.result.Locations[0].pc}})
-      let l:bt = l:res.result.Breakpoint
-      let s:state['breakpoint'][l:bt.id] = l:bt
-    catch
-      call go#util#EchoError(v:exception)
-    endtry
+    if go#debug#Breakpoint() isnot 0
+      let s:state.running = 0
+      return
+    endif
   endif
 
   try
@@ -849,7 +827,7 @@ function! s:isActive()
   return len(s:state['message']) > 0
 endfunction
 
-" Toggle breakpoint.
+" Toggle breakpoint. Returns 0 on success and 1 on failure.
 function! go#debug#Breakpoint(...) abort
   let l:filename = fnamemodify(expand('%'), ':p:gs!\\!/!')
 
@@ -858,7 +836,7 @@ function! go#debug#Breakpoint(...) abort
     let linenr = str2nr(a:1)
     if linenr is 0
       call go#util#EchoError('not a number: ' . a:1)
-      return
+      return 0
     endif
   else
     let linenr = line('.')
@@ -897,7 +875,10 @@ function! go#debug#Breakpoint(...) abort
     endif
   catch
     call go#util#EchoError(v:exception)
+    return 1
   endtry
+
+  return 0
 endfunction
 
 sign define godebugbreakpoint text=> texthl=GoDebugBreakpoint
