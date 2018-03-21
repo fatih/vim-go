@@ -516,6 +516,11 @@ function! go#debug#Start(...) abort
 
   let l:is_test = bufname('')[-8:] is# '_test.go'
 
+  " cd in to test directory; this is also what running "go test" does.
+  if l:is_test
+    lcd %:p:h
+  endif
+
   let dlv = go#path#CheckBinPath("dlv")
   if empty(dlv)
     return
