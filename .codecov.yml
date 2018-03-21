@@ -1,0 +1,16 @@
+---
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1
+        base: auto
+#comment: false
+comment:
+	layout: "files"
+	behavior: default
+	require_changes: true # if true: only post the comment if coverage changes
+ignore:
+  - "!autoload/go/*.vim$"
+  - "autoload/go/*_test.vim$"
