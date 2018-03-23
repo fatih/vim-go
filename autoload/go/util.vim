@@ -313,7 +313,6 @@ function! s:echo(msg, hi)
   " Tabs display as ^I or <09>, so manually expand them.
   let l:msg = map(l:msg, 'substitute(v:val, "\t", "        ", "")')
 
-  redraw
   exe 'echohl ' . a:hi
   for line in l:msg
     echom "vim-go: " . line
@@ -331,6 +330,7 @@ function! go#util#EchoWarning(msg)
   call s:echo(a:msg, 'WarningMsg')
 endfunction
 function! go#util#EchoProgress(msg)
+  redraw
   call s:echo(a:msg, 'Identifier')
 endfunction
 function! go#util#EchoInfo(msg)
