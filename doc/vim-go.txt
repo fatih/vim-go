@@ -157,6 +157,11 @@ The following plugins are supported for use with vim-go:
 ==============================================================================
 COMMANDS                                                         *go-commands*
 
+                                                        *:GoReportGitHubIssue*
+:GoReportGitHubIssue
+    GoReportGitHubIssue opens the default browser and starts a new bug report
+    with useful system information.
+
                                                                      *:GoPath*
 :GoPath [path]
 
