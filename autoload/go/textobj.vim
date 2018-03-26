@@ -135,8 +135,6 @@ function! go#textobj#FunctionLocation(direction, cnt) abort
     return
   endif
 
-  echom l:out
-
   " if exists, delete it as we don't need it anymore
   if exists("l:tmpname")
     call delete(l:tmpname)
@@ -144,7 +142,7 @@ function! go#textobj#FunctionLocation(direction, cnt) abort
 
   let l:result = json_decode(out)
   if type(l:result) != 4 || !has_key(l:result, 'fn')
-    return
+    return 0
   endif
 
   return l:result
@@ -168,7 +166,7 @@ function! go#textobj#FunctionJump(mode, direction) abort
   endif
 
   let l:result = go#textobj#FunctionLocation(a:direction, l:cnt)
-  if !l:result
+  if l:result is 0
     return
   endif
 
