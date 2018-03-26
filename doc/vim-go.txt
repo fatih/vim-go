@@ -1855,9 +1855,9 @@ newer, as its new caching will speed up recompiles.
                                                               *go-debug-intro*
 GETTING STARTED WITH THE DEBUGGER~
 
-Use |:GoDebugStart| to start the debugger. The first argument is the package
-name, and any arguments after that will be passed on to the program; for
-example:
+Use |:GoDebugStart| or |:GoDebugTest| to start the debugger. The first
+argument is the package name, and any arguments after that will be passed on
+to the program; for example:
 >
     :GoDebugStart . -someflag value
 <
@@ -1896,18 +1896,23 @@ rest of the commands and mappings become available after starting debug mode.
 
     Start the debug mode for [pkg]; this does several things:
 
-      * Start `dlv debug` for [pkg], or `dlv test` if the current buffer's
-        filename ends with `_test.go`.
       * Setup the debug windows according to |'g:go_debug_windows'|.
       * Make the `:GoDebug*` commands and `(go-debug-*)` mappings available.
 
-  The current directory is used if [pkg] is empty. Any other arguments will
-  be passed to the program.
+    The current directory is used if [pkg] is empty. Any other arguments will
+    be passed to the program.
 
-  Use `-test.flag` to pass flags to `go test` when debugging a test; for
-  example `-test.v` or `-test.run TestFoo`
+    Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
-  Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
+                                                                *:GoDebugTest*
+:GoDebugTest [pkg] [program-args]
+
+    Behaves the same as |:GoDebugStart| but runs `dlv test` instead of
+    `dlv debug` so you can debug tests.
+
+    Use `-test.flag` to pass flags to `go test` when debugging a test; for
+    example `-test.v` or `-test.run TestFoo`
+
 
                                                              *:GoDebugRestart*
 :GoDebugRestart
