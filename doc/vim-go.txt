@@ -676,6 +676,13 @@ CTRL-t
         \| command! -bang AS call go#alternate#Switch(<bang>0, 'split')
     augroup END
 <
+
+                                                                 *:GoPointsTo*
+:GoPointsTo
+
+    Show the list of possible objects to which a pointer may point for the
+    reference type under the cursor in a location list.
+
                                                                 *:GoWhicherrs*
 :GoWhicherrs
 
@@ -1029,6 +1036,10 @@ Show send/receive corresponding to selected channel op
                                                               *(go-referrers)*
 
 Show all refs to entity denoted by selected identifier
+
+                                                               *(go-pointsto)*
+
+Show all objects to which a pointer may point to denoted by selected identifier
 
                                                              *(go-metalinter)*
 
