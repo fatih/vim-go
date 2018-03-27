@@ -474,9 +474,16 @@ function! s:start_cb(ch, json) abort
   exe bufwinnr(oldbuf) 'wincmd w'
 endfunction
 
-function! s:starting(ch, msg) abort
+function! s:err_cb(ch, msg) abort
+  call go#util#EchoError(a:msg)
+  let s:state['message'] += [a:msg]
+endfunction
+
+function! s:out_cb(ch, msg) abort
   call go#util#EchoProgress(a:msg)
   let s:state['message'] += [a:msg]
+
+  " TODO: why do this in this callback?
   if stridx(a:msg, g:go_debug_address) != -1
     call ch_setoptions(a:ch, {
       \ 'out_cb': function('s:logger', ['OUT: ']),
@@ -563,8 +570,8 @@ function! go#debug#Start(is_test, ...) abort
     call go#util#EchoProgress('Starting GoDebug...')
     let s:state['message'] = []
     let s:state['job'] = job_start(l:cmd, {
-      \ 'out_cb': function('s:starting'),
-      \ 'err_cb': function('s:starting'),
+      \ 'out_cb': function('s:out_cb'),
+      \ 'err_cb': function('s:err_cb'),
       \ 'exit_cb': function('s:exit'),
       \ 'stoponexit': 'kill',
     \})
