@@ -129,9 +129,10 @@ function! s:GodocView(newposition, position, content) abort
   setlocal nomodifiable
   sil normal! gg
 
-  " close easily with <esc> or enter
+  " close easily with <esc>, enter or q
   noremap <buffer> <silent> <CR> :<C-U>close<CR>
   noremap <buffer> <silent> <Esc> :<C-U>close<CR>
+  noremap <buffer> <silent> q :<C-U>close<CR>
 endfunction
 
 function! s:gogetdoc(json) abort
