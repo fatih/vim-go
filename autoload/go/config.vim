@@ -346,6 +346,10 @@ function! go#config#TextobjIncludeVariable() abort
   return get(g:, "go_textobj_include_variable", 1)
 endfunction
 
+function! go#config#BinPath() abort
+  return get(g:, "go_bin_path", "")
+endfunction
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
