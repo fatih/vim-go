@@ -9,7 +9,7 @@
 This plugin adds Go language support for Vim, with the following main features:
 
 * Compile your package with `:GoBuild`, install it with `:GoInstall` or test it
-  with `:GoTest`. Run a single tests with `:GoTestFunc`).
+  with `:GoTest`. Run a single test with `:GoTestFunc`).
 * Quickly execute your current file(s) with `:GoRun`.
 * Improved syntax highlighting and folding.
 * Debug programs with integrated `delve` support with `:GoDebugStart`.

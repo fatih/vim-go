@@ -38,7 +38,7 @@ and individual features can be toggled easily. vim-go leverages a number of
 tools developed by the Go community to provide a seamless Vim experience.
 
   * Compile your package with |:GoBuild|, install it with |:GoInstall| or
-    test it with |:GoTest|. Run a single tests with |:GoTestFunc|).
+    test it with |:GoTest|. Run a single test with |:GoTestFunc|).
   * Quickly execute your current file(s) with |:GoRun|.
   * Improved syntax highlighting and folding.
   * Debug programs with integrated `delve` support with |:GoDebugStart|.
