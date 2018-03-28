@@ -1557,7 +1557,7 @@ Specifies whether `gocode` should use a different socket type. By default
 
 When a new Go file is created, vim-go automatically fills the buffer content
 with a Go code template. By default, the templates under the `templates`
-folder are used.  This can be changed with the |'g:go_template_dir'|, 
+directory are used.  This can be changed with the |'g:go_template_dir'|, 
 |'g:go_template_file'| and |'g:go_template_test_file'| settings.
 
 If the new file is created in an already prepopulated package (with other Go
