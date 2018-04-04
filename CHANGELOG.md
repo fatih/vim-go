@@ -13,6 +13,9 @@ IMPROVEMENTS:
 
 * Add build tags (with `g:go_build_tags`) to all commands that support it.
   [[GH-1705]](https://github.com/fatih/vim-go/pull/1705)
+* Some command which operate on files (rather than Vim buffers) will now show a
+  warning if there are unsaved buffers, similar to Vim's `:make`.
+  [[GH-1754]](https://github.com/fatih/vim-go/pull/1754)
 
 BUG FIXES:
 
