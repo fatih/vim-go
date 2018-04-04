@@ -30,7 +30,7 @@ function! s:guru_cmd(args) range abort
   endif
 
   " start constructing the command
-  let cmd = [bin_path]
+  let cmd = [bin_path, '-tags', go#config#BuildTags()]
 
   let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
   if &modified
@@ -41,13 +41,6 @@ function! s:guru_cmd(args) range abort
   " enable outputting in json format
   if format == "json"
     call add(cmd, "-json")
-  endif
-
-  " check for any tags
-  let tags = go#config#BuildTags()
-  if !empty(tags)
-    call extend(cmd, ["-tags", tags])
-    let result.tags = tags
   endif
 
   let scopes = go#config#GuruScope()

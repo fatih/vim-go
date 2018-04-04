@@ -2,17 +2,12 @@
 " compile the tests instead of running them (useful to catch errors in the
 " test files). Any other argument is appended to the final `go test` command.
 function! go#test#Test(bang, compile, ...) abort
-  let args = ["test"]
+  let args = ["test", '-tags', go#config#BuildTags()]
 
   " don't run the test, only compile it. Useful to capture and fix errors.
   if a:compile
     let testfile = tempname() . ".vim-go.test"
     call extend(args, ["-c", "-o", testfile])
-  endif
-
-  let tags = go#config#BuildTags()
-  if !empty(tags)
-    call extend(args, ["-tags", tags])
   endif
 
   if a:0

@@ -642,12 +642,12 @@ CTRL-t
 :GoBuildTags [tags]
 
     Changes the build tags for various commands. If you have any file that
-    uses a custom build tag, such as `//+build integration` , this command can
+    uses a custom build tag, such as `// +build integration` , this command can
     be used to pass it to all tools that accepts tags, such as guru, gorename,
-    etc..
+    etc.
 
-    The build tags is cleared (unset) if `""` is given. If no arguments is
-    given it prints the current custom build tags.
+    The build tags is cleared (unset) if `""` is given. If no arguments are
+    given it prints the current build tags.
 
                                                                      *:AsmFmt*
 :AsmFmt
