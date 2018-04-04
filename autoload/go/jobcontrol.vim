@@ -50,7 +50,7 @@ function! s:spawn(bang, desc, for, args) abort
   let job = {
         \ 'desc': a:desc,
         \ 'bang': a:bang,
-        \ 'winnr': winnr(),
+        \ 'winid': win_getid(winnr()),
         \ 'importpath': go#package#ImportPath(),
         \ 'state': "RUNNING",
         \ 'stderr' : [],
@@ -98,6 +98,9 @@ endfunction
 " on_stderr handler. If there are no errors and a quickfix window is open,
 " it'll be closed.
 function! s:on_exit(job_id, exit_status, event) dict abort
+  let l:winid = win_getid(winnr())
+  call win_gotoid(self.winid)
+
   let status = {
         \ 'desc': 'last status',
         \ 'type': self.status_type,
@@ -134,6 +137,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
     endif
 
     execute cd . fnameescape(dir)
+    call win_gotoid(l:winid)
     return
   endif
 
@@ -152,11 +156,12 @@ function! s:on_exit(job_id, exit_status, event) dict abort
   if !len(errors)
     " failed to parse errors, output the original content
     call go#util#EchoError(std_combined[0])
+    call win_gotoid(l:winid)
     return
   endif
 
   " if we are still in the same windows show the list
-  if self.winnr == winnr()
+  if self.winid == l:winid
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !self.bang
       call go#list#JumpToFirst(l:listtype)

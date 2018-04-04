@@ -213,7 +213,7 @@ function! s:lint_job(args, autosave)
         \ 'exited': 0,
         \ 'closed': 0,
         \ 'exit_status': 0,
-        \ 'winnr': winnr(),
+        \ 'winid': win_getid(winnr()),
         \ 'autosave': a:autosave
       \ }
 
@@ -270,15 +270,14 @@ function! s:lint_job(args, autosave)
     endif
   endfunction
 
-
   function state.show_errors()
-    let l:winnr = winnr()
+    let l:winid = win_getid(winnr())
 
     " make sure the current window is the window from which gometalinter was
     " run when the listtype is locationlist so that the location list for the
     " correct window will be populated.
     if self.listtype == 'locationlist'
-      exe self.winnr . "wincmd w"
+      call win_gotoid(self.winid)
     endif
 
     let l:errorformat = '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m'
@@ -293,7 +292,7 @@ function! s:lint_job(args, autosave)
     " start of this function avoids the perception that the quickfix window
     " steals focus when linting takes a while.
     if self.autosave
-      exe l:winnr . "wincmd w"
+      call win_gotoid(self.winid)
     endif
 
     if go#config#EchoCommandInfo()
