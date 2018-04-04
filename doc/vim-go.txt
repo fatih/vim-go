@@ -106,7 +106,7 @@ manager's install command.
 <
 *  https://github.com/gmarik/vundle >
 
-    Plugin 'fatih/vim-go'
+    Plugin 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 <
 *  Manual (not recommended) >
 
