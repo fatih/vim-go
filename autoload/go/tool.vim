@@ -75,7 +75,7 @@ function! go#tool#Imports() abort
 endfunction
 
 function! go#tool#Info(auto) abort
-  let l:mode = get(g:, 'go_info_mode', 'gocode')
+  let l:mode = go#config#InfoMode()
   if l:mode == 'gocode'
     call go#complete#Info(a:auto)
   elseif l:mode == 'guru'
@@ -198,30 +198,8 @@ function! go#tool#Exists(importpath) abort
     return 0
 endfunction
 
-" following two functions are from: https://github.com/mattn/gist-vim
-" thanks  @mattn
-function! s:get_browser_command() abort
-    let go_play_browser_command = get(g:, 'go_play_browser_command', '')
-    if go_play_browser_command == ''
-        if go#util#IsWin()
-            let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
-        elseif go#util#IsMac()
-            let go_play_browser_command = 'open %URL%'
-        elseif executable('xdg-open')
-            let go_play_browser_command = 'xdg-open %URL%'
-        elseif executable('firefox')
-            let go_play_browser_command = 'firefox %URL% &'
-        elseif executable('chromium')
-            let go_play_browser_command = 'chromium %URL% &'
-        else
-            let go_play_browser_command = ''
-        endif
-    endif
-    return go_play_browser_command
-endfunction
-
 function! go#tool#OpenBrowser(url) abort
-    let cmd = s:get_browser_command()
+    let cmd = go#config#PlayBrowserCommand()
     if len(cmd) == 0
         redraw
         echohl WarningMsg

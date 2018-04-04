@@ -44,39 +44,23 @@ function! s:guru_cmd(args) range abort
   endif
 
   " check for any tags
-  if exists('g:go_build_tags')
-    let tags = get(g:, 'go_build_tags')
+  let tags = go#config#BuildTags()
+  if !empty(tags)
     call extend(cmd, ["-tags", tags])
     let result.tags = tags
   endif
 
-  " some modes require scope to be defined (such as callers). For these we
-  " choose a sensible setting, which is using the current file's package
-  let scopes = []
-  if needs_scope
-    let scopes = [pkg]
-  endif
-
-  " check for any user defined scope setting. users can define the scope,
-  " in package pattern form. examples:
-  "  golang.org/x/tools/cmd/guru # a single package
-  "  golang.org/x/tools/...      # all packages beneath dir
-  "  ...                         # the entire workspace.
-  if exists('g:go_guru_scope')
-    " check that the setting is of type list
-    if type(get(g:, 'go_guru_scope')) != type([])
-      return {'err' : "go_guru_scope should of type list"}
+  let scopes = go#config#GuruScope()
+  if empty(scopes)
+    " some modes require scope to be defined (such as callers). For these we
+    " choose a sensible setting, which is using the current file's package
+    if needs_scope
+      let scopes = [pkg]
     endif
-
-    let scopes = get(g:, 'go_guru_scope')
   endif
 
-  " now add the scope to our command if there is any
+    " now add the scope to our command if there is any
   if !empty(scopes)
-    " strip trailing slashes for each path in scoped. bug:
-    " https://github.com/golang/go/issues/14584
-    let scopes = go#util#StripTrailingSlash(scopes)
-
     " create shell-safe entries of the list
     if !has("nvim") && !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
 
@@ -524,20 +508,20 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
 
   if a:output[0] !=# '{'
-    if !get(g:, 'go_auto_sameids', 0)
+    if !go#config#AutoSameids()
       call go#util#EchoError(a:output)
     endif
     return
   endif
 
   let result = json_decode(a:output)
-  if type(result) != type({}) && !get(g:, 'go_auto_sameids', 0)
+  if type(result) != type({}) && !go#config#AutoSameids()
     call go#util#EchoError("malformed output from guru")
     return
   endif
 
   if !has_key(result, 'sameids')
-    if !get(g:, 'go_auto_sameids', 0)
+    if !go#config#AutoSameids()
       call go#util#EchoError("no same_ids founds for the given identifier")
     endif
     return
@@ -563,7 +547,7 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
     call matchaddpos('goSameId', [[str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)]])
   endfor
 
-  if get(g:, "go_auto_sameids", 0)
+  if go#config#AutoSameids()
     " re-apply SameIds at the current cursor position at the time the buffer
     " is redisplayed: e.g. :edit, :GoRename, etc.
     augroup vim-go-sameids
@@ -605,15 +589,15 @@ function! go#guru#ToggleSameIds() abort
 endfunction
 
 function! go#guru#AutoToogleSameIds() abort
-  if get(g:, "go_auto_sameids", 0)
+  if go#config#AutoSameids()
     call go#util#EchoProgress("sameids auto highlighting disabled")
     call go#guru#ClearSameIds()
-    let g:go_auto_sameids = 0
+    call go#config#SetAutoSameids(0)
     return
   endif
 
   call go#util#EchoSuccess("sameids auto highlighting enabled")
-  let g:go_auto_sameids = 1
+  call go#config#SetAutoSameids(1)
 endfunction
 
 
@@ -648,21 +632,26 @@ endfun
 
 function! go#guru#Scope(...) abort
   if a:0
+    let scope = a:000
     if a:0 == 1 && a:1 == '""'
-      unlet g:go_guru_scope
+      let scope = []
+    endif
+
+    call go#config#SetGuruScope(scope)
+    if empty(scope)
       call go#util#EchoSuccess("guru scope is cleared")
     else
-      let g:go_guru_scope = a:000
       call go#util#EchoSuccess("guru scope changed to: ". join(a:000, ","))
     endif
 
     return
   endif
 
-  if !exists('g:go_guru_scope')
+  let scope = go#config#GuruScope()
+  if empty(scope)
     call go#util#EchoError("guru scope is not set")
   else
-    call go#util#EchoSuccess("current guru scope: ". join(g:go_guru_scope, ","))
+    call go#util#EchoSuccess("current guru scope: ". join(scope, ","))
   endif
 endfunction
 

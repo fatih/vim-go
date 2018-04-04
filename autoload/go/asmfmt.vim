@@ -56,13 +56,13 @@ function! go#asmfmt#Format() abort
 endfunction
 
 function! go#asmfmt#ToggleAsmFmtAutoSave() abort
-  if get(g:, "go_asmfmt_autosave", 0)
-    let g:go_asmfmt_autosave = 1
+  if go#config#AsmfmtAutosave()
+    call go#config#SetAsmfmtAutosave(1)
     call go#util#EchoProgress("auto asmfmt enabled")
     return
   end
 
-  let g:go_asmfmt_autosave = 0
+  call go#config#SetAsmfmtAutosave(0)
   call go#util#EchoProgress("auto asmfmt disabled")
 endfunction
 

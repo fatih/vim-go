@@ -8,7 +8,7 @@ function! go#def#Jump(mode) abort
   " godef which also has it's own quirks. But this issue come up so many
   " times I've decided to support both. By default we still use guru as it
   " covers all edge cases, but now anyone can switch to godef if they wish
-  let bin_name = get(g:, 'go_def_mode', 'guru')
+  let bin_name = go#config#DefMode()
   if bin_name == 'godef'
     if &modified
       " Write current unsaved buffer to a temp file and use the modified content
@@ -42,8 +42,8 @@ function! go#def#Jump(mode) abort
       call add(cmd, "-modified")
     endif
 
-    if exists('g:go_build_tags')
-      let tags = get(g:, 'go_build_tags')
+    let tags = go#config#BuildTags()
+    if !empty(tags)
       call extend(cmd, ["-tags", tags])
     endif
 
@@ -138,7 +138,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   if filename != fnamemodify(expand("%"), ':p:gs?\\?/?')
     " jump to existing buffer if, 1. we have enabled it, 2. the buffer is loaded
     " and 3. there is buffer window number we switch to
-    if get(g:, 'go_def_reuse_buffer', 0) && bufloaded(filename) != 0 && bufwinnr(filename) != -1
+    if go#config#DefReuseBuffer() && bufloaded(filename) != 0 && bufwinnr(filename) != -1
       " jumpt to existing buffer if it exists
       execute bufwinnr(filename) . 'wincmd w'
     else

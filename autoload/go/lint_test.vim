@@ -16,7 +16,6 @@ func! Test_Gometa() abort
   " And restore it back to its previous value
   call go#lint#ToggleMetaLinterAutoSave()
 
-  let orig_go_metalinter_enabled = g:go_metalinter_enabled
   let g:go_metalinter_enabled = ['golint']
 
   call go#lint#Gometa(0, $GOPATH . '/src/foo')
@@ -29,7 +28,7 @@ func! Test_Gometa() abort
   endwhile
 
   call gotest#assert_quickfix(actual, expected)
-  let g:go_metalinter_enabled = orig_go_metalinter_enabled
+  unlet g:go_metalinter_enabled
 endfunc
 
 func! Test_GometaWithDisabled() abort
@@ -50,7 +49,6 @@ func! Test_GometaWithDisabled() abort
   " And restore it back to its previous value
   call go#lint#ToggleMetaLinterAutoSave()
 
-  let orig_go_metalinter_disabled = g:go_metalinter_disabled
   let g:go_metalinter_disabled = ['vet']
 
   call go#lint#Gometa(0, $GOPATH . '/src/foo')
@@ -63,7 +61,7 @@ func! Test_GometaWithDisabled() abort
   endwhile
 
   call gotest#assert_quickfix(actual, expected)
-  let g:go_metalinter_disabled = orig_go_metalinter_disabled
+  unlet g:go_metalinter_disabled
 endfunc
 
 func! Test_GometaAutoSave() abort
@@ -86,7 +84,6 @@ func! Test_GometaAutoSave() abort
   " And restore it back to its previous value
   call go#lint#ToggleMetaLinterAutoSave()
 
-  let orig_go_metalinter_autosave_enabled = g:go_metalinter_autosave_enabled
   let g:go_metalinter_autosave_enabled = ['golint']
 
   call go#lint#Gometa(1)
@@ -99,7 +96,7 @@ func! Test_GometaAutoSave() abort
   endwhile
 
   call gotest#assert_quickfix(actual, expected)
-  let g:go_metalinter_autosave_enabled = orig_go_metalinter_autosave_enabled
+  unlet g:go_metalinter_autosave_enabled
 endfunc
 
 func! Test_Vet()

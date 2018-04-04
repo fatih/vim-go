@@ -44,7 +44,7 @@ function! go#coverage#Buffer(bang, ...) abort
   let s:toggle = 1
   let l:tmpname = tempname()
 
-  if get(g:, 'go_echo_command_info', 1)
+  if go#config#EchoCommandInfo()
     call go#util#EchoProgress("testing...")
   endif
 
@@ -64,15 +64,15 @@ function! go#coverage#Buffer(bang, ...) abort
   endif
 
   let disabled_term = 0
-  if get(g:, 'go_term_enabled')
+  if go#config#TermEnabled()
     let disabled_term = 1
-    let g:go_term_enabled = 0
+    call go#config#SetTermEnabled(0)
   endif
 
   let id = call('go#test#Test', args)
 
   if disabled_term
-    let g:go_term_enabled = 1
+    call go#config#SetTermEnabled(1)
   endif
 
   if has('nvim')

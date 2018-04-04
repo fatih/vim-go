@@ -1,17 +1,5 @@
 scriptencoding utf-8
 
-if !exists('g:go_debug_windows')
-  let g:go_debug_windows = {
-        \ 'stack': 'leftabove 20vnew',
-        \ 'out':   'botright 10new',
-        \ 'vars':  'leftabove 30vnew',
-        \ }
-endif
-
-if !exists('g:go_debug_address')
-  let g:go_debug_address = '127.0.0.1:8181'
-endif
-
 if !exists('s:state')
   let s:state = {
       \ 'rpcid': 1,
@@ -25,7 +13,7 @@ if !exists('s:state')
       \}
 
   if go#util#HasDebug('debugger-state')
-    let g:go_debug_diag = s:state
+     call go#config#SetDebugDiag(s:state)
   endif
 endif
 
@@ -71,9 +59,6 @@ endfunction
 
 function! s:call_jsonrpc(method, ...) abort
   if go#util#HasDebug('debugger-commands')
-    if !exists('g:go_debug_commands')
-      let g:go_debug_commands = []
-    endif
     echom 'sending to dlv ' . a:method
   endif
 
@@ -416,8 +401,9 @@ function! s:start_cb(ch, json) abort
     return
   endif
 
-  if exists('g:go_debug_windows["stack"]') && g:go_debug_windows['stack'] != ''
-    exe 'silent ' . g:go_debug_windows['stack']
+  let debugwindows = go#config#DebugWindows()
+  if has_key(debugwindows, "stack") && debugwindows['stack'] != ''
+    exe 'silent ' . debugwindows['stack']
     silent file `='__GODEBUG_STACKTRACE__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugstacktrace
@@ -425,16 +411,16 @@ function! s:start_cb(ch, json) abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  if exists('g:go_debug_windows["out"]') && g:go_debug_windows['out'] != ''
-    exe 'silent ' . g:go_debug_windows['out']
+  if has_key(debugwindows, "out") && debugwindows['out'] != ''
+    exe 'silent ' . debugwindows['out']
     silent file `='__GODEBUG_OUTPUT__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugoutput
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  if exists('g:go_debug_windows["vars"]') && g:go_debug_windows['vars'] != ''
-    exe 'silent ' . g:go_debug_windows['vars']
+  if has_key(debugwindows, "vars") && debugwindows['vars'] != ''
+    exe 'silent ' . debugwindows['vars']
     silent file `='__GODEBUG_VARIABLES__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugvariables
@@ -484,7 +470,7 @@ function! s:out_cb(ch, msg) abort
   let s:state['message'] += [a:msg]
 
   " TODO: why do this in this callback?
-  if stridx(a:msg, g:go_debug_address) != -1
+  if stridx(a:msg, go#config#DebugAddress()) != -1
     call ch_setoptions(a:ch, {
       \ 'out_cb': function('s:logger', ['OUT: ']),
       \ 'err_cb': function('s:logger', ['ERR: ']),
@@ -521,7 +507,7 @@ function! go#debug#Start(is_test, ...) abort
   let s:start_args = a:000
 
   if go#util#HasDebug('debugger-state')
-    let g:go_debug_diag = s:state
+    call go#config#DebugDiag(s:state)
   endif
 
   " cd in to test directory; this is also what running "go test" does.
@@ -559,11 +545,13 @@ function! go#debug#Start(is_test, ...) abort
           \ '--headless',
           \ '--api-version', '2',
           \ '--log',
-          \ '--listen', g:go_debug_address,
+          \ '--listen', go#config#DebugAddress(),
           \ '--accept-multiclient',
     \]
-    if get(g:, 'go_build_tags', '') isnot ''
-      let l:cmd += ['--build-flags', '--tags=' . g:go_build_tags]
+
+    let buildtags = go#config#BuildTags()
+    if buildtags isnot ''
+      let l:cmd += ['--build-flags', '--tags=' . buildtags]
     endif
     let l:cmd += l:args
 

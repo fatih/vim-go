@@ -1,26 +1,10 @@
-if !exists("g:go_gorename_bin")
-  let g:go_gorename_bin = "gorename"
-endif
-
-" Set the default value. A value of "1" is a shortcut for this, for
-" compatibility reasons.
-function! s:default() abort
-  if !exists("g:go_gorename_prefill") || g:go_gorename_prefill == 1
-    let g:go_gorename_prefill = 'expand("<cword>") =~# "^[A-Z]"' .
-          \ '? go#util#pascalcase(expand("<cword>"))' .
-          \ ': go#util#camelcase(expand("<cword>"))'
-  endif
-endfunction
-call s:default()
-
 function! go#rename#Rename(bang, ...) abort
-  call s:default()
-
   let to_identifier = ""
   if a:0 == 0
     let ask = printf("vim-go: rename '%s' to: ", expand("<cword>"))
-    if g:go_gorename_prefill != ''
-      let to_identifier = input(ask, eval(g:go_gorename_prefill))
+    let prefill = go#config#GorenamePrefill()
+    if prefill != ''
+      let to_identifier = input(ask, eval(prefill))
     else
       let to_identifier = input(ask)
     endif
@@ -33,7 +17,7 @@ function! go#rename#Rename(bang, ...) abort
   endif
 
   " return with a warning if the bin doesn't exist
-  let bin_path = go#path#CheckBinPath(g:go_gorename_bin)
+  let bin_path = go#path#CheckBinPath(go#config#GorenameBin())
   if empty(bin_path)
     return
   endif
@@ -50,8 +34,8 @@ function! go#rename#Rename(bang, ...) abort
   let cmd = [bin_path, "-offset", offset, "-to", to_identifier]
 
   " check for any tags
-  if exists('g:go_build_tags')
-    let tags = get(g:, 'go_build_tags')
+  let tags = go#config#BuildTags()
+  if !empty(tags)
     call extend(cmd, ["-tags", tags])
   endif
 

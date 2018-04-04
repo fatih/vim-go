@@ -1,27 +1,3 @@
-if !exists("g:go_metalinter_command")
-  let g:go_metalinter_command = ""
-endif
-
-if !exists("g:go_metalinter_autosave_enabled")
-  let g:go_metalinter_autosave_enabled = ['vet', 'golint']
-endif
-
-if !exists("g:go_metalinter_enabled")
-  let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
-endif
-
-if !exists("g:go_metalinter_disabled")
-  let g:go_metalinter_disabled = []
-endif
-
-if !exists("g:go_golint_bin")
-  let g:go_golint_bin = "golint"
-endif
-
-if !exists("g:go_errcheck_bin")
-  let g:go_errcheck_bin = "errcheck"
-endif
-
 function! go#lint#Gometa(autosave, ...) abort
   if a:0 == 0
     let goargs = [expand('%:p:h')]
@@ -37,14 +13,14 @@ function! go#lint#Gometa(autosave, ...) abort
   let cmd = [bin_path]
   let cmd += ["--disable-all"]
 
-  if a:autosave || empty(g:go_metalinter_command)
+  if a:autosave || empty(go#config#MetalinterCommand())
     " linters
-    let linters = a:autosave ? g:go_metalinter_autosave_enabled : g:go_metalinter_enabled
+    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
     for linter in linters
       let cmd += ["--enable=".linter]
     endfor
 
-    for linter in g:go_metalinter_disabled
+    for linter in go#config#MetalinterDisabled()
       let cmd += ["--disable=".linter]
     endfor
 
@@ -56,7 +32,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += ["--tests"]
   else
     " the user wants something else, let us use it.
-    let cmd += split(g:go_metalinter_command, " ")
+    let cmd += split(go#config#MetalinterCommand(), " ")
   endif
 
   if a:autosave
@@ -68,32 +44,18 @@ function! go#lint#Gometa(autosave, ...) abort
     let cmd += [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
   endif
 
-  " gometalinter has a default deadline of 5 seconds.
-  "
-  " For async mode (s:lint_job), we want to override the default deadline only
-  " if we have a deadline configured.
-  "
-  " For sync mode (go#util#System), always explicitly pass the 5 seconds
-  " deadline if there is no other deadline configured. If a deadline is
-  " configured, then use it.
-
   " Call gometalinter asynchronously.
+  let deadline = go#config#MetalinterDeadline()
+  if deadline != ''
+    let cmd += ["--deadline=" . deadline]
+  endif
+
+  let cmd += goargs
+
   if go#util#has_job() && has('lambda')
-    let deadline = get(g:, 'go_metalinter_deadline', 0)
-    if deadline != 0
-      let cmd += ["--deadline=" . deadline]
-    endif
-
-    let cmd += goargs
-
     call s:lint_job({'cmd': cmd}, a:autosave)
     return
   endif
-
-  " We're calling gometalinter synchronously.
-  let cmd += ["--deadline=" . get(g:, 'go_metalinter_deadline', "5s")]
-
-  let cmd += goargs
 
   let [l:out, l:err] = go#util#Exec(cmd)
 
@@ -128,7 +90,7 @@ endfunction
 " Golint calls 'golint' on the current directory. Any warnings are populated in
 " the location list
 function! go#lint#Golint(...) abort
-  let bin_path = go#path#CheckBinPath(g:go_golint_bin)
+  let bin_path = go#path#CheckBinPath(go#config#GolintBin())
   if empty(bin_path)
     return
   endif
@@ -192,7 +154,7 @@ function! go#lint#Errcheck(...) abort
     let import_path = go#util#Shelljoin(a:000)
   endif
 
-  let bin_path = go#path#CheckBinPath(g:go_errcheck_bin)
+  let bin_path = go#path#CheckBinPath(go#config#ErrcheckBin())
   if empty(bin_path)
     return
   endif
@@ -233,13 +195,13 @@ function! go#lint#Errcheck(...) abort
 endfunction
 
 function! go#lint#ToggleMetaLinterAutoSave() abort
-  if get(g:, "go_metalinter_autosave", 0)
-    let g:go_metalinter_autosave = 0
+  if go#config#MetalinterAutosave()
+    call go#config#SetMetalinterAutosave(0)
     call go#util#EchoProgress("auto metalinter disabled")
     return
   end
 
-  let g:go_metalinter_autosave = 1
+  call go#config#SetMetalinterAutosave(1)
   call go#util#EchoProgress("auto metalinter enabled")
 endfunction
 
@@ -334,7 +296,7 @@ function! s:lint_job(args, autosave)
       exe l:winnr . "wincmd w"
     endif
 
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       call go#util#EchoSuccess("linting finished")
     endif
   endfunction
@@ -349,7 +311,7 @@ function! s:lint_job(args, autosave)
 
   call job_start(a:args.cmd, start_options)
 
-  if get(g:, 'go_echo_command_info', 1)
+  if go#config#EchoCommandInfo()
     call go#util#EchoProgress("linting started ...")
   endif
 endfunction

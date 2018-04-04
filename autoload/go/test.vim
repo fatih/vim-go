@@ -10,8 +10,8 @@ function! go#test#Test(bang, compile, ...) abort
     call extend(args, ["-c", "-o", testfile])
   endif
 
-  if exists('g:go_build_tags')
-    let tags = get(g:, 'go_build_tags')
+  let tags = go#config#BuildTags()
+  if !empty(tags)
     call extend(args, ["-tags", tags])
   endif
 
@@ -31,11 +31,11 @@ function! go#test#Test(bang, compile, ...) abort
     call extend(args, goargs, 1)
   else
     " only add this if no custom flags are passed
-    let timeout  = get(g:, 'go_test_timeout', '10s')
+    let timeout = go#config#TestTimeout()
     call add(args, printf("-timeout=%s", timeout))
   endif
 
-  if get(g:, 'go_echo_command_info', 1)
+  if go#config#EchoCommandInfo()
     if a:compile
       call go#util#EchoProgress("compiling tests ...")
     else
@@ -58,7 +58,7 @@ function! go#test#Test(bang, compile, ...) abort
     return
   elseif has('nvim')
     " use nvims's job functionality
-    if get(g:, 'go_term_enabled', 0)
+    if go#config#TermEnabled()
       let id = go#term#new(a:bang, ["go"] + args)
     else
       let id = go#jobcontrol#Spawn(a:bang, "test", "GoTest", args)
@@ -130,7 +130,7 @@ function! go#test#Func(bang, ...) abort
     call extend(args, a:000)
   else
     " only add this if no custom flags are passed
-    let timeout  = get(g:, 'go_test_timeout', '10s')
+    let timeout = go#config#TestTimeout()
     call add(args, printf("-timeout=%s", timeout))
   endif
 
@@ -186,7 +186,7 @@ function! s:test_job(args) abort
       let status.state = "failed"
     endif
 
-    if get(g:, 'go_echo_command_info', 1)
+    if go#config#EchoCommandInfo()
       if a:exitval == 0
         if self.compile_test
           call go#util#EchoSuccess("[test] SUCCESS")
@@ -278,8 +278,8 @@ function! s:show_errors(args, exit_val, messages) abort
 endfunction
 
 
-let s:efm= ""
-let s:go_test_show_name=0
+let s:efm = ""
+let s:go_test_show_name = 0
 
 function! s:errorformat() abort
   " NOTE(arslan): once we get JSON output everything will be easier :).
@@ -288,7 +288,7 @@ function! s:errorformat() abort
   "   https://github.com/golang/go/issues/2981.
   let goroot = go#util#goroot()
 
-  let show_name=get(g:, 'go_test_show_name', 0)
+  let show_name = go#config#TestShowName()
   if s:efm != "" && s:go_test_show_name == show_name
     return s:efm
   endif

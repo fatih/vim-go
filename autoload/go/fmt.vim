@@ -5,22 +5,6 @@
 " fmt.vim: Vim command to format Go files with gofmt (and gofmt compatible
 " toorls, such as goimports).
 
-if !exists("g:go_fmt_command")
-  let g:go_fmt_command = "gofmt"
-endif
-
-if !exists('g:go_fmt_options')
-  let g:go_fmt_options = ''
-endif
-
-if !exists('g:go_fmt_fail_silently')
-  let g:go_fmt_fail_silently = 0
-endif
-
-if !exists("g:go_fmt_experimental")
-  let g:go_fmt_experimental = 0
-endif
-
 "  we have those problems :
 "  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
 "  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
@@ -30,7 +14,7 @@ endif
 "  this and have VimL experience, please look at the function for
 "  improvements, patches are welcome :)
 function! go#fmt#Format(withGoimport) abort
-  if g:go_fmt_experimental == 1
+  if go#config#FmtExperimental()
     " Using winsaveview to save/restore cursor state has the problem of
     " closing folds on save:
     "   https://github.com/fatih/vim-go/issues/502
@@ -64,7 +48,7 @@ function! go#fmt#Format(withGoimport) abort
     let l:tmpname = tr(l:tmpname, '\', '/')
   endif
 
-  let bin_name = g:go_fmt_command
+  let bin_name = go#config#FmtCommand()
   if a:withGoimport == 1
     let bin_name = "goimports"
   endif
@@ -75,7 +59,7 @@ function! go#fmt#Format(withGoimport) abort
 
   if go#util#ShellError() == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
-  elseif g:go_fmt_fail_silently == 0
+  elseif go#config#FmtFailSilently()
     let errors = s:parse_errors(expand('%'), out)
     call s:show_errors(errors)
   endif
@@ -83,7 +67,7 @@ function! go#fmt#Format(withGoimport) abort
   " We didn't use the temp file, so clean up
   call delete(l:tmpname)
 
-  if g:go_fmt_experimental == 1
+  if go#config#FmtExperimental()
     " restore our undo history
     silent! exe 'rundo ' . tmpundofile
     call delete(tmpundofile)
@@ -186,9 +170,9 @@ function! s:fmt_cmd(bin_name, source, target)
   " add the options for binary (if any). go_fmt_options was by default of type
   " string, however to allow customization it's now a dictionary of binary
   " name mapping to options.
-  let opts = g:go_fmt_options
-  if type(g:go_fmt_options) == type({})
-    let opts = has_key(g:go_fmt_options, a:bin_name) ? g:go_fmt_options[a:bin_name] : ""
+  let opts = go#config#FmtOptions()
+  if type(opts) == type({})
+    let opts = has_key(opts, a:bin_name) ? opts[a:bin_name] : ""
   endif
   call extend(cmd, split(opts, " "))
 
@@ -254,13 +238,13 @@ function! s:show_errors(errors) abort
 endfunction
 
 function! go#fmt#ToggleFmtAutoSave() abort
-  if get(g:, "go_fmt_autosave", 1)
-    let g:go_fmt_autosave = 0
+  if go#config#FmtAutosave()
+    call go#config#FmtAutosave(0)
     call go#util#EchoProgress("auto fmt disabled")
     return
   end
 
-  let g:go_fmt_autosave = 1
+  call go#config#FmtAutosave(1)
   call go#util#EchoProgress("auto fmt enabled")
 endfunction
 

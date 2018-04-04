@@ -259,7 +259,7 @@ endfunction
 " snippetcase converts the given word to given preferred snippet setting type
 " case.
 function! go#util#snippetcase(word) abort
-  let l:snippet_case = get(g:, 'go_addtags_transform', "snakecase")
+  let l:snippet_case = go#config#AddtagsTransform()
   if l:snippet_case == "snakecase"
     return go#util#snakecase(a:word)
   elseif l:snippet_case == "camelcase"
@@ -397,7 +397,7 @@ endfunction
 
 " Report if the user enabled a debug flag in g:go_debug.
 function! go#util#HasDebug(flag)
-  return index(get(g:, 'go_debug', []), a:flag) >= 0
+  return index(go#config#Debug(), a:flag) >= 0
 endfunction
 
 " vim: sw=2 ts=2 et

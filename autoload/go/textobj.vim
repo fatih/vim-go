@@ -1,15 +1,3 @@
-if !exists("g:go_textobj_enabled")
-  let g:go_textobj_enabled = 1
-endif
-
-if !exists("g:go_textobj_include_function_doc")
-  let g:go_textobj_include_function_doc = 1
-endif
-
-if !exists("g:go_textobj_include_variable")
-  let g:go_textobj_include_variable = 1
-endif
-
 " ( ) motions
 " { } motions
 " s for sentence
@@ -37,7 +25,7 @@ function! go#textobj#Function(mode) abort
   let command = printf("%s -format vim -file %s -offset %s", bin_path, fname, offset)
   let command .= " -mode enclosing"
 
-  if g:go_textobj_include_function_doc
+  if go#config#TextobjIncludeFunctionDoc()
     let command .= " -parse-comments"
   endif
 
@@ -63,9 +51,9 @@ function! go#textobj#Function(mode) abort
   if a:mode == 'a'
     " anonymous functions doesn't have associated doc. Also check if the user
     " want's to include doc comments for function declarations
-    if has_key(info, 'doc') && g:go_textobj_include_function_doc
+    if has_key(info, 'doc') && go#config#TextobjIncludeFunctionDoc()
       call cursor(info.doc.line, info.doc.col)
-    elseif info['sig']['name'] == '' && g:go_textobj_include_variable
+    elseif info['sig']['name'] == '' && go#config#TextobjIncludeVariable()
       " one liner anonymous functions
       if info.lbrace.line == info.rbrace.line
         " jump to first nonblack char, to get the correct column
@@ -125,7 +113,7 @@ function! go#textobj#FunctionLocation(direction, cnt) abort
     let command .= ' -mode prev'
   endif
 
-  if g:go_textobj_include_function_doc
+  if go#config#TextobjIncludeFunctionDoc()
     let command .= " -parse-comments"
   endif
 
@@ -190,7 +178,7 @@ function! go#textobj#FunctionJump(mode, direction) abort
   endif
 
   if a:mode == 'v' && a:direction == 'prev'
-    if has_key(info, 'doc') && g:go_textobj_include_function_doc
+    if has_key(info, 'doc') && go#config#TextobjIncludeFunctionDoc()
       keepjumps call cursor(info.doc.line, 1)
     else
       keepjumps call cursor(info.func.line, 1)
