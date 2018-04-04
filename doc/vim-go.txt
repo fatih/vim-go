@@ -676,6 +676,12 @@ CTRL-t
         \| command! -bang AS call go#alternate#Switch(<bang>0, 'split')
     augroup END
 <
+
+                                                                 *:GoPointsTo*
+:GoPointsTo
+
+    Show all variables to which the pointer under the cursor may point to.
+
                                                                 *:GoWhicherrs*
 :GoWhicherrs
 
@@ -1029,6 +1035,10 @@ Show send/receive corresponding to selected channel op
                                                               *(go-referrers)*
 
 Show all refs to entity denoted by selected identifier
+
+                                                               *(go-pointsto)*
+
+Show all variables to which the pointer under the cursor may point to.
 
                                                              *(go-metalinter)*
 

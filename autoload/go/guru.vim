@@ -156,7 +156,6 @@ function! s:async_guru(args) abort
     return
   endif
 
-
   if !has_key(a:args, 'disable_progress')
     if a:args.needs_scope
       call go#util#EchoProgress("analysing with scope " . result.scope .
@@ -260,6 +259,18 @@ function! go#guru#Implements(selected) abort
         \ }
 
   call s:run_guru(args)
+endfunction
+
+" Shows the set of possible objects to which a pointer may point.
+function! go#guru#PointsTo(selected) abort
+  let l:args = {
+        \ 'mode': 'pointsto',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
+
+  call s:run_guru(l:args)
 endfunction
 
 " Report the possible constants, global variables, and concrete types that may
