@@ -1,7 +1,5 @@
 ## unplanned
 
-## unplanned
-
 FEATURES:
 
 * Add `:GoPointsTo` to show all variables to which the pointer under the cursor
@@ -11,6 +9,11 @@ FEATURES:
 IMPROVEMENTS:
 
 BUG FIXES:
+
+* Update the correct window's location list after a long running async job
+  completes, even when the user changes their window layout while the job is
+  running.
+  [[GH-1734]](https://github.com/fatih/vim-go/pull/1734)
 
 BACKWARDS INCOMPATIBILITIES:
 
