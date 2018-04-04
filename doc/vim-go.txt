@@ -680,8 +680,7 @@ CTRL-t
                                                                  *:GoPointsTo*
 :GoPointsTo
 
-    Show the list of possible objects to which a pointer may point for the
-    reference type under the cursor in a location list.
+    Show all variables to which the pointer under the cursor may point to.
 
                                                                 *:GoWhicherrs*
 :GoWhicherrs
@@ -1039,7 +1038,7 @@ Show all refs to entity denoted by selected identifier
 
                                                                *(go-pointsto)*
 
-Show all objects to which a pointer may point to denoted by selected identifier
+Show all variables to which the pointer under the cursor may point to.
 
                                                              *(go-metalinter)*
 

@@ -1,5 +1,19 @@
 ## unplanned
 
+## unplanned
+
+FEATURES:
+
+* Add `:GoPointsTo` to show all variables to which the pointer under the cursor
+  may point to.
+  [[GH-1751]](https://github.com/fatih/vim-go/pull/1751)
+
+IMPROVEMENTS:
+
+BUG FIXES:
+
+BACKWARDS INCOMPATIBILITIES:
+
 ## 1.17 - (March 27, 2018)
 
 FEATURES:
