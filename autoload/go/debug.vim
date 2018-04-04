@@ -490,6 +490,8 @@ endfunction
 " Start the debug mode. The first argument is the package name to compile and
 " debug, anything else will be passed to the running program.
 function! go#debug#Start(is_test, ...) abort
+  call go#cmd#autowrite()
+
   if has('nvim')
     call go#util#EchoError('This feature only works in Vim for now; Neovim is not (yet) supported. Sorry :-(')
     return
@@ -788,6 +790,8 @@ function! go#debug#Stack(name) abort
 endfunction
 
 function! go#debug#Restart() abort
+  call go#cmd#autowrite()
+
   try
     call job_stop(s:state['job'])
     while has_key(s:state, 'job') && job_status(s:state['job']) is# 'run'
