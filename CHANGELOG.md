@@ -8,6 +8,9 @@ FEATURES:
 
 IMPROVEMENTS:
 
+* Add build tags (with `g:go_build_tags`) to all commands that support it.
+  [[GH-1705]](https://github.com/fatih/vim-go/pull/1705)
+
 BUG FIXES:
 
 * Update the correct window's location list after a long running async job
