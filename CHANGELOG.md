@@ -5,6 +5,9 @@ FEATURES:
 * Add `:GoPointsTo` to show all variables to which the pointer under the cursor
   may point to.
   [[GH-1751]](https://github.com/fatih/vim-go/pull/1751)
+* Add `:GoReportGitHubIssue` to initialize a new GitHub issue with as much data
+  that our template requests as possible.
+  [[GH-1738]](https://github.com/fatih/vim-go/pull/1738)
 
 IMPROVEMENTS:
 
