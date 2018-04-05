@@ -19,10 +19,6 @@ function! go#test#Test(bang, compile, ...) abort
       let goargs = map(copy(a:000), "expand(v:val)")
     endif
 
-    if !(has('nvim') || go#util#has_job())
-      let goargs = go#util#Shelllist(goargs, 1)
-    endif
-
     call extend(args, goargs, 1)
   else
     " only add this if no custom flags are passed
@@ -65,7 +61,9 @@ function! go#test#Test(bang, compile, ...) abort
   call go#cmd#autowrite()
   redraw
 
+  let args = go#util#Shelllist(args, 1)
   let command = "go " . join(args, ' ')
+
   let out = go#tool#ExecuteInDir(command)
   " TODO(bc): When the output is JSON, the JSON should be run through a
   " filter to produce lines that are more easily described by errorformat.
