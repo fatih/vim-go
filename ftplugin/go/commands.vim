@@ -106,4 +106,7 @@ if !exists(':GoDebugStart')
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
 endif
 
+" -- issue
+command! -nargs=0 GoReportGitHubIssue call go#issue#New()
+
 " vim: sw=2 ts=2 et
