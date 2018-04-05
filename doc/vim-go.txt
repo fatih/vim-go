@@ -642,12 +642,12 @@ CTRL-t
 :GoBuildTags [tags]
 
     Changes the build tags for various commands. If you have any file that
-    uses a custom build tag, such as `//+build integration` , this command can
-    be used to pass it to all tools that accepts tags, such as guru, gorename,
-    etc..
+    uses a custom build tag, such as `// +build integration` , this command
+    can be used to pass it to all tools that accepts tags, such as guru,
+    gorename, etc.
 
-    The build tags is cleared (unset) if `""` is given. If no arguments is
-    given it prints the current custom build tags.
+    The build tags is cleared (unset) if `""` is given. If no arguments are
+    given it prints the current build tags.
 
                                                                      *:AsmFmt*
 :AsmFmt
@@ -1346,10 +1346,10 @@ By default it's not set, so the relevant commands defaults are being used.
 <
                                                            *'g:go_build_tags'*
 
-These options that will be automatically passed to the `-tags` option of
-various tools, such as `guru`, `gorename`, etc... This is a permanent
-setting. A more useful way is to use |:GoBuildTags| to dynamically change or
-remove build tags. By default it's not set.
+Space-separated list of build tags passed to the `-tags` flag of tools that
+support it.
+There is also the |:GoBuildTags| convenience command to change or remove build
+tags.
 >
   let g:go_build_tags = ''
 <

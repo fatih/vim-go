@@ -14,8 +14,8 @@ function! go#cmd#Build(bang, ...) abort
   " placeholder with the current folder (indicated with '.'). We also pass -i
   " that tries to install the dependencies, this has the side effect that it
   " caches the build results, so every other build is faster.
-  let args =
-        \ ["build"] +
+  let l:args =
+        \ ['build', '-tags', go#config#BuildTags()] +
         \ map(copy(a:000), "expand(v:val)") +
         \ [".", "errors"]
 
@@ -86,7 +86,7 @@ function! go#cmd#BuildTags(bang, ...) abort
     if empty(tags)
       call go#util#EchoSuccess("build tags are cleared")
     else
-      call go#util#EchoSuccess("build tags are changed to: ". tags)
+      call go#util#EchoSuccess("build tags are changed to: " . tags)
     endif
 
     return
@@ -96,7 +96,7 @@ function! go#cmd#BuildTags(bang, ...) abort
   if empty(tags)
     call go#util#EchoSuccess("build tags are not set")
   else
-    call go#util#EchoSuccess("current build tags: ". tags)
+    call go#util#EchoSuccess("current build tags: " . tags)
   endif
 endfunction
 
@@ -180,7 +180,7 @@ function! go#cmd#Install(bang, ...) abort
     endif
 
     call s:cmd_job({
-          \ 'cmd': ['go', 'install'] + goargs,
+          \ 'cmd': ['go', 'install', '-tags', go#config#BuildTags()] + goargs,
           \ 'bang': a:bang,
           \ 'for': 'GoInstall',
           \})

@@ -2,17 +2,12 @@
 " compile the tests instead of running them (useful to catch errors in the
 " test files). Any other argument is appended to the final `go test` command.
 function! go#test#Test(bang, compile, ...) abort
-  let args = ["test"]
+  let args = ["test", '-tags', go#config#BuildTags()]
 
   " don't run the test, only compile it. Useful to capture and fix errors.
   if a:compile
     let testfile = tempname() . ".vim-go.test"
     call extend(args, ["-c", "-o", testfile])
-  endif
-
-  let tags = go#config#BuildTags()
-  if !empty(tags)
-    call extend(args, ["-tags", tags])
   endif
 
   if a:0
@@ -22,10 +17,6 @@ function! go#test#Test(bang, compile, ...) abort
     if a:1 != '-coverprofile'
       " expand all wildcards(i.e: '%' to the current file name)
       let goargs = map(copy(a:000), "expand(v:val)")
-    endif
-
-    if !(has('nvim') || go#util#has_job())
-      let goargs = go#util#Shelllist(goargs, 1)
     endif
 
     call extend(args, goargs, 1)
@@ -70,7 +61,9 @@ function! go#test#Test(bang, compile, ...) abort
   call go#cmd#autowrite()
   redraw
 
+  let args = go#util#Shelllist(args, 1)
   let command = "go " . join(args, ' ')
+
   let out = go#tool#ExecuteInDir(command)
   " TODO(bc): When the output is JSON, the JSON should be run through a
   " filter to produce lines that are more easily described by errorformat.

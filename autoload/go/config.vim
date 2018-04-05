@@ -15,10 +15,8 @@ function! go#config#BuildTags() abort
 endfunction
 
 function! go#config#SetBuildTags(value) abort
-  if a:value == ""
-    if exists('g:go_build_tags')
-      unlet g:go_build_tags
-    endif
+  if a:value is ''
+    silent! unlet g:go_build_tags
     return
   endif
 
