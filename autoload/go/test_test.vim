@@ -94,7 +94,7 @@ func! s:test(file, expected, ...) abort
   endif
 
   " run the tests
-  call call(function('go#test#Test'), args)
+  silent call call(function('go#test#Test'), args)
 
   let actual = getqflist()
   let start = reltime()
