@@ -12,9 +12,9 @@ func! Test_Gometa() abort
   " call go#lint#ToggleMetaLinterAutoSave from lint.vim so that the file will
   " be autoloaded and the default for g:go_metalinter_enabled will be set so
   " we can capture it to restore it after the test is run.
-  call go#lint#ToggleMetaLinterAutoSave()
+  silent call go#lint#ToggleMetaLinterAutoSave()
   " And restore it back to its previous value
-  call go#lint#ToggleMetaLinterAutoSave()
+  silent call go#lint#ToggleMetaLinterAutoSave()
 
   let g:go_metalinter_enabled = ['golint']
 
@@ -45,9 +45,9 @@ func! Test_GometaWithDisabled() abort
   " call go#lint#ToggleMetaLinterAutoSave from lint.vim so that the file will
   " be autoloaded and the default for g:go_metalinter_disabled will be set so
   " we can capture it to restore it after the test is run.
-  call go#lint#ToggleMetaLinterAutoSave()
+  silent call go#lint#ToggleMetaLinterAutoSave()
   " And restore it back to its previous value
-  call go#lint#ToggleMetaLinterAutoSave()
+  silent call go#lint#ToggleMetaLinterAutoSave()
 
   let g:go_metalinter_disabled = ['vet']
 
@@ -80,9 +80,9 @@ func! Test_GometaAutoSave() abort
   " call go#lint#ToggleMetaLinterAutoSave from lint.vim so that the file will
   " be autoloaded and the default for g:go_metalinter_autosave_enabled will be
   " set so we can capture it to restore it after the test is run.
-  call go#lint#ToggleMetaLinterAutoSave()
+  silent call go#lint#ToggleMetaLinterAutoSave()
   " And restore it back to its previous value
-  call go#lint#ToggleMetaLinterAutoSave()
+  silent call go#lint#ToggleMetaLinterAutoSave()
 
   let g:go_metalinter_autosave_enabled = ['golint']
 
@@ -105,7 +105,8 @@ func! Test_Vet()
   compiler go
 
   let expected = [
-        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'arg str for printf verb %d of wrong type: string'}
+        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
+        \ 'text': 'Printf format %d has arg str of wrong type string'}
       \ ]
 
   let winnr = winnr()

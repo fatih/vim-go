@@ -1,10 +1,10 @@
 function Test_GuruScope_Set() abort
-  call go#guru#Scope("example.com/foo/bar")
+  silent call go#guru#Scope("example.com/foo/bar")
   let actual = go#config#GuruScope()
   call assert_equal(["example.com/foo/bar"], actual)
 
-  call go#guru#Scope('""')
-  let actual = go#config#GuruScope()
+  silent call go#guru#Scope('""')
+  silent let actual = go#config#GuruScope()
   call assert_equal([], actual, "setting scope to empty string should clear")
 
   if exists('g:go_guru_scope')
