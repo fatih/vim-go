@@ -69,8 +69,8 @@ command! -nargs=0 GoImports call go#fmt#Format(1)
 command! -nargs=0 GoAsmFmtAutoSaveToggle call go#asmfmt#ToggleAsmFmtAutoSave()
 
 " -- import
-command! -nargs=? -complete=customlist,go#package#Complete GoDrop call go#import#SwitchImport(0, '', <f-args>, '')
-command! -nargs=1 -bang -complete=customlist,go#package#Complete GoImport call go#import#SwitchImport(1, '', <f-args>, '<bang>')
+command! -nargs=?       -complete=customlist,go#package#Complete GoDrop     call go#import#SwitchImport(0, '', <f-args>, '')
+command! -nargs=1 -bang -complete=customlist,go#package#Complete GoImport   call go#import#SwitchImport(1, '', <f-args>, '<bang>')
 command! -nargs=* -bang -complete=customlist,go#package#Complete GoImportAs call go#import#SwitchImport(1, <f-args>, '<bang>')
 
 " -- linters
