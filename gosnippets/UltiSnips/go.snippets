@@ -43,6 +43,7 @@ snippet st "struct type"
 struct {
 	${1:field} ${2:type}
 }
+${0}
 endsnippet
 
 snippet ste "struct entry"
@@ -122,6 +123,7 @@ snippet func "function declaration"
 func ${1:name}(${2:args}) ${3:returned} {
 	${4:action}
 }
+${0}
 endsnippet
 
 ## Method Declarations
@@ -129,6 +131,7 @@ snippet meth "method declaration"
 func (${1:reciever}) ${2:name} ${3:returned} {
 	${5:action}
 }
+${0}
 endsnippet
 
 # Expressions
@@ -147,6 +150,7 @@ snippet funcl "composite literal function (anonymous function)"
 func(${1:args}) ${2:returned} {
 	${4:action}
 }
+${0}
 endsnippet 
 
 ## simple slice expression
@@ -305,6 +309,7 @@ select {
 case ${1:x} ${2:=} ${3:<-c}:
 	${4:action}
 }
+${0}
 endsnippet
 
 snippet scase "select case entry"
