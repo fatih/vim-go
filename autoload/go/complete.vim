@@ -16,21 +16,12 @@ function! s:gocodeCommand(cmd, args) abort
 endfunction
 
 function! s:sync_gocode(cmd, args, input) abort
-  " We might hit cache problems, as gocode doesn't handle different GOPATHs
-  " well. See: https://github.com/nsf/gocode/issues/239
-  let old_goroot = $GOROOT
-  let $GOROOT = go#util#env("goroot")
+  let cmd = s:gocodeCommand(a:cmd, a:args)
+  " gocode can sometimes be slow, so redraw now to avoid waiting for gocode
+  " to return before redrawing automatically.
+  redraw
 
-  try
-    let cmd = s:gocodeCommand(a:cmd, a:args)
-    " gocode can sometimes be slow, so redraw now to avoid waiting for gocode
-    " to return before redrawing automatically.
-    redraw
-
-    let [l:result, l:err] = go#util#Exec(cmd, a:input)
-  finally
-    let $GOROOT = old_goroot
-  endtry
+  let [l:result, l:err] = go#util#Exec(cmd, a:input)
 
   if l:err != 0
     return "[0, []]"
@@ -141,21 +132,14 @@ function! s:async_info(auto)
   " in gocode's search
   let offset = go#util#OffsetCursor()+1
 
-  " We might hit cache problems, as gocode doesn't handle different GOPATHs
-  " well. See: https://github.com/nsf/gocode/issues/239
-  let env = {
-    \ "GOROOT": go#util#env("goroot")
-    \ }
-
   let cmd = s:gocodeCommand('autocomplete',
         \ [expand('%:p'), offset])
 
-  " TODO(bc): Don't write the buffer to a file; pass the buffer directrly to
+  " TODO(bc): Don't write the buffer to a file; pass the buffer directly to
   " gocode's stdin. It shouldn't be necessary to use {in_io: 'file', in_name:
   " s:gocodeFile()}, but unfortunately {in_io: 'buffer', in_buf: bufnr('%')}
-  " should work.
+  " doesn't work.
   let options = {
-        \ 'env': env,
         \ 'in_io': 'file',
         \ 'in_name': s:gocodeFile(),
         \ 'callback': funcref("s:callback", [], state),
