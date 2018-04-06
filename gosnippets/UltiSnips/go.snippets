@@ -264,7 +264,7 @@ case ${1:x}:
 	${2:action}
 endsnippet
 
-snippet default "default entry"
+snippet cde "case default entry" m
 default:
 	${1:action}
 endsnippet
@@ -306,8 +306,8 @@ endsnippet
 ## Select statements
 snippet select "select statement"
 select {
-case ${1:x} ${2::=} ${3:<-c}:
-	${4:action}
+case ${1:x} ${2::=} ${3:<-}${4:c}:
+	${5:action}
 }
 ${0}
 endsnippet
