@@ -107,10 +107,11 @@ function! go#package#FromPath(arg) abort
 endfunction
 
 function! go#package#CompleteMembers(package, member) abort
-  silent! let content = go#util#System('godoc ' . a:package)
-  if go#util#ShellError() || !len(content)
+  let [l:content, l:err] = go#util#Exec(['godoc', a:package])
+  if l:err || !len(content)
     return []
   endif
+
   let lines = filter(split(content, "\n"),"v:val !~ '^\\s\\+$'")
   try
     let mx1 = '^\s\+\(\S+\)\s\+=\s\+.*'
