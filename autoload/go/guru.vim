@@ -32,7 +32,6 @@ function! s:guru_cmd(args) range abort
   " start constructing the command
   let cmd = [bin_path, '-tags', go#config#BuildTags()]
 
-  let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
   if &modified
     let result.stdin_content = go#util#archive()
     call add(cmd, "-modified")
@@ -73,8 +72,8 @@ function! s:guru_cmd(args) range abort
     let pos = printf("#%s,#%s", pos1, pos2)
   endif
 
-  let filename .= ':'.pos
-  call extend(cmd, [mode, filename])
+  let l:filename = fnamemodify(expand("%"), ':p:gs?\\?/?') . ':' . pos
+  call extend(cmd, [mode, l:filename])
 
   let result.cmd = cmd
   return result
