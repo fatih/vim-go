@@ -52,12 +52,14 @@ function! s:guru_cmd(args) range abort
     endif
   endif
 
-    " now add the scope to our command if there is any
+  " Add the scope.
   if !empty(scopes)
     " create shell-safe entries of the list
-    if !has("nvim") && !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
+    if !has("nvim") && !go#util#has_job()
+      let scopes = go#util#Shelllist(scopes)
+    endif
 
-    " guru expect a comma-separated list of patterns, construct it
+    " guru expect a comma-separated list of patterns.
     let l:scope = join(scopes, ",")
     let result.scope = l:scope
     call extend(cmd, ["-scope", l:scope])
