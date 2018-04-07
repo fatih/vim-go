@@ -153,13 +153,13 @@ endfunction
 function! go#util#Exec(cmd, ...) abort
   if len(a:cmd) == 0
     call go#util#EchoError("go#util#Exec() called with empty a:cmd")
-    return
+    return ['', 1]
   endif
 
   " CheckBinPath will show a warning for us.
   let l:bin = go#path#CheckBinPath(a:cmd[0])
   if empty(l:bin)
-    return ["", 1]
+    return ['', 1]
   endif
 
   let l:out = call('s:system', [go#util#Shelljoin([l:bin] + a:cmd[1:])] + a:000)
