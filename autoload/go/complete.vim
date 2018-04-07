@@ -83,7 +83,7 @@ function! go#complete#GetInfo() abort
 endfunction
 
 function! go#complete#Info(auto) abort
-  if go#util#has_job()
+  if go#util#has_job(1)
     return s:async_info(a:auto)
   else
     return s:sync_info(a:auto)
