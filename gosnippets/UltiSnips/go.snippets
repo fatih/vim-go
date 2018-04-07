@@ -2,6 +2,89 @@
 
 priority -10
 
+# Types
+snippet type "aggregate type definition"
+type (
+	${1:A} ${2:type}
+)
+endsnippet
+
+## Boolean types
+snippet t "true"
+true
+endsnippet
+
+snippet f "false"
+false
+endsnippet
+
+## Array types
+snippet a "array type"
+[${1:}]${2:type}
+endsnippet
+
+snippet al "array literal"
+[${1:}]${2:type}{${3:values}}
+endsnippet
+
+## Slice types
+snippet s "slice type"
+[]${1:type}
+endsnippet
+
+snippet sl "slice literal"
+[]${1:type}{${2:values}}
+endsnippet
+
+## Struct types
+snippet st "struct type" 
+struct {
+	${1:field} ${2:type}
+}
+${0}
+endsnippet
+
+snippet std "struct type with definition"
+type ${1:Type} struct {
+	${1:field} ${2:type}
+}
+${0}
+endsnippet
+
+snippet ste "struct entry"
+${1:field} ${2:type}
+endsnippet
+
+## Function types
+snippet fn "function type"
+func(${1:arguments}) ${2:returned}
+endsnippet
+
+## Interface types
+snippet interface "interface I { ... }"
+type ${1:Interface} interface {
+	${2:/* TODO: add methods */}
+}
+endsnippet
+
+## Map types
+snippet map "map type"
+map[${1:type}]${2:type}
+endsnippet
+
+## Channel types
+snippet chan "channel type"
+chan ${1:type}
+endsnippet
+
+snippet rchan "recieve only channel"
+<-chan ${1:type}
+endsnippet
+
+snippet schan "send only channel"
+chan<- ${1:type}
+endsnippet
+
 # shorthand variable declaration
 snippet : "v := value"
 ${1} := ${0}
@@ -28,11 +111,6 @@ endsnippet
 # break
 snippet br "break"
 break
-endsnippet
-
-# channel
-snippet ch "chan Type"
-chan ${0:int}
 endsnippet
 
 # case
@@ -120,13 +198,6 @@ snippet import "import ( ... )"
 import (
 	"${1:package}"
 )
-endsnippet
-
-# full interface snippet
-snippet interface "interface I { ... }"
-type ${1:Interface} interface {
-	${2:/* TODO: add methods */}
-}
 endsnippet
 
 # if condition
@@ -272,11 +343,6 @@ snippet make "make(Type, size)"
 make(${1:[]string}, ${2:0})${0}
 endsnippet
 
-# map
-snippet map "map[Type]Type"
-map[${1:string}]${0:int}
-endsnippet
-
 # main()
 snippet main "func main() { ... }"
 func main() {
@@ -320,13 +386,6 @@ snippet select "select { case a := <-chan: ... }"
 select {
 case ${1:v1} := <-${2:chan1}
 	${0}
-}
-endsnippet
-
-# struct
-snippet st "type T struct { ... }"
-type ${1:Type} struct {
-${0}
 }
 endsnippet
 
