@@ -25,12 +25,6 @@ function! go#rename#Rename(bang, ...) abort
   let fname = expand('%:p')
   let pos = go#util#OffsetCursor()
   let offset = printf('%s:#%d', fname, pos)
-
-  " no need to escape for job call
-  let bin_path = go#util#has_job() ? bin_path : shellescape(bin_path)
-  let offset = go#util#has_job() ? offset : shellescape(offset)
-  let to_identifier = go#util#has_job() ? to_identifier : shellescape(to_identifier)
-
   let cmd = [bin_path, "-offset", offset, "-to", to_identifier, '-tags', go#config#BuildTags()]
 
   if go#util#has_job()

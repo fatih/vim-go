@@ -124,7 +124,11 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
   for [binary, pkg] in items(l:packages)
     let l:importPath = pkg[0]
-    let l:goGetFlags = len(pkg) > 1 ? get(pkg[1], l:platform, '') : ''
+
+    let l:run_cmd = l:cmd
+    if len(l:pkg) > 1 && get(l:pkg[1], l:platform, '') isnot ''
+      let l:run_cmd += get(l:pkg[1], l:platform, '')
+    endif
 
     let binname = "go_" . binary . "_bin"
 
@@ -140,9 +144,9 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         echo "vim-go: ". binary ." not found. Installing ". importPath . " to folder " . go_bin_path
       endif
 
-      let [l:out, l:err] = go#util#Exec(l:cmd + [l:goGetFlags, l:importPath)
+      let [l:out, l:err] = go#util#Exec(l:run_cmd + [l:importPath])
       if l:err
-        echom "Error installing " . importPath . ": " . out
+        echom "Error installing " . l:importPath . ": " . l:out
       endif
     endif
   endfor

@@ -159,16 +159,8 @@ function! go#tool#FilterValids(items) abort
 endfunction
 
 function! go#tool#ExecuteInDir(cmd) abort
-  " Verify that the directory actually exists. If the directory does not
-  " exist, then assume that the a:cmd should not be executed. Callers expect
-  " to check v:shell_error (via go#util#ShellError()), so execute a command
-  " that will return an error as if a:cmd was run and exited with an error.
-  " This helps avoid errors when working with plugins that use virtual files
-  " that don't actually exist on the file system (e.g. vim-fugitive's
-  " GitDiff).
   if !isdirectory(expand("%:p:h"))
-    let [out, err] = go#util#Exec(["false"])
-    return ''
+    return ['', 1]
   endif
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
@@ -204,15 +196,16 @@ function! go#tool#OpenBrowser(url) abort
         return
     endif
 
-    if cmd =~ '^!'
-        let cmd = substitute(cmd, '%URL%', '\=escape(shellescape(a:url),"#")', 'g')
-        silent! exec cmd
+    " if setting starts with a !.
+    if l:cmd =~ '^!'
+        let l:cmd = substitute(l:cmd, '%URL%', '\=escape(shellescape(a:url), "#")', 'g')
+        silent! exec l:cmd
     elseif cmd =~ '^:[A-Z]'
-        let cmd = substitute(cmd, '%URL%', '\=escape(a:url,"#")', 'g')
-        exec cmd
+        let l:cmd = substitute(l:cmd, '%URL%', '\=escape(a:url,"#")', 'g')
+        exec l:cmd
     else
-        let cmd = substitute(cmd, '%URL%', '\=shellescape(a:url)', 'g')
-        call go#util#System(cmd)
+        let l:cmd = substitute(l:cmd, '%URL%', '\=shellescape(a:url)', 'g')
+        call go#util#System(l:cmd)
     endif
 endfunction
 

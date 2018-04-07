@@ -1681,6 +1681,8 @@ A list of options to debug; useful for development and/or reporting bugs.
 
 Currently accepted values:
 
+  shell-commands     Echo all shell commands that vim-go runs (does not
+                     include async jobs).
   debugger-state     Expose debugger state in 'g:go_debug_diag'.
   debugger-commands  Echo communication between vim-go and `dlv`; requests and
                      responses are recorded in `g:go_debug_commands`.

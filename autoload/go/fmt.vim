@@ -175,7 +175,7 @@ function! s:fmt_cmd(bin_name, source, target)
       set noshellslash
       " use the filename without the fully qualified name if the tree is
       " symlinked into the GOPATH, goimports won't work properly.
-      call extend(cmd, ["-srcdir", shellescape(a:target)])
+      call extend(cmd, ["-srcdir", a:target])
       let &shellslash = ssl_save
     endif
   endif
