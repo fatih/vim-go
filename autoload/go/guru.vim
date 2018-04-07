@@ -30,7 +30,13 @@ function! s:guru_cmd(args) range abort
   endif
 
   " start constructing the command
-  let cmd = [bin_path, '-tags', go#config#BuildTags()]
+  let cmd = [bin_path]
+
+  " check for any tags
+  let tags = go#config#BuildTags()
+  if tags isnot ''
+    call extend(cmd, ["-tags", tags])
+  endif
 
   let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
   if &modified

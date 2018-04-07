@@ -11,13 +11,16 @@ endfunction
 function! go#cmd#Build(bang, ...) abort
   " Create our command arguments. go build discards any results when it
   " compiles multiple packages. So we pass the `errors` package just as an
-  " placeholder with the current folder (indicated with '.'). We also pass -i
-  " that tries to install the dependencies, this has the side effect that it
-  " caches the build results, so every other build is faster.
-  let l:args =
-        \ ['build', '-tags', go#config#BuildTags()] +
-        \ map(copy(a:000), "expand(v:val)") +
-        \ [".", "errors"]
+  " placeholder with the current folder (indicated with '.').
+  let l:args = ['build']
+
+  " check for any tags
+  let tags = go#config#BuildTags()
+  if tags isnot ''
+    call extend(l:args, ["-tags", tags])
+  endif
+
+  call extend(l:args,  map(copy(a:000), "expand(v:val)") + [".", "errors"])
 
   " Vim async.
   if go#util#has_job()
@@ -175,12 +178,19 @@ function! go#cmd#Install(bang, ...) abort
     " expand all wildcards(i.e: '%' to the current file name)
     let goargs = map(copy(a:000), "expand(v:val)")
 
+    " check for any tags
+    let tags = go#config#BuildTags()
+    if tags isnot ''
+      call extend(goargs, ["-tags", tags])
+    endif
+
     if go#config#EchoCommandInfo()
       call go#util#EchoProgress("installing dispatched ...")
     endif
 
+
     call s:cmd_job({
-          \ 'cmd': ['go', 'install', '-tags', go#config#BuildTags()] + goargs,
+          \ 'cmd': ['go', 'install'] + goargs,
           \ 'bang': a:bang,
           \ 'for': 'GoInstall',
           \})

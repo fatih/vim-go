@@ -33,9 +33,15 @@ function! go#def#Jump(mode) abort
       return
     endif
 
-    let cmd = [bin_path, '-tags', go#config#BuildTags()]
-    let stdin_content = ""
+    let cmd = [bin_path]
 
+    " check for any tags
+    let tags = go#config#BuildTags()
+    if tags isnot ''
+      call extend(cmd, ["-tags", tags])
+    endif
+
+    let stdin_content = ""
     if &modified
       let content  = join(go#util#GetLines(), "\n")
       let stdin_content = fname . "\n" . strlen(content) . "\n" . content

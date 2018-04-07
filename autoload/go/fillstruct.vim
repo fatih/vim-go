@@ -3,8 +3,13 @@ function! go#fillstruct#FillStruct() abort
       \ '-file', bufname(''),
       \ '-offset', go#util#OffsetCursor(),
       \ '-line', line('.')]
-      " Needs: https://github.com/davidrjenni/reftools/pull/14
-      "\ '-tags', go#config#BuildTags()]
+
+  " Needs: https://github.com/davidrjenni/reftools/pull/14
+"  " check for any tags
+"  let tags = go#config#BuildTags()
+"  if tags isnot ''
+"    call extend(cmd, ["-tags", tags])
+"  endif
 
   " Read from stdin if modified.
   if &modified
