@@ -40,7 +40,7 @@ if [ $coverage -eq 1 ]; then
       "$@"
 else
   $dir/bin/vim --noplugin -u NONE -N \
-    +"set shm+=WAFI rtp=$dir/share/vim/vimgo packpath=$dir/share/vim/vimgo,$vimgodir" \
+    +"set shm+=WAFI rtp^=$dir/share/vim/vimgo packpath=$dir/share/vim/vimgo,$vimgodir" \
     +'filetype plugin indent on' \
     +'packloadall!' \
     "$@"
