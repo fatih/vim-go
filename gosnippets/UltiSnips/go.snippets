@@ -269,7 +269,12 @@ if ${1:x} := ${2:f()}; $1 ${3: > y} {
 ${0}
 endsnippet
 
-# else snippet
+snippet ok "if !ok { ... }"
+if !ok {
+	${0:${VISUAL}}
+}
+endsnippet
+
 snippet else
 else {
 	${0:${VISUAL}}
@@ -645,13 +650,6 @@ endsnippet
 # main()
 snippet main "func main() { ... }"
 func main() {
-	${0:${VISUAL}}
-}
-endsnippet
-
-# ok
-snippet ok "if !ok { ... }"
-if !ok {
 	${0:${VISUAL}}
 }
 endsnippet
