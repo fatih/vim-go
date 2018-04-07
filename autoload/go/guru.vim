@@ -97,22 +97,20 @@ function! s:sync_guru(args) abort
     endif
   endif
 
-
   " run, forrest run!!!
-  let command = join(result.cmd, " ")
-  if has_key(result, 'stdin_content')
-    let out = go#util#System(command, result.stdin_content)
+  if has_key(l:result, 'stdin_content')
+    let [l:out, l:err] = go#util#Exec(l:result.cmd, l:result.stdin_content)
   else
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(l:result.cmd)
   endif
 
   if has_key(a:args, 'custom_parse')
-    call a:args.custom_parse(go#util#ShellError(), out, a:args.mode)
+    call a:args.custom_parse(l:err, l:out, a:args.mode)
   else
-    call s:parse_guru_output(go#util#ShellError(), out, a:args.mode)
+    call s:parse_guru_output(l:err, l:out, a:args.mode)
   endif
 
-  return out
+  return l:out
 endfunc
 
 " use vim or neovim job api as appropriate
