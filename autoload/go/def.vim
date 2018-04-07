@@ -17,16 +17,14 @@ function! go#def#Jump(mode) abort
       let fname = l:tmpname
     endif
 
-    let bin_path = go#path#CheckBinPath("godef")
-    if empty(bin_path)
-      return
-    endif
-    let command = printf("%s -f=%s -o=%s -t", go#util#Shellescape(bin_path),
-      \ go#util#Shellescape(fname), go#util#OffsetCursor())
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(['godef',
+          \ '-f=' . l:fname,
+          \ '-o=' . go#util#OffsetCursor(),
+          \ '-t'])
     if exists("l:tmpname")
       call delete(l:tmpname)
     endif
+
   elseif bin_name == 'guru'
     let cmd = [bin_name, '-tags', go#config#BuildTags()]
     let stdin_content = ""

@@ -55,8 +55,7 @@ function! go#doc#Open(newmode, mode, ...) abort
       return
     endif
 
-    let command = printf("%s %s", go#util#Shelljoin(go#config#DocCommand()), join(a:000, ' '))
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(go#config#DocCommand() + a:000)
   " Without argument: run gogetdoc on cursor position.
   else
     let [l:out, l:err] = s:gogetdoc(0)

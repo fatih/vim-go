@@ -97,16 +97,9 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     set noshellslash
   endif
 
-  let cmd = "go get -v "
+  let l:cmd = ['go', 'get', '-v']
   if get(g:, "go_get_update", 1) != 0
-    let cmd .= "-u "
-  endif
-
-  let s:go_version = matchstr(go#util#System("go version"), '\d.\d.\d')
-
-  " https://github.com/golang/go/issues/10791
-  if s:go_version > "1.4.0" && s:go_version < "1.5.0"
-    let cmd .= "-f "
+    let l:cmd += ['-u']
   endif
 
   " Filter packages from arguments (if any).
@@ -147,8 +140,8 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         echo "vim-go: ". binary ." not found. Installing ". importPath . " to folder " . go_bin_path
       endif
 
-      let out = go#util#System(printf('%s %s %s', cmd, l:goGetFlags, shellescape(importPath)))
-      if go#util#ShellError() != 0
+      let [l:out, l:err] = go#util#Exec(l:cmd + [l:goGetFlags, l:importPath)
+      if l:err
         echom "Error installing " . importPath . ": " . out
       endif
     endif
