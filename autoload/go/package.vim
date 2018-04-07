@@ -62,8 +62,8 @@ function! go#package#ImportPath() abort
     return s:import_paths[dir]
   endif
 
-  let out = go#tool#ExecuteInDir("go list")
-  if go#util#ShellError() != 0
+  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list'])
+  if l:err != 0
     return -1
   endif
 

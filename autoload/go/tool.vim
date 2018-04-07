@@ -36,8 +36,8 @@ function! go#tool#Files(...) abort
     endif
   endfor
 
-  let out = go#tool#ExecuteInDir('go list -f ' . shellescape(combined))
-  return split(out, '\n')
+  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', l:combined)
+  return split(l:out, '\n')
 endfunction
 
 function! go#tool#Deps() abort
@@ -46,9 +46,8 @@ function! go#tool#Deps() abort
   else
     let format = "{{range $f := .Deps}}{{$f}}\n{{end}}"
   endif
-  let command = 'go list -f '.shellescape(format)
-  let out = go#tool#ExecuteInDir(command)
-  return split(out, '\n')
+  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', l:format])
+  return split(l:out, '\n')
 endfunction
 
 function! go#tool#Imports() abort
@@ -58,16 +57,15 @@ function! go#tool#Imports() abort
   else
     let format = "{{range $f := .Imports}}{{$f}}{{printf \"\\n\"}}{{end}}"
   endif
-  let command = 'go list -f '.shellescape(format)
-  let out = go#tool#ExecuteInDir(command)
-  if go#util#ShellError() != 0
+  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', l:format])
+  if l:err != 0
     echo out
     return imports
   endif
 
   for package_path in split(out, '\n')
-    let cmd = "go list -f '{{.Name}}' " . shellescape(package_path)
-    let package_name = substitute(go#tool#ExecuteInDir(cmd), '\n$', '', '')
+    let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list' '-f', '{{.Name}}', l:package_path])
+    let package_name = substitute(, '\n$', '', '')
     let imports[package_name] = package_path
   endfor
 
@@ -86,9 +84,8 @@ function! go#tool#Info(auto) abort
 endfunction
 
 function! go#tool#PackageName() abort
-  let command = "go list -f \"{{.Name}}\""
-  let out = go#tool#ExecuteInDir(command)
-  if go#util#ShellError() != 0
+  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', '"{{.Name}}"'])
+  if l:err != 0
       return -1
   endif
 
@@ -178,20 +175,18 @@ function! go#tool#ExecuteInDir(cmd) abort
   let dir = getcwd()
   try
     execute cd . fnameescape(expand("%:p:h"))
-    let out = go#util#System(a:cmd)
+    let [l:out, l:err] = go#util#Exec(a:cmd)
   finally
-    execute cd . fnameescape(dir)
+    execute cd . fnameescape(l:dir)
   endtry
-  return out
+  return [l:out, l:err]
 endfunction
 
 " Exists checks whether the given importpath exists or not. It returns 0 if
 " the importpath exists under GOPATH.
 function! go#tool#Exists(importpath) abort
-    let command = "go list ". a:importpath
-    let out = go#tool#ExecuteInDir(command)
-
-    if go#util#ShellError() != 0
+    let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', a:importpath])
+    if l:err != 0
         return -1
     endif
 
@@ -199,8 +194,8 @@ function! go#tool#Exists(importpath) abort
 endfunction
 
 function! go#tool#OpenBrowser(url) abort
-    let cmd = go#config#PlayBrowserCommand()
-    if len(cmd) == 0
+    let l:cmd = go#config#PlayBrowserCommand()
+    if len(l:cmd) == 0
         redraw
         echohl WarningMsg
         echo "It seems that you don't have general web browser. Open URL below."
@@ -208,6 +203,7 @@ function! go#tool#OpenBrowser(url) abort
         echo a:url
         return
     endif
+
     if cmd =~ '^!'
         let cmd = substitute(cmd, '%URL%', '\=escape(shellescape(a:url),"#")', 'g')
         silent! exec cmd

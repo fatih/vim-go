@@ -42,11 +42,8 @@ function! go#rename#Rename(bang, ...) abort
     return
   endif
 
-  let command = join(cmd, " ")
-  let out = go#tool#ExecuteInDir(command)
-
-  let splitted = split(out, '\n')
-  call s:parse_errors(go#util#ShellError(), a:bang, splitted)
+  let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd)
+  call s:parse_errors(l:err, a:bang, split(l:out, '\n'))
 endfunction
 
 function s:rename_job(args)

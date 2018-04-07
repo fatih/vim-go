@@ -126,10 +126,8 @@ function! go#coverage#Browser(bang, ...) abort
     return
   endif
 
-
   if go#util#ShellError() == 0
-    let openHTML = 'go tool cover -html='.l:tmpname
-    call go#tool#ExecuteInDir(openHTML)
+    call go#tool#ExecuteInDir(['go', 'tool', 'cover', '-html=' . l:tmpname])
   endif
 
   call delete(l:tmpname)
@@ -332,8 +330,7 @@ endfunction
 
 function! s:coverage_browser_callback(coverfile, job, exit_status, data)
   if a:exit_status == 0
-    let openHTML = 'go tool cover -html='.a:coverfile
-    call go#tool#ExecuteInDir(openHTML)
+    call go#tool#ExecuteInDir(['go', 'tool', 'cover', '-html=' . a:coverfile])
   endif
 
   call delete(a:coverfile)
@@ -366,8 +363,7 @@ function! s:coverage_browser_handler(job, exit_status, data) abort
 
   let l:tmpname = s:coverage_browser_handler_jobs[a:job.id]
   if a:exit_status == 0
-    let openHTML = 'go tool cover -html='.l:tmpname
-    call go#tool#ExecuteInDir(openHTML)
+    call go#tool#ExecuteInDir(['go', 'tool', 'cover', '-html=' . l:tmpname])
   endif
 
   call delete(l:tmpname)

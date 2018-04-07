@@ -61,10 +61,9 @@ function! go#test#Test(bang, compile, ...) abort
   call go#cmd#autowrite()
   redraw
 
-  let args = go#util#Shelllist(args, 1)
-  let command = "go " . join(args, ' ')
+  let l:cmd = ['go'] + l:args
 
-  let out = go#tool#ExecuteInDir(command)
+  let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd)
   " TODO(bc): When the output is JSON, the JSON should be run through a
   " filter to produce lines that are more easily described by errorformat.
 
@@ -74,8 +73,8 @@ function! go#test#Test(bang, compile, ...) abort
   let dir = getcwd()
   execute cd fnameescape(expand("%:p:h"))
 
-  if go#util#ShellError() != 0
-    call go#list#ParseFormat(l:listtype, s:errorformat(), split(out, '\n'), command)
+  if l:err != 0
+    call go#list#ParseFormat(l:listtype, s:errorformat(), split(out, '\n'), l:cmd)
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !a:bang
