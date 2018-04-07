@@ -139,7 +139,14 @@ function! s:gogetdoc(json) abort
   let fname = expand("%:p:gs!\\!/!")
   let pos = shellescape(fname.':#'.offset)
 
-  let cmd = [go#util#Shellescape(bin_path), '-tags', go#config#BuildTags(), '-pos', pos]
+  let cmd = [go#util#Shellescape(bin_path), '-pos', pos]
+
+  " check for any tags
+  let tags = go#config#BuildTags()
+  if tags isnot ''
+    call extend(cmd, ["-tags", tags])
+  endif
+
   if a:json
     let cmd += ["-json"]
   endif
