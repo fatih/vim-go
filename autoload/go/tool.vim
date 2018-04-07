@@ -36,7 +36,7 @@ function! go#tool#Files(...) abort
     endif
   endfor
 
-  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', l:combined)
+  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', l:combined])
   return split(l:out, '\n')
 endfunction
 
@@ -64,8 +64,12 @@ function! go#tool#Imports() abort
   endif
 
   for package_path in split(out, '\n')
-    let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list' '-f', '{{.Name}}', l:package_path])
-    let package_name = substitute(, '\n$', '', '')
+    let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', '{{.Name}}', l:package_path])
+    if l:err != 0
+      echo out
+      return imports
+    endif
+    let package_name = substitute(l:out, '\n$', '', '')
     let imports[package_name] = package_path
   endfor
 

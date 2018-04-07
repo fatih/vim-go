@@ -105,7 +105,7 @@ function! go#textobj#FunctionLocation(direction, cnt) abort
     let l:cmd += ['-parse-comments']
   endif
 
-  let [l:out, l:err] = go#util#Exec(command)
+  let [l:out, l:err] = go#util#Exec(l:cmd)
   if l:err
     call go#util#EchoError(out)
     return
