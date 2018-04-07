@@ -50,16 +50,16 @@ function! s:gocodeEnableOptions() abort
     return
   endif
 
-  let bin_path = go#path#CheckBinPath("gocode")
-  if empty(bin_path)
+  let l:bin_path = go#path#CheckBinPath("gocode")
+  if empty(l:bin_path)
     return
   endif
 
   let s:optionsEnabled = 1
 
-  call go#util#System(printf('%s set propose-builtins %s', go#util#Shellescape(bin_path), s:toBool(go#config#GocodeProposeBuiltins())))
-  call go#util#System(printf('%s set autobuild %s', go#util#Shellescape(bin_path), s:toBool(go#config#GocodeAutobuild())))
-  call go#util#System(printf('%s set unimported-packages %s', go#util#Shellescape(bin_path), s:toBool(go#config#GocodeUnimportedPackages())))
+  call go#util#Exec(['gocode', 'set', 'propose-builtins', s:toBool(go#config#GocodeProposeBuiltins())])
+  call go#util#Exec(['gocode', 'set', 'autobuild', s:toBool(go#config#GocodeAutobuild())])
+  call go#util#Exec(['gocode', 'set', 'unimported-packages', s:toBool(go#config#GocodeUnimportedPackages())])
 endfunction
 
 function! s:toBool(val) abort
