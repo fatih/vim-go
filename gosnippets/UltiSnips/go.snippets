@@ -147,13 +147,46 @@ func ${1:name}(${2:params})${3/(.+)/ /}`!p opening_par(snip, 3)`$3`!p closing_pa
 ${0}
 endsnippet
 
-
 ## Method Declarations
 snippet meth "func (self Type) Method(...) [error] { ... }"
 func (${1:receiver} ${2:type}) ${3:name}(${4:params})${5/(.+)/ /}`!p opening_par(snip, 5)`$5`!p closing_par(snip, 5)` {
 	${0:${VISUAL}}
 }
 ${0}
+endsnippet
+
+# Expressions
+
+## composite literals
+snippet cmpl "composite literal expression"
+${1:x} := ${2:type}{${3}}
+endsnippet
+
+snippet cmplp "composite literal pointer expression"
+${1:x} := &${2:type}{${3}}
+endsnippet 
+
+## function litearls
+snippet funcl "composite literal function (anonymous function)"
+func(${1:args}) ${2:returned} {
+	${4:action}
+}
+${0}
+endsnippet 
+
+## simple slice expression
+snippet ss "simple slice expression"
+${1:x}[${2:low} : ${3:high}]
+endsnippet
+
+## full slice expression
+snippet fs "full slice expression"
+${1:x}[${2:low} : ${3:high} : ${4:max}]
+endsnippet
+
+## type assertion
+snippet ta "type assertion"
+${1:x}, ok := ${2:y}.(${3:type})
 endsnippet
 
 # anonymous function
