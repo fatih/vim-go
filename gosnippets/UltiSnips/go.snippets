@@ -449,6 +449,101 @@ snippet del "delete a map element"
 delete(${1:map}, ${2:key})
 endsnippet
 
+# Errors
+snippet errn "Error return " !b
+if err != nil {
+	return ${1:err}
+}
+${0}
+endsnippet
+
+snippet err "if err != nil; return" 
+if err != nil {
+	return ${1:err}
+}
+${0}
+endsnippet
+
+snippet errn, "Error return with two return values" !b
+if err != nil {
+	return ${1:nil}, ${2:err}
+}
+${0}
+endsnippet
+
+snippet err, "Error return with two return values" !b
+if err != nil {
+	return ${1:nil}, ${2:err}
+}
+${0}
+endsnippet
+
+snippet errf "if err != nil; return formatted"
+if err != nil {
+	return fmt.Errorf(${1:err})
+}
+${0}
+endsnippet
+
+snippet errh  "if err != nil; handle and return"
+if err != nil {
+	${1:action}
+	return ${1:err}
+}
+${0}
+endsnippet
+
+snippet errhf "if err != nil; handle and return formatted"
+if err != nil {
+	${1:action}
+	return fmt.Errorf(${1:err})
+}
+${0}
+endsnippet
+
+snippet errl "if err != nil; log and return"
+if err != nil {
+	log.Println(${1:err})
+	return ${2:err}
+}
+${0}
+endsnippet
+
+snippet errlf "if err != nil; log and return"
+if err != nil {
+	log.Printf(${1:err})
+	return ${2:err}
+}
+${0}
+endsnippet
+
+snippet errlF "Error with log.Fatal(err)" !b
+if err != nil {
+	log.Fatal(err)
+}
+${0}
+endsnippet
+
+snippet ife "If with inline erro"
+if err := ${1:condition}; err != nil {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet errp "Error panic" !b
+if err != nil {
+	panic(${1})
+}
+${0}
+endsnippet
+
+snippet errt "Error test fatal " !b
+if err != nil {
+	t.Fatal(err)
+}
+${0}
+endsnippet
+
 # anonymous function
 snippet anon "fn := func() { ... }"
 ${1:fn} := func() {
@@ -483,62 +578,6 @@ snippet import "import ( ... )"
 import (
 	"${1:package}"
 )
-endsnippet
-
-# if inline error
-snippet ife "If with inline erro"
-if err := ${1:condition}; err != nil {
-	${0:${VISUAL}}
-}
-endsnippet
-
-# error snippet
-snippet errn "Error return " !b
-if err != nil {
-	return err
-}
-${0}
-endsnippet
-
-# error log snippet
-snippet errl "Error with log.Fatal(err)" !b
-if err != nil {
-	log.Fatal(err)
-}
-${0}
-endsnippet
-
-# error multiple return
-snippet errn, "Error return with two return values" !b
-if err != nil {
-	return ${1:nil}, ${2:err}
-}
-${0}
-endsnippet
-
-# error panic
-snippet errp "Error panic" !b
-if err != nil {
-	panic(${1})
-}
-${0}
-endsnippet
-
-# error test
-snippet errt "Error test fatal " !b
-if err != nil {
-	t.Fatal(err)
-}
-${0}
-endsnippet
-
-# error handle
-snippet errh "Error handle and return" !b
-if err != nil {
-	${1}
-	return
-}
-${0}
 endsnippet
 
 # json field tag
