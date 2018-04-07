@@ -544,6 +544,47 @@ if err != nil {
 ${0}
 endsnippet
 
+# Printing and Logging
+snippet ffd "fmt.Printf(...) dynamically for debugging"
+fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
+endsnippet
+
+snippet pf "fmt.Printf"
+fmt.Printf(${1:args})
+endsnippet
+
+snippet pl "fmt.Println"
+fmt.Println(${1:args})
+endsnippet
+
+snippet fn "fmt.Println(...)"
+fmt.Println("${1:${VISUAL}}")
+endsnippet
+
+snippet lfd "log.Printf(...) dynamically for debugging"
+log.Printf("${1:${VISUAL}} = %+v\n", $1)
+endsnippet
+
+snippet lf "log.Printf"
+log.Printf(${1:args})
+endsnippet
+
+snippet ln "log.Println(...)"
+log.Println("${1:${VISUAL:args}}")
+endsnippet
+
+snippet ll "log.Println(...)"
+log.Println("${1:${VISUAL:args}}")
+endsnippet
+
+snippet fe "fmt.Errorf(...)"
+fmt.Errorf("${1:${VISUAL}}")
+endsnippet
+
+snippet sp "fmt.Sprintf(...)"
+fmt.Sprintf("%${1:s}", ${2:var})
+endsnippet
+
 # anonymous function
 snippet anon "fn := func() { ... }"
 ${1:fn} := func() {
@@ -590,31 +631,6 @@ snippet yaml "\`yaml:key\`"
 \`yaml:"${1:`!v  go#util#snippetcase(matchstr(getline("."), '\w\+'))`}"\`
 endsnippet
 
-# Fmt Printf debug
-snippet ff "fmt.Printf(...)"
-fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
-endsnippet
-
-# Fmt Println debug
-snippet fn "fmt.Println(...)"
-fmt.Println("${1:${VISUAL}}")
-endsnippet
-
-# Fmt Errorf debug
-snippet fe "fmt.Errorf(...)"
-fmt.Errorf("${1:${VISUAL}}")
-endsnippet
-
-# log printf
-snippet lf "log.Printf(...)"
-log.Printf("${1:${VISUAL}} = %+v\n", $1)
-endsnippet
-
-# log println
-snippet ln "log.Println(...)"
-log.Println("${1:${VISUAL}}")
-endsnippet
-
 # main()
 snippet main "func main() { ... }"
 func main() {
@@ -634,11 +650,6 @@ snippet package "package ..."
 // Package $1 provides ${2:...}
 package ${1:main}
 ${0}
-endsnippet
-
-# sprintf
-snippet sp "fmt.Sprintf(...)"
-fmt.Sprintf("%${1:s}", ${2:var})
 endsnippet
 
 # test function
