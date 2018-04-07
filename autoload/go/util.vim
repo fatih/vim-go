@@ -48,7 +48,7 @@ function! go#util#IsMac() abort
   return has('mac') ||
         \ has('macunix') ||
         \ has('gui_macvim') ||
-        \ go#util#System('uname') =~? '^darwin'
+        \ go#util#Exec(['uname'])[0] =~? '^darwin'
 endfunction
 
  " Checks if using:
@@ -102,25 +102,25 @@ endfunction
 " goarch returns 'go env GOARCH'. This is an internal function and shouldn't
 " be used. Instead use 'go#util#env("goarch")'
 function! go#util#goarch() abort
-  return substitute(go#util#System('go env GOARCH'), '\n', '', 'g')
+  return substitute(s:exec(['go', 'env', 'GOARCH'])[0], '\n', '', 'g')
 endfunction
 
 " goos returns 'go env GOOS'. This is an internal function and shouldn't
 " be used. Instead use 'go#util#env("goos")'
 function! go#util#goos() abort
-  return substitute(go#util#System('go env GOOS'), '\n', '', 'g')
+  return substitute(s:exec(['go', 'env', 'GOOS'])[0], '\n', '', 'g')
 endfunction
 
 " goroot returns 'go env GOROOT'. This is an internal function and shouldn't
 " be used. Instead use 'go#util#env("goroot")'
 function! go#util#goroot() abort
-  return substitute(go#util#System('go env GOROOT'), '\n', '', 'g')
+  return substitute(s:exec(['go', 'env', 'GOROOT'])[0], '\n', '', 'g')
 endfunction
 
 " gopath returns 'go env GOPATH'. This is an internal function and shouldn't
 " be used. Instead use 'go#util#env("gopath")'
 function! go#util#gopath() abort
-  return substitute(go#util#System('go env GOPATH'), '\n', '', 'g')
+  return substitute(s:exec(['go', 'env', 'GOPATH'])[0], '\n', '', 'g')
 endfunction
 
 function! go#util#osarch() abort
@@ -162,16 +162,28 @@ endfunction
 function! go#util#Exec(cmd, ...) abort
   if len(a:cmd) == 0
     call go#util#EchoError("go#util#Exec() called with empty a:cmd")
-    return
+    return ['', 1]
   endif
+
+  let l:bin = a:cmd[0]
 
   " CheckBinPath will show a warning for us.
-  let l:bin = go#path#CheckBinPath(a:cmd[0])
+  let l:bin = go#path#CheckBinPath(l:bin)
   if empty(l:bin)
-    return ["", 1]
+    return ['', 1]
   endif
 
-  let l:out = call('s:system', [go#util#Shelljoin([l:bin] + a:cmd[1:])] + a:000)
+  return call('s:exec', [a:cmd] + a:000)
+endfunction
+
+function! s:exec(cmd, ...) abort
+  let l:bin = a:cmd[0]
+  let l:cmd = go#util#Shelljoin([l:bin] + a:cmd[1:])
+  if go#util#HasDebug('shell-commands')
+    call go#util#EchoInfo('shell command: ' . l:cmd)
+  endif
+
+  let l:out = call('s:system', [l:cmd] + a:000)
   return [l:out, go#util#ShellError()]
 endfunction
 

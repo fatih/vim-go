@@ -10,8 +10,8 @@ function! go#doc#OpenBrowser(...) abort
   " non-json output of gogetdoc
   let bin_path = go#path#CheckBinPath('gogetdoc')
   if !empty(bin_path) && exists('*json_decode')
-    let json_out = s:gogetdoc(1)
-    if go#util#ShellError() != 0
+    let [l:json_out, l:err] = s:gogetdoc(1)
+    if l:err
       call go#util#EchoError(json_out)
       return
     endif
@@ -55,17 +55,16 @@ function! go#doc#Open(newmode, mode, ...) abort
       return
     endif
 
-    let command = printf("%s %s", go#util#Shelljoin(go#config#DocCommand()), join(a:000, ' '))
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(go#config#DocCommand() + a:000)
   " Without argument: run gogetdoc on cursor position.
   else
-    let out = s:gogetdoc(0)
+    let [l:out, l:err] = s:gogetdoc(0)
     if out == -1
       return
     endif
   endif
 
-  if go#util#ShellError() != 0
+  if l:err
     call go#util#EchoError(out)
     return
   endif
@@ -129,31 +128,20 @@ function! s:GodocView(newposition, position, content) abort
 endfunction
 
 function! s:gogetdoc(json) abort
-  " check if we have 'gogetdoc' and use it automatically
-  let bin_path = go#path#CheckBinPath('gogetdoc')
-  if empty(bin_path)
-    return -1
-  endif
-
-  let offset = go#util#OffsetCursor()
-  let fname = expand("%:p:gs!\\!/!")
-  let pos = shellescape(fname.':#'.offset)
-
-  let cmd = [go#util#Shellescape(bin_path), '-tags', go#config#BuildTags(), '-pos', pos]
+  let l:cmd = [
+        \ 'gogetdoc',
+        \ '-tags', go#config#BuildTags(),
+        \ '-pos', expand("%:p:gs!\\!/!") . ':#' . go#util#OffsetCursor()]
   if a:json
-    let cmd += ["-json"]
+    let l:cmd += ['-json']
   endif
-
-  let command = join(cmd, " ")
 
   if &modified
-    let command .= " -modified"
-    let out = go#util#System(command, go#util#archive())
-  else
-    let out = go#util#System(command)
+    let l:cmd += ['-modified']
+    return go#util#Exec(l:cmd, go#util#archive())
   endif
 
-  return out
+  return go#util#Exec(l:cmd)
 endfunction
 
 " returns the package and exported name. exported name might be empty.

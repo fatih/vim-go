@@ -146,7 +146,8 @@ endfunction
 function! go#path#CheckBinPath(binpath) abort
   " remove whitespaces if user applied something like 'goimports   '
   let binpath = substitute(a:binpath, '^\s*\(.\{-}\)\s*$', '\1', '')
-  " save off original path
+
+  " save original path
   let old_path = $PATH
 
   " check if we have an appropriate bin_path

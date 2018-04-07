@@ -7,30 +7,26 @@
 
 " Select a function in visual mode.
 function! go#textobj#Function(mode) abort
-  let offset = go#util#OffsetCursor()
-
-  let fname = shellescape(expand("%:p"))
+  let l:fname = expand("%:p")
   if &modified
-    " Write current unsaved buffer to a temp file and use the modified content
     let l:tmpname = tempname()
     call writefile(go#util#GetLines(), l:tmpname)
-    let fname = l:tmpname
+    let l:fname = l:tmpname
   endif
 
-  let bin_path = go#path#CheckBinPath('motion')
-  if empty(bin_path)
-    return
-  endif
-
-  let command = printf("%s -format vim -file %s -offset %s", bin_path, fname, offset)
-  let command .= " -mode enclosing"
+  let l:cmd = ['motion',
+        \ '-format', 'vim',
+        \ '-file', l:fname,
+        \ '-offset', go#util#OffsetCursor(),
+        \ '-mode', 'enclosing',
+        \ ]
 
   if go#config#TextobjIncludeFunctionDoc()
-    let command .= " -parse-comments"
+    let l:cmd += ['-parse-comments']
   endif
 
-  let out = go#util#System(command)
-  if go#util#ShellError() != 0
+  let [l:out, l:err] = go#util#Exec(l:cmd)
+  if l:err
     call go#util#EchoError(out)
     return
   endif
@@ -89,36 +85,28 @@ endfunction
 
 " Get the location of the previous or next function.
 function! go#textobj#FunctionLocation(direction, cnt) abort
-  let offset = go#util#OffsetCursor()
-
-  let fname = shellescape(expand("%:p"))
+  let l:fname = expand("%:p")
   if &modified
     " Write current unsaved buffer to a temp file and use the modified content
     let l:tmpname = tempname()
     call writefile(go#util#GetLines(), l:tmpname)
-    let fname = l:tmpname
+    let l:fname = l:tmpname
   endif
 
-  let bin_path = go#path#CheckBinPath('motion')
-  if empty(bin_path)
-    return
-  endif
-
-  let command = printf("%s -format vim -file %s -offset %s", bin_path, fname, offset)
-  let command .= ' -shift ' . a:cnt
-
-  if a:direction == 'next'
-    let command .= ' -mode next'
-  else " 'prev'
-    let command .= ' -mode prev'
-  endif
+  let l:cmd = ['motion',
+        \ '-format', 'vim',
+        \ '-file', l:fname,
+        \ '-offset', go#util#OffsetCursor(),
+        \ '-shift', a:cnt,
+        \ '-mode', a:direction,
+        \ ]
 
   if go#config#TextobjIncludeFunctionDoc()
-    let command .= " -parse-comments"
+    let l:cmd += ['-parse-comments']
   endif
 
-  let out = go#util#System(command)
-  if go#util#ShellError() != 0
+  let [l:out, l:err] = go#util#Exec(l:cmd)
+  if l:err
     call go#util#EchoError(out)
     return
   endif

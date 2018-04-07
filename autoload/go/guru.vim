@@ -32,7 +32,6 @@ function! s:guru_cmd(args) range abort
   " start constructing the command
   let cmd = [bin_path, '-tags', go#config#BuildTags()]
 
-  let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
   if &modified
     let result.stdin_content = go#util#archive()
     call add(cmd, "-modified")
@@ -52,12 +51,9 @@ function! s:guru_cmd(args) range abort
     endif
   endif
 
-    " now add the scope to our command if there is any
+  " Add the scope.
   if !empty(scopes)
-    " create shell-safe entries of the list
-    if !has("nvim") && !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
-
-    " guru expect a comma-separated list of patterns, construct it
+    " guru expect a comma-separated list of patterns.
     let l:scope = join(scopes, ",")
     let result.scope = l:scope
     call extend(cmd, ["-scope", l:scope])
@@ -71,8 +67,8 @@ function! s:guru_cmd(args) range abort
     let pos = printf("#%s,#%s", pos1, pos2)
   endif
 
-  let filename .= ':'.pos
-  call extend(cmd, [mode, filename])
+  let l:filename = fnamemodify(expand("%"), ':p:gs?\\?/?') . ':' . pos
+  call extend(cmd, [mode, l:filename])
 
   let result.cmd = cmd
   return result
@@ -96,22 +92,20 @@ function! s:sync_guru(args) abort
     endif
   endif
 
-
   " run, forrest run!!!
-  let command = join(result.cmd, " ")
-  if has_key(result, 'stdin_content')
-    let out = go#util#System(command, result.stdin_content)
+  if has_key(l:result, 'stdin_content')
+    let [l:out, l:err] = go#util#Exec(l:result.cmd, l:result.stdin_content)
   else
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(l:result.cmd)
   endif
 
   if has_key(a:args, 'custom_parse')
-    call a:args.custom_parse(go#util#ShellError(), out, a:args.mode)
+    call a:args.custom_parse(l:err, l:out, a:args.mode)
   else
-    call s:parse_guru_output(go#util#ShellError(), out, a:args.mode)
+    call s:parse_guru_output(l:err, l:out, a:args.mode)
   endif
 
-  return out
+  return l:out
 endfunc
 
 " use vim or neovim job api as appropriate

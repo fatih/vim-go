@@ -28,28 +28,27 @@ function! go#asmfmt#Format() abort
   call writefile(go#util#GetLines(), l:tmpname)
 
   " Run asmfmt.
-  let path = go#path#CheckBinPath("asmfmt")
-  if empty(path)
+  let [l:out, l:err] = go#util#Exec(['asmfmt', '-w', l:tmpname])
+  if l:err
+    call go#util#EchoError(l:out)
     return
   endif
-  let out = go#util#System(path . ' -w ' . l:tmpname)
 
-  " If there's no error, replace the current file with the output.
-  if go#util#ShellError() == 0
-    " Remove undo point caused by BufWritePre.
-    try | silent undojoin | catch | endtry
+  " Remove undo point caused by BufWritePre.
+  try | silent undojoin | catch | endtry
 
-    " Replace the current file with the temp file; then reload the buffer.
-    let old_fileformat = &fileformat
-    " save old file permissions
-    let original_fperm = getfperm(expand('%'))
-    call rename(l:tmpname, expand('%'))
-    " restore old file permissions
-    call setfperm(expand('%'), original_fperm)
-    silent edit!
-    let &fileformat = old_fileformat
-    let &syntax = &syntax
-  endif
+  " Replace the current file with the temp file; then reload the buffer.
+  let old_fileformat = &fileformat
+
+  " save old file permissions
+  let original_fperm = getfperm(expand('%'))
+  call rename(l:tmpname, expand('%'))
+
+  " restore old file permissions
+  call setfperm(expand('%'), original_fperm)
+  silent edit!
+  let &fileformat = old_fileformat
+  let &syntax = &syntax
 
   " Restore the cursor/window positions.
   call winrestview(l:curw)

@@ -17,23 +17,16 @@ function! go#def#Jump(mode) abort
       let fname = l:tmpname
     endif
 
-    let bin_path = go#path#CheckBinPath("godef")
-    if empty(bin_path)
-      return
-    endif
-    let command = printf("%s -f=%s -o=%s -t", go#util#Shellescape(bin_path),
-      \ go#util#Shellescape(fname), go#util#OffsetCursor())
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(['godef',
+          \ '-f=' . l:fname,
+          \ '-o=' . go#util#OffsetCursor(),
+          \ '-t'])
     if exists("l:tmpname")
       call delete(l:tmpname)
     endif
-  elseif bin_name == 'guru'
-    let bin_path = go#path#CheckBinPath("guru")
-    if empty(bin_path)
-      return
-    endif
 
-    let cmd = [bin_path, '-tags', go#config#BuildTags()]
+  elseif bin_name == 'guru'
+    let cmd = [bin_name, '-tags', go#config#BuildTags()]
     let stdin_content = ""
 
     if &modified
@@ -42,8 +35,7 @@ function! go#def#Jump(mode) abort
       call add(cmd, "-modified")
     endif
 
-    let fname = fname.':#'.go#util#OffsetCursor()
-    call extend(cmd, ["definition", fname])
+    call extend(cmd, ["definition", fname . ':#' . go#util#OffsetCursor()])
 
     if go#util#has_job()
       let l:spawn_args = {
@@ -61,18 +53,17 @@ function! go#def#Jump(mode) abort
       return
     endif
 
-    let command = join(cmd, " ")
     if &modified
-      let out = go#util#System(command, stdin_content)
+      let [l:out, l:err] = go#util#Exec(l:cmd, stdin_content)
     else
-      let out = go#util#System(command)
+      let [l:out, l:err] = go#util#Exec(l:cmd)
     endif
   else
     call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, guru]')
     return
   endif
 
-  if go#util#ShellError() != 0
+  if l:err
     call go#util#EchoError(out)
     return
   endif

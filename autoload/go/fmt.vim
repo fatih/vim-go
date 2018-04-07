@@ -54,10 +54,10 @@ function! go#fmt#Format(withGoimport) abort
   endif
 
   let current_col = col('.')
-  let out = go#fmt#run(bin_name, l:tmpname, expand('%'))
+  let [l:out, l:err] = go#fmt#run(bin_name, l:tmpname, expand('%'))
   let diff_offset = len(readfile(l:tmpname)) - line('$')
 
-  if go#util#ShellError() == 0
+  if l:err == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
   elseif go#config#FmtFailSilently()
     let errors = s:parse_errors(expand('%'), out)
@@ -138,34 +138,16 @@ endfunction
 " run runs the gofmt/goimport command for the given source file and returns
 " the output of the executed command. Target is the real file to be formatted.
 function! go#fmt#run(bin_name, source, target)
-  let cmd = s:fmt_cmd(a:bin_name, a:source, a:target)
-  if empty(cmd)
+  let l:cmd = s:fmt_cmd(a:bin_name, a:source, a:target)
+  if empty(l:cmd)
     return
   endif
-
-  let command = join(cmd, " ")
-
-  " execute our command...
-  let out = go#util#System(command)
-
-  return out
+  return go#util#Exec(l:cmd)
 endfunction
 
-" fmt_cmd returns a dict that contains the command to execute gofmt (or
-" goimports). args is dict with
+" fmt_cmd returns the command to run as a list.
 function! s:fmt_cmd(bin_name, source, target)
-  " check if the user has installed command binary.
-  " For example if it's goimports, let us check if it's installed,
-  " if not the user get's a warning via go#path#CheckBinPath()
-  let bin_path = go#path#CheckBinPath(a:bin_name)
-  if empty(bin_path)
-    return []
-  endif
-
-  " start constructing the command
-  let bin_path = go#util#Shellescape(bin_path)
-  let cmd = [bin_path]
-  call add(cmd, "-w")
+  let l:cmd = [a:bin_name, '-w']
 
   " add the options for binary (if any). go_fmt_options was by default of type
   " string, however to allow customization it's now a dictionary of binary
@@ -180,9 +162,9 @@ function! s:fmt_cmd(bin_name, source, target)
     " lazy check if goimports support `-srcdir`. We should eventually remove
     " this in the future
     if !exists('b:goimports_vendor_compatible')
-      let out = go#util#System(bin_path . " --help")
-      if out !~ "-srcdir"
-        call go#util#EchoWarning(printf("vim-go: goimports (%s) does not support srcdir. Update with: :GoUpdateBinaries", bin_path))
+      let [l:out, l:err] = go#util#Exec([a:bin_name, '--help'])
+      if l:out !~ "-srcdir"
+        call go#util#EchoWarning(printf("vim-go: goimports (%s) does not support srcdir. Update with: :GoUpdateBinaries", a:bin_name))
       else
         let b:goimports_vendor_compatible = 1
       endif
@@ -193,7 +175,7 @@ function! s:fmt_cmd(bin_name, source, target)
       set noshellslash
       " use the filename without the fully qualified name if the tree is
       " symlinked into the GOPATH, goimports won't work properly.
-      call extend(cmd, ["-srcdir", shellescape(a:target)])
+      call extend(cmd, ["-srcdir", a:target])
       let &shellslash = ssl_save
     endif
   endif

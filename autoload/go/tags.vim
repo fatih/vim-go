@@ -31,24 +31,22 @@ function! go#tags#run(start, end, offset, mode, fname, test_mode, ...) abort
     let args["modified"] = 1
   endif
 
-  let result = s:create_cmd(args)
+  let l:result = s:create_cmd(args)
   if has_key(result, 'err')
     call go#util#EchoError(result.err)
     return -1
   endif
 
-  let command = join(result.cmd, " ")
-
   if &modified
     let filename = expand("%:p:gs!\\!/!")
     let content  = join(go#util#GetLines(), "\n")
     let in = filename . "\n" . strlen(content) . "\n" . content
-    let out = go#util#System(command, in)
+    let [l:out, l:err] = go#util#Exec(l:result.cmd, in)
   else
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(l:result.cmd)
   endif
 
-  if go#util#ShellError() != 0
+  if l:err != 0
     call go#util#EchoError(out)
     return
   endif
@@ -115,7 +113,6 @@ func s:create_cmd(args) abort
   if empty(bin_path)
     return {'err': "gomodifytags does not exist"}
   endif
-  let bin_path = go#util#Shellescape(bin_path)
 
   let l:start = a:args.start
   let l:end = a:args.end
@@ -127,7 +124,7 @@ func s:create_cmd(args) abort
   " start constructing the command
   let cmd = [bin_path]
   call extend(cmd, ["-format", "json"])
-  call extend(cmd, ["-file", go#util#Shellescape(a:args.fname)])
+  call extend(cmd, ["-file", a:args.fname])
   call extend(cmd, ["-transform", l:modifytags_transform])
 
   if has_key(a:args, "modified")
