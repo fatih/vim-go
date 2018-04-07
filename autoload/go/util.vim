@@ -156,10 +156,15 @@ function! go#util#Exec(cmd, ...) abort
     return ['', 1]
   endif
 
-  " CheckBinPath will show a warning for us.
-  let l:bin = go#path#CheckBinPath(a:cmd[0])
-  if empty(l:bin)
-    return ['', 1]
+  let l:bin = a:cmd[0]
+
+  " Don't run CheckBinPath for "go" to prevent infinite recursion.
+  if a:cmd[0] != 'go'
+    " CheckBinPath will show a warning for us.
+    let l:bin = go#path#CheckBinPath(l:bin)
+    if empty(l:bin)
+      return ['', 1]
+    endif
   endif
 
   let l:cmd = go#util#Shelljoin([l:bin] + a:cmd[1:])
