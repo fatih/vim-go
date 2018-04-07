@@ -189,47 +189,220 @@ snippet ta "type assertion"
 ${1:x}, ok := ${2:y}.(${3:type})
 endsnippet
 
-# anonymous function
-snippet anon "fn := func() { ... }"
-${1:fn} := func() {
-	${2:${VISUAL}}
+# Statements
+## panic
+snippet pn "panic()"
+panic("${0:msg}")
+endsnippet
+
+## Send Statements
+snippet send "send value onto channel"
+${1:ch} <- ${2:${VISUAL}}
+endsnippet
+
+## IncDec statements
+snippet inc "increment variable"
+${1:${VISUAL:x}} += ${2:1}
+endsnippet
+
+snippet dec "increment variable"
+${1:${VISUAL:x}} -= ${2:1}
+endsnippet
+
+## Assignment Statements
+snippet = "sets variable equal to operand"
+${1} = ${2}
+endsnippet
+
+snippet =t "tuple assignment"
+${1:x}, ${2:y} = ${3:${VISUAL}}
+endsnippet
+
+snippet =b "set blank"
+_ = ${1:${VISUAL}}
+endsnippet
+
+snippet =bte "blank error in tuple return"
+${1:x}, _ = ${2:${VISUAL}}
+endsnippet
+
+snippet =x "swap variables"
+${1:a}, ${2:b} = $2, $1
+endsnippet
+
+## If Statements
+snippet if "if ... { ... }"
+if ${1:condition} {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet If "if statement"
+if ${1:x} ${2:=} ${3:y} {
+	${4:action}
 }
 ${0}
 endsnippet
 
-# append
-snippet ap "append(slice, value)"
-append(${1:slice}, ${0:value})
+snippet ife "if statement with expression"
+if ${1:x} := ${2:f()}; $1 ${3: > y} {
+	${4:action}
+}
+${0}
 endsnippet
 
-# append assignment
-snippet ap= "a = append(a, value)"
-${1:slice} = append($1, ${0:value})
+# else snippet
+snippet else
+else {
+	${0:${VISUAL}}
+}
 endsnippet
 
-# break
-snippet br "break"
-break
+## Switch Statements
+snippet switch "bare switch statement"
+switch {
+case ${1:condition}:
+	${2:action}	
+}
+${0}
+endsnippet 
+
+snippet switchv "switch on a variable"
+switch ${1:x} {
+default:
+	${2:action}
+case ${3:y}:
+	${4:action}
+}
+${0}
 endsnippet
 
-# case
-snippet case "case ...:"
+snippet switchi "switch on variable with initializer"
+switch ${1:x} := ${2:fn()}; $1 {
+case ${3:x}:
+	${4:action}
+}
+${0}
+endsnippet
+
+snippet tswitch "type switch"
+switch ${1:x} := ${2:y}.(type) {
+case ${3:z}:
+	${4:action}
+}
+${0}
+endsnippet
+
+snippet case "case entry"
 case ${1:value}:
 	${0:${VISUAL}}
 endsnippet
 
-# continue
-snippet cn "continue"
-continue
-endsnippet
-
-# default case
-snippet default "default: ..."
+snippet cde "case default entry"
 default:
 	${0:${VISUAL}}
 endsnippet
 
-# defer
+## For statements
+snippet for "for ... { ... }"
+for ${1} {
+	${2:${VISUAL:action}}
+}
+${0}
+endsnippet
+
+# for integer loop
+snippet fori "for 0..N-1 { ... }"
+for ${1:i} := 0; $1 < ${2:N}; $1++ {
+	${3:${VISUAL:action}}
+}
+${0}
+endsnippet
+
+snippet forc "for with a condition"
+for ${1:x} ${2:=} ${3:x} {
+	${4:${VISUAL:action}}
+}
+${0}
+endsnippet
+
+snippet forcc "for with a for clause"
+for ${1:i} := ${2:0}; ${3:$1} ${4:<} ${5:y}; ${6:i++} { 
+	${7:${VISUAL:action}}
+}
+${0}
+endsnippet
+
+snippet forr "for with a range statement"
+for ${1:i}, ${2:x} := range ${3:y} {
+	${4:${VISUAL:action}}
+}
+${0}
+endsnippet
+
+snippet Forr "for k, v := range items { ... }"
+for ${2:k}, ${3:v} := range ${1} {
+	${4:${VISUAL:action}}
+}
+${0}
+endsnippet
+
+## Go statements
+snippet g "go statement"
+go ${1:x}
+endsnippet
+
+snippet go "go someFunc(...)"
+go ${1:funcName}(${0})
+endsnippet
+
+snippet gof "go func() { ... }()"
+go func() {
+	${1:${VISUAL}}
+}()
+${0}
+endsnippet
+
+## Select statements
+snippet select "select statement"
+select {
+case ${1:x} ${2::=} ${3:<-}${4:c}:
+	${5:action}
+}
+${0}
+endsnippet
+
+snippet scase "select case entry"
+case ${1:x} ${2:<-} ${3:y}:
+	${4:action}
+endsnippet
+
+## Return statements
+snippet rt "return"
+return ${0:${VISUAL}}
+endsnippet
+
+## Break statements
+snippet br "break"
+break
+endsnippet
+
+## Continue statements
+snippet cn "continue"
+continue
+endsnippet
+
+## Goto statements
+snippet gt "goto"
+goto ${1:x}
+endsnippet
+
+## Fallthrough Statements
+snippet ft "fallthrough"
+fallthrough
+endsnippet
+
+## Defer statements
 snippet df "defer someFunction()"
 defer ${1:func}(${2})
 ${0}
@@ -248,6 +421,24 @@ defer func() {
 		${0:${VISUAL}}
 	}
 }()
+endsnippet
+
+# anonymous function
+snippet anon "fn := func() { ... }"
+${1:fn} := func() {
+	${2:${VISUAL}}
+}
+${0}
+endsnippet
+
+# append
+snippet ap "append(slice, value)"
+append(${1:slice}, ${0:value})
+endsnippet
+
+# append assignment
+snippet ap= "a = append(a, value)"
+${1:slice} = append($1, ${0:value})
 endsnippet
 
 # gpl
@@ -276,20 +467,6 @@ snippet import "import ( ... )"
 import (
 	"${1:package}"
 )
-endsnippet
-
-# if condition
-snippet if "if ... { ... }"
-if ${1:condition} {
-	${0:${VISUAL}}
-}
-endsnippet
-
-# else snippet
-snippet else
-else {
-	${0:${VISUAL}}
-}
 endsnippet
 
 # if inline error
@@ -358,32 +535,6 @@ snippet yaml "\`yaml:key\`"
 \`yaml:"${1:`!v  go#util#snippetcase(matchstr(getline("."), '\w\+'))`}"\`
 endsnippet
 
-# fallthrough
-snippet ft "fallthrough"
-fallthrough
-endsnippet
-
-# for loop
-snippet for "for ... { ... }"
-for ${1} {
-	${0:${VISUAL}}
-}
-endsnippet
-
-# for integer loop
-snippet fori "for 0..N-1 { ... }"
-for ${1:i} := 0; $1 < ${2:N}; $1++ {
-	${0:${VISUAL}}
-}
-endsnippet
-
-# for range loop
-snippet forr "for k, v := range items { ... }"
-for ${2:k}, ${3:v} := range ${1} {
-	${0:${VISUAL}}
-}
-endsnippet
-
 # Fmt Printf debug
 snippet ff "fmt.Printf(...)"
 fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
@@ -435,48 +586,9 @@ package ${1:main}
 ${0}
 endsnippet
 
-# panic
-snippet pn "panic()"
-panic("${0:msg}")
-endsnippet
-
-# return
-snippet rt "return"
-return ${0:${VISUAL}}
-endsnippet
-
-# select
-snippet select "select { case a := <-chan: ... }"
-select {
-case ${1:v1} := <-${2:chan1}
-	${0}
-}
-endsnippet
-
-# switch
-snippet switch "switch x { ... }"
-switch ${1:var} {
-case ${2:value1}:
-	${0}
-}
-endsnippet
-
 # sprintf
 snippet sp "fmt.Sprintf(...)"
 fmt.Sprintf("%${1:s}", ${2:var})
-endsnippet
-
-# goroutine named function
-snippet go "go someFunc(...)"
-go ${1:funcName}(${0})
-endsnippet
-
-# goroutine anonymous function
-snippet gof "go func() { ... }()"
-go func() {
-	${1:${VISUAL}}
-}()
-${0}
 endsnippet
 
 # test function
