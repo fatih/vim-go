@@ -85,9 +85,75 @@ snippet schan "send only channel"
 chan<- ${1:type}
 endsnippet
 
-# shorthand variable declaration
-snippet : "v := value"
-${1} := ${0}
+# Declarations and scope
+
+## Constant declarations
+snippet con "constant declaration"
+const ${1:NAME} ${2:Type} = ${0:0}
+endsnippet
+
+snippet cons "aggregate constants declaration"
+const (
+	${1:NAME} ${2:Type} = ${3:value}
+	${0}
+)
+endsnippet
+
+snippet cone "constant declaration entry"
+${1:name} ${2:type} = ${3:value}
+endsnippet
+
+## Iota
+snippet iota "const with iota"
+const (
+	${1:NAME} ${2:Type} = iota
+	${0}
+)
+endsnippet
+
+## Type declarations
+snippet typea "type alias declaration"
+type (
+	${1:alias} = ${2:type}
+)
+${0}
+endsnippet
+
+snippet typeae "type alias entry"
+${1:alias} = ${2:type}
+endsnippet
+
+snippet typed "type definition declaration"
+type (
+	${1:identifier} ${2:type}
+)
+${0}
+endsnippet
+
+snippet typede "type definition entry"
+${1:identifier} ${2:type}
+endsnippet 
+
+## Variable declarations
+snippet : "short variable definition"
+${1:x} := ${2:y}
+endsnippet
+
+## Function declarations
+snippet func "func Function(...) [error] { ... }"
+func ${1:name}(${2:params})${3/(.+)/ /}`!p opening_par(snip, 3)`$3`!p closing_par(snip, 3)` {
+	${0:${VISUAL}}
+}
+${0}
+endsnippet
+
+
+## Method Declarations
+snippet meth "func (self Type) Method(...) [error] { ... }"
+func (${1:receiver} ${2:type}) ${3:name}(${4:params})${5/(.+)/ /}`!p opening_par(snip, 5)`$5`!p closing_par(snip, 5)` {
+	${0:${VISUAL}}
+}
+${0}
 endsnippet
 
 # anonymous function
@@ -117,27 +183,6 @@ endsnippet
 snippet case "case ...:"
 case ${1:value}:
 	${0:${VISUAL}}
-endsnippet
-
-# constant
-snippet con "const XXX Type = ..."
-const ${1:NAME} ${2:Type} = ${0:0}
-endsnippet
-
-# constants
-snippet cons "const ( ... )"
-const (
-	${1:NAME} ${2:Type} = ${3:value}
-	${0}
-)
-endsnippet
-
-# constants with iota
-snippet iota "const ( ... = iota )"
-const (
-	${1:NAME} ${2:Type} = iota
-	${0}
-)
 endsnippet
 
 # continue
@@ -306,13 +351,6 @@ for ${2:k}, ${3:v} := range ${1} {
 }
 endsnippet
 
-# function
-snippet func "func Function(...) [error] { ... }"
-func ${1:name}(${2:params})${3/(.+)/ /}`!p opening_par(snip, 3)`$3`!p closing_par(snip, 3)` {
-	${0:${VISUAL}}
-}
-endsnippet
-
 # Fmt Printf debug
 snippet ff "fmt.Printf(...)"
 fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
@@ -346,13 +384,6 @@ endsnippet
 # main()
 snippet main "func main() { ... }"
 func main() {
-	${0:${VISUAL}}
-}
-endsnippet
-
-# method
-snippet meth "func (self Type) Method(...) [error] { ... }"
-func (${1:receiver} ${2:type}) ${3:name}(${4:params})${5/(.+)/ /}`!p opening_par(snip, 5)`$5`!p closing_par(snip, 5)` {
 	${0:${VISUAL}}
 }
 endsnippet
