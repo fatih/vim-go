@@ -423,22 +423,38 @@ defer func() {
 }()
 endsnippet
 
+# Built-in functions
+snippet c "close"
+close(${1:args})
+endsnippet
+
+snippet mk "make"
+make(${1:args})
+endsnippet
+
+# make
+snippet make "make(Type, size)"
+make(${1:[]string}, ${2:0})${0}
+endsnippet
+
+snippet ap "append(slice, value)"
+append(${1:slice}, ${0:value})
+endsnippet
+
+snippet ap= "a = append(a, value)"
+${1:slice} = append($1, ${0:value})
+endsnippet
+
+snippet del "delete a map element"
+delete(${1:map}, ${2:key})
+endsnippet
+
 # anonymous function
 snippet anon "fn := func() { ... }"
 ${1:fn} := func() {
 	${2:${VISUAL}}
 }
 ${0}
-endsnippet
-
-# append
-snippet ap "append(slice, value)"
-append(${1:slice}, ${0:value})
-endsnippet
-
-# append assignment
-snippet ap= "a = append(a, value)"
-${1:slice} = append($1, ${0:value})
 endsnippet
 
 # gpl
@@ -558,11 +574,6 @@ endsnippet
 # log println
 snippet ln "log.Println(...)"
 log.Println("${1:${VISUAL}}")
-endsnippet
-
-# make
-snippet make "make(Type, size)"
-make(${1:[]string}, ${2:0})${0}
 endsnippet
 
 # main()
