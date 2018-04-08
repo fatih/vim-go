@@ -88,7 +88,7 @@ function! go#tool#Info(auto) abort
 endfunction
 
 function! go#tool#PackageName() abort
-  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', '"{{.Name}}"'])
+  let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', '-f', '{{.Name}}'])
   if l:err != 0
       return -1
   endif
