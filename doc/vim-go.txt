@@ -1088,6 +1088,9 @@ if            "inside a function", select contents of a function,
                                                *go-v_ac* *go-ac*
 ac            "a comment", select contents of the current comment block.
 
+                                               *go-v_ic* *go-ic*
+ic            "inner comment", select contents of the current comment block,
+              excluding the start and end comment markers.
 
 vim-go also defines the following text motion objects:
 
