@@ -511,7 +511,7 @@ endsnippet
 snippet errh  "if err != nil; handle and return"
 if err != nil {
 	${1:action}
-	return ${1:err}
+	return ${2:err}
 }
 ${0}
 endsnippet
@@ -519,7 +519,7 @@ endsnippet
 snippet errhf "if err != nil; handle and return formatted"
 if err != nil {
 	${1:action}
-	return fmt.Errorf(${1:err})
+	return fmt.Errorf(${2:err})
 }
 ${0}
 endsnippet
