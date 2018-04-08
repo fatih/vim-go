@@ -23,6 +23,8 @@ BUG FIXES:
   completes, even when the user changes their window layout while the job is
   running.
   [[GH-1734]](https://github.com/fatih/vim-go/pull/1734)
+* Apply debugger mappings only for Go buffers, and not all buffers.
+  [[GH-1696]](https://github.com/fatih/vim-go/pull/1696)
 
 BACKWARDS INCOMPATIBILITIES:
 
