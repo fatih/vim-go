@@ -1085,6 +1085,9 @@ if            "inside a function", select contents of a function,
               excluding the function definition and the closing bracket. This
               text-object also supports literal functions
 
+                                               *go-v_ac* *go-ac*
+ac            "a comment", select contents of the current comment block.
+
 
 vim-go also defines the following text motion objects:
 

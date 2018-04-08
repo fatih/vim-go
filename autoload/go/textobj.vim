@@ -1,9 +1,48 @@
 " ( ) motions
 " { } motions
 " s for sentence
-" p for parapgrah
+" p for paragraph
 " < >
 " t for tag
+
+function! go#textobj#Comment() abort
+  let l:fname = expand('%:p')
+
+  try
+    if &modified
+      let l:tmpname = tempname()
+      call writefile(go#util#GetLines(), l:tmpname)
+      let l:fname = l:tmpname
+    endif
+
+    let l:cmd = ['motion',
+          \ '-format', 'json',
+          \ '-file', l:fname,
+          \ '-offset', go#util#OffsetCursor(),
+          \ '-mode', 'comment',
+          \ ]
+
+    let [l:out, l:err] = go#util#Exec(l:cmd)
+    if l:err
+      call go#util#EchoError(l:out)
+      return
+    endif
+  finally
+    if exists("l:tmpname")
+      call delete(l:tmpname)
+    endif
+  endtry
+
+  let l:result = json_decode(l:out)
+  if type(l:result) != 4 || !has_key(l:result, 'comment')
+    return
+  endif
+
+  let l:info = l:result.comment
+  call cursor(l:info.startLine, l:info.startCol)
+  normal! v
+  call cursor(l:info.endLine, l:info.endCol - 1)
+endfunction
 
 " Select a function in visual mode.
 function! go#textobj#Function(mode) abort

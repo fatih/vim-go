@@ -42,10 +42,13 @@ endif
 
 if get(g:, "go_textobj_enabled", 1)
   onoremap <buffer> <silent> af :<c-u>call go#textobj#Function('a')<cr>
-  onoremap <buffer> <silent> if :<c-u>call go#textobj#Function('i')<cr>
-
   xnoremap <buffer> <silent> af :<c-u>call go#textobj#Function('a')<cr>
+
+  onoremap <buffer> <silent> if :<c-u>call go#textobj#Function('i')<cr>
   xnoremap <buffer> <silent> if :<c-u>call go#textobj#Function('i')<cr>
+
+  onoremap <buffer> <silent> ac :<c-u>call go#textobj#Comment()<cr>
+  xnoremap <buffer> <silent> ac :<c-u>call go#textobj#Comment()<cr>
 
   " Remap ]] and [[ to jump betweeen functions as they are useless in Go
   nnoremap <buffer> <silent> ]] :<c-u>call go#textobj#FunctionJump('n', 'next')<cr>
