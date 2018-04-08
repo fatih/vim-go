@@ -376,55 +376,43 @@ CTRL-t
     If [!] is not given the first error is jumped to.
 
                                                                      *:GoTest*
-:GoTest[!] [expand]
+:GoTest[!] [flags]
 
-    Run the tests on your _test.go files via in your current directory. Errors
-    are populated in the quickfix window.  If an argument is passed, [expand]
-    is used as file selector (useful for cases like `:GoTest ./...`).
+    Run `go test` for the package the current buffer belongs to. Errors are
+    populated in the quickfix window. [flags] are passed to the `go test`
+    command, which is useful for adding `-run TestFun` or testing a different
+    package (e.g. `:GoTest ./...`). See `go help testflag` for a full list of
+    flags.
 
-    You may optionally pass any valid go test flags/options. For a full list
-    please see `go help test`.
-
-    GoTest timesout automatically after 10 seconds. To customize the timeout
-    use |'g:go_test_timeout'|. This feature is disabled if any arguments are
+    :GoTest times out after 10 seconds. To customize the timeout use
+    |'g:go_test_timeout'|. This feature is disabled if any arguments are
     passed to the `:GoTest` command.
 
     If [!] is not given the first error is jumped to.
 
-    If using neovim `:GoTest` will run in a new terminal or run asynchronously
+    If using Neovim `:GoTest` will run in a new terminal or run asynchronously
     in the background according to |'g:go_term_enabled'|. You can set the mode
     of the new terminal with |'g:go_term_mode'|.
 
                                                                  *:GoTestFunc*
-:GoTestFunc[!] [expand]
+:GoTestFunc[!] [flags]
 
-    Runs :GoTest, but only on the single test function immediate to your
-    cursor using 'go test's '-run' flag.
+    Behaves exactly like |:GoTest| but automatically adds `-run` for the
+    function the cursor is in.
 
     Lookup is done starting at the cursor (including that line) moving up till
     a matching `func Test` pattern is found or top of file is reached. Search
     will not wrap around when at the top of the file.
 
-    If [!] is not given the first error is jumped to.
-
-    If using neovim `:GoTestFunc` will run in a new terminal or run
-    asynchronously in the background according to |'g:go_term_enabled'|. You
-    can set the mode of the new terminal with |'g:go_term_mode'|.
+    If the first flag is `last` then it will re-run the last found test
+    function.
 
                                                               *:GoTestCompile*
-:GoTestCompile[!] [expand]
+:GoTestCompile[!] [flags]
 
-    Compile your _test.go files via in your current directory. Errors are
-    populated in the quickfix window.  If an argument is passed, [expand] is
-    used as file selector (useful for cases like `:GoTest ./...`). Useful to
-    not run the tests and capture/fix errors before running the tests or to
-    create test binary.
-
-    If [!] is not given the first error is jumped to.
-
-    If using neovim `:GoTestCompile` will run in a new terminal or run
-    asynchronously in the background according to |'g:go_term_enabled'|. You
-    can set the mode of the new terminal with |'g:go_term_mode'|.
+    Behaves exactly like |:GoTest|, but will only compile the tests instead of
+    running them (`-c` flag). Useful to detect and fix errors before running
+    the tests.
 
                                                                  *:GoCoverage*
 :GoCoverage[!] [options]
