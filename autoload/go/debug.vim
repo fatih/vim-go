@@ -259,6 +259,11 @@ function! go#debug#Stop() abort
 
   set noballooneval
   set balloonexpr=
+
+  augroup vim-go-debug
+    autocmd!
+  augroup END
+  augroup! vim-go-debug
 endfunction
 
 function! s:goto_file() abort
@@ -448,16 +453,20 @@ function! s:start_cb(ch, json) abort
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
   nnoremap <silent> <Plug>(go-debug-print)      :<C-u>call go#debug#Print(expand('<cword>'))<CR>
 
-  nmap <F5>   <Plug>(go-debug-continue)
-  nmap <F6>   <Plug>(go-debug-print)
-  nmap <F9>   <Plug>(go-debug-breakpoint)
-  nmap <F10>  <Plug>(go-debug-next)
-  nmap <F11>  <Plug>(go-debug-step)
-
   set balloonexpr=go#debug#BalloonExpr()
   set ballooneval
 
   exe bufwinnr(oldbuf) 'wincmd w'
+
+  augroup vim-go-debug
+    autocmd!
+    autocmd FileType go nmap <buffer> <F5>   <Plug>(go-debug-continue)
+    autocmd FileType go nmap <buffer> <F6>   <Plug>(go-debug-print)
+    autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
+    autocmd FileType go nmap <buffer> <F10>  <Plug>(go-debug-next)
+    autocmd FileType go nmap <buffer> <F11>  <Plug>(go-debug-step)
+  augroup END
+  doautocmd vim-go-debug FileType go
 endfunction
 
 function! s:err_cb(ch, msg) abort
