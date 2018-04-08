@@ -58,7 +58,7 @@ function! go#coverage#Buffer(bang, ...) abort
     return
   endif
 
-  let args = [a:bang, 0, '-tags', go#config#BuildTags(), "-coverprofile", l:tmpname]
+  let args = [a:bang, 0, "-coverprofile", l:tmpname]
   if a:0
     call extend(args, a:000)
   endif
