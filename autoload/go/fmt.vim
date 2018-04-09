@@ -157,27 +157,8 @@ function! s:fmt_cmd(bin_name, source, target)
     let opts = has_key(opts, a:bin_name) ? opts[a:bin_name] : ""
   endif
   call extend(cmd, split(opts, " "))
-
-  if a:bin_name == "goimports"
-    " lazy check if goimports support `-srcdir`. We should eventually remove
-    " this in the future
-    if !exists('b:goimports_vendor_compatible')
-      let [l:out, l:err] = go#util#Exec([a:bin_name, '--help'])
-      if l:out !~ "-srcdir"
-        call go#util#EchoWarning(printf("vim-go: goimports (%s) does not support srcdir. Update with: :GoUpdateBinaries", a:bin_name))
-      else
-        let b:goimports_vendor_compatible = 1
-      endif
-    endif
-
-    if exists('b:goimports_vendor_compatible') && b:goimports_vendor_compatible
-      let ssl_save = &shellslash
-      set noshellslash
-      " use the filename without the fully qualified name if the tree is
-      " symlinked into the GOPATH, goimports won't work properly.
-      call extend(cmd, ["-srcdir", a:target])
-      let &shellslash = ssl_save
-    endif
+  if a:bin_name is# 'goimports'
+    call extend(cmd, ["-srcdir", a:target])
   endif
 
   call add(cmd, a:source)
@@ -221,12 +202,12 @@ endfunction
 
 function! go#fmt#ToggleFmtAutoSave() abort
   if go#config#FmtAutosave()
-    call go#config#FmtAutosave(0)
+    call go#config#SetFmtAutosave(0)
     call go#util#EchoProgress("auto fmt disabled")
     return
   end
 
-  call go#config#FmtAutosave(1)
+  call go#config#SetFmtAutosave(1)
   call go#util#EchoProgress("auto fmt enabled")
 endfunction
 
