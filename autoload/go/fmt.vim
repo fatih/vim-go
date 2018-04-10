@@ -59,7 +59,7 @@ function! go#fmt#Format(withGoimport) abort
 
   if l:err == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
-  elseif go#config#FmtFailSilently()
+  elseif !go#config#FmtFailSilently()
     let errors = s:parse_errors(expand('%'), out)
     call s:show_errors(errors)
   endif
