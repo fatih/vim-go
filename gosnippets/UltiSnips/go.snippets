@@ -562,7 +562,14 @@ endsnippet
 
 snippet errt "Error test fatal " !b
 if err != nil {
-	t.Fatal(err)
+	t.Fatal(${1:err})
+}
+${0}
+endsnippet
+
+snippet errtf "Error test fatal " !b
+if err != nil {
+	t.Fatalf(${1:err})
 }
 ${0}
 endsnippet
