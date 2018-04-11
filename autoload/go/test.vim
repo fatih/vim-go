@@ -6,7 +6,9 @@ function! go#test#Test(bang, compile, ...) abort
 
   " don't run the test, only compile it. Useful to capture and fix errors.
   if a:compile
-    call extend(args, ['-c'])
+    " TODO: we should clean up this temp file.
+    let l:testfile = tempname() . '.vim-go.test'
+    call extend(args, ['-c', '-o', l:testfile])
   endif
 
   if a:0
