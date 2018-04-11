@@ -148,14 +148,14 @@ endif
 " var, const
 if go#config#FoldEnable('varconst')
   syn region    goVar               start='var ('   end='^\s*)$' transparent fold
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments,goPointerOperator
   syn region    goConst             start='const (' end='^\s*)$' transparent fold
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments,goPointerOperator
 else
   syn region    goVar               start='var ('   end='^\s*)$' transparent
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments,goPointerOperator
   syn region    goConst             start='const (' end='^\s*)$' transparent
-                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments
+                        \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goArgumentName,goArgumentType,goSimpleArguments,goPointerOperator
 endif
 
 " Single-line var, const, and import.
