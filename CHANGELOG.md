@@ -25,6 +25,9 @@ BUG FIXES:
   [[GH-1734]](https://github.com/fatih/vim-go/pull/1734)
 * Apply debugger mappings only for Go buffers, and not all buffers.
   [[GH-1696]](https://github.com/fatih/vim-go/pull/1696)
+* The `gohtmltmpl` filetype will now highlight `{{ .. }}` syntax HTML attributes
+  and some other locations.
+  [[GH-1790]](https://github.com/fatih/vim-go/pull/1790)
 
 BACKWARDS INCOMPATIBILITIES:
 
