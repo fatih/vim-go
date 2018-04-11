@@ -2208,6 +2208,12 @@ By default new terminals are opened in a vertical split. To change it
  let g:go_term_mode = "split"
 >
 
+Quickfix/location list takes up a lot of space~
+
+Sometimes the filename can take up a lot of space in the quickfix/location
+list windows. See https://github.com/fatih/vim-go/issues/1499 for some
+solutions to that.
+
 ==============================================================================
 DEVELOPMENT                                               *go-development*
 
