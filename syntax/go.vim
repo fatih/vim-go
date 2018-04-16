@@ -351,11 +351,11 @@ if go#config#HighlightBuildConstraints() || go#config#FoldEnable('package_commen
   " matched as comments to avoid looking like working build constraints.
   " The he, me, and re options let the "package" itself be highlighted by
   " the usual rules.
-  exe 'syn region  goPackageComment    start=/\v(\/\/.*\n)+\s*package/'
+  exe 'syn region  goPackageComment    start=/\v%^(\s*\n)*(\/\/.*\n)+\s*package/'
         \ . ' end=/\v\n\s*package/he=e-7,me=e-7,re=e-7'
         \ . ' contains=@goCommentGroup,@Spell'
         \ . (go#config#FoldEnable('package_comment') ? ' fold' : '')
-  exe 'syn region  goPackageComment    start=/\v\/\*.*\n(.*\n)*\s*\*\/\npackage/'
+  exe 'syn region  goPackageComment    start=/\v%^(\s*\n)*\/\*.*\n(.*\n)*\s*\*\/\npackage/'
         \ . ' end=/\v\*\/\n\s*package/he=e-7,me=e-7,re=e-7'
         \ . ' contains=@goCommentGroup,@Spell'
         \ . (go#config#FoldEnable('package_comment') ? ' fold' : '')
