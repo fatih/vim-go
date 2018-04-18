@@ -303,6 +303,9 @@ function! s:errorformat() abort
   " match compiler errors
   let format = "%f:%l:%c: %m"
 
+  " match vet errors
+  let format .= ",%f:%l: %m"
+
   " ignore `go test -v` output for starting tests
   let format .= ",%-G=== RUN   %.%#"
   " ignore `go test -v` output for passing tests
