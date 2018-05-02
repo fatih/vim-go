@@ -534,21 +534,6 @@ function! go#debug#Start(is_test, ...) abort
   endif
 
   try
-    if len(a:000) > 0
-      let l:pkgname = a:1
-      " Expand .; otherwise this won't work from a tmp dir.
-      if l:pkgname[0] == '.'
-        let l:pkgname = go#package#FromPath(getcwd()) . l:pkgname[1:]
-      endif
-    else
-      let l:pkgname = go#package#FromPath(getcwd())
-    endif
-
-    let l:args = []
-    if len(a:000) > 1
-      let l:args = ['--'] + a:000[1:]
-    endif
-
     let l:cmd = [
           \ dlv,
           \ (a:is_test ? 'test' : 'debug'),
@@ -564,6 +549,22 @@ function! go#debug#Start(is_test, ...) abort
     if buildtags isnot ''
       let l:cmd += ['--build-flags', '--tags=' . buildtags]
     endif
+
+    if len(a:000) > 0
+      let l:pkgname = a:1
+      " Expand .; otherwise this won't work from a tmp dir.
+      if l:pkgname[0] == '.'
+        let l:pkgname = go#package#FromPath(getcwd()) . l:pkgname[1:]
+      endif
+    else
+      let l:pkgname = go#package#FromPath(getcwd())
+    endif
+
+    let l:cmd += [l:pkgname]
+    if len(a:000) > 1
+      let l:args = ['--'] + a:000[1:]
+    endif
+
     let l:cmd += l:args
 
     call go#util#EchoProgress('Starting GoDebug...')
