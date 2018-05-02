@@ -127,7 +127,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
     let l:run_cmd = l:cmd
     if len(l:pkg) > 1 && get(l:pkg[1], l:platform, '') isnot ''
-      let l:run_cmd += get(l:pkg[1], l:platform, '')
+      let l:run_cmd += [get(l:pkg[1], l:platform, '')]
     endif
 
     let binname = "go_" . binary . "_bin"
