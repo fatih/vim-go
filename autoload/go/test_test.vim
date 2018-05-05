@@ -74,9 +74,18 @@ endfunc
 
 func! Test_GoTestVet() abort
   let expected = [
-        \ {'lnum': 6, 'bufnr': 14, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'Errorf format %v reads arg #1, but call has only 0 args'},
+        \ {'lnum': 6, 'bufnr': 16, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'Errorf format %v reads arg #1, but call has only 0 args'},
       \ ]
   call s:test('veterror/veterror.go', expected)
+endfunc
+
+func! Test_GoTestTestCompilerError() abort
+  let expected = [
+        \ {'lnum': 10, 'bufnr': 11, 'col': 16, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'cannot use r (type struct {}) as type io.Reader in argument to ioutil.ReadAll:'},
+        \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'struct {} does not implement io.Reader (missing Read method)'}
+      \ ]
+
+  call s:test('testcompilerror/testcompilerror_test.go', expected)
 endfunc
 
 func! s:test(file, expected, ...) abort

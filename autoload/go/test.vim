@@ -300,14 +300,8 @@ function! s:errorformat() abort
   " (e.g. \%(\)).
   let indent = '%\\%(    %\\)%#'
 
-  " match compiler errors
-  let format = "%f:%l:%c: %m"
-
-  " match vet errors
-  let format .= ",%f:%l: %m"
-
   " ignore `go test -v` output for starting tests
-  let format .= ",%-G=== RUN   %.%#"
+  let format = "%-G=== RUN   %.%#"
   " ignore `go test -v` output for passing tests
   let format .= ",%-G" . indent . "--- PASS: %.%#"
 
@@ -418,6 +412,20 @@ function! s:errorformat() abort
   " panic stacktraces.
   let format .= ",%-CFAIL%\\t%.%#"
   "let format .= ",FAIL%\\t%.%#"
+
+  " match compiler errors
+  " These are very smilar to errors from test output, but lack leading tabs
+  " for the first line of an error, and subsequent lines only have one tab
+  " instead of two.
+  let format .= ",%A%f:%l:%c: %m"
+  let format .= ",%A%f:%l: %m"
+  " It would be nice if this weren't necessary, but panic lines from tests are
+  " prefixed with a single leading tab, making them very similar to 2nd and
+  " later lines of a multi-line compiler error. Swallow it so that it doesn't
+  " cause a quickfix entry since the next entry can add a quickfix entry for
+  " 2nd and later lines of a multi-line compiler error.
+  let format .= ",%-C%\\tpanic: %.%#"
+  let format .= ",%G%\\t%m"
 
   " Match and ignore everything else in multi-line messages.
   let format .= ",%-C%.%#"
