@@ -72,6 +72,15 @@ func! Test_GoTestShowName() abort
   unlet g:go_test_show_name
 endfunc
 
+func! Test_GoTestTestCompilerError() abort
+  let expected = [
+        \ {'lnum': 10, 'bufnr': 11, 'col': 16, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'cannot use r (type struct {}) as type io.Reader in argument to ioutil.ReadAll:'},
+        \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'struct {} does not implement io.Reader (missing Read method)'}
+      \ ]
+
+  call s:test('testcompilerror/testcompilerror_test.go', expected)
+endfunc
+
 func! s:test(file, expected, ...) abort
   if has('nvim')
     " nvim mostly shows test errors correctly, but the the expected errors are
