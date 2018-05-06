@@ -551,6 +551,7 @@ function! go#debug#Start(is_test, ...) abort
 
     let l:cmd = [
           \ dlv,
+          \ l:pkgname,
           \ (a:is_test ? 'test' : 'debug'),
           \ '--output', tempname(),
           \ '--headless',
