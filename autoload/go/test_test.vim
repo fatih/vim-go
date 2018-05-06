@@ -72,6 +72,13 @@ func! Test_GoTestShowName() abort
   unlet g:go_test_show_name
 endfunc
 
+func! Test_GoTestVet() abort
+  let expected = [
+        \ {'lnum': 6, 'bufnr': 14, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'Errorf format %v reads arg #1, but call has only 0 args'},
+      \ ]
+  call s:test('veterror/veterror.go', expected)
+endfunc
+
 func! s:test(file, expected, ...) abort
   if has('nvim')
     " nvim mostly shows test errors correctly, but the the expected errors are
