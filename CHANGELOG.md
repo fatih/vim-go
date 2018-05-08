@@ -31,6 +31,9 @@ BUG FIXES:
 * Update using the correct logging flag option that was caused with the recent
   delve changes
   [[GH-1809]](https://github.com/fatih/vim-go/pull/1809)
+* Fix gocode option string values that would cause gocode settings not to set
+  correctly
+  [[GH-1818]](https://github.com/fatih/vim-go/pull/1818)
 
 BACKWARDS INCOMPATIBILITIES:
 
