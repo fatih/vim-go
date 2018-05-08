@@ -43,7 +43,6 @@ function! s:sync_gocode(cmd, args, input) abort
   return l:result
 endfunction
 
-" TODO(bc): reset when gocode isn't running
 let s:optionsEnabled = 0
 function! s:gocodeEnableOptions() abort
   if s:optionsEnabled
@@ -63,7 +62,7 @@ function! s:gocodeEnableOptions() abort
 endfunction
 
 function! s:toBool(val) abort
-  if a:val | return 'true ' | else | return 'false' | endif
+  if a:val | return 'true' | else | return 'false' | endif
 endfunction
 
 function! s:gocodeAutocomplete() abort
