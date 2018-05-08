@@ -28,6 +28,9 @@ BUG FIXES:
 * The `gohtmltmpl` filetype will now highlight `{{ .. }}` syntax HTML attributes
   and some other locations.
   [[GH-1790]](https://github.com/fatih/vim-go/pull/1790)
+* Update using the correct logging flag option that was caused with the recent
+  delve changes
+  [[GH-1809]](https://github.com/fatih/vim-go/pull/1809)
 
 BACKWARDS INCOMPATIBILITIES:
 
