@@ -315,6 +315,14 @@ abbr func TestXYZ(t *testing.T) { ... }
 	func Test${1:Function}(t *testing.T) {
 		${0}
 	}
+
+# subtest
+snippet trun
+abbr t.Run(..., func(t *testing.T) { ... })
+	t.Run("${1:name}", func(t *testing.T) {
+		${0}
+	})
+
 # test server
 snippet tsrv
 abbr ts := httptest.NewServer(...)
