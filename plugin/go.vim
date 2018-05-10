@@ -125,7 +125,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   for [binary, pkg] in items(l:packages)
     let l:importPath = pkg[0]
 
-    let l:run_cmd = l:cmd
+    let l:run_cmd = copy(l:cmd)
     if len(l:pkg) > 1 && get(l:pkg[1], l:platform, '') isnot ''
       let l:run_cmd += [get(l:pkg[1], l:platform, '')]
     endif
