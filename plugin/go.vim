@@ -34,7 +34,7 @@ let s:packages = {
       \ 'dlv':           ['github.com/derekparker/delve/cmd/dlv'],
       \ 'errcheck':      ['github.com/kisielk/errcheck'],
       \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct'],
-      \ 'gocode':        ['github.com/mdempsky/gocode', {'windows': '-ldflags -H=windowsgui'}],
+      \ 'gocode':        ['github.com/mdempsky/gocode', {'windows': ['-ldflags', '-H=windowsgui']}],
       \ 'godef':         ['github.com/rogpeppe/godef'],
       \ 'gogetdoc':      ['github.com/zmb3/gogetdoc'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports'],
@@ -127,7 +127,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
     let l:run_cmd = copy(l:cmd)
     if len(l:pkg) > 1 && get(l:pkg[1], l:platform, '') isnot ''
-      let l:run_cmd += [get(l:pkg[1], l:platform, '')]
+      let l:run_cmd += get(l:pkg[1], l:platform, '')
     endif
 
     let binname = "go_" . binary . "_bin"
