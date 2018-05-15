@@ -16,12 +16,6 @@ function! s:guru_cmd(args) range abort
   let selected = a:args.selected
 
   let result = {}
-  let pkg = go#package#ImportPath()
-
-  " this is important, check it!
-  if pkg == -1 && needs_scope
-    return {'err': "current directory is not inside of a valid GOPATH"}
-  endif
 
   "return with a warning if the binary doesn't exist
   let bin_path = go#path#CheckBinPath("guru")
@@ -47,6 +41,10 @@ function! s:guru_cmd(args) range abort
     " some modes require scope to be defined (such as callers). For these we
     " choose a sensible setting, which is using the current file's package
     if needs_scope
+      let pkg = go#package#ImportPath()
+      if pkg == -1
+        return {'err': "current directory is not inside of a valid GOPATH"}
+      endif
       let scopes = [pkg]
     endif
   endif
