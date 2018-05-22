@@ -18,7 +18,7 @@ IMPROVEMENTS:
   [[GH-1754]](https://github.com/fatih/vim-go/pull/1754)
 * Don't return an error from `:GoGuru` functions when the import path is
   unknown and scope is unneeded.
-  [[GH-1828]](https://github.com/fatih/vim-go/pull/1828)
+  [[GH-1826]](https://github.com/fatih/vim-go/pull/1826)
 
 BUG FIXES:
 
