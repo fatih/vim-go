@@ -16,6 +16,9 @@ IMPROVEMENTS:
 * Some command which operate on files (rather than Vim buffers) will now show a
   warning if there are unsaved buffers, similar to Vim's `:make`.
   [[GH-1754]](https://github.com/fatih/vim-go/pull/1754)
+* Don't return an error from `:GoGuru` functions when the import path is
+  unknown and scope is unneeded.
+  [[GH-1828]](https://github.com/fatih/vim-go/pull/1828)
 
 BUG FIXES:
 
