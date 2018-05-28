@@ -2,6 +2,13 @@
 
 FEATURES:
 
+* Two new text objects has been added: 
+  * `ic` (inner comment) selects the content of the comment, excluding the start/end markers (i.e: `//`, `/*`)
+  * `ac` (a comment) selects the content of the whole commment block, including markers
+  To use this new feature, make sure you use use the latest version of
+  [motion](https://github.com/fatih/motion). You can update the tool from Vim
+  via `:GoUpdateBinaries`
+  [[GH-1779]](https://github.com/fatih/vim-go/pull/1779)
 * Add `:GoPointsTo` to show all variables to which the pointer under the cursor
   may point to.
   [[GH-1751]](https://github.com/fatih/vim-go/pull/1751)
