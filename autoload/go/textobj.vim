@@ -44,7 +44,9 @@ function! go#textobj#Comment(mode) abort
   " Adjust cursor to exclude start comment markers. Try to be a little bit
   " clever when using multi-line '/*' markers.
   if a:mode is# 'i'
-    let l:line = getline('.')
+    " trim whitespace so matching below works correctly
+    let l:line = substitute(getline('.'), '^\s*\(.\{-}\)\s*$', '\1', '')
+
     " //text
     if l:line[:2] is# '// '
       call cursor(l:info.startLine, l:info.startCol+3)
