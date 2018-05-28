@@ -1,9 +1,103 @@
 " ( ) motions
 " { } motions
 " s for sentence
-" p for parapgrah
+" p for paragraph
 " < >
 " t for tag
+
+function! go#textobj#Comment(mode) abort
+  let l:fname = expand('%:p')
+
+  try
+    if &modified
+      let l:tmpname = tempname()
+      call writefile(go#util#GetLines(), l:tmpname)
+      let l:fname = l:tmpname
+    endif
+
+    let l:cmd = ['motion',
+          \ '-format', 'json',
+          \ '-file', l:fname,
+          \ '-offset', go#util#OffsetCursor(),
+          \ '-mode', 'comment',
+          \ ]
+
+    let [l:out, l:err] = go#util#Exec(l:cmd)
+    if l:err
+      call go#util#EchoError(l:out)
+      return
+    endif
+  finally
+    if exists("l:tmpname")
+      call delete(l:tmpname)
+    endif
+  endtry
+
+  let l:result = json_decode(l:out)
+  if type(l:result) != 4 || !has_key(l:result, 'comment')
+    return
+  endif
+
+  let l:info = l:result.comment
+  call cursor(l:info.startLine, l:info.startCol)
+
+  " Adjust cursor to exclude start comment markers. Try to be a little bit
+  " clever when using multi-line '/*' markers.
+  if a:mode is# 'i'
+    let l:line = getline('.')
+    " //text
+    if l:line[:2] is# '// '
+      call cursor(l:info.startLine, l:info.startCol+3)
+    " // text
+    elseif l:line[:1] is# '//'
+      call cursor(l:info.startLine, l:info.startCol+2)
+    " /*
+    " text
+    elseif l:line =~# '^/\* *$'
+      call cursor(l:info.startLine+1, 0)
+      " /*
+      "  * text
+      if getline('.')[:2] is# ' * '
+        call cursor(l:info.startLine+1, 4)
+      " /*
+      "  *text
+      elseif getline('.')[:1] is# ' *'
+        call cursor(l:info.startLine+1, 3)
+      endif
+    " /* text
+    elseif l:line[:2] is# '/* '
+      call cursor(l:info.startLine, l:info.startCol+3)
+    " /*text
+    elseif l:line[:1] is# '/*'
+      call cursor(l:info.startLine, l:info.startCol+2)
+    endif
+  endif
+
+  normal! v
+
+  " Exclude trailing newline.
+  if a:mode is# 'i'
+    let l:info.endCol -= 1
+  endif
+
+  call cursor(l:info.endLine, l:info.endCol)
+
+  " Exclude trailing '*/'.
+  if a:mode is# 'i'
+    let l:line = getline('.')
+    " text
+    " */
+    if l:line =~# '^ *\*/$'
+      call cursor(l:info.endLine - 1, len(getline(l:info.endLine - 1)))
+    " text */
+    elseif l:line[-3:] is# ' */'
+      call cursor(l:info.endLine, l:info.endCol - 3)
+    " text*/
+    elseif l:line[-2:] is# '*/'
+      call cursor(l:info.endLine, l:info.endCol - 2)
+    endif
+  endif
+endfunction
 
 " Select a function in visual mode.
 function! go#textobj#Function(mode) abort
