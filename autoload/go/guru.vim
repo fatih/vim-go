@@ -127,7 +127,7 @@ function! s:job_start(cmd, start_options) abort
   " use a shell for input redirection if needed
   let cmd = a:cmd
   if has_key(a:start_options, 'in_io') && a:start_options.in_io ==# 'file' && !empty(a:start_options.in_name)
-    let cmd = ['/bin/sh', '-c', join(a:cmd, ' ') . ' <' . a:start_options.in_name]
+    let cmd = ['/bin/sh', '-c', go#util#Shelljoin(a:cmd) . ' <' . a:start_options.in_name]
   endif
 
   return jobstart(cmd, opts)
