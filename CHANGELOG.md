@@ -46,6 +46,8 @@ BUG FIXES:
 * Fix gocode option string values that would cause gocode settings not to set
   correctly
   [[GH-1818]](https://github.com/fatih/vim-go/pull/1818)
+* Fix Neovim handling of guru output.
+  [[GH-1846]](https://github.com/fatih/vim-go/pull/1846)
 
 BACKWARDS INCOMPATIBILITIES:
 
