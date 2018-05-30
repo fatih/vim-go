@@ -113,12 +113,43 @@ function! s:job_start(cmd, start_options) abort
   endif
 
   let opts = {'stdout_buffered': v:true, 'stderr_buffered': v:true}
+
+  let stdout_buf = ""
   function opts.on_stdout(job_id, data, event) closure
-    call a:start_options.callback(a:job_id, join(a:data, "\n"))
+    let l:data = a:data
+    let l:data[0] = stdout_buf . l:data[0]
+    let stdout_buf = ""
+
+    if l:data[-1] != ""
+      let stdout_buf = l:data[-1]
+    endif
+
+    let l:data = l:data[:-2]
+    if len(l:data) == 0
+      return
+    endif
+
+    call a:start_options.callback(a:job_id, join(l:data, "\n"))
   endfunction
+
+  let stderr_buf = ""
   function opts.on_stderr(job_id, data, event) closure
-    call a:start_options.callback(a:job_id, join(a:data, "\n"))
+    let l:data = a:data
+    let l:data[0] = stderr_buf . l:data[0]
+    let stderr_buf = ""
+
+    if l:data[-1] != ""
+      let stderr_buf = l:data[-1]
+    endif
+
+    let l:data = l:data[:-2]
+    if len(l:data) == 0
+      return
+    endif
+
+    call a:start_options.callback(a:job_id, join(l:data, "\n"))
   endfunction
+
   function opts.on_exit(job_id, exit_code, event) closure
     call a:start_options.exit_cb(a:job_id, a:exit_code)
     call a:start_options.close_cb(a:job_id)
