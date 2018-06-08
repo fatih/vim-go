@@ -1065,6 +1065,10 @@ Alternates between the implementation and test code in a new vertical split
 
 Calls `:GoImport` for the current package
 
+                                                                  *(go-iferr)*
+
+Generate if err != nil { return ... } automatically which infer the type of
+return values and the numbers.
 
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
