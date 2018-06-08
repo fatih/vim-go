@@ -444,6 +444,15 @@ if err != nil {
 fmt.Print(string(b))
 endsnippet
 
+# print a map in YAML format
+snippet py "print a map in YAML format"
+b, err := yaml.Marshal(&${1:val})
+if err != nil {
+	fmt.Println("error:", err)
+}
+fmt.Print(string(b))
+endsnippet
+
 global !p
 
 import re
