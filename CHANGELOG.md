@@ -28,6 +28,9 @@ IMPROVEMENTS:
   [[GH-1826]](https://github.com/fatih/vim-go/pull/1826)
 * Performance improvements for the `go.vim` syntax file.
   [[GH-1799]](https://github.com/fatih/vim-go/pull/1799)
+* Allow `GoDebugBreakpoint` and `GoDebugCurrent` highlight groups to be
+  overridden by user configuration.
+  [[GH-1850]](https://github.com/vim-go/pull/1850)
 
 BUG FIXES:
 
