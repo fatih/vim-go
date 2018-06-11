@@ -435,6 +435,24 @@ if !reflect.DeepEqual(${1:expected}, ${2:actual}) {
 }
 endsnippet
 
+# print a map in JSON format
+snippet pj "print a map in JSON format"
+b, err := json.MarshalIndent(${1:val}, "", "  ")
+if err != nil {
+	fmt.Println("error:", err)
+}
+fmt.Print(string(b))
+endsnippet
+
+# print a map in YAML format
+snippet py "print a map in YAML format"
+b, err := yaml.Marshal(&${1:val})
+if err != nil {
+	fmt.Println("error:", err)
+}
+fmt.Print(string(b))
+endsnippet
+
 global !p
 
 import re
