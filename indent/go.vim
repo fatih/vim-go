@@ -38,6 +38,10 @@ function! GoIndent(lnum)
 
   let ind = previ
 
+  if prevl =~ ' = `[^`]*$'
+    " previous line started a multi-line raw string
+    return 0
+  endif
   if prevl =~ '[({]\s*$'
     " previous line opened a block
     let ind += shiftwidth()
