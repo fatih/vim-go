@@ -118,7 +118,7 @@ function! go#tool#ParseErrors(lines) abort
       " Preserve indented lines.
       " This comes up especially with multi-line test output.
       if match(line, '^\s') >= 0
-        call add(errors, {"text": line})
+        call add(errors, {"text": substitute(line, '\r$', '', '')})
       endif
     endif
   endfor
