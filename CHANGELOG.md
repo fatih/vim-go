@@ -31,6 +31,10 @@ IMPROVEMENTS:
 * Allow `GoDebugBreakpoint` and `GoDebugCurrent` highlight groups to be
   overridden by user configuration.
   [[GH-1850]](https://github.com/vim-go/pull/1850)
+* Strip trailing carriage returns from quickfix errors that are parsed
+  manually. [[GH-1861]](https://github.com/fatih/vim-go/pull/1861).
+* Cleanup title of terminal window.
+  [[GH-1861]](https://github.com/fatih/vim-go/pull/1861).
 
 BUG FIXES:
 
