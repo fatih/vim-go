@@ -853,6 +853,27 @@ CTRL-t
       }
 <
 
+                                                                    *:GoIfErr*
+:GoIfErr
+
+    Generate if err != nil { return ... } automatically which infer the type
+    of return values and the numbers.
+
+    For example:
+>
+      func doSomething() (string, error) {
+          f, err := os.Open("file")
+      }
+<
+    Becomes:
+>
+      func doSomething() (string, error) {
+          f, err := os.Open("file")
+          if err != nil {
+              return "", err
+          }
+      }
+<
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
@@ -1065,6 +1086,10 @@ Alternates between the implementation and test code in a new vertical split
 
 Calls `:GoImport` for the current package
 
+                                                                  *(go-iferr)*
+
+Generate if err != nil { return ... } automatically which infer the type of
+return values and the numbers.
 
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
