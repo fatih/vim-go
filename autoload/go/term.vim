@@ -1,5 +1,4 @@
 " new creates a new terminal with the given command. Mode is set based on the
-			List:	    3  |v:t_list|
 " global variable g:go_term_mode, which is by default set to :vsplit
 function! go#term#new(bang, cmd) abort
   return go#term#newmode(a:bang, a:cmd, go#config#TermMode())
