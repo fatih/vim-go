@@ -317,24 +317,9 @@ function s:cmd_job(args) abort
   endfunction
 
   let a:args.complete = funcref('s:complete')
-  let callbacks = go#job#Spawn(a:args)
+  let start_options = go#job#Options(a:args)
 
-  let start_options = {
-        \ 'callback': callbacks.callback,
-        \ 'exit_cb': callbacks.exit_cb,
-        \ 'close_cb': callbacks.close_cb,
-        \ }
-
-  " pre start
-  let dir = getcwd()
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let jobdir = fnameescape(expand("%:p:h"))
-  execute cd . jobdir
-
-  call job_start(a:args.cmd, start_options)
-
-  " post start
-  execute cd . fnameescape(dir)
+  call go#job#Start(a:args.cmd, start_options)
 endfunction
 
 " vim: sw=2 ts=2 et

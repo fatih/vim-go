@@ -278,13 +278,7 @@ function! go#def#Stack(...) abort
 endfunction
 
 function s:def_job(args) abort
-  let callbacks = go#job#Spawn(a:args)
-
-  let start_options = {
-        \ 'callback': callbacks.callback,
-        \ 'exit_cb': callbacks.exit_cb,
-        \ 'close_cb': callbacks.close_cb,
-        \ }
+  let l:start_options = go#job#Options(a:args)
 
   if &modified
     let l:tmpname = tempname()
@@ -293,7 +287,7 @@ function s:def_job(args) abort
     let l:start_options.in_name = l:tmpname
   endif
 
-  call job_start(a:args.cmd, start_options)
+  call go#job#Start(a:args.cmd, start_options)
 endfunction
 
 " vim: sw=2 ts=2 et

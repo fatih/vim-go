@@ -1,4 +1,13 @@
-" Spawn returns callbacks to be used with job_start. It is abstracted to be
+" Spawn starts an asynchronous job. See the description of go#job#Options to
+" understand the args parameter.
+"
+" Spawn returns a job.
+function! go#job#Spawn(cmd, args)
+  let l:options = go#job#Options(a:args)
+  return go#job#Start(a:cmd, l:options)
+endfunction
+
+" Options returns callbacks to be used with job_start. It is abstracted to be
 " used with various go commands, such as build, test, install, etc.. This
 " allows us to avoid writing the same callback over and over for some
 " commands. It's fully customizable so each command can change it to it's own
@@ -30,7 +39,9 @@
 "   'close_cb':
 "     A function suitable to be passed as a job close_cb handler. See
 "     job-close_cb.
-function go#job#Spawn(args)
+"   'cwd':
+"     The path to the directory which contains the current buffer.
+function! go#job#Options(args)
   let cbs = {}
   let state = {
         \ 'winid': win_getid(winnr()),
@@ -45,6 +56,10 @@ function go#job#Spawn(args)
         \ 'closed': 0,
         \ 'errorformat': &errorformat
       \ }
+
+  if has("patch-8.0.0902") || has('nvim')
+    let cbs.cwd = state.jobdir
+  endif
 
   if has_key(a:args, 'bang')
     let state.bang = a:args.bang
@@ -123,14 +138,14 @@ function go#job#Spawn(args)
 
     let out = join(self.messages, "\n")
 
-    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
     try
       " parse the errors relative to self.jobdir
-      execute cd self.jobdir
+      execute l:cd self.jobdir
       call go#list#ParseFormat(l:listtype, self.errorformat, out, self.for)
       let errors = go#list#Get(l:listtype)
     finally
-      execute cd . fnameescape(self.dir)
+      execute l:cd fnameescape(self.dir)
     endtry
 
 
@@ -150,6 +165,33 @@ function go#job#Spawn(args)
   endfunction
 
   return cbs
+endfunction
+
+function! go#job#Start(cmd, options)
+  let l:options = copy(a:options)
+  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+
+  if !has_key(l:options, 'cwd')
+    " pre start
+    let dir = getcwd()
+    execute l:cd fnameescape(expand("%:p:h"))
+  endif
+
+  if has_key(l:options, '_start')
+    call l:options._start()
+    " remove _start to play nicely with vim (when vim encounters an unexpected
+    " job option it reports an "E475: invalid argument" error).
+    unlet l:options._start
+  endif
+
+  let job = job_start(a:cmd, l:options)
+
+  if !has_key(l:options, 'cwd')
+    " post start
+    execute l:cd fnameescape(dir)
+  endif
+
+  return job
 endfunction
 
 " vim: sw=2 ts=2 et

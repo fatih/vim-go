@@ -293,19 +293,7 @@ function s:coverage_job(args)
   endfunction
 
   let a:args.complete = funcref('s:complete')
-  let callbacks = go#job#Spawn(a:args)
-
-  let start_options = {
-        \ 'callback': callbacks.callback,
-        \ 'exit_cb': callbacks.exit_cb,
-        \ 'close_cb': callbacks.close_cb,
-        \ }
-
-  " pre start
-  let dir = getcwd()
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let jobdir = fnameescape(expand("%:p:h"))
-  execute cd . jobdir
+  let start_options = go#job#Options(a:args)
 
   call go#statusline#Update(status_dir, {
         \ 'desc': "current status",
@@ -313,10 +301,7 @@ function s:coverage_job(args)
         \ 'state': "started",
         \})
 
-  call job_start(a:args.cmd, start_options)
-
-  " post start
-  execute cd . fnameescape(dir)
+  call go#job#Start(a:args.cmd, start_options)
 endfunction
 
 " coverage_callback is called when the coverage execution is finished
