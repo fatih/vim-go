@@ -48,7 +48,7 @@ function! go#cmd#Build(bang, ...) abort
       call go#util#EchoProgress("building dispatched ...")
     endif
 
-    call go#jobcontrol#Spawn(a:bang, "build", "GoBuild", args)
+    call go#jobcontrol#Spawn(a:bang, "GoBuild", args)
 
   " Vim 7.4 without async
   else
