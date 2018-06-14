@@ -28,11 +28,6 @@ function! go#jobcontrol#AddHandler(handler) abort
   return string(i)
 endfunction
 
-" RemoveHandler removes a callback handler by id.
-function! go#jobcontrol#RemoveHandler(id) abort
-  unlet s:handlers[a:id]
-endfunction
-
 " spawn spawns a go subcommand with the name and arguments with jobstart. Once a
 " job is started a reference will be stored inside s:jobs. The job is started
 " inside the current files folder.
