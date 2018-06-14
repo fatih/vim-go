@@ -57,10 +57,8 @@ function! s:spawn(bang, for, args) abort
         \ 'started_at' : started_at,
         \ 'for' : a:for,
         \ 'errorformat': &errorformat,
+        \ 'cwd': fnameescape(expand("%:p:h")),
         \ }
-
-  " execute go build in the files directory
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
 
   " cleanup previous jobs for this file
   for jb in values(s:jobs)
@@ -68,10 +66,7 @@ function! s:spawn(bang, for, args) abort
       unlet s:jobs[jb.id]
     endif
   endfor
-
-  let dir = getcwd()
   let jobdir = fnameescape(expand("%:p:h"))
-  execute cd . jobdir
 
   " append the subcommand, such as 'build'
   let argv = ['go'] + a:args
@@ -79,10 +74,7 @@ function! s:spawn(bang, for, args) abort
   " run, forrest, run!
   let id = jobstart(argv, job)
   let job.id = id
-  let job.dir = jobdir
   let s:jobs[id] = job
-
-  execute cd . fnameescape(dir)
 
   return job
 endfunction
@@ -116,7 +108,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
-  execute cd self.dir
+  execute cd self.cwd
 
   call s:callback_handlers_on_exit(s:jobs[a:job_id], a:exit_status, std_combined)
 
