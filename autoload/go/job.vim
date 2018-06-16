@@ -19,6 +19,9 @@ endfunction
 "   'bang':
 "     Set to 0 to jump to the first error in the error list.
 "     Defaults to 0.
+"   'statustype':
+"     The status type to use when updating the status.
+"     See statusline.vim.
 "   'for':
 "     The g:go_list_type_command key to use to get the error list type to use.
 "     Defaults to '_job'
@@ -54,7 +57,8 @@ function! go#job#Options(args)
         \ 'exited': 0,
         \ 'exit_status': 0,
         \ 'closed': 0,
-        \ 'errorformat': &errorformat
+        \ 'errorformat': &errorformat,
+        \ 'statustype' : ''
       \ }
 
   if has("patch-8.0.0902") || has('nvim')
@@ -69,8 +73,59 @@ function! go#job#Options(args)
     let state.for = a:args.for
   endif
 
+  if has_key(a:args, 'statustype')
+    let state.statustype = a:args.statustype
+  endif
+
   " do nothing in state.complete by default.
   function state.complete(job, exit_status, data)
+  endfunction
+
+  function! s:set_started_at() dict
+      let self.started_at = reltime()
+  endfunction
+  " explicitly bind set_started_at to state so that within it, self will
+  " always refer to state. See :help Partial for more information.
+  "
+  " _set_started_at is intended only for internal use and should not be
+  " referred to outside of this file.
+  let cbs._set_started_at = function('s:set_started_at', [], state)
+
+  function state.show_status(job, exit_status) dict
+    if go#config#EchoCommandInfo()
+      let prefix = ""
+      if self.statustype != ''
+        let prefix = '[' . self.statustype . '] '
+      endif
+      if a:exit_status == 0
+        call go#util#EchoSuccess(prefix . "SUCCESS")
+      else
+        call go#util#EchoError(prefix . "FAIL")
+      endif
+    endif
+
+    if self.statustype == ''
+      return
+    endif
+
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': self.statustype,
+          \ 'state': "success",
+          \ }
+
+    if a:exit_status
+      let status.state = "failed"
+    endif
+
+    if has_key(self, 'started_at')
+      let elapsed_time = reltimestr(reltime(self.started_at))
+      " strip whitespace
+      let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
+      let status.state .= printf(" (%ss)", elapsed_time)
+    endif
+
+    call go#statusline#Update(self.jobdir, status)
   endfunction
 
   if has_key(a:args, 'complete')
@@ -88,13 +143,7 @@ function! go#job#Options(args)
     let self.exit_status = a:exitval
     let self.exited = 1
 
-    if go#config#EchoCommandInfo()
-      if a:exitval == 0
-        call go#util#EchoSuccess("SUCCESS")
-      else
-        call go#util#EchoError("FAILED")
-      endif
-    endif
+    call self.show_status(a:job, a:exitval)
 
     if self.closed
       call self.complete(a:job, self.exit_status, self.messages)
@@ -168,8 +217,8 @@ function! go#job#Options(args)
 endfunction
 
 function! go#job#Start(cmd, options)
-  let l:options = copy(a:options)
   let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+  let l:options = copy(a:options)
 
   if !has_key(l:options, 'cwd')
     " pre start
@@ -177,11 +226,9 @@ function! go#job#Start(cmd, options)
     execute l:cd fnameescape(expand("%:p:h"))
   endif
 
-  if has_key(l:options, '_start')
-    call l:options._start()
-    " remove _start to play nicely with vim (when vim encounters an unexpected
-    " job option it reports an "E475: invalid argument" error).
-    unlet l:options._start
+  if has_key(l:options, '_set_started_at')
+    call l:options._set_started_at()
+    unlet l:options._set_started_at
   endif
 
   let job = job_start(a:cmd, l:options)

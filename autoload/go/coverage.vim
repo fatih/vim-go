@@ -54,6 +54,7 @@ function! go#coverage#Buffer(bang, ...) abort
           \ 'complete': function('s:coverage_callback', [l:tmpname]),
           \ 'bang': a:bang,
           \ 'for': 'GoTest',
+          \ 'statustype': 'coverage',
           \ })
     return
   endif
@@ -276,23 +277,6 @@ function s:coverage_job(args)
   call go#cmd#autowrite()
 
   let status_dir =  expand('%:p:h')
-  let Complete = a:args.complete
-  function! s:complete(job, exit_status, data) closure
-    let status = {
-          \ 'desc': 'last status',
-          \ 'type': "coverage",
-          \ 'state': "finished",
-          \ }
-
-    if a:exit_status
-      let status.state = "failed"
-    endif
-
-    call go#statusline#Update(status_dir, status)
-    return Complete(a:job, a:exit_status, a:data)
-  endfunction
-
-  let a:args.complete = funcref('s:complete')
   let start_options = go#job#Options(a:args)
 
   call go#statusline#Update(status_dir, {

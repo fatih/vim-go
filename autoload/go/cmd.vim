@@ -297,28 +297,7 @@ function s:cmd_job(args) abort
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  function! s:complete(job, exit_status, data) closure abort
-    let status = {
-          \ 'desc': 'last status',
-          \ 'type': a:args.cmd[1],
-          \ 'state': "success",
-          \ }
-
-    if a:exit_status
-      let status.state = "failed"
-    endif
-
-    let elapsed_time = reltimestr(reltime(started_at))
-    " strip whitespace
-    let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
-    let status.state .= printf(" (%ss)", elapsed_time)
-
-    call go#statusline#Update(status_dir, status)
-  endfunction
-
-  let a:args.complete = funcref('s:complete')
   let start_options = go#job#Options(a:args)
-
   call go#job#Start(a:args.cmd, start_options)
 endfunction
 
