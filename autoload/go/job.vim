@@ -170,7 +170,7 @@ function! go#job#Options(args)
 
     call self.show_status(a:job, a:exitval)
 
-    if self.closed
+    if self.closed || has('nvim')
       call self.complete(a:job, self.exit_status, self.messages)
       call self.show_errors(a:job, self.exit_status, self.messages)
     endif
@@ -238,6 +238,10 @@ function! go#job#Options(args)
     endif
   endfunction
 
+  if has('nvim')
+    return s:neooptions(cbs)
+  endif
+
   return cbs
 endfunction
 
@@ -258,7 +262,22 @@ function! go#job#Start(cmd, options)
     unlet l:options._start
   endif
 
-  let job = job_start(a:cmd, l:options)
+  if has('nvim')
+    let l:input = []
+    if has_key(l:options, 'in_io') && l:options.in_io ==# 'file' && !empty(l:options.in_name)
+      let l:input = readfile(l:options.in_name, 1)
+    endif
+
+    let job = jobstart(a:cmd, l:options)
+
+    if len(l:input) > 0
+      call chansend(job, l:input)
+      " close stdin to signal that no more bytes will be sent.
+      call chanclose(job, 'stdin')
+    endif
+  else
+    let job = job_start(a:cmd, l:options)
+  endif
 
   if !has_key(l:options, 'cwd')
     " post start
@@ -267,5 +286,130 @@ function! go#job#Start(cmd, options)
 
   return job
 endfunction
+
+" s:neooptions returns a dictionary of job options suitable for use by Neovim
+" based on a dictionary of job options suitable for Vim8.
+function! s:neooptions(options)
+  let l:options = {}
+  let l:options['stdout_buf'] = ''
+  let l:options['stderr_buf'] = ''
+
+  for key in keys(a:options)
+      if key == 'callback'
+        let l:options['callback'] = a:options['callback']
+
+        if !has_key(a:options, 'out_cb')
+          let l:options['stdout_buffered'] = v:true
+
+          function! s:callback2on_stdout(ch, data, event) dict
+            let l:data = a:data
+            let l:data[0] = self.stdout_buf . l:data[0]
+            let self.stdout_buf = ""
+
+            if l:data[-1] != ""
+              let self.stdout_buf = l:data[-1]
+            endif
+
+            let l:data = l:data[:-2]
+            if len(l:data) == 0
+              return
+            endif
+
+            call self.callback(a:ch, join(l:data, "\n"))
+          endfunction
+          let l:options['on_stdout'] = function('s:callback2on_stdout', [], l:options)
+        endif
+
+        if !has_key(a:options, 'err_cb')
+          let l:options['stderr_buffered'] = v:true
+
+          function! s:callback2on_stderr(ch, data, event) dict
+            let l:data = a:data
+            let l:data[0] = self.stderr_buf . l:data[0]
+            let self.stderr_buf = ""
+
+            if l:data[-1] != ""
+              let self.stderr_buf = l:data[-1]
+            endif
+
+            let l:data = l:data[:-2]
+            if len(l:data) == 0
+              return
+            endif
+
+            call self.callback(a:ch, join(l:data, "\n"))
+          endfunction
+          let l:options['on_stderr'] = function('s:callback2on_stderr', [], l:options)
+        endif
+
+        continue
+      endif
+
+      if key == 'out_cb'
+        let l:options['out_cb'] = a:options['out_cb']
+        let l:options['stdout_buffered'] = v:true
+        function! s:on_stdout(ch, data, event) dict
+          let l:data = a:data
+          let l:data[0] = self.stdout_buf . l:data[0]
+          let self.stdout_buf = ""
+
+          if l:data[-1] != ""
+            let self.stdout_buf = l:data[-1]
+          endif
+
+          let l:data = l:data[:-2]
+          if len(l:data) == 0
+            return
+          endif
+
+          call self.out_cb(a:ch, join(l:data, "\n"))
+        endfunction
+        let l:options['on_stdout'] = function('s:on_stdout', [], l:options)
+
+        continue
+      endif
+
+      if key == 'err_cb'
+        let l:options['err_cb'] = a:options['err_cb']
+        let l:options['stderr_buffered'] = v:true
+        function! s:on_stderr(ch, data, event) dict
+          let l:data = a:data
+          let l:data[0] = self.stderr_buf . l:data[0]
+          let self.stderr_buf = ""
+
+          if l:data[-1] != ""
+            let self.stderr_buf = l:data[-1]
+          endif
+
+          let l:data = l:data[:-2]
+          if len(l:data) == 0
+            return
+          endif
+
+          call self.err_cb(a:ch, join(l:data, "\n"))
+        endfunction
+        let l:options['on_stderr'] = function('s:on_stderr', [], l:options)
+
+        continue
+      endif
+
+      if key == 'exit_cb'
+        let l:options['exit_cb'] = a:options['exit_cb']
+        function! s:on_exit(jobid, exitval, event) dict
+          call self.exit_cb(a:jobid, a:exitval)
+        endfunction
+        let l:options['on_exit'] = function('s:on_exit', [], l:options)
+
+        continue
+      endif
+
+      if key == 'close_cb'
+        continue
+      endif
+
+  endfor
+  return l:options
+endfunction
+
 
 " vim: sw=2 ts=2 et
