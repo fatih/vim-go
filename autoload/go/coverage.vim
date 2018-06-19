@@ -276,8 +276,7 @@ function s:coverage_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let start_options = go#job#Options(a:args)
-  call go#job#Start(a:args.cmd, start_options)
+  call go#job#Spawn(a:args.cmd, a:args)
 endfunction
 
 " coverage_callback is called when the coverage execution is finished

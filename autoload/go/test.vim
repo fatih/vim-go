@@ -135,8 +135,7 @@ function! s:test_job(cmd, args) abort
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let start_options = go#job#Options(a:args)
-  call go#job#Start(a:cmd, start_options)
+  call go#job#Spawn(a:cmd, a:args)
 endfunction
 
 let s:efm = ""
