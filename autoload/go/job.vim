@@ -51,7 +51,6 @@ function! go#job#Options(args)
         \ 'dir': getcwd(),
         \ 'jobdir': fnameescape(expand("%:p:h")),
         \ 'messages': [],
-        \ 'args': a:args.cmd,
         \ 'bang': 0,
         \ 'for': "_job",
         \ 'exited': 0,
@@ -80,16 +79,6 @@ function! go#job#Options(args)
   " do nothing in state.complete by default.
   function state.complete(job, exit_status, data)
   endfunction
-
-  function! s:set_started_at() dict
-      let self.started_at = reltime()
-  endfunction
-  " explicitly bind set_started_at to state so that within it, self will
-  " always refer to state. See :help Partial for more information.
-  "
-  " _set_started_at is intended only for internal use and should not be
-  " referred to outside of this file.
-  let cbs._set_started_at = function('s:set_started_at', [], state)
 
   function state.show_status(job, exit_status) dict
     if go#config#EchoCommandInfo()
@@ -131,6 +120,25 @@ function! go#job#Options(args)
   if has_key(a:args, 'complete')
     let state.complete = a:args.complete
   endif
+
+  function! s:start(args) dict
+    if self.statustype != ''
+      let status = {
+            \ 'desc': 'current status',
+            \ 'type': self.statustype,
+            \ 'state': "started",
+            \ }
+
+      call go#statusline#Update(self.jobdir, status)
+    endif
+    let self.started_at = reltime()
+  endfunction
+  " explicitly bind _start to state so that within it, self will
+  " always refer to state. See :help Partial for more information.
+  "
+  " _start is intended only for internal use and should not be referenced
+  " outside of this file.
+  let cbs._start = function('s:start', [''], state)
 
   function! s:callback(chan, msg) dict
     call add(self.messages, a:msg)
@@ -226,9 +234,11 @@ function! go#job#Start(cmd, options)
     execute l:cd fnameescape(expand("%:p:h"))
   endif
 
-  if has_key(l:options, '_set_started_at')
-    call l:options._set_started_at()
-    unlet l:options._set_started_at
+  if has_key(l:options, '_start')
+    call l:options._start()
+    " remove _start to play nicely with vim (when vim encounters an unexpected
+    " job option it reports an "E475: invalid argument" error.
+    unlet l:options._start
   endif
 
   let job = job_start(a:cmd, l:options)

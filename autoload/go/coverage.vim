@@ -276,15 +276,7 @@ function s:coverage_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let status_dir =  expand('%:p:h')
   let start_options = go#job#Options(a:args)
-
-  call go#statusline#Update(status_dir, {
-        \ 'desc': "current status",
-        \ 'type': "coverage",
-        \ 'state': "started",
-        \})
-
   call go#job#Start(a:args.cmd, start_options)
 endfunction
 
