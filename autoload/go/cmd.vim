@@ -30,8 +30,8 @@ function! go#cmd#Build(bang, ...) abort
         \ map(copy(a:000), "expand(v:val)") +
         \ [".", "errors"]
 
-  " Vim async.
-  if go#util#has_job()
+  " Vim and Neovim async.
+  if go#util#has_job() || has('nvim')
     if go#config#EchoCommandInfo()
       call go#util#EchoProgress("building dispatched ...")
     endif
@@ -41,14 +41,6 @@ function! go#cmd#Build(bang, ...) abort
           \ 'bang': a:bang,
           \ 'for': 'GoBuild',
           \})
-
-  " Nvim async.
-  elseif has('nvim')
-    if go#config#EchoCommandInfo()
-      call go#util#EchoProgress("building dispatched ...")
-    endif
-
-    call go#jobcontrol#Spawn(a:bang, "GoBuild", args)
 
   " Vim 7.4 without async
   else
