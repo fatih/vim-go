@@ -25,6 +25,10 @@ endfunction
 "   'for':
 "     The g:go_list_type_command key to use to get the error list type to use.
 "     Defaults to '_job'
+"   'errorformat':
+"     The errorformat string to use when parsing errors. Defaults to
+"     &errorformat.
+"     See :help 'errorformat'.
 "   'complete':
 "     A function to call after the job exits and the channel is closed. The
 "     function will be passed three arguments: the job, its exit code, and the
@@ -74,6 +78,10 @@ function! go#job#Options(args)
 
   if has_key(a:args, 'statustype')
     let state.statustype = a:args.statustype
+  endif
+
+  if has_key(a:args, 'errorformat')
+    let state.errorformat = a:args.errorformat
   endif
 
   " do nothing in state.complete by default.
