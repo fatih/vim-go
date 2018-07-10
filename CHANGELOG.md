@@ -76,6 +76,8 @@ BUG FIXES:
   [[GH-1818]](https://github.com/fatih/vim-go/pull/1818)
 * Fix Neovim handling of guru output.
   [[GH-1846]](https://github.com/fatih/vim-go/pull/1846)
+* Execute commands correctly when they are in $GOBIN but not $PATH.
+  [[GH-1866]](https://github.com/fatih/vim-go/pull/1866)
 
 BACKWARDS INCOMPATIBILITIES:
 
