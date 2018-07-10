@@ -78,6 +78,8 @@ BUG FIXES:
   [[GH-1846]](https://github.com/fatih/vim-go/pull/1846)
 * Execute commands correctly when they are in $GOBIN but not $PATH.
   [[GH-1866]](https://github.com/fatih/vim-go/pull/1866)
+* Open files correctly with ctrlp.
+  [[GH-1878]](https://github.com/fatih/vim-go/pull/1878)
 
 BACKWARDS INCOMPATIBILITIES:
 
