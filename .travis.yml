@@ -11,6 +11,7 @@ matrix:
     - env: SCRIPT=lint VIM_VERSION=vim-8.0
 install:
   - ./scripts/install-vim $VIM_VERSION
+  - ./scripts/install-go-tools $VIM_VERSION
   - pip install --user vim-vint covimerage codecov
 script:
   - ./scripts/$SCRIPT $VIM_VERSION

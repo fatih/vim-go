@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Install tools
+#
+
+set -euC
+export GOPATH=/tmp/vim-go-test
+
+vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
+cd "$vimgodir"
+
+vim=$1
+# Make sure all Go tools and other dependencies are installed.
+echo "Installing Go binaries"
+"$vimgodir/scripts/run-vim" $vim +':silent :GoUpdateBinaries' +':qa'

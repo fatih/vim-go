@@ -8,6 +8,9 @@ install:
 		./scripts/install-vim $$vim; \
 	done
 
+	# only need to install the go tools once...
+	@./scripts/install-go-tools $(firstword $(VIMS))
+
 test:
 	@echo "==> Running tests for $(VIMS)"
 	@for vim in $(VIMS); do \
