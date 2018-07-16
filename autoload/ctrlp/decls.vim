@@ -63,7 +63,7 @@ function! ctrlp#decls#enter() abort
   let l:cmd = ['motion',
         \ '-format', 'vim',
         \ '-mode', 'decls',
-        \ '-include', go#config#DeclsIncludes(),
+        \ '-include', go#config#DeclsIncludes()
         \ ]
 
   call go#cmd#autowrite()
@@ -76,7 +76,7 @@ function! ctrlp#decls#enter() abort
     endif
 
     let cmd += ['-file', l:fname]
-  else
+  elseif s:mode == 1
     " all functions mode
     let l:dir = expand("%:p:h")
     if exists('s:target')
@@ -84,6 +84,14 @@ function! ctrlp#decls#enter() abort
     endif
 
     let cmd += ['-dir', l:dir]
+  else
+    " all functions mode
+    let l:dir = expand("%:p:h")
+    if exists('s:target')
+      let l:dir = s:target
+    endif
+
+    let cmd += ['-dir', l:dir, '-recursive']
   endif
 
   let [l:out, l:err] = go#util#Exec(l:cmd)
