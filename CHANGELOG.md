@@ -7,21 +7,22 @@ FEATURES:
   automatically which infer the type of return values and the numbers.
   For example:
 
-```
-func doSomething() (string, error) {
-    f, err := os.Open("file")
-}
-```
-Becomes:
+  ```
+  func doSomething() (string, error) {
+      f, err := os.Open("file")
+  }
+  ```
+  
+  Becomes:
 
-```
-func doSomething() (string, error) {
-    f, err := os.Open("file")
-    if err != nil {
-        return "", err
-    }
-}
-```
+  ```
+  func doSomething() (string, error) {
+      f, err := os.Open("file")
+      if err != nil {
+          return "", err
+      }
+  }
+  ```
 
 * Two new text objects has been added: 
   * `ic` (inner comment) selects the content of the comment, excluding the start/end markers (i.e: `//`, `/*`)
@@ -88,11 +89,11 @@ BACKWARDS INCOMPATIBILITIES:
   invalid. Please remove them from your vimrc until those are again supported 
   by `gocode`.
 
-```
-g:go_gocode_autobuild
-g:go_gocode_propose_builtins
-g:go_gocode_unimported_packages
-```
+  ```
+  g:go_gocode_autobuild
+  g:go_gocode_propose_builtins
+  g:go_gocode_unimported_packages
+  ```
 
   Checkout the issue for more details [[GH-1851]](https://github.com/fatih/vim-go/pull/1851)
 
