@@ -57,6 +57,10 @@ IMPROVEMENTS:
   manually. [[GH-1861]](https://github.com/fatih/vim-go/pull/1861).
 * Cleanup title of terminal window.
   [[GH-1861]](https://github.com/fatih/vim-go/pull/1861).
+* Add `:GoImpl` is able to complete interfaces by their full import path in
+  addition to the current package name (i.e: `:GoImpl t *T github.com/BurntSushi/toml.Unmarshaller` 
+  is now possible)
+  [[GH-1884]](https://github.com/fatih/vim-go/pull/1884)
 
 BUG FIXES:
 
