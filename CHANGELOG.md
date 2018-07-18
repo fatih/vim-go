@@ -87,6 +87,8 @@ BUG FIXES:
   [[GH-1878]](https://github.com/fatih/vim-go/pull/1878)
 * Fix checking guru binary path 
   [[GH-1886]](https://github.com/fatih/vim-go/pull/1886)
+* Add build tags to `:GoDef` if only it's present 
+  [[GH-1882]](https://github.com/fatih/vim-go/pull/1882)
 
 BACKWARDS INCOMPATIBILITIES:
 
