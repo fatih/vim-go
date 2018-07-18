@@ -26,7 +26,12 @@ function! go#def#Jump(mode) abort
     endif
 
   elseif bin_name == 'guru'
-    let cmd = [go#path#CheckBinPath(bin_name), '-tags', go#config#BuildTags()]
+    let cmd = [go#path#CheckBinPath(bin_name)]
+    let buildtags = go#config#BuildTags()
+    if buildtags isnot ''
+      let cmd += ['-tags', buildtags]
+    endif
+
     let stdin_content = ""
 
     if &modified
