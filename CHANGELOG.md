@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.18 - (July 18, 2018)
+
 FEATURES:
 
 * Add **:GoIfErr** command together with the `<Plug>(go-iferr)` plug key to
