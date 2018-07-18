@@ -148,7 +148,7 @@ function! go#impl#Complete(arglead, cmdline, cursorpos) abort
     " start matching go packages. It's negate match of the below match
     return s:uniq(sort(s:go_packages(s:root_dirs(), a:arglead)))
   elseif words[-1] =~# '^\h\w.*\.\%(\h\w*\)\=$'
-    " match the following, anything that could indicate an interface candiate
+    " match the following, anything that could indicate an interface candidate
     " 
     "  io.
     "  io.Wr
