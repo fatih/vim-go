@@ -96,24 +96,6 @@ BUG FIXES:
 * Add build tags to `:GoDef` if only it's present 
   [[GH-1882]](https://github.com/fatih/vim-go/pull/1882)
 
-BACKWARDS INCOMPATIBILITIES:
-
-* We switched to a [maintained fork of * gocode](https://github.com/mdempsky/gocode). 
-  The new fork doesn't support the following settings anymore and therefore are 
-  invalid. Please remove them from your vimrc until those are again supported 
-  by `gocode`.
-
-  ```
-  g:go_gocode_autobuild
-  g:go_gocode_propose_builtins
-  g:go_gocode_unimported_packages
-  ```
-
-  Checkout the issue for more details [[GH-1851]](https://github.com/fatih/vim-go/pull/1851)
-
- 
-
-
 ## 1.17 - (March 27, 2018)
 
 FEATURES:
