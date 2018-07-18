@@ -81,6 +81,8 @@ BUG FIXES:
   [[GH-1866]](https://github.com/fatih/vim-go/pull/1866)
 * Open files correctly with ctrlp.
   [[GH-1878]](https://github.com/fatih/vim-go/pull/1878)
+* Fix checking guru binary path 
+  [[GH-1886]](https://github.com/fatih/vim-go/pull/1886)
 
 BACKWARDS INCOMPATIBILITIES:
 
