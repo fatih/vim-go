@@ -76,15 +76,11 @@ tools developed by the Go community to provide a seamless Vim experience.
 ==============================================================================
 INSTALL                                                           *go-install*
 
-You will need at least version of Vim 7.4.1689 to use this package. On OSX, if
-you are still using your system version of vim, you can use homebrew to keep
-your version of Vim up to do date with the following terminal commands:
-
+vim-go requires at least Vim 7.4.1689 or Neovim 0.2.2. On macOS, if you are
+still using your system version of vim, you can use homebrew to keep your
+version of Vim up-to-date with the following terminal command:
 >
-  brew install vim --with-override-system-vi
-  # if you use macvim you'll need to uninstall then reinstall with an override
-  brew install macvim --with-override-system-vim
-<
+  brew install vim
 
 The latest stable release, https://github.com/fatih/vim-go/releases/latest, is
 the recommended version to use. If you choose to use the master branch
