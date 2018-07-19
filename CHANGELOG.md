@@ -3,6 +3,8 @@
 IMPROVEMENTS:
 * Unify async job handling for Vim8 and Neovim.
   [[GH-1864]](https://github.com/fatih/vim-go/pull/1864)
+* Document Vim and Neovim requirements in README.md and help file.
+  [[GH-1889]](https://github.com/fatih/vim-go/pull/1889)
 
 ## 1.18 - (July 18, 2018)
 
