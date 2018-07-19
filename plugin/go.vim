@@ -38,6 +38,7 @@ let s:packages = {
       \ 'godef':         ['github.com/rogpeppe/godef'],
       \ 'gogetdoc':      ['github.com/zmb3/gogetdoc'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports'],
+      \ 'goreturns':     ['github.com/sqs/goreturns'],
       \ 'golint':        ['github.com/golang/lint/golint'],
       \ 'gometalinter':  ['github.com/alecthomas/gometalinter'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags'],

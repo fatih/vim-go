@@ -14,7 +14,7 @@ This plugin adds Go language support for Vim, with the following main features:
 * Improved syntax highlighting and folding.
 * Debug programs with integrated `delve` support with `:GoDebugStart`.
 * Completion support via `gocode`.
-* `gofmt` or `goimports` on save keeps the cursor position and undo history.
+* `gofmt`, `goimports` or `goreturns`  on save keeps the cursor position and undo history.
 * Go to symbol/declaration with `:GoDef`.
 * Look up documentation with `:GoDoc` or `:GoDocBrowser`.
 * Easily import packages via `:GoImport`, remove them via `:GoDrop`.
