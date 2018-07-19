@@ -33,6 +33,8 @@ This plugin adds Go language support for Vim, with the following main features:
 
 ## Install
 
+You will need at least version of Vim 7.4.1689 to use this package.
+
 The [**latest stable release**](https://github.com/fatih/vim-go/releases/latest) is the
 recommended version to use. If you choose to use the master branch instead,
 please do so with caution; it is a _development_ branch.
