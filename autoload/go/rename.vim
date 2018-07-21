@@ -132,9 +132,6 @@ function s:parse_errors(exit_val, bang, out)
   call go#util#EchoSuccess(a:out[0])
 
   " refresh the buffer so we can see the new content
-  " TODO(arslan): also find all other buffers and refresh them too. For this
-  " we need a way to get the list of changes from gorename upon an success
-  " change.
   silent execute ":e"
 endfunction
 
