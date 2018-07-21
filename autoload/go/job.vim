@@ -32,9 +32,9 @@ endfunction
 "   'complete':
 "     A function to call after the job exits and the channel is closed. The
 "     function will be passed three arguments: the job, its exit code, and the
-"     list of messages received from the channel. The default value will
-"     process the messages and manage the error list after the job exits and
-"     the channel is closed.
+"     list of messages received from the channel. The default is a no-op. A
+"     custom value can modify the messages before they are processed by the
+"     returned exit_cb and close_cb callbacks.
 
 " The return value is a dictionary with these keys:
 "   'callback':
