@@ -49,6 +49,8 @@ for popular package managers:
   * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
 * [vim-plug](https://github.com/junegunn/vim-plug)
   * `Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }`
+* [Vundle](https://github.com/VundleVim/Vundle.vim)
+  * `Plugin 'fatih/vim-go'`
 
 You will also need to install all the necessary binaries. vim-go makes it easy
 to install all of them by providing a command, `:GoInstallBinaries`, which will
