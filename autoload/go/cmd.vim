@@ -143,7 +143,10 @@ function! go#cmd#Run(bang, ...) abort
   endif
 
   if go#util#IsWin()
-    exec '!' . cmd . go#util#Shelljoin(go#tool#Files())
+    if a:0 == 0
+      exec '!' . cmd . go#util#Shelljoin(go#tool#Files(), 1)
+    else
+      exec '!' . cmd . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
     if v:shell_error
       redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
     else
