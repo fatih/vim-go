@@ -32,9 +32,9 @@ endfunction
 "   'complete':
 "     A function to call after the job exits and the channel is closed. The
 "     function will be passed three arguments: the job, its exit code, and the
-"     list of messages received from the channel. The default value will
-"     process the messages and manage the error list after the job exits and
-"     the channel is closed.
+"     list of messages received from the channel. The default is a no-op. A
+"     custom value can modify the messages before they are processed by the
+"     returned exit_cb and close_cb callbacks.
 
 " The return value is a dictionary with these keys:
 "   'callback':
@@ -229,16 +229,19 @@ function! go#job#Options(args)
     endif
   endfunction
 
-  if has('nvim')
-    return s:neooptions(cbs)
-  endif
-
   return cbs
 endfunction
 
+" go#job#Start runs a job. The options are expected to be the options
+" suitable for Vim8 jobs. When called from Neovim, Vim8 options will be
+" transformed to their Neovim equivalents.
 function! go#job#Start(cmd, options)
   let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
   let l:options = copy(a:options)
+
+  if has('nvim')
+    let l:options = s:neooptions(l:options)
+  endif
 
   if !has_key(l:options, 'cwd')
     " pre start
@@ -286,6 +289,11 @@ function! s:neooptions(options)
   let l:options['stderr_buf'] = ''
 
   for key in keys(a:options)
+      if key == 'cwd'
+        let l:options['cwd'] = a:options['cwd']
+        continue
+      endif
+
       if key == 'callback'
         let l:options['callback'] = a:options['callback']
 
