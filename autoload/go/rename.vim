@@ -57,8 +57,7 @@ function s:rename_job(args)
   call go#job#Start(a:args.cmd, l:cbs)
 endfunction
 
-" s:exit_cb reloads any changed buffers and then calls next.
-function! s:exit_cb(next, job, exitval)
+function! s:reload_changed() abort
   " reload all files to reflect the new changes. We explicitly call
   " checktime to trigger a reload of all files. See
   " http://www.mail-archive.com/vim@vim.org/msg05900.html for more info
@@ -67,7 +66,11 @@ function! s:exit_cb(next, job, exitval)
   set autoread
   silent! checktime
   let &autoread = current_autoread
+endfunction
 
+" s:exit_cb reloads any changed buffers and then calls next.
+function! s:exit_cb(next, job, exitval) abort
+  call s:reload_changed()
   call call(a:next, [a:job, a:exitval])
 endfunction
 
