@@ -147,6 +147,8 @@ function! go#cmd#Run(bang, ...) abort
       exec '!' . cmd . go#util#Shelljoin(go#tool#Files(), 1)
     else
       exec '!' . cmd . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
+    endif
+
     if v:shell_error
       redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
     else
