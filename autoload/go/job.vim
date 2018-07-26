@@ -14,8 +14,6 @@ endfunction
 " logic.
 "
 " args is a dictionary with the these keys:
-"   'cmd':
-"     The value to pass to job_start().
 "   'bang':
 "     Set to 0 to jump to the first error in the error list.
 "     Defaults to 0.
@@ -47,7 +45,9 @@ endfunction
 "     A function suitable to be passed as a job close_cb handler. See
 "     job-close_cb.
 "   'cwd':
-"     The path to the directory which contains the current buffer.
+"     The path to the directory which contains the current buffer. The
+"     callbacks are configured to expect this directory is the working
+"     directory for the job; it should not be modified by callers.
 function! go#job#Options(args)
   let cbs = {}
   let state = {
@@ -185,6 +185,10 @@ function! go#job#Options(args)
 
   function state.show_errors(job, exit_status, data)
     let l:winid = win_getid(winnr())
+    " Always set the active window to the window that was active when the job
+    " was started. Among other things, this makes sure that the correct
+    " window's location list will be populated when the list type is
+    " 'location' and the user has moved windows since starting the job.
     call win_gotoid(self.winid)
 
     let l:listtype = go#list#Type(self.for)
@@ -252,9 +256,10 @@ function! go#job#Start(cmd, options)
   if has_key(l:options, '_start')
     call l:options._start()
     " remove _start to play nicely with vim (when vim encounters an unexpected
-    " job option it reports an "E475: invalid argument" error.
+    " job option it reports an "E475: invalid argument" error).
     unlet l:options._start
   endif
+
 
   if has('nvim')
     let l:input = []
@@ -409,6 +414,5 @@ function! s:neooptions(options)
   endfor
   return l:options
 endfunction
-
 
 " vim: sw=2 ts=2 et
