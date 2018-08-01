@@ -183,7 +183,7 @@ function! s:sync_info(auto)
         \ go#util#GetLines())
 
   let result = s:info_filter(a:auto, result)
-  call s:info_complete(a:auto, result)
+  return s:info_complete(a:auto, result)
 endfunction
 
 function! s:info_filter(auto, result) abort
@@ -221,9 +221,11 @@ function! s:info_filter(auto, result) abort
 endfunction
 
 function! s:info_complete(auto, result) abort
-  if !empty(a:result)
+  if a:auto && !empty(a:result)
     echo "vim-go: " | echohl Function | echon a:result | echohl None
   endif
+
+  return a:result
 endfunction
 
 function! s:trim_bracket(val) abort
