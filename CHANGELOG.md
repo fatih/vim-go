@@ -5,6 +5,8 @@ IMPROVEMENTS:
   [[GH-1864]](https://github.com/fatih/vim-go/pull/1864)
 * Document Vim and Neovim requirements in README.md and help file.
   [[GH-1889]](https://github.com/fatih/vim-go/pull/1889)
+* Highlight `context.Context` when `g:go_highlight_extra_types` is set.
+  [[GH-1903]](https://github.com/fatih/vim-go/pull/1903)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
