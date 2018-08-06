@@ -43,7 +43,8 @@ tools developed by the Go community to provide a seamless Vim experience.
   * Improved syntax highlighting and folding.
   * Debug programs with integrated `delve` support with |:GoDebugStart|.
   * Completion support via `gocode`.
-  * `gofmt` or `goimports` on save keeps the cursor position and undo history.
+  * `gofmt`, `goimports` or `goreturns` on save keeps the cursor position and
+    undo history.
   * Go to symbol/declaration with |:GoDef|.
   * Look up documentation with |:GoDoc| or |:GoDocBrowser|.
   * Easily import packages via |:GoImport|, remove them via |:GoDrop|.
@@ -229,6 +230,14 @@ COMMANDS                                                         *go-commands*
     `goimports` automatically discards/add import path based on the code. Like
     |:GoFmt|, It tries to preserve cursor position and avoids replacing the
     buffer with stderr output.
+                                                                  *:GoReturns*
+:GoReturns
+
+    Filter the current Go buffer through goreturns (needs to be installed).
+    `goreturns` automatically discards/add import path and fills in Go return
+    statements with zero values to match the func return types based on the
+    code. Like |:GoFmt|, It tries to preserve cursor position and avoids
+    replacing the buffer with stderr output.
 
                                                                      *:GoPlay*
 :[range]GoPlay
@@ -958,6 +967,10 @@ annotation.
                                                                 *(go-imports)*
 
 Calls `goimports` for the current package
+
+                                                                *(go-returns)*
+
+Calls `goreturns` for the current package
 
                                                                    *(go-lint)*
 
@@ -2294,8 +2307,8 @@ Check it out: https://www.patreon.com/fatih
 CREDITS                                                         *go-credits*
 
 * Go Authors for official Vim plugins.
-* Gocode, Godef, Golint, Guru, Goimports, Errcheck projects and authors of
-  those projects.
+* Gocode, Godef, Golint, Guru, Goimports, Goreturns, Errcheck projects and
+  authors of those projects.
 * Other vim-plugins, thanks for inspiration (vim-golang, go.vim, vim-gocode,
   vim-godef).
 * vim-go contributors: https://github.com/fatih/vim-go/graphs/contributors.

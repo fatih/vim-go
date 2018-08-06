@@ -13,7 +13,7 @@
 "  it doesn't undo changes and break undo history.  If you are here reading
 "  this and have VimL experience, please look at the function for
 "  improvements, patches are welcome :)
-function! go#fmt#Format(withGoimport) abort
+function! go#fmt#Format(fmtBinFlag) abort
   if go#config#FmtExperimental()
     " Using winsaveview to save/restore cursor state has the problem of
     " closing folds on save:
@@ -49,8 +49,10 @@ function! go#fmt#Format(withGoimport) abort
   endif
 
   let bin_name = go#config#FmtCommand()
-  if a:withGoimport == 1
+  if a:fmtBinFlag == 1
     let bin_name = "goimports"
+  elseif a:fmtBinFlag == 2
+    let bin_name = "goreturns"
   endif
 
   let current_col = col('.')
@@ -157,7 +159,7 @@ function! s:fmt_cmd(bin_name, source, target)
     let opts = has_key(opts, a:bin_name) ? opts[a:bin_name] : ""
   endif
   call extend(cmd, split(opts, " "))
-  if a:bin_name is# 'goimports'
+  if a:bin_name is# 'goimports' || a:bin_name is# 'goreturns'
     call extend(cmd, ["-srcdir", a:target])
   endif
 
