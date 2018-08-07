@@ -8,13 +8,13 @@ IMPROVEMENTS:
 * Highlight `context.Context` when `g:go_highlight_extra_types` is set.
   [[GH-1903]](https://github.com/fatih/vim-go/pull/1903)
 * Run gometalinter asynchronously in Neovim.
-  [[GH-1901]](github.com/fatih/vim-go/pull/1901)
+  [[GH-1901]](https://github.com/fatih/vim-go/pull/1901)
 * Run gorename asynchronously in Vim8 and Neovim.
-  [[GH-1894]](github.com/fatih/vim-go/pull/1894)
+  [[GH-1894]](https://github.com/fatih/vim-go/pull/1894)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
-  [[GH-1900]](github.com/fatih/vim-go/pull/1900)
+  [[GH-1900]](https://github.com/fatih/vim-go/pull/1900)
 * Fix `go#complete#GetInfo()` to return a description of the identifier.
   [[GH-1905]](https://github.com/fatih/vim-go/pull/1905)
 * Restore support for running tests in the Neovim terminal.
