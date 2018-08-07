@@ -86,6 +86,7 @@ command! -bang GoAlternate call go#alternate#Switch(<bang>0, '')
 " -- decls
 command! -nargs=? -complete=file GoDecls call go#decls#Decls(0, <q-args>)
 command! -nargs=? -complete=dir GoDeclsDir call go#decls#Decls(1, <q-args>)
+command! -nargs=? -complete=dir GoDeclsDirRecur call go#decls#Decls(2, <q-args>)
 
 " -- impl
 command! -nargs=* -complete=customlist,go#impl#Complete GoImpl call go#impl#Impl(<f-args>)

@@ -715,6 +715,13 @@ CTRL-t
     Show all function and type declarations for the current directory. If
     [dir] is given it parses the given directory.
 
+                                                            *:GoDeclsDirRecur*
+:GoDeclsDirRecur [dir]
+
+    Show all function and type declarations for the current directory and all
+    directories within it, recursively. If [dir] is given it parses the given 
+    directory.
+
                                                                  *unite-decls*
                                                                 *denite-decls*
 :Unite decls[:path]

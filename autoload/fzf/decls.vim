@@ -74,13 +74,20 @@ function! s:source(mode,...) abort
     endif
 
     let cmd += ['-file', l:fname]
-  else
+  elseif a:mode == 1
     " all functions mode
     if a:0 && !empty(a:1)
       let s:current_dir = a:1
     endif
 
     let l:cmd += ['-dir', s:current_dir]
+  else
+    " all functions mode
+    if a:0 && !empty(a:1)
+      let s:current_dir = a:1
+    endif
+
+    let l:cmd += ['-dir', s:current_dir, '-recursive']
   endif
 
   let [l:out, l:err] = go#util#Exec(l:cmd)
@@ -112,7 +119,7 @@ function! s:source(mode,...) abort
     endfor
 
     let pos = printf("|%s:%s:%s|",
-          \ fnamemodify(decl.filename, ":t"),
+          \ fnamemodify(decl.filename, ":."),
           \ decl.line,
           \ decl.col
           \)
