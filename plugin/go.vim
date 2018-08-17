@@ -201,7 +201,7 @@ endfunction
 function! s:auto_type_info()
   " GoInfo automatic update
   if get(g:, "go_auto_type_info", 0)
-    call go#tool#Info(1)
+    call go#tool#Info()
   endif
 endfunction
 
