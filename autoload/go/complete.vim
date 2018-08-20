@@ -82,7 +82,7 @@ function! go#complete#GetInfo() abort
 endfunction
 
 function! go#complete#Info() abort
-  if go#util#has_job(1)
+  if go#util#has_job(1) || has('nvim')
     return s:async_info(1)
   else
     return s:sync_info(1)
@@ -90,7 +90,7 @@ function! go#complete#Info() abort
 endfunction
 
 function! s:async_info(echo)
-  let state = {'echo': a:auto}
+  let state = {'echo': a:echo}
 
   function! s:complete(job, exit_status, messages) abort dict
     if a:exit_status != 0
@@ -146,7 +146,7 @@ function! s:async_info(echo)
         \ 'in_name': s:gocodeFile(),
         \ })
 
-  go#job#Start(cmd, opts)
+  call go#job#Start(cmd, opts)
 endfunction
 
 function! s:gocodeFile()
