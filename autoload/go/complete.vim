@@ -67,7 +67,7 @@ function! go#complete#GetInfo() abort
 endfunction
 
 function! go#complete#Info() abort
-  if go#util#has_job(1)
+  if go#util#has_job(1) || has('nvim')
     return s:async_info(1)
   else
     return s:sync_info(1)
