@@ -11,6 +11,8 @@ IMPROVEMENTS:
   [[GH-1901]](https://github.com/fatih/vim-go/pull/1901)
 * Run gorename asynchronously in Vim8 and Neovim.
   [[GH-1894]](https://github.com/fatih/vim-go/pull/1894)
+* Install keyify from its canonical import path.
+  [[GH-1924]](https://github.com/fatih/vim-go/pull/1924)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
