@@ -22,6 +22,7 @@ endfunction
 "     See statusline.vim.
 "   'for':
 "     The g:go_list_type_command key to use to get the error list type to use.
+"     Errors will not be handled when the value is '_'.
 "     Defaults to '_job'
 "   'errorformat':
 "     The errorformat string to use when parsing errors. Defaults to
@@ -184,6 +185,10 @@ function! go#job#Options(args)
   let cbs.close_cb = function('s:close_cb', [], state)
 
   function state.show_errors(job, exit_status, data)
+    if self.for == '_'
+      return
+    endif
+
     let l:winid = win_getid(winnr())
     " Always set the active window to the window that was active when the job
     " was started. Among other things, this makes sure that the correct
@@ -225,6 +230,8 @@ function! go#job#Options(args)
       return
     endif
 
+    " only open the error window if user was still in the window from which
+    " the job was started.
     if self.winid == l:winid
       call go#list#Window(l:listtype, len(errors))
       if !self.bang
