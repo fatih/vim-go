@@ -46,7 +46,7 @@ let s:packages = {
       \ 'gotags':        ['github.com/jstemmer/gotags'],
       \ 'guru':          ['golang.org/x/tools/cmd/guru'],
       \ 'impl':          ['github.com/josharian/impl'],
-      \ 'keyify':        ['github.com/dominikh/go-tools/cmd/keyify'],
+      \ 'keyify':        ['honnef.co/go/tools/cmd/keyify'],
       \ 'motion':        ['github.com/fatih/motion'],
       \ 'iferr':         ['github.com/koron/iferr'],
 \ }
