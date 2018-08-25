@@ -10,7 +10,7 @@ function! s:GoUltiSnips() abort
 
   if !exists("g:UltiSnipsSnippetDirectories")
     let g:UltiSnipsSnippetDirectories = ["gosnippets/UltiSnips"]
-  else
+  elseif type("g:UltiSnipsSnippetDirectories") == 3
     let g:UltiSnipsSnippetDirectories += ["gosnippets/UltiSnips"]
   endif
 endfunction
