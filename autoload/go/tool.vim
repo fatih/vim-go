@@ -178,15 +178,49 @@ function! go#tool#ExecuteInDir(cmd) abort
   return [l:out, l:err]
 endfunction
 
+function! go#tool#HasGoVendor() abort
+    let command = ['which', 'govendor']
+    let [l:out, l:err] = go#tool#ExecuteInDir(command)
+    return l:err
+endfunction
+
+" Exists checks whether the given importpath exists in vendor path or not. 
+" GoVendor github.com/kardianos/govendor is called under the hood. It returns
+" 0 if the importpath exists under GOPATH, -1 if not exists, -2 if govendor
+" not exists in the PATH.
+function! go#tool#ExistsInVendor(importpath) abort
+    if go#tool#HasGoVendor() == 0
+        let command = ['govendor', 'list', a:importpath]
+        let [l:out, l:err] = go#tool#ExecuteInDir(command)
+
+        if l:err == 0 && stridx(l:out, a:importpath) >= 0
+          return 0
+        else
+          return -1
+        endif
+    else
+        return -2
+    endif
+endfunction
+
 " Exists checks whether the given importpath exists or not. It returns 0 if
 " the importpath exists under GOPATH.
-function! go#tool#Exists(importpath) abort
+function! go#tool#ExistsInGopath(importpath) abort
     let [l:out, l:err] = go#tool#ExecuteInDir(['go', 'list', a:importpath])
     if l:err != 0
         return -1
     endif
 
     return 0
+endfunction
+
+function! go#tool#Exists(importpath) abort
+    if go#tool#ExistsInVendor(a:importpath) == 0
+        return 0
+    elseif go#tool#ExistsInGopath(a:importpath) == 0
+        return 0
+    else
+        return -1
 endfunction
 
 function! go#tool#OpenBrowser(url) abort

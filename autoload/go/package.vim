@@ -51,6 +51,11 @@ function! go#package#Paths() abort
     let dirs += workspaces
   endif
 
+  let vendor = getcwd() . "/vendor"
+  if isdirectory(vendor)
+    let dirs += [vendor]
+  endif
+
   return dirs
 endfunction
 
@@ -149,6 +154,9 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos) abort
         " this may expand to multiple lines
         let root = split(expand(dir . '/pkg/' . s:goos . '_' . s:goarch), "\n")
         call add(root, expand(dir . '/src'))
+        if dir =~# '\v/vendor/?$'
+          call add(root, substitute(expand(dir), "/$", "", ""))
+        endif
         for r in root
             for i in split(globpath(r, a:ArgLead.'*'), "\n")
                 if isdirectory(i)
