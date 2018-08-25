@@ -23,6 +23,8 @@ BUG FIXES:
   [[GH-1895]](https://github.com/fatih/vim-go/pull/1895)
 * Fix `:GoInfo` when `g:go_info_mode` is `gocode`
   [[GH-1915]](https://github.com/fatih/vim-go/pull/1915)
+* Fix highlighting of pointer type in var blocks.
+  [[GH-1794]](https://github.com/fatih/vim-go/pull/1794)
 
 BACKWARDS INCOMPATIBILITIES:
 * Bump minimum required version of Vim to 7.4.2009.
