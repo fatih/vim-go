@@ -23,7 +23,8 @@ function! go#template#create() abort
     else
       let l:template_file = go#config#TemplateFile()
     endif
-    let l:template_path = go#util#Join(l:root_dir, "templates", l:template_file)
+    let l:template_dir = get(g:, 'go_template_dir', go#util#Join(l:root_dir, "templates"))
+    let l:template_path = go#util#Join(l:template_dir, l:template_file)
     silent exe 'keepalt 0r ' . fnameescape(l:template_path)
   elseif l:package_name == -1 && l:go_template_use_pkg == 1
     " cwd is now the dir of the package
