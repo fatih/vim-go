@@ -1575,7 +1575,13 @@ same.
         \ '? go#util#pascalcase(expand("<cword>"))' .
         \ ': go#util#camelcase(expand("<cword>"))'
 <
+                                              *'g:go_gocode_propose_builtins'*
 
+Specifies whether `gocode` should add built-in types, functions and constants
+to an autocompletion proposals. By default it is enabled.
+>
+  let g:go_gocode_propose_builtins = 1
+<
                                                    *'g:go_gocode_socket_type'*
 
 Specifies whether `gocode` should use a different socket type. By default

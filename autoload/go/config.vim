@@ -140,6 +140,10 @@ function! go#config#GocodeSocketType() abort
   return get(g:, 'go_gocode_socket_type', s:sock_type)
 endfunction
 
+function! go#config#GocodeProposeBuiltins() abort
+  return get(g:, 'go_gocode_propose_builtins', 1)
+endfunction
+
 function! go#config#EchoCommandInfo() abort
   return get(g:, 'go_echo_command_info', 1)
 endfunction

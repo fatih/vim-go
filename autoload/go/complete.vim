@@ -9,6 +9,11 @@ function! s:gocodeCommand(cmd, args) abort
   let cmd = [bin_path]
   let cmd = extend(cmd, ['-sock', socket_type])
   let cmd = extend(cmd, ['-f', 'vim'])
+
+  if go#config#GocodeProposeBuiltins()
+    let cmd = extend(cmd, ['-builtin'])
+  endif
+
   let cmd = extend(cmd, [a:cmd])
   let cmd = extend(cmd, a:args)
 
