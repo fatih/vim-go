@@ -144,6 +144,10 @@ function! go#config#GocodeProposeBuiltins() abort
   return get(g:, 'go_gocode_propose_builtins', 1)
 endfunction
 
+function! go#config#GocodeProposeSource() abort
+  return get(g:, 'go_gocode_propose_source', 0)
+endfunction
+
 function! go#config#EchoCommandInfo() abort
   return get(g:, 'go_echo_command_info', 1)
 endfunction

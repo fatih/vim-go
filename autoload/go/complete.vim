@@ -14,6 +14,10 @@ function! s:gocodeCommand(cmd, args) abort
     let cmd = extend(cmd, ['-builtin'])
   endif
 
+  if go#config#GocodeProposeSource()
+    let cmd = extend(cmd, ['-source'])
+  endif
+
   let cmd = extend(cmd, [a:cmd])
   let cmd = extend(cmd, a:args)
 
