@@ -13,6 +13,8 @@ IMPROVEMENTS:
   [[GH-1894]](https://github.com/fatih/vim-go/pull/1894)
 * Install keyify from its canonical import path.
   [[GH-1924]](https://github.com/fatih/vim-go/pull/1924)
+* Update the tested version of Neovim to v0.3.1.
+  [[GH-1923]](https://github.com/fatih/vim-go/pull/1923)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
