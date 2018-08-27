@@ -1575,14 +1575,6 @@ same.
         \ '? go#util#pascalcase(expand("<cword>"))' .
         \ ': go#util#camelcase(expand("<cword>"))'
 <
-                                                     *'g:go_gocode_autobuild'*
-
-Specifies whether `gocode` should automatically build out-of-date packages
-when their source fields are modified, in order to obtain the freshest
-autocomplete results for them.  By default it is enabled.
->
-  let g:go_gocode_autobuild = 1
-<
                                               *'g:go_gocode_propose_builtins'*
 
 Specifies whether `gocode` should add built-in types, functions and constants
@@ -1590,14 +1582,14 @@ to an autocompletion proposals. By default it is enabled.
 >
   let g:go_gocode_propose_builtins = 1
 <
-                                           *'g:go_gocode_unimported_packages'*
+                                               *'g:go_gocode_propose_source'*
 
-Specifies whether `gocode` should include suggestions from unimported
-packages. By default it is disabled.
+Specifies whether `gocode` should use source files instead of binary packages
+for autocompletion proposals. By default it is disabled because it is
+currently much slower.
 >
-  let g:go_gocode_unimported_packages = 0
+  let g:go_gocode_propose_source = 0
 <
-
                                                    *'g:go_gocode_socket_type'*
 
 Specifies whether `gocode` should use a different socket type. By default

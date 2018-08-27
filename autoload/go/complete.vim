@@ -9,6 +9,15 @@ function! s:gocodeCommand(cmd, args) abort
   let cmd = [bin_path]
   let cmd = extend(cmd, ['-sock', socket_type])
   let cmd = extend(cmd, ['-f', 'vim'])
+
+  if go#config#GocodeProposeBuiltins()
+    let cmd = extend(cmd, ['-builtin'])
+  endif
+
+  if go#config#GocodeProposeSource()
+    let cmd = extend(cmd, ['-source'])
+  endif
+
   let cmd = extend(cmd, [a:cmd])
   let cmd = extend(cmd, a:args)
 
@@ -43,31 +52,7 @@ function! s:sync_gocode(cmd, args, input) abort
   return l:result
 endfunction
 
-let s:optionsEnabled = 0
-function! s:gocodeEnableOptions() abort
-  if s:optionsEnabled
-    return
-  endif
-
-  let l:bin_path = go#path#CheckBinPath("gocode")
-  if empty(l:bin_path)
-    return
-  endif
-
-  let s:optionsEnabled = 1
-
-  call go#util#Exec(['gocode', 'set', 'propose-builtins', s:toBool(go#config#GocodeProposeBuiltins())])
-  call go#util#Exec(['gocode', 'set', 'autobuild', s:toBool(go#config#GocodeAutobuild())])
-  call go#util#Exec(['gocode', 'set', 'unimported-packages', s:toBool(go#config#GocodeUnimportedPackages())])
-endfunction
-
-function! s:toBool(val) abort
-  if a:val | return 'true' | else | return 'false' | endif
-endfunction
-
 function! s:gocodeAutocomplete() abort
-  call s:gocodeEnableOptions()
-
   " use the offset as is, because the cursor position is the position for
   " which autocomplete candidates are needed.
   return s:sync_gocode('autocomplete',
