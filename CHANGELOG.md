@@ -31,6 +31,9 @@ BUG FIXES:
 BACKWARDS INCOMPATIBILITIES:
 * Bump minimum required version of Vim to 7.4.2009.
   [[GH-1899]](https://github.com/fatih/vim-go/pull/1899)
+* Switch gocode to github.com/mdempsky/gocode. Several gocode options have been
+  removed and a new one has been added.
+  [[GH-1853]](https://github.com/fatih/vim-go/pull/1853)
 
 ## 1.18 - (July 18, 2018)
 
