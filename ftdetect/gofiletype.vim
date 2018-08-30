@@ -31,4 +31,8 @@ au BufReadPost *.s call s:gofiletype_post()
 
 au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
 
+au BufNewFile *.mod setfiletype gomod | setlocal fileencoding=utf-8 fileformat=unix
+au BufRead *.mod call s:gofiletype_pre("gomod")
+au BufReadPost *.mod call s:gofiletype_post()
+
 " vim: sw=2 ts=2 et
