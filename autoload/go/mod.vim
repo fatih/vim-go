@@ -1,11 +1,24 @@
+let s:go_major_version = ""
+
 function! go#mod#Format() abort
+  " go mod only exists in `v1.11`
+  if empty(s:go_major_version)
+    let tokens = matchlist(go#util#System("go version"), '\d\+.\(\d\+\) ')
+    let s:go_major_version = str2nr(tokens[1])
+  endif
+
+  if s:go_major_version < "11" 
+    call go#util#EchoError("Go v1.11 is required to format go.mod file")
+    return
+  endif
+
   let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
 
   " Save cursor position and many other things.
   let l:curw = winsaveview()
 
   " Write current unsaved buffer to a temp file
-  let l:tmpname = tempname() . '.go'
+  let l:tmpname = tempname() . '.mod'
   call writefile(go#util#GetLines(), l:tmpname)
   if go#util#IsWin()
     let l:tmpname = tr(l:tmpname, '\', '/')
@@ -88,13 +101,12 @@ function! s:parse_errors(filename, content) abort
   " list of errors to be put into location list
   let errors = []
   for line in splitted
-    let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
+    let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)')
     if !empty(tokens)
       call add(errors,{
             \"filename": a:filename,
             \"lnum":     tokens[2],
-            \"col":      tokens[3],
-            \"text":     tokens[4],
+            \"text":     tokens[3],
             \ })
     endif
   endfor
@@ -108,7 +120,7 @@ function! s:show_errors(errors) abort
   let l:listtype = go#list#Type("GoModFmt")
   if !empty(a:errors)
     call go#list#Populate(l:listtype, a:errors, 'Format')
-    echohl Error | echomsg "GoModFmt returned error" | echohl None
+    call go#util#EchoError("GoModFmt returned error")
   endif
 
   " this closes the window if there are no errors or it opens
@@ -116,13 +128,13 @@ function! s:show_errors(errors) abort
   call go#list#Window(l:listtype, len(a:errors))
 endfunction
 
-function! go#mod#ToggleModfmtAutoSave() abort
-  if go#config#ModfmtAutosave()
-    call go#config#SetModfmtAutosave(0)
+function! go#mod#ToggleModFmtAutoSave() abort
+  if go#config#ModFmtAutosave()
+    call go#config#SetModFmtAutosave(0)
     call go#util#EchoProgress("auto mod fmt disabled")
     return
   end
 
-  call go#config#SetModfmtAutosave(1)
-  call go#util#EchoProgress("auto fmt enabled")
+  call go#config#SetModFmtAutosave(1)
+  call go#util#EchoProgress("auto mod fmt enabled")
 endfunction

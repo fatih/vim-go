@@ -278,12 +278,12 @@ function! go#config#SetAsmfmtAutosave(value) abort
   let g:go_asmfmt_autosave = a:value
 endfunction
 
-function! go#config#ModfmtAutosave() abort
-	return get(g:, "go_modfmt_autosave", 1)
+function! go#config#ModFmtAutosave() abort
+	return get(g:, "go_mod_fmt_autosave", 1)
 endfunction
 
-function! go#config#SetModfmtAutosave(value) abort
-  let g:go_modfmt_autosave = a:value
+function! go#config#SetModFmtAutosave(value) abort
+  let g:go_mod_fmt_autosave = a:value
 endfunction
 
 function! go#config#DocMaxHeight() abort

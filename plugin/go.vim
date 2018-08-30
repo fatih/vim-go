@@ -228,7 +228,7 @@ endfunction
 
 function! s:modfmt_autosave()
   " go.mod code formatting on save
-  if get(g:, "go_modfmt_autosave", 1)
+  if get(g:, "go_mod_fmt_autosave", 1)
     call go#mod#Format()
   endif
 endfunction
