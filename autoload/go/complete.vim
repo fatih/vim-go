@@ -67,7 +67,7 @@ function! go#complete#GetInfo() abort
 endfunction
 
 function! go#complete#Info() abort
-  if go#util#has_job(1)
+  if go#util#has_job(1) || has('nvim')
     return s:async_info(1)
   else
     return s:sync_info(1)
@@ -75,51 +75,27 @@ function! go#complete#Info() abort
 endfunction
 
 function! s:async_info(echo)
-  if exists("s:async_info_job")
-    call job_stop(s:async_info_job)
-    unlet s:async_info_job
-  endif
+  let state = {'echo': a:echo}
 
-  let state = {
-        \ 'exited': 0,
-        \ 'exit_status': 0,
-        \ 'closed': 0,
-        \ 'messages': [],
-        \ 'echo': a:echo
-      \ }
-
-  function! s:callback(chan, msg) dict
-    let l:msg = a:msg
-    if &encoding != 'utf-8'
-      let l:msg = iconv(l:msg, 'utf-8', &encoding)
-    endif
-    call add(self.messages, l:msg)
-  endfunction
-
-  function! s:exit_cb(job, exitval) dict
-    let self.exit_status = a:exitval
-    let self.exited = 1
-
-    if self.closed
-      call self.complete()
-    endif
-  endfunction
-
-  function! s:close_cb(ch) dict
-    let self.closed = 1
-    if self.exited
-      call self.complete()
-    endif
-  endfunction
-
-  function state.complete() dict
-    if self.exit_status != 0
+  function! s:complete(job, exit_status, messages) abort dict
+    if a:exit_status != 0
       return
     endif
 
-    let result = s:info_filter(self.echo, join(self.messages, "\n"))
+    if &encoding != 'utf-8'
+      let i = 0
+      while i < len(a:messages)
+        let a:messages[i] = iconv(a:messages[i], 'utf-i', &encoding)
+        let i += 1
+      endwhile
+    endif
+
+    let result = s:info_filter(self.echo, join(a:messages, "\n"))
     call s:info_complete(self.echo, result)
   endfunction
+  " explicitly bind complete to state so that within it, self will
+  " always refer to state. See :help Partial for more information.
+  let state.complete = function('s:complete', [], state)
 
   " add 1 to the offset, so that the position at the cursor will be included
   " in gocode's search
@@ -131,23 +107,28 @@ function! s:async_info(echo)
     \ "GOROOT": go#util#env("goroot")
     \ }
 
+  let opts = {
+        \ 'bang': 1,
+        \ 'complete': state.complete,
+        \ 'for': '_',
+        \ }
+
+  let opts = go#job#Options(l:opts)
+
   let cmd = s:gocodeCommand('autocomplete',
         \ [expand('%:p'), offset])
 
-  " TODO(bc): Don't write the buffer to a file; pass the buffer directrly to
+  " TODO(bc): Don't write the buffer to a file; pass the buffer directly to
   " gocode's stdin. It shouldn't be necessary to use {in_io: 'file', in_name:
   " s:gocodeFile()}, but unfortunately {in_io: 'buffer', in_buf: bufnr('%')}
-  " should work.
-  let options = {
+  " doesn't work.
+  call extend(opts, {
         \ 'env': env,
         \ 'in_io': 'file',
         \ 'in_name': s:gocodeFile(),
-        \ 'callback': funcref("s:callback", [], state),
-        \ 'exit_cb': funcref("s:exit_cb", [], state),
-        \ 'close_cb': funcref("s:close_cb", [], state)
-      \ }
+        \ })
 
-  let s:async_info_job = job_start(cmd, options)
+  call go#job#Start(cmd, opts)
 endfunction
 
 function! s:gocodeFile()
