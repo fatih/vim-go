@@ -226,6 +226,13 @@ function! s:asmfmt_autosave()
   endif
 endfunction
 
+function! s:modfmt_autosave()
+  " go.mod code formatting on save
+  if get(g:, "go_mod_fmt_autosave", 1)
+    call go#mod#Format()
+  endif
+endfunction
+
 function! s:metalinter_autosave()
   " run gometalinter on save
   if get(g:, "go_metalinter_autosave", 0)
@@ -253,6 +260,7 @@ augroup vim-go
   endif
 
   autocmd BufWritePre *.go call s:fmt_autosave()
+  autocmd BufWritePre *.mod call s:modfmt_autosave()
   autocmd BufWritePre *.s call s:asmfmt_autosave()
   autocmd BufWritePost *.go call s:metalinter_autosave()
   autocmd BufNewFile *.go call s:template_autocreate()

@@ -31,4 +31,9 @@ au BufReadPost *.s call s:gofiletype_post()
 
 au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
 
+" make sure we explicitly look for a `go.mod` and the `module` starts from the
+" beginning
+au BufNewFile,BufRead go.mod
+	\ if getline(1) =~ '^module.*' | set filetype=gomod |  endif
+
 " vim: sw=2 ts=2 et

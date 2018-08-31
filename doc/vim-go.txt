@@ -806,6 +806,11 @@ CTRL-t
 
     Toggles |'g:go_fmt_autosave'|.
 
+                                                     *:GoModFmtAutoSaveToggle*
+:GoModFmtAutoSaveToggle
+
+    Toggles |'g:go_mod_fmt_autosave'|.
+
                                                      *:GoAsmFmtAutoSaveToggle*
 :GoAsmFmtAutoSaveToggle
 
@@ -880,6 +885,13 @@ CTRL-t
           }
       }
 <
+                                                                  *:GoModFmt*
+:GoModFmt
+
+    Filter the current go.mod buffer through "go mod edit -fmt" command.  It
+    tries to preserve cursor position and avoids replacing the buffer with
+    stderr output.
+
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
@@ -1097,6 +1109,10 @@ Calls `:GoImport` for the current package
 Generate if err != nil { return ... } automatically which infer the type of
 return values and the numbers.
 
+                                                                *(go-mod-fmt)*
+
+Calls |:GoModFmt| for the current buffer
+
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
 
@@ -1287,7 +1303,15 @@ doesn't break. However it's slows (creates/deletes a file for every save) and
 it's causing problems on some Vim versions. By default it's disabled. >
 
   let g:go_fmt_experimental = 0
+
 <
+                                                     *'g:go_mod_fmt_autosave'*
+
+Use this option to auto |:GoModFmt| on save. By default it's enabled >
+
+  let g:go_mod_fmt_autosave = 1
+<
+
                                                *'g:go_doc_keywordprg_enabled'*
 
 Use this option to run `godoc` on words under the cursor with |K|; this will
@@ -1497,10 +1521,10 @@ that was called. Supported values are "", "quickfix", and "locationlist".
 Specifies the type of list to use for command outputs (such as errors from
 builds, results from static analysis commands, etc...). When an expected key
 is not present in the dictionary, |'g:go_list_type'| will be used instead.
-Supported keys are "GoBuild", "GoErrCheck", "GoFmt", "GoInstall", "GoLint",
-"GoMetaLinter", "GoMetaLinterAutoSave", "GoModifyTags" (used for both
-:GoAddTags and :GoRemoveTags), "GoRename", "GoRun", and "GoTest".  Supported
-values for each command are "quickfix" and "locationlist".
+Supported keys are "GoBuild", "GoErrCheck", "GoFmt", "GoModFmt", "GoInstall",
+"GoLint", "GoMetaLinter", "GoMetaLinterAutoSave", "GoModifyTags" (used for
+both :GoAddTags and :GoRemoveTags), "GoRename", "GoRun", and "GoTest".
+Supported values for each command are "quickfix" and "locationlist".
 >
   let g:go_list_type_commands = {}
 <
@@ -1873,6 +1897,13 @@ filetype.
 
 The `gohtmltmpl` filetype is automatically set for `*.tmpl` files; the
 `gotexttmpl` is never automatically set and needs to be set manually.
+
+==============================================================================
+                                                    *gomod* *ft-gomod-syntax*
+go.mod file syntax~
+
+The `gomod` 'filetype' provides syntax highlighting for Go's module file 
+`go.mod`
 
 
 ==============================================================================
