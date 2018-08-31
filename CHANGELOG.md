@@ -1,5 +1,18 @@
 ## unplanned
 
+FEATURES:
+
+* **go.mod file support!** This is the first feature for upcoming Go modules
+  support. The followings are added:
+  * Syntax highlighting for the `go.mod` file. 
+  * A new `gomod` filetype is set if a `go.mod` file has been opened and starts
+    with the line `module `
+  * New **:GoModFmt** command that formats the `go.mod` file
+  * Auto format on save feature for `:GoModFmt`, enabled automatically. Can be
+    toggled of with the setting `g:go_mod_fmt_autosave` or with the command:
+    `GoModFmtAutoSaveToggle`
+  [[GH-1931]](https://github.com/fatih/vim-go/pull/1931)
+
 IMPROVEMENTS:
 * Unify async job handling for Vim8 and Neovim.
   [[GH-1864]](https://github.com/fatih/vim-go/pull/1864)
@@ -49,7 +62,7 @@ FEATURES:
       f, err := os.Open("file")
   }
   ```
-  
+ 
   Becomes:
 
   ```
