@@ -28,6 +28,8 @@ IMPROVEMENTS:
   [[GH-1924]](https://github.com/fatih/vim-go/pull/1924)
 * Update the tested version of Neovim to v0.3.1.
   [[GH-1923]](https://github.com/fatih/vim-go/pull/1923)
+* Run autocompletion asynchronously in Vim8 and Neovim.
+  [[GH-1920]](https://github.com/fatih/vim-go/pull/1920)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
