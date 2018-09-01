@@ -135,7 +135,7 @@ function! s:async_guru(args) abort
   let state.complete = function('s:complete', [], state)
 
   let opts = {
-        \ 'statustype': printf("%s", a:args.mode),
+        \ 'statustype': get(a:args, 'statustype', a:args.mode),
         \ 'for': '_',
         \ 'errorformat': "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m",
         \ 'complete': state.complete,
@@ -219,7 +219,7 @@ function! go#guru#Describe(selected) abort
   call s:run_guru(args)
 endfunction
 
-function! go#guru#DescribeInfo() abort
+function! go#guru#DescribeInfo(showstatus) abort
   " json_encode() and friends are introduced with this patch (7.4.1304)
   " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
   " nvim: https://github.com/neovim/neovim/pull/4131
@@ -315,12 +315,17 @@ function! go#guru#DescribeInfo() abort
 
   let args = {
         \ 'mode': 'describe',
+        \ 'statustype': '',
         \ 'format': 'json',
         \ 'selected': -1,
         \ 'needs_scope': 0,
         \ 'custom_parse': function('s:info'),
         \ 'disable_progress': 1,
         \ }
+
+  if a:showstatus
+    let args.statustype = args.mode
+  endif
 
   call s:run_guru(args)
 endfunction
@@ -403,7 +408,7 @@ function! go#guru#Referrers(selected) abort
   call s:run_guru(args)
 endfunction
 
-function! go#guru#SameIds() abort
+function! go#guru#SameIds(showstatus) abort
   " we use matchaddpos() which was introduce with 7.4.330, be sure we have
   " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
   if !exists("*matchaddpos")
@@ -421,11 +426,15 @@ function! go#guru#SameIds() abort
 
   let args = {
         \ 'mode': 'what',
+        \ 'statustype': '',
         \ 'format': 'json',
         \ 'selected': -1,
         \ 'needs_scope': 0,
         \ 'custom_parse': function('s:same_ids_highlight'),
         \ }
+  if a:showstatus
+    let args.statustype = args.mode
+  endif
 
   call s:run_guru(args)
 endfunction

@@ -201,14 +201,14 @@ endfunction
 function! s:auto_type_info()
   " GoInfo automatic update
   if get(g:, "go_auto_type_info", 0)
-    call go#tool#Info()
+    call go#tool#Info(0)
   endif
 endfunction
 
 function! s:auto_sameids()
   " GoSameId automatic update
   if get(g:, "go_auto_sameids", 0)
-    call go#guru#SameIds()
+    call go#guru#SameIds(0)
   endif
 endfunction
 

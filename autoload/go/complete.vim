@@ -66,15 +66,15 @@ function! go#complete#GetInfo() abort
   return s:sync_info(0)
 endfunction
 
-function! go#complete#Info() abort
+function! go#complete#Info(showstatus) abort
   if go#util#has_job(1) || has('nvim')
-    return s:async_info(1)
+    return s:async_info(1, a:showstatus)
   else
     return s:sync_info(1)
   endif
 endfunction
 
-function! s:async_info(echo)
+function! s:async_info(echo, showstatus)
   let state = {'echo': a:echo}
 
   function! s:complete(job, exit_status, messages) abort dict
@@ -112,6 +112,10 @@ function! s:async_info(echo)
         \ 'complete': state.complete,
         \ 'for': '_',
         \ }
+
+  if a:showstatus
+    let opts.statustype = 'gocode'
+  endif
 
   let opts = go#job#Options(l:opts)
 
