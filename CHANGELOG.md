@@ -32,6 +32,8 @@ IMPROVEMENTS:
   [[GH-1926]](https://github.com/fatih/vim-go/pull/1926)
 * Show statusline update when running `:GoInfo` with `g:go_info_mode='gocode'`.
   [[GH-1937]](https://github.com/fatih/vim-go/pull/1937)
+* Do update statusline when highlighting sameids or showing type info via autocmd.
+  [[GH-1937]](https://github.com/fatih/vim-go/pull/1937)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
@@ -44,9 +46,6 @@ BUG FIXES:
   [[GH-1915]](https://github.com/fatih/vim-go/pull/1915)
 * Fix highlighting of pointer type in var blocks.
   [[GH-1794]](https://github.com/fatih/vim-go/pull/1794)
-* Do update statusline when highlighting sameids or showing type infofrom via autocmd.
-  [[GH-1937]](https://github.com/fatih/vim-go/pull/1937)
-
 
 BACKWARDS INCOMPATIBILITIES:
 * Bump minimum required version of Vim to 7.4.2009.
