@@ -46,6 +46,8 @@ BUG FIXES:
   [[GH-1915]](https://github.com/fatih/vim-go/pull/1915)
 * Fix highlighting of pointer type in var blocks.
   [[GH-1794]](https://github.com/fatih/vim-go/pull/1794)
+* Fix `:GoImport` when adding to an empty import block (i.e`import ()`)
+  [[GH-1938]](https://github.com/fatih/vim-go/pull/1938)
 
 BACKWARDS INCOMPATIBILITIES:
 * Bump minimum required version of Vim to 7.4.2009.
