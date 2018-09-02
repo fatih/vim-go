@@ -164,6 +164,7 @@ function! go#import#SwitchImport(enabled, localname, path, bang) abort
         let linesdelta += 3
         let appendstr = qlocalpath
         let indentstr = 1
+        call append(appendline, appendstr)
       elseif getline(appendline) =~# '^import\s\+(\+)'
         call setline(appendline, 'import (')
         call append(appendline + 0, appendstr)
