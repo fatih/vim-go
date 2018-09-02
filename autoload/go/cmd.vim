@@ -40,6 +40,7 @@ function! go#cmd#Build(bang, ...) abort
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
           \ 'for': 'GoBuild',
+          \ 'statustype': 'build'
           \})
 
   " Vim 7.4 without async
@@ -203,6 +204,7 @@ function! go#cmd#Install(bang, ...) abort
           \ 'cmd': ['go', 'install', '-tags', go#config#BuildTags()] + goargs,
           \ 'bang': a:bang,
           \ 'for': 'GoInstall',
+          \ 'statustype': 'install'
           \})
     return
   endif
@@ -281,7 +283,7 @@ endfunction
 " | Vim job callbacks |
 " ---------------------
 
-function s:cmd_job(args) abort
+function! s:cmd_job(args) abort
   let status_dir = expand('%:p:h')
   let started_at = reltime()
 
