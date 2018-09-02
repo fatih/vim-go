@@ -6,8 +6,9 @@ function! go#test#Test(bang, compile, ...) abort
 
   " don't run the test, only compile it. Useful to capture and fix errors.
   if a:compile
-    let testfile = tempname() . ".vim-go.test"
-    call extend(args, ["-c", "-o", testfile])
+    " TODO: we should clean up this temp file.
+    let l:testfile = tempname() . '.vim-go.test'
+    call extend(args, ['-c', '-o', l:testfile])
   endif
 
   if a:0
@@ -22,8 +23,7 @@ function! go#test#Test(bang, compile, ...) abort
     call extend(args, goargs, 1)
   else
     " only add this if no custom flags are passed
-    let timeout = go#config#TestTimeout()
-    call add(args, printf("-timeout=%s", timeout))
+    call add(args, printf("-timeout=%s", go#config#TestTimeout()))
   endif
 
   if go#config#EchoCommandInfo()
@@ -93,17 +93,25 @@ function! go#test#Test(bang, compile, ...) abort
   execute cd . fnameescape(dir)
 endfunction
 
+" Store the last function that we found.
+let s:last_func = ''
+
 " Testfunc runs a single test that surrounds the current cursor position.
 " Arguments are passed to the `go test` command.
 function! go#test#Func(bang, ...) abort
-  " search flags legend (used only)
+  if a:0 && a:1 is? 'last'
+    if s:last_func is ''
+      call go#util#EchoError('nothing to repeat')
+      return
+    endif
+    call call('go#test#Test', s:last_func)
+    return
+  endif
+
   " 'b' search backward instead of forward
   " 'c' accept a match at the cursor position
   " 'n' do Not move the cursor
   " 'W' don't wrap around the end of the file
-  "
-  " for the full list
-  " :help search
   let test = search('func \(Test\|Example\)', "bcnW")
 
   if test == 0
@@ -119,10 +127,10 @@ function! go#test#Func(bang, ...) abort
     call extend(args, a:000)
   else
     " only add this if no custom flags are passed
-    let timeout = go#config#TestTimeout()
-    call add(args, printf("-timeout=%s", timeout))
+    call add(args, printf("-timeout=%s", go#config#TestTimeout()))
   endif
 
+  let s:last_func = l:args
   call call('go#test#Test', args)
 endfunction
 
