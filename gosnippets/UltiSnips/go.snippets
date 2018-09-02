@@ -363,6 +363,13 @@ func Test${1:Function}(t *testing.T) {
 }
 endsnippet
 
+# subtest
+snippet trun "t.Run(..., func(t *testing.T) { ... })"
+t.Run("${1:name}", func(t *testing.T) {
+	${0:${VISUAL}}
+})
+endsnippet
+
 snippet hf "http.HandlerFunc" !b
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
