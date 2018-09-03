@@ -43,7 +43,7 @@ function! go#test#Test(bang, compile, ...) abort
     if get(g:, 'go_term_enabled', 0)
       let id = go#term#new(a:bang, ["go"] + args)
     else
-      let id = go#jobcontrol#Spawn(a:bang, "test", args)
+      let id = go#job#Spawn("test", args)
     endif
 
     return id
