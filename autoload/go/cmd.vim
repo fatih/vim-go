@@ -284,15 +284,6 @@ endfunction
 " ---------------------
 
 function! s:cmd_job(args) abort
-  let status_dir = expand('%:p:h')
-  let started_at = reltime()
-
-  call go#statusline#Update(status_dir, {
-        \ 'desc': "current status",
-        \ 'type': a:args.cmd[1],
-        \ 'state': "started",
-        \})
-
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
