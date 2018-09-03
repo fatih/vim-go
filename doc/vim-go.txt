@@ -2268,6 +2268,18 @@ By default new terminals are opened in a vertical split. To change it
  let g:go_term_mode = "split"
 >
 
+How can I customize the highlighting?~
+
+All the highlight groups used by vim-go are prefixed with `go` (e.g.
+`goType`) and are defined in the files in the `syntax` directory. To change
+the highlighting for any group, add a `highlight` command for the group to
+your vimrc.  To turn off the highlighting for any group, add `highlight link
+group-name NONE` (where `group-name` is the name of the group whose highlight
+you'd like to turn off) to your vimrc.
+
+Some people may wish to highlight Go's builtins as keywords. To do so, one
+should simply add `highlight link goBuiltins Keyword` to the `vimrc` file.
+
 ==============================================================================
 DEVELOPMENT                                               *go-development*
 

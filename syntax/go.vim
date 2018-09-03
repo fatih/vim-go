@@ -47,12 +47,12 @@ hi def link     goFloats            Type
 hi def link     goComplexes         Type
 
 " Predefined functions and values
-syn match       goBuiltins                 /\<\v(append|cap|close|complex|copy|delete|imag|len)\ze\(/
-syn match       goBuiltins                 /\<\v(make|new|panic|print|println|real|recover)\ze\(/
+syn keyword     goBuiltins                 append cap close complex copy delete imag len
+syn keyword     goBuiltins                 make new panic print println real recover
 syn keyword     goBoolean                  true false
 syn keyword     goPredefinedIdentifiers    nil iota
 
-hi def link     goBuiltins                 Keyword
+hi def link     goBuiltins                 Identifier
 hi def link     goBoolean                  Boolean
 hi def link     goPredefinedIdentifiers    goBoolean
 
