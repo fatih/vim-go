@@ -105,20 +105,17 @@ function! go#job#Options(args)
   endfunction
 
   function state.show_status(job, exit_status) dict
-    if go#config#EchoCommandInfo() && self.for != '_'
-      let prefix = ""
-      if self.statustype != ''
-        let prefix = '[' . self.statustype . '] '
-      endif
+    if self.statustype == ''
+      return
+    endif
+
+    if go#config#EchoCommandInfo()
+      let prefix = '[' . self.statustype . '] '
       if a:exit_status == 0
         call go#util#EchoSuccess(prefix . "SUCCESS")
       else
         call go#util#EchoError(prefix . "FAIL")
       endif
-    endif
-
-    if self.statustype == ''
-      return
     endif
 
     let status = {
@@ -146,6 +143,11 @@ function! go#job#Options(args)
   endif
 
   function! s:start(args) dict
+    if go#config#EchoCommandInfo()
+      let prefix = '[' . self.statustype . '] '
+      call go#util#EchoSuccess(prefix . "dispatched")
+    endif
+
     if self.statustype != ''
       let status = {
             \ 'desc': 'current status',
