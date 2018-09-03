@@ -34,6 +34,8 @@ IMPROVEMENTS:
   [[GH-1937]](https://github.com/fatih/vim-go/pull/1937)
 * Do update statusline when highlighting sameids or showing type info via autocmd.
   [[GH-1937]](https://github.com/fatih/vim-go/pull/1937)
+* Do not indent within a raw string literal.
+  [[GH-1858]](https://github.com/fatih/vim-go/pull/1858)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
