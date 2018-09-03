@@ -32,10 +32,18 @@ IMPROVEMENTS:
   [[GH-1926]](https://github.com/fatih/vim-go/pull/1926)
 * Show statusline update when running `:GoInfo` with `g:go_info_mode='gocode'`.
   [[GH-1937]](https://github.com/fatih/vim-go/pull/1937)
-* Do update statusline when highlighting sameids or showing type info via autocmd.
+* Do not update statusline when highlighting sameids or showing type info via
+  an autocmd.
   [[GH-1937]](https://github.com/fatih/vim-go/pull/1937)
 * Do not indent within a raw string literal.
   [[GH-1858]](https://github.com/fatih/vim-go/pull/1858)
+* Highlight Go's predeclared function identifiers (the functions in `builtins`)
+  using keyword groups and highlight them using the `Identifiers` group.
+  [[GH-1939]](https://github.com/fatih/vim-go/pull/1939)
+* Add a new FAQ entry to instruct users how to modify the vim-go highlight
+  groups.
+  [[GH-1939]](https://github.com/fatih/vim-go/pull/1939)
+
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
