@@ -238,7 +238,7 @@ function! go#job#Options(args)
 
     if empty(errors)
       " failed to parse errors, output the original content
-      call go#util#EchoError(self.messages + [self.dir])
+      call go#util#EchoError([self.dir] + self.messages)
       call win_gotoid(l:winid)
       return
     endif
