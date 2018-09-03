@@ -59,6 +59,10 @@ function! go#util#IsUsingCygwinShell()
   return go#util#IsWin() && executable('cygpath') && &shell =~ '.*sh.*'
 endfunction
 
+function! go#util#has_term() abort
+  return exists('+term') || (exists('+terminal') && has('patch-8.0.1092'))
+endfunction
+
 " Check if Vim jobs API is supported.
 "
 " The (optional) first parameter can be added to indicate the 'cwd' or 'env'
@@ -66,12 +70,12 @@ endfunction
 function! go#util#has_job(...) abort
   " cwd and env parameters to job_start was added in this version.
   if a:0 > 0 && a:1 is 1
-    return has('job') && has("patch-8.0.0902")
+    return has('job') && has('patch-8.0.0902')
   endif
 
   " job was introduced in 7.4.xxx however there are multiple bug fixes and one
   " of the latest is 8.0.0087 which is required for a stable async API.
-  return has('job') && has("patch-8.0.0087")
+  return has('job') && has('patch-8.0.0087')
 endfunction
 
 let s:env_cache = {}

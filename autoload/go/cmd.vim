@@ -126,7 +126,7 @@ endfunction
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...) abort
-  if has('nvim')
+  if go#util#has_term()
     call go#cmd#RunTerm(a:bang, '', a:000)
     return
   endif
