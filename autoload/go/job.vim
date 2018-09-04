@@ -97,14 +97,14 @@ function! go#job#Options(args)
       " 'location' and the user has moved windows since starting the job.
       " Make sure to jump only if 'for' was not set explicitly to '_', which
       " is an indicator that the process will show a list
-      if has_key(self, 'for') && self.for != '_'
+      if get(self, 'for', '_') != '_'
         let l:winid = win_getid(winnr())
         call win_gotoid(self.winid)
       endif
 
       call self.custom_complete(a:job, a:exit_status, a:data)
 
-      if has_key(self, 'for') && self.for != '_'
+      if get(self, 'for', '_') != '_'
         call win_gotoid(l:winid)
       endif
     endif
