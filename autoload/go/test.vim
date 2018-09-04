@@ -26,14 +26,6 @@ function! go#test#Test(bang, compile, ...) abort
     call add(args, printf("-timeout=%s", timeout))
   endif
 
-  if go#config#EchoCommandInfo()
-    if a:compile
-      call go#util#EchoProgress("compiling tests ...")
-    else
-      call go#util#EchoProgress("testing...")
-    endif
-  endif
-
   if has('nvim') && go#config#TermEnabled()
     call go#term#new(a:bang, ["go"] + args)
   endif
@@ -53,6 +45,14 @@ function! go#test#Test(bang, compile, ...) abort
 
     call s:test_job(['go'] + args, job_options)
     return
+  endif
+
+  if go#config#EchoCommandInfo()
+    if a:compile
+      call go#util#EchoProgress("compiling tests ...")
+    else
+      call go#util#EchoProgress("testing...")
+    endif
   endif
 
   call go#cmd#autowrite()

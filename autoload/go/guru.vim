@@ -114,13 +114,6 @@ function! s:async_guru(args) abort
     return
   endif
 
-  if !has_key(a:args, 'disable_progress')
-    if a:args.needs_scope
-      call go#util#EchoProgress("analysing with scope " . result.scope .
-            \ " (see ':help go-guru-scope' if this doesn't work)...")
-    endif
-  endif
-
   let state = {
         \ 'mode': a:args.mode,
         \ 'parse' : get(a:args, 'custom_parse', funcref("s:parse_guru_output"))
@@ -141,6 +134,10 @@ function! s:async_guru(args) abort
         \ 'complete': state.complete,
         \ }
 
+  if has_key(a:args, 'disable_progress')
+    let opts.statustype = ''
+  endif
+
   let opts = go#job#Options(l:opts)
 
   if has_key(result, 'stdin_content')
@@ -151,6 +148,11 @@ function! s:async_guru(args) abort
   endif
 
   call go#job#Start(result.cmd, opts)
+
+  if a:args.needs_scope && go#config#EchoCommandInfo() && !has_key(a:args, 'disable_progress')
+    call go#util#EchoProgress("analysing with scope " . result.scope .
+          \ " (see ':help go-guru-scope' if this doesn't work)...")
+  endif
 endfunc
 
 " run_guru runs the given guru argument
@@ -315,17 +317,12 @@ function! go#guru#DescribeInfo(showstatus) abort
 
   let args = {
         \ 'mode': 'describe',
-        \ 'statustype': '',
         \ 'format': 'json',
         \ 'selected': -1,
         \ 'needs_scope': 0,
         \ 'custom_parse': function('s:info'),
         \ 'disable_progress': 1,
         \ }
-
-  if a:showstatus
-    let args.statustype = args.mode
-  endif
 
   call s:run_guru(args)
 endfunction
@@ -426,14 +423,13 @@ function! go#guru#SameIds(showstatus) abort
 
   let args = {
         \ 'mode': 'what',
-        \ 'statustype': '',
         \ 'format': 'json',
         \ 'selected': -1,
         \ 'needs_scope': 0,
         \ 'custom_parse': function('s:same_ids_highlight'),
         \ }
-  if a:showstatus
-    let args.statustype = args.mode
+  if !a:showstatus
+    let args.disable_progress = 1
   endif
 
   call s:run_guru(args)

@@ -32,10 +32,6 @@ function! go#cmd#Build(bang, ...) abort
 
   " Vim and Neovim async.
   if go#util#has_job() || has('nvim')
-    if go#config#EchoCommandInfo()
-      call go#util#EchoProgress("building dispatched ...")
-    endif
-
     call s:cmd_job({
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
@@ -195,10 +191,6 @@ function! go#cmd#Install(bang, ...) abort
   if go#util#has_job()
     " expand all wildcards(i.e: '%' to the current file name)
     let goargs = map(copy(a:000), "expand(v:val)")
-
-    if go#config#EchoCommandInfo()
-      call go#util#EchoProgress("installing dispatched ...")
-    endif
 
     call s:cmd_job({
           \ 'cmd': ['go', 'install', '-tags', go#config#BuildTags()] + goargs,

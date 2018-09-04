@@ -48,13 +48,12 @@ function! go#def#Jump(mode) abort
             \ 'cmd': cmd,
             \ 'complete': function('s:jump_to_declaration_cb', [a:mode, bin_name], l:state),
             \ 'for': '_',
+            \ 'statustype': 'searching declaration',
             \ }
 
       if &modified
         let l:spawn_args.input = stdin_content
       endif
-
-      call go#util#EchoProgress("searching declaration ...")
 
       call s:def_job(spawn_args, l:state)
       return
