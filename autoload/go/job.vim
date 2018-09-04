@@ -91,14 +91,22 @@ function! go#job#Options(args)
   " do nothing in state.complete by default.
   function state.complete(job, exit_status, data)
     if has_key(self, 'custom_complete')
-      let l:winid = win_getid(winnr())
       " Always set the active window to the window that was active when the job
       " was started. Among other things, this makes sure that the correct
       " window's location list will be populated when the list type is
       " 'location' and the user has moved windows since starting the job.
-      call win_gotoid(self.winid)
+      " Make sure to jump only if 'for' was not set explicitly to '_', which
+      " is an indicator that the process will show a list
+      if get(self, 'for', '_') != '_'
+        let l:winid = win_getid(winnr())
+        call win_gotoid(self.winid)
+      endif
+
       call self.custom_complete(a:job, a:exit_status, a:data)
-      call win_gotoid(l:winid)
+
+      if get(self, 'for', '_') != '_'
+        call win_gotoid(l:winid)
+      endif
     endif
 
     call self.show_errors(a:job, a:exit_status, a:data)
