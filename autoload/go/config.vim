@@ -420,7 +420,7 @@ function! go#config#HighlightVariableDeclarations() abort
   return get(g:, 'go_highlight_variable_declarations', 0)
 endfunction
 
-function go#config#FoldEnable(...) abort
+function! go#config#FoldEnable(...) abort
   if a:0 > 0
     return index(go#config#FoldEnable(), a:1) > -1
   endif
