@@ -43,6 +43,8 @@ IMPROVEMENTS:
 * Add a new FAQ entry to instruct users how to modify the vim-go highlight
   groups.
   [[GH-1939]](https://github.com/fatih/vim-go/pull/1939)
+* Improve use of statusline and progress messages.
+  [[GH-1948]](https://github.com/fatih/vim-go/pull/1948)
 
 
 BUG FIXES:
