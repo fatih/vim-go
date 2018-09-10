@@ -143,7 +143,7 @@ function! go#job#Options(args)
   endif
 
   function! s:start(args) dict
-    if go#config#EchoCommandInfo()
+    if go#config#EchoCommandInfo() && self.statustype != ""
       let prefix = '[' . self.statustype . '] '
       call go#util#EchoSuccess(prefix . "dispatched")
     endif
