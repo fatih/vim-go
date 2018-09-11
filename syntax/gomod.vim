@@ -37,7 +37,7 @@ syntax match gomodReplaceOperator "\v\=\>"
 highlight default link gomodReplaceOperator Operator
 
 
-" highlight semver, note that this is very simple. But it works for now
+" highlight semver
 syntax match gomodVersion "^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-((0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?$"
 highlight default link gomodVersion Identifier
 
