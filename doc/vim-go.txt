@@ -1609,10 +1609,10 @@ to an autocompletion proposals. By default it is enabled.
                                                *'g:go_gocode_propose_source'*
 
 Specifies whether `gocode` should use source files instead of binary packages
-for autocompletion proposals. By default it is disabled because it is
-currently much slower.
+for autocompletion proposals. When disabled, only identifiers from the current
+package and packages that have been installed will proposed.
 >
-  let g:go_gocode_propose_source = 0
+  let g:go_gocode_propose_source = 1
 <
                                                    *'g:go_gocode_socket_type'*
 
