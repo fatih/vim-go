@@ -50,6 +50,9 @@ nnoremap <silent> <Plug>(go-sameids-toggle) :<C-u>call go#guru#ToggleSameIds()<C
 
 nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename(!g:go_jump_to_error)<CR>
 
+nnoremap <silent> <Plug>(go-decls) :<C-u>call go#decls#Decls(0, '')<CR>
+nnoremap <silent> <Plug>(go-decls-dir) :<C-u>call go#decls#Decls(1, '')<CR>
+
 nnoremap <silent> <Plug>(go-def) :<C-u>call go#def#Jump('')<CR>
 nnoremap <silent> <Plug>(go-def-vertical) :<C-u>call go#def#Jump("vsplit")<CR>
 nnoremap <silent> <Plug>(go-def-split) :<C-u>call go#def#Jump("split")<CR>
