@@ -444,6 +444,12 @@ function! s:neooptions(options)
         continue
       endif
 
+      if key == 'stoponexit'
+        if a:options['stoponexit'] == ''
+          let l:options['detach'] = 1
+        endif
+        continue
+      endif
   endfor
   return l:options
 endfunction
