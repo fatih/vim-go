@@ -42,7 +42,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
     " Include only messages for the active buffer for autosave.
     let include = [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
-    if go#util#has_job() || has('nvim')
+    if go#util#has_job()
       let include = [printf('--include=^%s:.*$', expand('%:p:t'))]
     endif
     let cmd += include
@@ -56,7 +56,7 @@ function! go#lint#Gometa(autosave, ...) abort
 
   let cmd += goargs
 
-  if go#util#has_job() || has('nvim')
+  if go#util#has_job()
     call s:lint_job({'cmd': cmd}, a:autosave)
     return
   endif
