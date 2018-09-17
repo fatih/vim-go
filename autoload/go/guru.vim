@@ -157,7 +157,7 @@ endfunc
 
 " run_guru runs the given guru argument
 function! s:run_guru(args) abort
-  if has('nvim') || go#util#has_job()
+  if go#util#has_job()
     let res = s:async_guru(a:args)
   else
     let res = s:sync_guru(a:args)

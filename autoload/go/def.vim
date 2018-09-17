@@ -42,7 +42,7 @@ function! go#def#Jump(mode) abort
 
     call extend(cmd, ["definition", fname . ':#' . go#util#OffsetCursor()])
 
-    if go#util#has_job() || has('nvim')
+    if go#util#has_job()
       let l:state = {}
       let l:spawn_args = {
             \ 'cmd': cmd,

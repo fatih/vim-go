@@ -31,7 +31,7 @@ function! go#cmd#Build(bang, ...) abort
         \ [".", "errors"]
 
   " Vim and Neovim async.
-  if go#util#has_job() || has('nvim')
+  if go#util#has_job()
     call s:cmd_job({
           \ 'cmd': ['go'] + args,
           \ 'bang': a:bang,
