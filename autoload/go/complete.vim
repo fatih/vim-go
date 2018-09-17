@@ -85,7 +85,7 @@ function! s:async_info(echo, showstatus)
     if &encoding != 'utf-8'
       let i = 0
       while i < len(a:messages)
-        let a:messages[i] = iconv(a:messages[i], 'utf-i', &encoding)
+        let a:messages[i] = iconv(a:messages[i], 'utf-8', &encoding)
         let i += 1
       endwhile
     endif
