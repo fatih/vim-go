@@ -293,11 +293,10 @@ function! go#job#Start(cmd, options)
     unlet l:options._start
   endif
 
-
   if has('nvim')
     let l:input = []
-    if has_key(l:options, 'in_io') && l:options.in_io ==# 'file' && !empty(l:options.in_name)
-      let l:input = readfile(l:options.in_name, 1)
+    if has_key(a:options, 'in_io') && a:options.in_io ==# 'file' && !empty(a:options.in_name)
+      let l:input = readfile(a:options.in_name, "b")
     endif
 
     let job = jobstart(a:cmd, l:options)
