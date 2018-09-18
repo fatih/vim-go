@@ -316,7 +316,7 @@ function! go#guru#DescribeInfo(showstatus) abort
       return
     endif
 
-    echo "vim-go: " | echohl Function | echon info | echohl None
+    call go#util#ShowInfo(info)
   endfunction
 
   let args = {

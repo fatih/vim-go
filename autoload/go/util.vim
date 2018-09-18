@@ -547,6 +547,14 @@ function! go#util#FilterValids(items) abort
   return filtered
 endfunction
 
+function! go#util#ShowInfo(info)
+  if empty(a:info)
+    return
+  endif
+
+  echo "vim-go: " | echohl Function | echon a:info | echohl None
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

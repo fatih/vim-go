@@ -207,8 +207,8 @@ function! s:info_filter(echo, result) abort
 endfunction
 
 function! s:info_complete(echo, result) abort
-  if a:echo && !empty(a:result)
-    echo "vim-go: " | echohl Function | echon a:result | echohl None
+  if a:echo
+    call go#util#ShowInfo(a:result)
   endif
 
   return a:result
