@@ -12,7 +12,7 @@ function! go#auto#template_autocreate()
 endfunction
 
 function! go#auto#echo_go_info()
-  if !get(g:, "go_echo_go_info", 1)
+  if !go#config#EchoGoInfo()
     return
   endif
 
