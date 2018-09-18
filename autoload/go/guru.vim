@@ -287,7 +287,7 @@ function! go#guru#DescribeInfo(showstatus) abort
         return
       endif
 
-      let info  = val["type"]
+      let info = val["type"]
     elseif detail == "type"
       if !has_key(result, 'type')
         call go#util#EchoError("type key is missing. Please open a bug report on vim-go repo.")
@@ -300,7 +300,7 @@ function! go#guru#DescribeInfo(showstatus) abort
         return
       endif
 
-      let info  = type["type"]
+      let info = type["type"]
     elseif detail == "package"
       if !has_key(result, 'package')
         call go#util#EchoError("package key is missing. Please open a bug report on vim-go repo.")
