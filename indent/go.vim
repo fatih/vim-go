@@ -5,7 +5,6 @@
 " indent/go.vim: Vim indent file for Go.
 "
 " TODO:
-" - function invocations split across lines
 " - general line splits (line ends in an operator)
 
 if exists("b:did_indent")
@@ -23,6 +22,19 @@ setlocal indentkeys+=<:>,0=},0=)
 if exists("*GoIndent")
   finish
 endif
+
+function! s:is_string_comment(lnum, col)
+  if !has('syntax_items')
+    return 0
+  endif
+
+  for id in synstack(a:lnum, a:col)
+    let synname = synIDattr(id, "name")
+    if synname == "goComment" || synname == "goString" || synname == "goRawString"
+      return 1
+    endif
+  endfor
+endfunction
 
 function! GoIndent(lnum)
   let prevlnum = prevnonblank(a:lnum-1)
@@ -42,9 +54,12 @@ function! GoIndent(lnum)
     " previous line started a multi-line raw string
     return 0
   endif
-  if prevl =~ '[({]\s*$'
-    " previous line opened a block
-    let ind += shiftwidth()
+  call cursor(a:lnum, 1)
+  let openline = searchpair('{\|(', '', '}\|)', 'nbW',
+    \ 's:is_string_comment(line("."), col("."))')
+  if openline != 0
+    " We're inside of a block so we indent one level
+    let ind = indent(openline) + shiftwidth()
   endif
   if prevl =~# '^\s*\(case .*\|default\):$'
     " previous line is part of a switch statement
