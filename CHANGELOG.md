@@ -51,6 +51,8 @@ IMPROVEMENTS:
   [[GH-1956]](https://github.com/fatih/vim-go/pull/1956)
 * Add `<Plug>(go-decls)` and `<Plug>(go-decls-dir)` mappings.
   [[GH-1964]](https://github.com/fatih/vim-go/pull/1964)
+* Handle go1.11 test output.
+  [[GH-1978]](https://github.com/fatih/vim-go/pull/1978)
 
 
 BUG FIXES:
