@@ -127,6 +127,13 @@ function! go#util#gopath() abort
   return substitute(s:exec(['go', 'env', 'GOPATH'])[0], '\n', '', 'g')
 endfunction
 
+" gomod returns 'go env GOMOD'. gomod changes depending on the folder. Don't
+" use go#util#env as it caches the value.
+function! go#util#gomod() abort
+  return substitute(s:exec(['go', 'env', 'GOMOD'])[0], '\n', '', 'g')
+endfunction
+
+
 function! go#util#osarch() abort
   return go#util#env("goos") . '_' . go#util#env("goarch")
 endfunction

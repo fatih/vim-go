@@ -1,5 +1,11 @@
 function! s:gocodeCommand(cmd, args) abort
-  let bin_path = go#path#CheckBinPath("gocode")
+  let l:gocode_bin = "gocode"
+  let l:gomod = go#util#gomod()
+  if filereadable(l:gomod)
+    let l:gocode_bin = "gocode-gomod"
+  endif
+
+  let bin_path = go#path#CheckBinPath(l:gocode_bin)
   if empty(bin_path)
     return []
   endif
