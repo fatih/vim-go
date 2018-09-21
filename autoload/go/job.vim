@@ -273,17 +273,17 @@ function! go#job#Start(cmd, options)
   " early if the directory does not exist. This helps avoid errors when
   " working with plugins that use virtual files that don't actually exist on
   " the file system.
-  let dir = expand("%:p:h")
+  let filedir = expand("%:p:h")
   if has_key(l:options, 'cwd') && !isdirectory(l:options.cwd)
       return
-  elseif !isdirectory(dir)
+  elseif !isdirectory(filedir)
     return
   endif
 
   if !has_key(l:options, 'cwd')
     " pre start
     let dir = getcwd()
-    execute l:cd fnameescape(dir)
+    execute l:cd fnameescape(filedir)
   endif
 
   if has_key(l:options, '_start')
