@@ -55,6 +55,8 @@ IMPROVEMENTS:
   [[GH-1978]](https://github.com/fatih/vim-go/pull/1978)
 * Set indent correctly on newline inside a function call.
   [[GH-1981]](https://github.com/fatih/vim-go/pull/1981)
+* Internal: install tools by their custom names
+  [[GH-1984]](https://github.com/fatih/vim-go/pull/1984)
 
 
 BUG FIXES:
