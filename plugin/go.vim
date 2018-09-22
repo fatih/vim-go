@@ -134,9 +134,14 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
     let bin_setting_name = "go_" . binary . "_bin"
 
-    let bin = binary
     if exists("g:{bin_setting_name}")
       let bin = g:{bin_setting_name}
+    else
+      if go#util#IsWin()
+        let bin = binary . '.exe'
+      else
+        let bin = binary
+      endif
     endif
 
     if !executable(bin) || a:updateBinaries == 1
