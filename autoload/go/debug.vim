@@ -218,7 +218,8 @@ endfunction
 function! s:stop() abort
   call s:clearState()
   if has_key(s:state, 'job')
-    call job_stop(s:state['job'])
+    " TODO(bc): call Detach
+    call go#job#Stop(s:state['job'])
     call remove(s:state, 'job')
   endif
 endfunction
@@ -478,8 +479,10 @@ function! s:out_cb(ch, msg) abort
   call go#util#EchoProgress(a:msg)
   let s:state['message'] += [a:msg]
 
-  " TODO: why do this in this callback?
   if stridx(a:msg, go#config#DebugAddress()) != -1
+    " After this block executes, Delve will be running with all the
+    " breakpoints setup, so this callback doesn't have to run again; just log
+    " future messages.
     call ch_setoptions(a:ch, {
       \ 'out_cb': function('s:logger', ['OUT: ']),
       \ 'err_cb': function('s:logger', ['ERR: ']),
@@ -511,7 +514,7 @@ function! go#debug#Start(is_test, ...) abort
   endif
 
   " It's already running.
-  if has_key(s:state, 'job') && job_status(s:state['job']) == 'run'
+  if has_key(s:state, 'job')
     return
   endif
 
@@ -807,10 +810,7 @@ function! go#debug#Restart() abort
   call go#cmd#autowrite()
 
   try
-    call job_stop(s:state['job'])
-    while has_key(s:state, 'job') && job_status(s:state['job']) is# 'run'
-      sleep 50m
-    endwhile
+    call go#job#Stop(s:state['job'])
 
     let l:breaks = s:state['breakpoint']
     let s:state = {
