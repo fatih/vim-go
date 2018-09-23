@@ -39,7 +39,8 @@ highlight default link gomodReplaceOperator Operator
 
 " highlight semver, note that this is very simple. But it works for now
 syntax match gomodVersion "v\d\+\.\d\+\.\d\+"
-syntax match gomodVersion "v\d\+\.\d\+\.\d\+-.*"
+syntax match gomodVersion "v\d\+\.\d\+\.\d\+-\S*"
+syntax match gomodVersion "v\d\+\.\d\+\.\d\++incompatible"
 highlight default link gomodVersion Identifier
 
 let b:current_syntax = "gomod"
