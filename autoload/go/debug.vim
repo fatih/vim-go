@@ -79,7 +79,7 @@ function! s:call_jsonrpc(method, ...) abort
   try
     " Use callback
     if type(Cb) == v:t_func
-      let s:ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'callback': Cb})
+      let s:ch = ch_open(go#config#DebugAddress(), {'mode': 'nl', 'callback': Cb})
       call ch_sendraw(s:ch, req_json)
 
       if go#util#HasDebug('debugger-commands')
@@ -91,7 +91,7 @@ function! s:call_jsonrpc(method, ...) abort
       return
     endif
 
-    let ch = ch_open('127.0.0.1:8181', {'mode': 'nl', 'timeout': 20000})
+    let ch = ch_open(go#config#DebugAddress(), {'mode': 'nl', 'timeout': 20000})
     call ch_sendraw(ch, req_json)
     let resp_json = ch_readraw(ch)
 
