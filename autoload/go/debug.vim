@@ -29,6 +29,11 @@ function! s:complete(job, exit_status, data) abort
   if has_key(s:state, 'job')
     call remove(s:state, 'job')
   endif
+
+  if has_key(s:state, 'ready')
+    call remove(s:state, 'ready')
+  endif
+
   call s:clearState()
   if a:exit_status > 0
     call go#util#EchoError(s:state['message'])
@@ -66,7 +71,6 @@ function! s:call_jsonrpc(method, ...) abort
      let Cb = a:000[0]
      let args = a:000[1:]
   else
-     let Cb = v:none
      let args = a:000
   endif
   let s:state['rpcid'] += 1
@@ -78,9 +82,26 @@ function! s:call_jsonrpc(method, ...) abort
 
   try
     " Use callback
-    if type(Cb) == v:t_func
-      let s:ch = ch_open(go#config#DebugAddress(), {'mode': 'nl', 'callback': Cb})
-      call ch_sendraw(s:ch, req_json)
+    if exists('l:Cb')
+      if has('nvim')
+        let state = {'callback': Cb}
+        function! state.on_data(ch, msg, event) abort
+          call self.state.callback(a:ch, a:msg)
+        endfunction
+        let l:ch = sockconnect('tcp', go#config#DebugAddress(), {'on_data': state.on_data, 'state': state})
+        call chansend(l:ch, req_json)
+
+        if go#util#HasDebug('debugger-commands')
+          let g:go_debug_commands = add(g:go_debug_commands, {
+                \ 'request':  req_json,
+                \ 'response': Cb,
+          \ })
+        endif
+        return
+      endif
+
+      let l:ch = ch_open(go#config#DebugAddress(), {'mode': 'nl', 'callback': Cb})
+      call ch_sendraw(l:ch, req_json)
 
       if go#util#HasDebug('debugger-commands')
         let g:go_debug_commands = add(g:go_debug_commands, {
@@ -91,9 +112,23 @@ function! s:call_jsonrpc(method, ...) abort
       return
     endif
 
-    let ch = ch_open(go#config#DebugAddress(), {'mode': 'nl', 'timeout': 20000})
-    call ch_sendraw(ch, req_json)
-    let resp_json = ch_readraw(ch)
+    if has('nvim')
+      let state = {'done': 0}
+      function! state.on_data(ch, msg, event) abort
+        let self.resp = a:msg
+        let self.done = 1
+      endfunction
+      let l:ch = sockconnect('tcp', go#config#DebugAddress(), {'on_data': state.on_data, 'state': state})
+      call chansend(l:ch, req_json)
+      while state.done == 0
+        sleep 50m
+      endwhile
+      let resp_json = state.resp
+    else
+      let ch = ch_open(go#config#DebugAddress(), {'mode': 'raw', 'timeout': 20000})
+      call ch_sendraw(ch, req_json)
+      let resp_json = ch_readraw(ch)
+    endif
 
     if go#util#HasDebug('debugger-commands')
       let g:go_debug_commands = add(g:go_debug_commands, {
@@ -222,6 +257,10 @@ function! s:stop() abort
     call go#job#Stop(s:state['job'])
     call remove(s:state, 'job')
   endif
+
+  if has_key(s:state, 'ready')
+    call remove(s:state, 'ready')
+  endif
 endfunction
 
 function! go#debug#Stop() abort
@@ -258,8 +297,10 @@ function! go#debug#Stop() abort
   silent! exe bufwinnr(bufnr('__GODEBUG_VARIABLES__')) 'wincmd c'
   silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
 
-  set noballooneval
-  set balloonexpr=
+  if !has('balloon_eval')
+    set noballooneval
+    set balloonexpr=
+  endif
 
   augroup vim-go-debug
     autocmd!
@@ -454,8 +495,10 @@ function! s:start_cb(ch, json) abort
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
   nnoremap <silent> <Plug>(go-debug-print)      :<C-u>call go#debug#Print(expand('<cword>'))<CR>
 
-  set balloonexpr=go#debug#BalloonExpr()
-  set ballooneval
+  if has('balloon_eval')
+    set balloonexpr=go#debug#BalloonExpr()
+    set ballooneval
+  endif
 
   exe bufwinnr(oldbuf) 'wincmd w'
 
@@ -471,11 +514,21 @@ function! s:start_cb(ch, json) abort
 endfunction
 
 function! s:err_cb(ch, msg) abort
+  if get(s:state, 'ready', 0) != 0
+    call call('s:logger', ['ERR: ', a:ch, a:msg])
+    return
+  endif
+
   call go#util#EchoError(a:msg)
   let s:state['message'] += [a:msg]
 endfunction
 
 function! s:out_cb(ch, msg) abort
+  if get(s:state, 'ready', 0) != 0
+    call call('s:logger', ['OUT: ', a:ch, a:msg])
+    return
+  endif
+
   call go#util#EchoProgress(a:msg)
   let s:state['message'] += [a:msg]
 
@@ -483,10 +536,7 @@ function! s:out_cb(ch, msg) abort
     " After this block executes, Delve will be running with all the
     " breakpoints setup, so this callback doesn't have to run again; just log
     " future messages.
-    call ch_setoptions(a:ch, {
-      \ 'out_cb': function('s:logger', ['OUT: ']),
-      \ 'err_cb': function('s:logger', ['ERR: ']),
-      \})
+    let s:state['ready'] = 1
 
     " Tell dlv about the breakpoints that the user added before delve started.
     let l:breaks = copy(s:state.breakpoint)
@@ -504,12 +554,8 @@ endfunction
 function! go#debug#Start(is_test, ...) abort
   call go#cmd#autowrite()
 
-  if has('nvim')
-    call go#util#EchoError('This feature only works in Vim for now; Neovim is not (yet) supported. Sorry :-(')
-    return
-  endif
   if !go#util#has_job()
-    call go#util#EchoError('This feature requires Vim 8.0.0087 or newer with +job.')
+    call go#util#EchoError('This feature requires either Vim 8.0.0087 or newer with +job or Neovim.')
     return
   endif
 
@@ -857,7 +903,7 @@ function! go#debug#Breakpoint(...) abort
 
   try
     " Check if we already have a breakpoint for this line.
-    let found = v:none
+    let found = {}
     for k in keys(s:state.breakpoint)
       let bt = s:state.breakpoint[k]
       if bt.file == l:filename && bt.line == linenr
@@ -867,7 +913,7 @@ function! go#debug#Breakpoint(...) abort
     endfor
 
     " Remove breakpoint.
-    if type(found) == v:t_dict
+    if type(found) == v:t_dict && !empty(found)
       call remove(s:state['breakpoint'], bt.id)
       exe 'sign unplace '. found.id .' file=' . found.file
       if s:isActive()
