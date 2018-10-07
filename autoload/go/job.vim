@@ -311,7 +311,12 @@ function! go#job#Start(cmd, options)
       call chanclose(job, 'stdin')
     endif
   else
-    let job = job_start(a:cmd, l:options)
+    let l:cmd = a:cmd
+    if go#util#IsWin()
+      let l:cmd = join(map(copy(a:cmd), function('s:winjobarg')), " ")
+    endif
+
+    let job = job_start(l:cmd, l:options)
   endif
 
   if !has_key(l:options, 'cwd')
@@ -525,7 +530,13 @@ function! go#job#Wait(job) abort
   while job_status(a:job) is# 'run'
     sleep 50m
   endwhile
+endfunction
 
+function! s:winjobarg(idx, val) abort
+  if empty(a:val)
+    return '""'
+  endif
+  return a:val
 endfunction
 
 " vim: sw=2 ts=2 et
