@@ -30,6 +30,7 @@ au BufRead *.s call s:gofiletype_pre("asm")
 au BufReadPost *.s call s:gofiletype_post()
 
 au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
+au BufRead,BufNewFile *.go.tmpl set filetype=gogotmpl
 
 " Set the filetype if the first non-comment and non-blank line starts with
 " 'module <path>'.
