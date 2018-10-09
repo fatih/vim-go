@@ -33,20 +33,19 @@ function! GetGoTmplIndent(lnum)
     let sw = &sw
   endif
 
-  " If need to indent based on last line
-  let last_line = getline(a:lnum-1)
-  let current_line = getline(a:lnum)
-  if last_line =~ '^\s*{{.*\(if\|else\|range\|with\|define\|block\).*}}'
+  if thisl =~ 'autoindent_hint:indent' " special processing for unusual situations.
     let ind += sw
-  elseif current_line =~ '^\s*{{.*\(else\|end\).*}}'
+  elseif prevl =~ '^\s*{{-\=\s*\%(if\|else\|range\|with\|define\|block\).*}}'
+    let ind += sw
+  elseif thisl =~ '^\s*{{-\=\s*\%(else\|end\).*}}'
     let ind -= sw
   else
-    " Use go formatting rules.
+    " Otherwise, use normal go formatting rules.
     if prevl =~ ' = `[^`]*$'
       " previous line started a multi-line raw string
       return 0
     endif
-    if prevl =~ '[({]\s*$'
+    if prevl =~ '[({]\s*$' "&& !prevl =~ '^\s*{{.*}}\s*'
       " previous line opened a block
       let ind += shiftwidth()
     endif
