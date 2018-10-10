@@ -251,10 +251,11 @@ function! s:clearState() abort
 endfunction
 
 function! s:stop() abort
+  " TODO(bc): call Detach
+  call go#job#Stop(s:state['job'])
+
   call s:clearState()
   if has_key(s:state, 'job')
-    " TODO(bc): call Detach
-    call go#job#Stop(s:state['job'])
     call remove(s:state, 'job')
   endif
 
