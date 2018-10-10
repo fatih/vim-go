@@ -293,6 +293,10 @@ function! go#job#Start(cmd, options)
     unlet l:options._start
   endif
 
+  if go#util#HasDebug('shell-commands')
+    call go#util#EchoInfo('job command: ' . string(a:cmd))
+  endif
+
   if has('nvim')
     let l:input = []
     if has_key(a:options, 'in_io') && a:options.in_io ==# 'file' && !empty(a:options.in_name)
