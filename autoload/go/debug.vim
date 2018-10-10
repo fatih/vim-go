@@ -556,7 +556,7 @@ function! go#debug#Start(is_test, ...) abort
           \ '--output', tempname(),
           \ '--headless',
           \ '--api-version', '2',
-          \ '--log', 'debugger',
+          \ '--log', '--log-output', 'debugger,rpc',
           \ '--listen', go#config#DebugAddress(),
           \ '--accept-multiclient',
     \]
