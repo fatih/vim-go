@@ -1924,10 +1924,10 @@ features:
   * Toggle breakpoint.
   * Stack operation continue/next/step out.
 
-This feature requires Vim 8.0.0087 or newer with the |+job| feature. Neovim
-does _not_ work (yet).
-This requires Delve 1.0.0 or newer, and it is recommended to use Go 1.10 or
-newer, as its new caching will speed up recompiles.
+This feature requires either Vim 8.0.0087 or newer with the |+job| feature or
+Neovim. This features also requires Delve 1.0.0 or newer, and it is
+recommended to use Go 1.10 or newer, as its new caching will speed up
+recompiles.
 
                                                               *go-debug-intro*
 GETTING STARTED WITH THE DEBUGGER~

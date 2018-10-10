@@ -505,4 +505,27 @@ function! s:neooptions(options)
   return l:options
 endfunction
 
+function! go#job#Stop(job) abort
+  if has('nvim')
+    call jobstop(a:job)
+    return
+  endif
+
+  call job_stop(a:job)
+  call go#job#Wait(a:job)
+  return
+endfunction
+
+function! go#job#Wait(job) abort
+  if has('nvim')
+    call jobwait(a:job)
+    return
+  endif
+
+  while job_status(a:job) is# 'run'
+    sleep 50m
+  endwhile
+
+endfunction
+
 " vim: sw=2 ts=2 et
