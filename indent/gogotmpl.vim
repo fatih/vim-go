@@ -35,7 +35,7 @@ function! GetGoTmplIndent(lnum)
 
   if thisl =~ 'autoindent_hint:indent' " special processing for unusual situations.
     let ind += sw
-  elseif prevl =~ '^\s*{{-\=\s*\%(if\|else\|range\|with\|define\|block\).*}}'
+  elseif prevl =~ '^\s*{{-\=\s*\%(if\|else\|range\|with\|define\|block\).*}}' && prevl !~ '{{-\=\s*\%(end\).*}}'
     let ind += sw
   elseif thisl =~ '^\s*{{-\=\s*\%(else\|end\).*}}'
     let ind -= sw
