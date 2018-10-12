@@ -50,7 +50,7 @@ let s:packages = {
       \ 'godef':         ['github.com/rogpeppe/godef'],
       \ 'gogetdoc':      ['github.com/zmb3/gogetdoc'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports'],
-      \ 'golint':        ['github.com/golang/lint/golint'],
+      \ 'golint':        ['golang.org/x/lint/golint'],
       \ 'gometalinter':  ['github.com/alecthomas/gometalinter'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename'],
