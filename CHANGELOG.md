@@ -78,6 +78,8 @@ BUG FIXES:
   [[GH-1992]](https://github.com/fatih/vim-go/pull/1992)
 * Pass empty arguments correctly in async jobs on Windows.
   [[GH-2011]](https://github.com/fatih/vim-go/pull/2011)
+* Don't close godoc scratch window when using arrow keys.
+  [[GH-2021]](https://github.com/fatih/vim-go/pull/2021)
 
 BACKWARDS INCOMPATIBILITIES:
 * Bump minimum required version of Vim to 7.4.2009.
