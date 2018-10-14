@@ -115,8 +115,8 @@ function! s:call_jsonrpc(method, ...) abort
     if has('nvim')
       let state = {'done': 0}
       function! state.on_data(ch, msg, event) abort
-        let self.resp = a:msg
-        let self.done = 1
+        let self.state.resp = a:msg
+        let self.state.done = 1
       endfunction
       let l:ch = sockconnect('tcp', go#config#DebugAddress(), {'on_data': state.on_data, 'state': state})
       call chansend(l:ch, req_json)
@@ -298,7 +298,7 @@ function! go#debug#Stop() abort
   silent! exe bufwinnr(bufnr('__GODEBUG_VARIABLES__')) 'wincmd c'
   silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
 
-  if !has('balloon_eval')
+  if has('balloon_eval')
     set noballooneval
     set balloonexpr=
   endif
