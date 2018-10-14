@@ -298,7 +298,7 @@ function! go#debug#Stop() abort
   silent! exe bufwinnr(bufnr('__GODEBUG_VARIABLES__')) 'wincmd c'
   silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
 
-  if !has('balloon_eval')
+  if has('balloon_eval')
     set noballooneval
     set balloonexpr=
   endif
