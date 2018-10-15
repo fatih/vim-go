@@ -57,6 +57,8 @@ IMPROVEMENTS:
   [[GH-1984]](https://github.com/fatih/vim-go/pull/1984)
 * Support the go-debugger features in Neovim.
   [[GH-2007]](https://github.com/fatih/vim-go/pull/2007)
+* color the statusline for termguicolors and Neovim.
+  [[GH-2014]](https://github.com/fatih/vim-go/pull/2014)
 
 
 BUG FIXES:
