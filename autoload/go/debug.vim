@@ -150,7 +150,7 @@ endfunction
 " Update the location of the current breakpoint or line we're halted on based on
 " response from dlv.
 function! s:update_breakpoint(res) abort
-  if type(a:res) ==# v:t_none
+  if type(a:res) ==# type(v:null)
     return
   endif
 
