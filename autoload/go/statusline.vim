@@ -53,22 +53,12 @@ function! go#statusline#Show() abort
 
   " only update highlight if status has changed.
   if status_text != s:last_status
-    if (has("nvim"))
-      if status.state =~ "success" || status.state =~ "finished" || status.state =~ "pass"
-        hi goStatusLineColor cterm=bold guibg=#5fd700 guifg=#005f00
-      elseif status.state =~ "started" || status.state =~ "analysing" || status.state =~ "compiling"
-        hi goStatusLineColor cterm=bold guibg=#ff8700 guifg=#870000
-      elseif status.state =~ "failed"
-        hi goStatusLineColor cterm=bold guibg=#ff0000 guifg=#5f0000
-      endif
-    else
-      if status.state =~ "success" || status.state =~ "finished" || status.state =~ "pass"
-        hi goStatusLineColor cterm=bold ctermbg=76 ctermfg=22
-      elseif status.state =~ "started" || status.state =~ "analysing" || status.state =~ "compiling"
-        hi goStatusLineColor cterm=bold ctermbg=208 ctermfg=88
-      elseif status.state =~ "failed"
-        hi goStatusLineColor cterm=bold ctermbg=196 ctermfg=52
-      endif
+    if status.state =~ "success" || status.state =~ "finished" || status.state =~ "pass"
+      hi goStatusLineColor cterm=bold ctermbg=76 ctermfg=22 guibg=#5fd700 guifg=#005f00
+    elseif status.state =~ "started" || status.state =~ "analysing" || status.state =~ "compiling"
+      hi goStatusLineColor cterm=bold ctermbg=208 ctermfg=88 guibg=#ff8700 guifg=#870000
+    elseif status.state =~ "failed"
+      hi goStatusLineColor cterm=bold ctermbg=196 ctermfg=52 guibg=#ff0000 guifg=#5f0000
     endif
   endif
 
