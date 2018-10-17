@@ -59,6 +59,9 @@ IMPROVEMENTS:
   [[GH-2007]](https://github.com/fatih/vim-go/pull/2007)
 * color the statusline for termguicolors and Neovim.
   [[GH-2014]](https://github.com/fatih/vim-go/pull/2014)
+* add an option to disable highlighting of breakpoints and the current line
+  when debugging.
+  [[GH-2025]](https://github.com/fatih/vim-go/pull/2025)
 
 
 BUG FIXES:
