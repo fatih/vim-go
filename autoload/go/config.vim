@@ -420,8 +420,8 @@ function! go#config#HighlightVariableDeclarations() abort
   return get(g:, 'go_highlight_variable_declarations', 0)
 endfunction
 
-function! go#config#DebugDefaultHighlighting() abort
-  return get(g:, 'go_debug_default_highlighting', 1)
+function! go#config#HighlightDebug() abort
+  return get(g:, 'go_highlight_debug', 1)
 endfunction
 
 function! go#config#FoldEnable(...) abort
