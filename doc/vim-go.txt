@@ -1902,7 +1902,7 @@ The `gohtmltmpl` filetype is automatically set for `*.tmpl` files; the
                                                     *gomod* *ft-gomod-syntax*
 go.mod file syntax~
 
-The `gomod` 'filetype' provides syntax highlighting for Go's module file 
+The `gomod` 'filetype' provides syntax highlighting for Go's module file
 `go.mod`
 
 
@@ -2110,6 +2110,22 @@ Server address `dlv` will listen on; must be in `hostname:port` format.
 Defaults to `127.0.0.1:8181`:
 >
   let g:go_debug_address = '127.0.0.1:8181'
+
+
+                                           *'g:go_debug_default_highlighting'*
+
+Provides the option to override debugger highlighting
+
+Default:
+
+>
+  let g:go_debug_default_highlighting = 1
+  hi GoDebugBreakpoint term=standout
+    \ ctermbg=117 ctermfg=0
+    \ guibg=#BAD4F5 guifg=Black
+  hi GoDebugCurrent term=reverse
+    \ ctermbg=12 ctermfg=7
+    \ guibg=DarkBlue guifg=White
 <
 
 ==============================================================================
