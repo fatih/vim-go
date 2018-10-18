@@ -2117,7 +2117,7 @@ Defaults to `127.0.0.1:8181`:
 Highlight the current line and breakpoints in the debugger.
 
 >
-  let g:go_debug_default_highlighting = 1
+  let g:go_highlight_debug = 1
 <
 
 ==============================================================================
