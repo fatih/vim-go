@@ -62,6 +62,8 @@ IMPROVEMENTS:
 * add an option to disable highlighting of breakpoints and the current line
   when debugging.
   [[GH-2025]](https://github.com/fatih/vim-go/pull/2025)
+* Update autocompletion to work with Go modules.
+  [[GH-1988]](https://github.com/fatih/vim-go/pull/1988)
 
 
 BUG FIXES:
