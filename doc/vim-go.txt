@@ -148,9 +148,6 @@ The following plugins are supported for use with vim-go:
   https://github.com/SirVer/ultisnips or
   https://github.com/joereynolds/vim-minisnip
 
-* For a better documentation viewer check out:
-  https://github.com/garyburd/go-explorer
-
 * Integration with `delve` (Neovim only):
   https://github.com/jodosha/vim-godebug
 
