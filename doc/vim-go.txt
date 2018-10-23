@@ -1611,6 +1611,14 @@ package and packages that have been installed will proposed.
 >
   let g:go_gocode_propose_source = 1
 <
+                                           *'g:go_gocode_unimported_packages'*
+
+Specifies whether `gocode` should include suggestions from unimported
+packages. By default it is disabled.
+>
+  let g:go_gocode_unimported_packages = 0
+<
+
                                                    *'g:go_gocode_socket_type'*
 
 Specifies whether `gocode` should use a different socket type. By default

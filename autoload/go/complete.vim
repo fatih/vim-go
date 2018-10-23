@@ -33,6 +33,10 @@ function! s:gocodeCommand(cmd, args) abort
     let cmd = extend(cmd, ['-source'])
   endif
 
+  if go#config#GocodeUnimportedPackages()
+    let cmd = extend(cmd, ['-unimported-packages'])
+  endif
+
   let cmd = extend(cmd, [a:cmd])
   let cmd = extend(cmd, a:args)
 
