@@ -65,7 +65,6 @@ IMPROVEMENTS:
 * Update autocompletion to work with Go modules.
   [[GH-1988]](https://github.com/fatih/vim-go/pull/1988)
 
-
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
   [[GH-1900]](https://github.com/fatih/vim-go/pull/1900)
