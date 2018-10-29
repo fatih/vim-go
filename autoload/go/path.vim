@@ -155,7 +155,7 @@ function! go#path#CheckBinPath(binpath) abort
   if !empty(go_bin_path)
     " append our GOBIN and GOPATH paths and be sure they can be found there...
     " let us search in our GOBIN and GOPATH paths
-    let $PATH = go_bin_path . go#util#PathListSep() . $PATH
+    let $PATH = $PATH . go#util#PathListSep() . go_bin_path
   endif
 
   " if it's in PATH just return it
