@@ -142,7 +142,8 @@ function! go#path#BinPath() abort
 endfunction
 
 " CheckBinPath checks whether the given binary exists or not and returns the
-" path of the binary. It returns an empty string doesn't exists.
+" path of the binary, respecting the go_bin_path and go_search_bin_path_first
+" settings. It returns an empty string if the binary doesn't exist.
 function! go#path#CheckBinPath(binpath) abort
   " remove whitespaces if user applied something like 'goimports   '
   let binpath = substitute(a:binpath, '^\s*\(.\{-}\)\s*$', '\1', '')
@@ -155,7 +156,12 @@ function! go#path#CheckBinPath(binpath) abort
   if !empty(go_bin_path)
     " append our GOBIN and GOPATH paths and be sure they can be found there...
     " let us search in our GOBIN and GOPATH paths
-    let $PATH = go_bin_path . go#util#PathListSep() . $PATH
+    " respect the ordering specified by go_search_bin_path_first
+    if go#config#SearchBinPathFirst()
+      let $PATH = go_bin_path . go#util#PathListSep() . $PATH
+    else
+      let $PATH = $PATH . go#util#PathListSep() . go_bin_path
+    endif
   endif
 
   " if it's in PATH just return it

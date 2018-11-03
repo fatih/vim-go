@@ -356,6 +356,10 @@ function! go#config#BinPath() abort
   return get(g:, "go_bin_path", "")
 endfunction
 
+function! go#config#SearchBinPathFirst() abort
+  return get(g:, 'go_search_bin_path_first', 1)
+endfunction
+
 function! go#config#HighlightArrayWhitespaceError() abort
   return get(g:, 'go_highlight_array_whitespace_error', 0)
 endfunction
