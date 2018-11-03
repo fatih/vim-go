@@ -64,6 +64,8 @@ IMPROVEMENTS:
   [[GH-2025]](https://github.com/fatih/vim-go/pull/2025)
 * Update autocompletion to work with Go modules.
   [[GH-1988]](https://github.com/fatih/vim-go/pull/1988)
+* Add an option to search $GOPATH/bin or $GOBIN _after_ $PATH.
+  [[GH-2041]](https://github.com/fatih/vim-go/pull/2041)
 
 BUG FIXES:
 * Fix `:GoRun %` on Windows.
