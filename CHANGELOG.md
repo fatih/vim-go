@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.19 - (November 4, 2018)
+
 FEATURES:
 
 * **go.mod file support!** This is the first feature for upcoming Go modules
