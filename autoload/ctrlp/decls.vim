@@ -34,7 +34,7 @@ function! ctrlp#decls#accept(mode, str) abort
   try
     " we jump to the file directory so we can get the fullpath via fnamemodify
     " below
-    execute cd . s:current_dir
+    " execute cd . s:current_dir
 
     let vals = matchlist(a:str, '|\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)|')
 
@@ -117,7 +117,7 @@ function! ctrlp#decls#enter() abort
     call add(s:decls, printf("%s\t%s |%s:%s:%s|\t%s",
           \ decl.ident . space,
           \ decl.keyword,
-          \ fnamemodify(decl.filename, ":."),
+          \ fnamemodify(decl.filename, ":p:."),
           \ decl.line,
           \ decl.col,
           \ decl.full,
