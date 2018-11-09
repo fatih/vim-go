@@ -20,7 +20,7 @@ function! ctrlp#decls#init() abort
 endfunction
 
 function! ctrlp#decls#exit() abort
-  unlet! s:decls s:current_dir s:target
+  unlet! s:decls s:target
 endfunction
 
 " The action to perform on the selected string
@@ -32,10 +32,6 @@ function! ctrlp#decls#accept(mode, str) abort
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
   try
-    " we jump to the file directory so we can get the fullpath via fnamemodify
-    " below
-    " execute cd . s:current_dir
-
     let vals = matchlist(a:str, '|\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)|')
 
     " i.e: main.go
@@ -50,14 +46,10 @@ function! ctrlp#decls#accept(mode, str) abort
     call ctrlp#acceptfile(a:mode, filepath)
     call cursor(line, col)
     silent! norm! zvzz
-  finally
-    "jump back to old dir
-    execute cd . fnameescape(dir)
   endtry
 endfunction
 
 function! ctrlp#decls#enter() abort
-  let s:current_dir = fnameescape(expand('%:p:h'))
   let s:decls = []
 
   let l:cmd = ['motion',
@@ -117,7 +109,7 @@ function! ctrlp#decls#enter() abort
     call add(s:decls, printf("%s\t%s |%s:%s:%s|\t%s",
           \ decl.ident . space,
           \ decl.keyword,
-          \ fnamemodify(decl.filename, ":p:."),
+          \ fnamemodify(decl.filename, ":p"),
           \ decl.line,
           \ decl.col,
           \ decl.full,
