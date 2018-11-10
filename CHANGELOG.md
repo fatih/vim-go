@@ -1,5 +1,9 @@
 ## unplanned
 
+IMPROVEMENTS:
+* disable `g:go_gocode_propose_source` by default.
+  [[GH-2050]](https://github.com/fatih/vim-go/pull/2050)
+
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
   directory is not the directory containing the current buffer.
