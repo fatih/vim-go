@@ -76,7 +76,7 @@ tools developed by the Go community to provide a seamless Vim experience.
 ==============================================================================
 INSTALL                                                           *go-install*
 
-vim-go requires at least Vim 7.4.2009 or Neovim 0.2.2. On macOS, if you are
+vim-go requires at least Vim 7.4.2009 or Neovim 0.3.1. On macOS, if you are
 still using your system version of vim, you can use homebrew to keep your
 version of Vim up-to-date with the following terminal command:
 >
@@ -118,6 +118,7 @@ manager's install command.
 
     Copy all of the files into your `~/.vim` directory
 <
+
 You will also need to install all the necessary binaries. vim-go makes it easy
 to install all of them by providing a command, |:GoInstallBinaries|, to
 `go get` all the required binaries. The binaries will be installed to $GOBIN
@@ -2279,9 +2280,9 @@ Using with NeoVim~
 
 Note: Neovim currently is not a first class citizen for vim-go. You are free
 to open bug, however I'm not using Neovim so it's hard for me to test it.
-vim-go might not work well as good as in Vim. I'm happy to accept pull
-requests or very detailed bug reports. If you're interested to improve the
-state of Neovim in vim-go you're always welcome!
+vim-go might not work as well in Neovim as it does in Vim. I'm happy to accept
+pull requests or very detailed bug reports. If you're interested to improve
+the state of Neovim in vim-go you're always welcome!
 
 Run `:GoRun` in a new tab, horizontal split or vertical split terminal
 >
