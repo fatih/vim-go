@@ -31,7 +31,7 @@ function! s:gocodeCommand(cmd, args) abort
 
   if go#config#GocodeProposeSource()
     let cmd = extend(cmd, ['-source'])
-  elseif l:gomod is ""
+  else
     let cmd = extend(cmd, ['-fallback-to-source'])
   endif
 
