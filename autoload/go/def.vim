@@ -10,21 +10,18 @@ function! go#def#Jump(mode) abort
   " covers all edge cases, but now anyone can switch to godef if they wish
   let bin_name = go#config#DefMode()
   if bin_name == 'godef'
-    if &modified
-      " Write current unsaved buffer to a temp file and use the modified content
-      let l:tmpname = tempname()
-      call writefile(go#util#GetLines(), l:tmpname)
-      let fname = l:tmpname
-    endif
-
-    let [l:out, l:err] = go#util#Exec(['godef',
+    let l:cmd = ['godef',
           \ '-f=' . l:fname,
           \ '-o=' . go#util#OffsetCursor(),
-          \ '-t'])
-    if exists("l:tmpname")
-      call delete(l:tmpname)
-    endif
+          \ '-t']
 
+    if &modified
+      let l:stdin_content = join(go#util#GetLines(), "\n")
+      call add(l:cmd, "-i")
+      let [l:out, l:err] = go#util#Exec(l:cmd, l:stdin_content)
+    else
+      let [l:out, l:err] = go#util#Exec(l:cmd)
+    endif
   elseif bin_name == 'guru'
     let cmd = [go#path#CheckBinPath(bin_name)]
     let buildtags = go#config#BuildTags()
@@ -35,7 +32,7 @@ function! go#def#Jump(mode) abort
     let stdin_content = ""
 
     if &modified
-      let content  = join(go#util#GetLines(), "\n")
+      let content = join(go#util#GetLines(), "\n")
       let stdin_content = fname . "\n" . strlen(content) . "\n" . content
       call add(cmd, "-modified")
     endif
