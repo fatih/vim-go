@@ -8,6 +8,8 @@ BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
   directory is not the directory containing the current buffer.
   [[GH-2048]](https://github.com/fatih/vim-go/pull/2048)
+* Fix jumping to an identifier with godef from a modified buffer.
+  [[GH-2054]](https://github.com/fatih/vim-go/pull/2054)
 
 ## 1.19 - (November 4, 2018)
 
