@@ -2,7 +2,7 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! go#lint#Gometa(autosave, ...) abort
+function! go#lint#Gometa(bang, autosave, ...) abort
   if a:0 == 0
     let goargs = [expand('%:p:h')]
   else
@@ -61,7 +61,7 @@ function! go#lint#Gometa(autosave, ...) abort
   let cmd += goargs
 
   if go#util#has_job()
-    call s:lint_job({'cmd': cmd}, a:autosave)
+    call s:lint_job({'cmd': cmd}, a:bang, a:autosave)
     return
   endif
 
@@ -89,7 +89,7 @@ function! go#lint#Gometa(autosave, ...) abort
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
 
-    if !a:autosave
+    if !a:autosave && !a:bang
       call go#list#JumpToFirst(l:listtype)
     endif
   endif
@@ -200,11 +200,12 @@ function! go#lint#ToggleMetaLinterAutoSave() abort
   call go#util#EchoProgress("auto metalinter enabled")
 endfunction
 
-function! s:lint_job(args, autosave)
+function! s:lint_job(args, bang, autosave)
   let l:opts = {
         \ 'statustype': "gometalinter",
         \ 'errorformat': '%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m',
         \ 'for': "GoMetaLinter",
+        \ 'bang': a:bang,
         \ }
 
   if a:autosave

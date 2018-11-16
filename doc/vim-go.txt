@@ -638,7 +638,7 @@ CTRL-t
     disabled it clears and stops automatic highlighting.
 
                                                                *:GoMetaLinter*
-:GoMetaLinter [path]
+:GoMetaLinter! [path]
 
     Calls the underlying `gometalinter` tool and displays all warnings and
     errors in the |quickfix| window. By default the following linters are
@@ -646,6 +646,8 @@ CTRL-t
     |'g:go_metalinter_enabled'| variable. To override the command completely
     use the variable |'g:go_metalinter_command'|. To override the maximum
     linters execution time use |'g:go_metalinter_deadline'| variable.
+
+    If [!] is not given the first error is jumped to.
 
                                                                 *:GoBuildTags*
 :GoBuildTags [tags]

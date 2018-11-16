@@ -271,7 +271,7 @@ endfunction
 function! s:metalinter_autosave()
   " run gometalinter on save
   if get(g:, "go_metalinter_autosave", 0)
-    call go#lint#Gometa(1)
+    call go#lint#Gometa(0, 1)
   endif
 endfunction
 
