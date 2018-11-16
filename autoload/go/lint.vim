@@ -97,7 +97,7 @@ endfunction
 
 " Golint calls 'golint' on the current directory. Any warnings are populated in
 " the location list
-function! go#lint#Golint(...) abort
+function! go#lint#Golint(bang, ...) abort
   if a:0 == 0
     let [l:out, l:err] = go#util#Exec([go#config#GolintBin(), go#package#ImportPath()])
   else
@@ -113,7 +113,9 @@ function! go#lint#Golint(...) abort
   call go#list#Parse(l:listtype, l:out, "GoLint")
   let l:errors = go#list#Get(l:listtype)
   call go#list#Window(l:listtype, len(l:errors))
-  call go#list#JumpToFirst(l:listtype)
+  if !a:bang
+    call go#list#JumpToFirst(l:listtype)
+  endif
 endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in

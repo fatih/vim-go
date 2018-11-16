@@ -196,10 +196,12 @@ COMMANDS                                                         *go-commands*
     displayed and the buffer will be untouched.
 
                                                                      *:GoLint*
-:GoLint [packages]
+:GoLint! [packages]
 
     Run golint for the directory under your current file, or for the given
     packages.
+
+    If [!] is not given the first error is jumped to.
 
                                                                       *:GoDoc*
 :GoDoc [word]
