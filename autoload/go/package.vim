@@ -5,6 +5,10 @@
 " This file provides a utility function that performs auto-completion of
 " package names, for use by other commands.
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 let s:goos = $GOOS
 let s:goarch = $GOARCH
 
@@ -169,5 +173,9 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos) abort
     endfor
     return sort(keys(ret))
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

@@ -2,6 +2,10 @@
 " Use of this source code is governed by a BSD-style
 " license that can be found in the LICENSE file.
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 let s:buf_nr = -1
 
 function! go#doc#OpenBrowser(...) abort
@@ -188,5 +192,9 @@ function! s:godocWord(args) abort
 
   return [pkg, exported_name]
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

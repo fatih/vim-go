@@ -1,3 +1,7 @@
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 " initial_go_path is used to store the initial GOPATH that was set when Vim
 " was started. It's used with :GoPathClear to restore the GOPATH when the user
 " changed it explicitly via :GoPath. Initially it's empty. It's being set when
@@ -200,5 +204,9 @@ endfunction
 function! s:CygwinPath(path)
    return substitute(a:path, '\\', '/', "g")
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

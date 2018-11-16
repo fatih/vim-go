@@ -1,3 +1,7 @@
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 let s:go_stack = []
 let s:go_stack_level = 0
 
@@ -313,5 +317,9 @@ function s:def_job(args, state) abort
 
   call go#job#Start(a:args.cmd, l:start_options)
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et
