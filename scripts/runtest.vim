@@ -2,6 +2,11 @@
 " English.
 
 " vint: -ProhibitSetNoCompatible
+
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 set nocompatible nomore shellslash encoding=utf-8 shortmess+=WIF
 lang mess C
 
@@ -107,5 +112,9 @@ silent! write
 
 " Our work here is done.
 qall!
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim:ts=2:sts=2:sw=2:et

@@ -13,6 +13,10 @@ if exists("b:did_indent")
 endif
 let b:did_indent = 1
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 " C indentation is too far off useful, mainly due to Go's := operator.
 " Let's just define our own.
 setlocal nolisp
@@ -74,5 +78,9 @@ function! GoIndent(lnum) abort
 
   return ind
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

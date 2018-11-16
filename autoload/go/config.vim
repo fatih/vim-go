@@ -1,3 +1,7 @@
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 function! go#config#AutodetectGopath() abort
 	return get(g:, 'go_autodetect_gopath', 0)
 endfunction
@@ -444,5 +448,9 @@ endfunction
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
   unlet g:go_gorename_prefill
 endif
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et
