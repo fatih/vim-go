@@ -55,6 +55,7 @@ let s:packages = {
       \ 'gometalinter':  ['github.com/alecthomas/gometalinter'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename'],
+      \ 'godoctor':      ['github.com/godoctor/godoctor'],
       \ 'gotags':        ['github.com/jstemmer/gotags'],
       \ 'guru':          ['golang.org/x/tools/cmd/guru'],
       \ 'impl':          ['github.com/josharian/impl'],

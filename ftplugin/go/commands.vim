@@ -1,6 +1,9 @@
 " -- gorename
 command! -nargs=? -complete=customlist,go#rename#Complete GoRename call go#rename#Rename(<bang>0, <f-args>)
 
+" -- godoctor
+command! -nargs=? -range -complete=customlist,go#godoctor#Extract GoExtract call go#godoctor#Extract(<bang>0, <f-args>)
+
 " -- guru
 command! -nargs=* -complete=customlist,go#package#Complete GoGuruScope call go#guru#Scope(<f-args>)
 command! -range=% GoImplements call go#guru#Implements(<count>)

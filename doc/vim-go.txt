@@ -520,6 +520,11 @@ CTRL-t
 
     If [!] is not given the first error is jumped to.
 
+                                                                   *:GoExtract*
+:GoExtract [to]
+
+    Extract the selected block to a function/method with the desired new name. 
+    If no argument is given a prompt will ask for the desired identifier.
 
                                                                 *:GoGuruScope*
 :GoGuruScope [pattern] [pattern2] ... [patternN]

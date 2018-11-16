@@ -344,6 +344,18 @@ function! go#config#GorenamePrefill() abort
           \ ': go#util#camelcase(expand("<cword>"))')
 endfunction
 
+
+function! go#config#GodoctorBin() abort
+  return get(g:, "go_godoctor_bin", "godoctor")
+endfunction
+
+function! go#config#GoextractPrefill() abort
+  return get(g:, "go_goextract_prefill", 'expand("<cword>") =~# "^[A-Z]"' .
+          \ '? go#util#pascalcase(expand("<cword>"))' .
+          \ ': go#util#camelcase(expand("<cword>"))')
+endfunction
+
+
 function! go#config#TextobjIncludeFunctionDoc() abort
   return get(g:, "go_textobj_include_function_doc", 1)
 endfunction
