@@ -196,10 +196,12 @@ COMMANDS                                                         *go-commands*
     displayed and the buffer will be untouched.
 
                                                                      *:GoLint*
-:GoLint [packages]
+:GoLint! [packages]
 
     Run golint for the directory under your current file, or for the given
     packages.
+
+    If [!] is not given the first error is jumped to.
 
                                                                       *:GoDoc*
 :GoDoc [word]
@@ -464,13 +466,15 @@ CTRL-t
     If [!] is not given the first error is jumped to.
 
                                                                  *:GoErrCheck*
-:GoErrCheck [options]
+:GoErrCheck! [options]
 
     Check for unchecked errors in you current package. Errors are populated in
     the quickfix window.
 
     You may optionally pass any valid errcheck flags/options. See
     `errcheck -h` for a full list.
+
+    If [!] is not given the first error is jumped to.
 
                                                                     *:GoFiles*
 :GoFiles [source_files]
@@ -638,7 +642,7 @@ CTRL-t
     disabled it clears and stops automatic highlighting.
 
                                                                *:GoMetaLinter*
-:GoMetaLinter [path]
+:GoMetaLinter! [path]
 
     Calls the underlying `gometalinter` tool and displays all warnings and
     errors in the |quickfix| window. By default the following linters are
@@ -646,6 +650,8 @@ CTRL-t
     |'g:go_metalinter_enabled'| variable. To override the command completely
     use the variable |'g:go_metalinter_command'|. To override the maximum
     linters execution time use |'g:go_metalinter_deadline'| variable.
+
+    If [!] is not given the first error is jumped to.
 
                                                                 *:GoBuildTags*
 :GoBuildTags [tags]

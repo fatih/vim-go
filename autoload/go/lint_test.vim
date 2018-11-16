@@ -15,7 +15,7 @@ func! Test_Gometa() abort
 
   let g:go_metalinter_enabled = ['golint']
 
-  call go#lint#Gometa(0, $GOPATH . '/src/foo')
+  call go#lint#Gometa(0, 0, $GOPATH . '/src/foo')
 
   let actual = getqflist()
   let start = reltime()
@@ -41,7 +41,7 @@ func! Test_GometaWithDisabled() abort
 
   let g:go_metalinter_disabled = ['vet']
 
-  call go#lint#Gometa(0, $GOPATH . '/src/foo')
+  call go#lint#Gometa(0, 0, $GOPATH . '/src/foo')
 
   let actual = getqflist()
   let start = reltime()
@@ -69,7 +69,7 @@ func! Test_GometaAutoSave() abort
 
   let g:go_metalinter_autosave_enabled = ['golint']
 
-  call go#lint#Gometa(1)
+  call go#lint#Gometa(0, 1)
 
   let actual = getloclist(l:winnr)
   let start = reltime()
