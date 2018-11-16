@@ -4,6 +4,8 @@
 
 " Vim integration for the Go Doctor.
 
+" NOTE: this code has been copied and adapted from github.com/godoctor/godoctor.vim
+
 " TODO: If a refactoring only affects a single file, allow unsaved buffers
 " and pipe the current buffer's contents into the godoctor via stdin
 " (n.b. the quickfix list needs to be given a real filename to point to
@@ -41,7 +43,7 @@ endif
 let g:loaded_doctor = 1
 
 " Get the path to the godoctor executable.  Run once to assign s:go_doctor.
-func! s:go_doctor_bin()
+func! go#godoctor#GoDoctorBin()
   let [ext, sep] = (has('win32') || has('win64') ? ['.exe', ';'] : ['', ':'])
   let go_doctor = globpath(join(split($GOPATH, sep), ','), '/bin/godoctor' . ext)
   if go_doctor == ''
@@ -51,11 +53,11 @@ func! s:go_doctor_bin()
 endfunction
 
 " Path to the godoctor executable
-let s:go_doctor = s:go_doctor_bin()
+let s:go_doctor = go#godoctor#GoDoctorBin()
 
 " Return 0 if the given refactoring can only change the file in the editor,
 " or 1 if it may affect other files as well.
-function! s:is_multifile(refac)
+function! go#godoctor#IsMultiFile(refac)
   let out = system(printf('%s --list', s:go_doctor))
   if v:shell_error
     return 1
@@ -93,7 +95,7 @@ endfun
 "     ...
 "     @@@@@ filenamen @@@@@ num_bytes @@@@@
 "     filen contents
-func! s:parsefiles(output)
+func! go#godoctor#ParseFiles(output)
   let result = {}
   let pattern = '@@@@@ \([^@]\+\) @@@@@ \(\d\+\) @@@@@\(\|\r\)\n'
   let start = match(a:output, pattern, 0)
@@ -130,7 +132,7 @@ let g:allbuffers = []
 let g:newbuffers = []
 
 " Open all refactored files in (hidden) buffers.
-func! s:loadfiles(files, used_stdin)
+func! go#godoctor#LoadFiles(files, used_stdin)
   " Save original view
   let view = winsaveview()
   let orig = bufnr("%")
@@ -179,13 +181,13 @@ func! s:loadfiles(files, used_stdin)
     setlocal nomodifiable buftype=nofile bufhidden=wipe nobuflisted noswapfile
     " Fix its height so, e.g., it doesn't grow when quickfix list is closed
     setlocal wfh
-    " Hyperlink each line to be interpreted by s:interpret
+    " Hyperlink each line to be interpreted by go#godoctor#Interpret
     nnoremap <silent> <buffer> <CR> :call <sid>interpret(getline('.'))<CR>
   endif
 endfun
 
 " Callback for hyperlinks displayed above (to save, undo, and close buffers)
-func! s:interpret(cmd)
+func! go#godoctor#Interpret(cmd)
   if winnr('$') > 1
     close
   endif
@@ -226,7 +228,7 @@ endfunc
 
 " Populate the quickfix list with the refactoring log, and populate each
 " window's location list with the positions the refactoring modified.
-func! s:qfloclist(output, used_stdin)
+func! go#godoctor#QFLocList(output, used_stdin)
   let has_errors = 0
   let qflist = []
   let loclists = {}
@@ -310,8 +312,8 @@ func! s:qfloclist(output, used_stdin)
 endfun
 
 " Run the Go Doctor with the given selection, refactoring name, and arguments.
-func! s:RunDoctor(selected, refac, ...) range abort
-  let multifile = s:is_multifile(a:refac)
+func! go#godoctor#RunDoctor(selected, refac, ...) range abort
+  let multifile = go#godoctor#IsMultiFile(a:refac)
   let cur_buf_file = expand('%:p')
   let bufcount = bufnr('$')
 
@@ -381,13 +383,13 @@ func! s:RunDoctor(selected, refac, ...) range abort
     let lines = split(out, "\n")
     echohl Error | echom lines[0] | echohl None
   endif
-  let files = s:parsefiles(out)
-  call s:loadfiles(files, cur_buf_file == "")
-  call s:qfloclist(out, cur_buf_file == "")
+  let files = go#godoctor#ParseFiles(out)
+  call go#godoctor#LoadFiles(files, cur_buf_file == "")
+  call go#godoctor#QFLocList(out, cur_buf_file == "")
 endfun
 
 " List the available refactorings, one per line.  Used for auto-completion.
-function! s:list_refacs(a, l, p)
+function! go#godoctor#ListRefacs(a, l, p)
   let out = system(printf('%s --list', s:go_doctor))
   if v:shell_error
     return ""
@@ -406,33 +408,17 @@ function! s:list_refacs(a, l, p)
   return result
 endfun
 
-""" Rename is already implemented in vim-go. Not needed
-" Run the Rename refactoring with the given arguments.  If a new name is not
-" provided, prompt for one.
-" func! s:RunRename(selected, ...) range abort
-"   if len(a:000) > 0
-"     call call("s:RunDoctor", [a:selected, 'rename'] + a:000)
-"   else
-"     let input = inputdialog("Enter new name: ")
-"     if input == ""
-"       echo ""
-"     else
-"       call s:RunDoctor(a:selected, 'rename', input)
-"     endif
-"   endif
-" endfun
-
 " Run the Extract refactoring with the given arguments.  If a new name is not
 " provided, prompt for one.
 func! go#godoctor#Extract(selected, ...) range abort
   if len(a:000) > 0
-    call call("s:RunDoctor", [a:selected, 'extract'] + a:000)
+    call call("go#godoctor#RunDoctor", [a:selected, 'extract'] + a:000)
   else
     let input = inputdialog("Enter function name: ")
     if input == ""
       echo ""
     else
-      call s:RunDoctor(a:selected, 'extract', input)
+      call go#godoctor#RunDoctor(a:selected, 'extract', input)
     endif
   endif
 endfun
@@ -440,15 +426,10 @@ endfun
 command! -range=% -nargs=+ GoExtract
   \ call go#godoctor#Extract(<count>, <f-args>)
 
-""" Rename is already implemented in vim-go. No need.
-"command! -range=% -nargs=* Rename
-"  \ call s:RunRename(<count>, <f-args>)
-
-"command! -range=% -nargs=+ -complete=custom,<sid>list_refacs GoRefactor
-"  \ call s:RunDoctor(<count>, <f-args>)
-
-"command! -range=% -nargs=+ -complete=custom,<sid>list_refacs Refactor
-"  \ call s:RunDoctor(<count>, <f-args>)
+""" TODO: introduce full godoctor integration here? 
+""" (some feature overlap with gorename)
+"command! -range=% -nargs=+ -complete=custom,<sid>list_refacs GoDoctor
+"  \ call go#godoctor#RunDoctor(<count>, <f-args>)
 
 let b:did_ftplugin_doc = 1
 
