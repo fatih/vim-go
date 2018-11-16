@@ -81,7 +81,7 @@ command! -nargs=* -bang GoMetaLinter call go#lint#Gometa(<bang>0, 0, <f-args>)
 command! -nargs=0 GoMetaLinterAutoSaveToggle call go#lint#ToggleMetaLinterAutoSave()
 command! -nargs=* -bang GoLint call go#lint#Golint(<bang>0, <f-args>)
 command! -nargs=* -bang GoVet call go#lint#Vet(<bang>0, <f-args>)
-command! -nargs=* -complete=customlist,go#package#Complete GoErrCheck call go#lint#Errcheck(<f-args>)
+command! -nargs=* -bang -complete=customlist,go#package#Complete GoErrCheck call go#lint#Errcheck(<bang>0, <f-args>)
 
 " -- alternate
 command! -bang GoAlternate call go#alternate#Switch(<bang>0, '')

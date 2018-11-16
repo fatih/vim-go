@@ -149,7 +149,7 @@ endfunction
 
 " ErrCheck calls 'errcheck' for the given packages. Any warnings are populated in
 " the location list
-function! go#lint#Errcheck(...) abort
+function! go#lint#Errcheck(bang, ...) abort
   if a:0 == 0
     let l:import_path = go#package#ImportPath()
     if import_path == -1
@@ -181,7 +181,7 @@ function! go#lint#Errcheck(...) abort
     if !empty(errors)
       call go#list#Populate(l:listtype, errors, 'Errcheck')
       call go#list#Window(l:listtype, len(errors))
-      if !empty(errors)
+      if !a:bang
         call go#list#JumpToFirst(l:listtype)
       endif
     endif

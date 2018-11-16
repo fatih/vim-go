@@ -466,13 +466,15 @@ CTRL-t
     If [!] is not given the first error is jumped to.
 
                                                                  *:GoErrCheck*
-:GoErrCheck [options]
+:GoErrCheck! [options]
 
     Check for unchecked errors in you current package. Errors are populated in
     the quickfix window.
 
     You may optionally pass any valid errcheck flags/options. See
     `errcheck -h` for a full list.
+
+    If [!] is not given the first error is jumped to.
 
                                                                     *:GoFiles*
 :GoFiles [source_files]
