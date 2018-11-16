@@ -1,8 +1,13 @@
 ## unplanned
 
 IMPROVEMENTS:
-* disable `g:go_gocode_propose_source` by default.
+* Disable `g:go_gocode_propose_source` by default.
   [[GH-2050]](https://github.com/fatih/vim-go/pull/2050)
+* Don't spam users when Vim is run with vi compatibility.
+  [[GH-2055]](https://github.com/fatih/vim-go/pull/2055)
+* Add bang support to lint commands to allow them to be run without jumping to
+  errors.
+  [[GH-2056]](https://github.com/fatih/vim-go/pull/2056)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
