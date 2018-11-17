@@ -158,9 +158,9 @@ func! go#godoctor#LoadFiles(files, used_stdin)
       call add(g:newbuffers, nr)
     endif
     silent exec "buffer! ".nr
-    silent :1,$delete
+    silent exec "1,$delete"
     silent :put =a:files[file]
-    silent :1delete _
+    silent exec "1delete _"
   endfor
 
   " Restore original cursor position, windows, etc.
