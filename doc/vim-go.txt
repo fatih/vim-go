@@ -1364,14 +1364,6 @@ mappings of |:GoDef|. By default it's disabled. >
 
   let g:go_def_reuse_buffer = 0
 <
-                                                          *'g:go_doc_command'*
-
-Command to use for |:GoDoc|; only used when invoked with a package name. The
-`gogetdoc` command is always used when |:GoDoc| is used on the identifier
-under the cursor (i.e. without argument or from |K|). >
-
-  let g:go_doc_command = ["godoc"]
-<
                                                              *'g:go_bin_path'*
 
 Use this option to change default path for vim-go tools when using
