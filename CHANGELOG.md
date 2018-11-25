@@ -8,6 +8,8 @@ IMPROVEMENTS:
 * Add bang support to lint commands to allow them to be run without jumping to
   errors.
   [[GH-2056]](https://github.com/fatih/vim-go/pull/2056)
+* Use `go doc` for `:GoDoc` instead of `godoc`.
+  [[GH-2070]](https://github.com/fatih/vim-go/pull/2070)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
