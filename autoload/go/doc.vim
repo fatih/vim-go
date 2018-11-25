@@ -59,9 +59,8 @@ function! go#doc#Open(newmode, mode, ...) abort
       return
     endif
 
-    let [l:out, l:err] = go#util#Exec(go#config#DocCommand() + a:000)
-  " Without argument: run gogetdoc on cursor position.
-  else
+    let [l:out, l:err] = go#util#Exec(['go', 'doc'] + a:000)
+  else " Without argument: run gogetdoc on cursor position.
     let [l:out, l:err] = s:gogetdoc(0)
     if out == -1
       return

@@ -314,10 +314,6 @@ function! go#config#DeclsMode() abort
   return get(g:, "go_decls_mode", "")
 endfunction
 
-function! go#config#DocCommand() abort
-  return get(g:, "go_doc_command", ["godoc"])
-endfunction
-
 function! go#config#FmtCommand() abort
   return get(g:, "go_fmt_command", "gofmt")
 endfunction
