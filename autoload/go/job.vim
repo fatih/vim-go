@@ -92,7 +92,6 @@ function! go#job#Options(args)
     let state.errorformat = a:args.errorformat
   endif
 
-  " do nothing in state.complete by default.
   function state.complete(job, exit_status, data)
     if has_key(self, 'custom_complete')
       let l:winid = win_getid(winnr())

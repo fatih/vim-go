@@ -96,7 +96,7 @@ function! s:call_jsonrpc(method, ...) abort
         call chansend(l:ch, req_json)
 
         if go#util#HasDebug('debugger-commands')
-          let g:go_debug_commands = add(g:go_debug_commands, {
+          let g:go_debug_commands = add(go#config#DebugCommands(), {
                 \ 'request':  req_json,
                 \ 'response': Cb,
           \ })
@@ -108,7 +108,7 @@ function! s:call_jsonrpc(method, ...) abort
       call ch_sendraw(l:ch, req_json)
 
       if go#util#HasDebug('debugger-commands')
-        let g:go_debug_commands = add(g:go_debug_commands, {
+        let g:go_debug_commands = add(go#config#DebugCommands(), {
               \ 'request':  req_json,
               \ 'response': Cb,
         \ })
@@ -135,7 +135,7 @@ function! s:call_jsonrpc(method, ...) abort
     endif
 
     if go#util#HasDebug('debugger-commands')
-      let g:go_debug_commands = add(g:go_debug_commands, {
+      let g:go_debug_commands = add(go#config#DebugCommands(), {
             \ 'request':  req_json,
             \ 'response': resp_json,
       \ })
