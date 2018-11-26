@@ -589,9 +589,8 @@ function! go#debug#Start(is_test, ...) abort
   try
     if len(a:000) > 0
       let l:pkgname = a:1
-      " Expand .; otherwise this won't work from a tmp dir.
       if l:pkgname[0] == '.'
-        let l:pkgname = go#package#FromPath(getcwd()) . l:pkgname[1:]
+        let l:pkgname = go#package#FromPath(l:pkgname)
       endif
     else
       let l:pkgname = go#package#FromPath(getcwd())
