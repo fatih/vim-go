@@ -10,6 +10,8 @@ IMPROVEMENTS:
   [[GH-2056]](https://github.com/fatih/vim-go/pull/2056)
 * Use `go doc` for `:GoDoc` instead of `godoc`.
   [[GH-2070]](https://github.com/fatih/vim-go/pull/2070)
+* Detach from and shutdown dlv correctly.
+  [[GH-2075]](https://github.com/fatih/vim-go/pull/2075)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
@@ -17,6 +19,10 @@ BUG FIXES:
   [[GH-2048]](https://github.com/fatih/vim-go/pull/2048)
 * Fix jumping to an identifier with godef from a modified buffer.
   [[GH-2054]](https://github.com/fatih/vim-go/pull/2054)
+* Fix errors when `g:go_debug` contains `debugger-commands`.
+  [[GH-2075]](https://github.com/fatih/vim-go/pull/2075)
+* Fix errors from `:GoDebugStop` in Neovim.
+  [[GH-2075]](https://github.com/fatih/vim-go/pull/2075)
 
 ## 1.19 - (November 4, 2018)
 
