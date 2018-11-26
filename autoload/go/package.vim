@@ -111,7 +111,7 @@ function! go#package#FromPath(arg) abort
 endfunction
 
 function! go#package#CompleteMembers(package, member) abort
-  let [l:content, l:err] = go#util#Exec(['godoc', a:package])
+  let [l:content, l:err] = go#util#Exec(['go', 'doc', a:package])
   if l:err || !len(content)
     return []
   endif
@@ -141,37 +141,37 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos) abort
     return go#package#CompleteMembers(words[1], words[2])
   endif
 
-    let dirs = go#package#Paths()
+  let dirs = go#package#Paths()
 
-    if len(dirs) == 0
-        " should not happen
-        return []
-    endif
+  if len(dirs) == 0
+    " should not happen
+    return []
+  endif
 
-    let ret = {}
-    for dir in dirs
-        " this may expand to multiple lines
-        let root = split(expand(dir . '/pkg/' . s:goos . '_' . s:goarch), "\n")
-        call add(root, expand(dir . '/src'))
-        for r in root
-            for i in split(globpath(r, a:ArgLead.'*'), "\n")
-                if isdirectory(i)
-                    let i .= '/'
-                elseif i !~ '\.a$'
-                    continue
-                endif
-                let i = substitute(substitute(i[len(r)+1:], '[\\]', '/', 'g'),
-                                  \ '\.a$', '', 'g')
+  let ret = {}
+  for dir in dirs
+    " this may expand to multiple lines
+    let root = split(expand(dir . '/pkg/' . s:goos . '_' . s:goarch), "\n")
+    call add(root, expand(dir . '/src'))
+    for r in root
+      for i in split(globpath(r, a:ArgLead.'*'), "\n")
+        if isdirectory(i)
+          let i .= '/'
+        elseif i !~ '\.a$'
+          continue
+        endif
+        let i = substitute(substitute(i[len(r)+1:], '[\\]', '/', 'g'),
+                          \ '\.a$', '', 'g')
 
-                " without this the result can have duplicates in form of
-                " 'encoding/json' and '/encoding/json/'
-                let i = go#util#StripPathSep(i)
+        " without this the result can have duplicates in form of
+        " 'encoding/json' and '/encoding/json/'
+        let i = go#util#StripPathSep(i)
 
-                let ret[i] = i
-            endfor
-        endfor
+        let ret[i] = i
+      endfor
     endfor
-    return sort(keys(ret))
+  endfor
+  return sort(keys(ret))
 endfunction
 
 " restore Vi compatibility settings
