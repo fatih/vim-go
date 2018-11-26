@@ -581,13 +581,6 @@ function! go#debug#Start(is_test, ...) abort
     call go#config#SetDebugDiag(s:state)
   endif
 
-  " cd in to test directory; this is also what running "go test" does.
-  if a:is_test
-    lcd %:p:h
-  endif
-
-  let s:state.is_test = a:is_test
-
   let dlv = go#path#CheckBinPath("dlv")
   if empty(dlv)
     return
@@ -603,6 +596,20 @@ function! go#debug#Start(is_test, ...) abort
     else
       let l:pkgname = go#package#FromPath(getcwd())
     endif
+
+    if l:pkgname is -1
+      call go#util#EchoError('could not determine package name')
+      return
+    endif
+
+    " cd in to test directory; this is also what running "go test" does.
+    if a:is_test
+      " TODO(bc): Either remove this if it's ok to do so or else record it and
+      " reset cwd after the job completes.
+      lcd %:p:h
+    endif
+
+    let s:state.is_test = a:is_test
 
     let l:args = []
     if len(a:000) > 1
