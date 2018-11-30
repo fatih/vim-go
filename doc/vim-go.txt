@@ -128,7 +128,8 @@ Depending on your installation method, you may have to generate the plugin's
 |:helptags| manually (e.g. `:helptags ALL`).
 
 Autocompletion is enabled by default via 'omnifunc', which you can trigger
-with |i_CTRL-X_CTRL-O| (`<C-x><C-o>`). See |'g:go_gocode_enabled'| to disable it.
+with |i_CTRL-X_CTRL-O| (`<C-x><C-o>`). See |'g:go_gocode_enabled'| to disable
+it.
 
 Supported Go plugins~                                         *vim-go-plugins*
 
