@@ -24,8 +24,10 @@ setlocal noexpandtab
 
 compiler go
 
-" Set gocode completion
-setlocal omnifunc=go#complete#Complete
+if get(g:, "go_gocode_enabled", 1)
+  " Set gocode completion
+  setlocal omnifunc=go#complete#Complete
+endif
 
 if get(g:, "go_doc_keywordprg_enabled", 1)
   " keywordprg doesn't allow to use vim commands, override it
