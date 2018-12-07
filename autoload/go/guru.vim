@@ -487,7 +487,7 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
     " is redisplayed: e.g. :edit, :GoRename, etc.
     augroup vim-go-sameids
       autocmd!
-      autocmd BufWinEnter <buffer> nested call go#guru#SameIds()
+      autocmd BufWinEnter <buffer> nested call go#guru#SameIds(0)
     augroup end
   endif
 endfunction
@@ -517,13 +517,13 @@ function! go#guru#ClearSameIds() abort
   return 0
 endfunction
 
-function! go#guru#ToggleSameIds(showstatus) abort
+function! go#guru#ToggleSameIds() abort
   if go#guru#ClearSameIds() != 0
-    call go#guru#SameIds(a:showstatus)
+    call go#guru#SameIds(1)
   endif
 endfunction
 
-function! go#guru#AutoToogleSameIds() abort
+function! go#guru#AutoToggleSameIds() abort
   if go#config#AutoSameids()
     call go#util#EchoProgress("sameids auto highlighting disabled")
     call go#guru#ClearSameIds()

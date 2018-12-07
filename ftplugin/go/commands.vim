@@ -16,8 +16,8 @@ command! -range=% GoReferrers call go#guru#Referrers(<count>)
 
 command! -range=0 GoSameIds call go#guru#SameIds(1)
 command! -range=0 GoSameIdsClear call go#guru#ClearSameIds()
-command! -range=0 GoSameIdsToggle call go#guru#ToggleSameIds(1)
-command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToogleSameIds()
+command! -range=0 GoSameIdsToggle call go#guru#ToggleSameIds()
+command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToggleSameIds()
 
 " -- tags
 command! -nargs=* -range GoAddTags call go#tags#Add(<line1>, <line2>, <count>, <f-args>)
