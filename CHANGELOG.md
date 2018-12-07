@@ -23,6 +23,8 @@ BUG FIXES:
   [[GH-2075]](https://github.com/fatih/vim-go/pull/2075)
 * Fix errors from `:GoDebugStop` in Neovim.
   [[GH-2075]](https://github.com/fatih/vim-go/pull/2075)
+* Fix `:GoSameIdsToggle`.
+  [[GH-2086]](https://github.com/fatih/vim-go/pull/2086)
 
 ## 1.19 - (November 4, 2018)
 
