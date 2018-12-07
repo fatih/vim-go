@@ -517,9 +517,9 @@ function! go#guru#ClearSameIds() abort
   return 0
 endfunction
 
-function! go#guru#ToggleSameIds() abort
+function! go#guru#ToggleSameIds(showstatus) abort
   if go#guru#ClearSameIds() != 0
-    call go#guru#SameIds()
+    call go#guru#SameIds(a:showstatus)
   endif
 endfunction
 
