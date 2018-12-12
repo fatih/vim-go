@@ -2,10 +2,6 @@ if exists("b:did_indent")
   finish
 endif
 
-" don't spam the user when Vim is started in Vi compatibility mode
-let s:cpo_save = &cpo
-set cpo&vim
-
 runtime! indent/html.vim
 
 " Indent Golang HTML templates
@@ -16,6 +12,10 @@ setlocal indentkeys+==else,=end
 if exists("*GetGoHTMLTmplIndent")
   finish
 endif
+
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
 
 function! GetGoHTMLTmplIndent(lnum)
   " Get HTML indent

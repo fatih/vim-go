@@ -1,7 +1,3 @@
-" don't spam the user when Vim is started in Vi compatibility mode
-let s:cpo_save = &cpo
-set cpo&vim
-
 " Check if tagbar is installed under plugins or is directly under rtp
 " this covers pathogen + Vundle/Bundle
 "
@@ -12,6 +8,10 @@ if !executable('ctags')
 elseif globpath(&rtp, 'plugin/tagbar.vim') == ""
   finish
 endif
+
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
 
 if !exists("g:go_gotags_bin")
   let g:go_gotags_bin = "gotags"
