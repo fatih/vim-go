@@ -27,7 +27,7 @@ function! s:gocodeCommand(cmd, args) abort
   if go#config#GocodeProposeSource()
     let cmd = extend(cmd, ['-source'])
   else
-    let cmd = extend(cmd, ['-fallback-to-source'])
+    let cmd = extend(cmd, ['-fallback-to-source', '-cache'])
   endif
 
   if go#config#GocodeUnimportedPackages()
