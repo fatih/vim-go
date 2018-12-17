@@ -38,7 +38,12 @@ function! go#template#create() abort
     let l:content = printf("package %s", l:package_name)
     call append(0, l:content)
   endif
-  $delete _
+
+  " checking that the last line is empty shouldn't be necessary, but for some
+  " reason the last line isn't the expected empty line when run via tests.
+  if getline('$') is ''
+    $delete _
+  endif
 
   execute cd . fnameescape(dir)
 endfunction
