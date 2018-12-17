@@ -123,7 +123,9 @@ endfunction
 function! go#lint#Vet(bang, ...) abort
   call go#cmd#autowrite()
 
-  call go#util#EchoProgress('calling vet...')
+  if go#config#EchoCommandInfo()
+    call go#util#EchoProgress('calling vet...')
+  endif
 
   if a:0 == 0
     let [l:out, l:err] = go#util#Exec(['go', 'vet', go#package#ImportPath()])
@@ -140,7 +142,6 @@ function! go#lint#Vet(bang, ...) abort
     if !empty(errors) && !a:bang
       call go#list#JumpToFirst(l:listtype)
     endif
-    call go#util#EchoError('[vet] FAIL')
   else
     call go#list#Clean(l:listtype)
     call go#util#EchoSuccess('[vet] PASS')

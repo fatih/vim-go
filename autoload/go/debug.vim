@@ -489,7 +489,6 @@ function! s:err_cb(ch, msg) abort
     return
   endif
 
-  call go#util#EchoError(a:msg)
   let s:state['message'] += [a:msg]
 endfunction
 
@@ -499,7 +498,6 @@ function! s:out_cb(ch, msg) abort
     return
   endif
 
-  call go#util#EchoProgress(a:msg)
   let s:state['message'] += [a:msg]
 
   if stridx(a:msg, go#config#DebugAddress()) != -1
