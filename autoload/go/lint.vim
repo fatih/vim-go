@@ -78,8 +78,8 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
   else
     " GoMetaLinter can output one of the two, so we look for both:
-    "   <file>:<line>:[<column>]: <message> (<linter>)
-    "   <file>:<line>:: <message> (<linter>)
+    "   <file>:<line>:<column>:<severity>: <message> (<linter>)
+    "   <file>:<line>::<severity>: <message> (<linter>)
     " This can be defined by the following errorformat:
     let errformat = "%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
 
