@@ -9,24 +9,14 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let goargs = a:000
   endif
 
-  let bin_path = go#path#CheckBinPath("gometalinter")
-  if empty(bin_path)
-    return
-  endif
+  if empty(go#config#MetalinterCommand())
+    let bin_path = go#path#CheckBinPath("gometalinter")
+    if empty(bin_path)
+      return
+    endif
 
-  let cmd = [bin_path]
-  let cmd += ["--disable-all"]
-
-  if a:autosave || empty(go#config#MetalinterCommand())
-    " linters
-    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
-    for linter in linters
-      let cmd += ["--enable=".linter]
-    endfor
-
-    for linter in go#config#MetalinterDisabled()
-      let cmd += ["--disable=".linter]
-    endfor
+    let cmd = [bin_path]
+    let cmd += ["--disable-all"]
 
     " gometalinter has a --tests flag to tell its linters whether to run
     " against tests. While not all of its linters respect this flag, for those
@@ -36,8 +26,22 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let cmd += ["--tests"]
   else
     " the user wants something else, let us use it.
-    let cmd += split(go#config#MetalinterCommand(), " ")
+    let cmd = split(go#config#MetalinterCommand(), " ")
+    let bin_path = go#path#CheckBinPath(cmd[0])
+    if empty(bin_path)
+      return
+    endif
   endif
+
+  " linters
+  let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
+  for linter in linters
+    let cmd += ["--enable=".linter]
+  endfor
+
+  for linter in go#config#MetalinterDisabled()
+    let cmd += ["--disable=".linter]
+  endfor
 
   if a:autosave
     " redraw so that any messages that were displayed while writing the file
