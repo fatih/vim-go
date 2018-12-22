@@ -27,10 +27,6 @@ function! go#lint#Gometa(bang, autosave, ...) abort
   else
     " the user wants something else, let us use it.
     let cmd = split(go#config#MetalinterCommand(), " ")
-    let bin_path = go#path#CheckBinPath(cmd[0])
-    if empty(bin_path)
-      return
-    endif
   endif
 
   " linters
