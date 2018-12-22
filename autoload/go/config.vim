@@ -60,11 +60,11 @@ function! go#config#TemplateUsePkg() abort
 endfunction
 
 function! go#config#TemplateTestFile() abort
-  return get(g:, 'go_template_test_file', "hello_world_test.go")
+  return get(g:, 'go_template_test_file', "default_test.go")
 endfunction
 
 function! go#config#TemplateFile() abort
-  return get(g:, 'go_template_file', "hello_world.go")
+  return get(g:, 'go_template_file', "default.go")
 endfunction
 
 function! go#config#StatuslineDuration() abort

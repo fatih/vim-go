@@ -1660,17 +1660,17 @@ By default it is enabled.
 
 Specifies the file under the `templates` folder that is used if a new Go file
 is created. Checkout |'g:go_template_autocreate'| for more info. By default
-the `hello_world.go` file is used.
+the `default.go` file is used.
 >
-  let g:go_template_file = "hello_world.go"
+  let g:go_template_file = "default.go"
 <
                                                    *'g:go_template_test_file'*
 
 Specifies the file under the `templates` folder that is used if a new Go test
 file is created. Checkout |'g:go_template_autocreate'| for more info. By
-default the `hello_world_test.go` file is used.
+default the `default_test.go` file is used.
 >
-  let g:go_template_test_file = "hello_world_test.go"
+  let g:go_template_test_file = "default_test.go"
 <
                                                      *'g:go_template_use_pkg'*
 
