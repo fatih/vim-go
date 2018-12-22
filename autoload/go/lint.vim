@@ -24,20 +24,20 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     " test files. One example of a linter that will not run against tests if
     " we do not specify this flag is errcheck.
     let cmd += ["--tests"]
+
+    " linters
+    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
+    for linter in linters
+      let cmd += ["--enable=".linter]
+    endfor
+
+    for linter in go#config#MetalinterDisabled()
+      let cmd += ["--disable=".linter]
+    endfor
   else
     " the user wants something else, let us use it.
     let cmd = split(go#config#MetalinterCommand(), " ")
   endif
-
-  " linters
-  let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
-  for linter in linters
-    let cmd += ["--enable=".linter]
-  endfor
-
-  for linter in go#config#MetalinterDisabled()
-    let cmd += ["--disable=".linter]
-  endfor
 
   if a:autosave
     " redraw so that any messages that were displayed while writing the file
