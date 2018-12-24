@@ -28,6 +28,9 @@ BUG FIXES:
   [[GH-2075]](https://github.com/fatih/vim-go/pull/2075)
 * Fix `:GoSameIdsToggle`.
   [[GH-2086]](https://github.com/fatih/vim-go/pull/2086)
+* Do not set fileencoding or fileformat options or populate from template when
+  the buffer is not modifiable.
+  [[GH-2097]](https://github.com/fatih/vim-go/pull/2097)
 
 ## 1.19 - (November 4, 2018)
 
