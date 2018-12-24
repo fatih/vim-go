@@ -5,9 +5,6 @@ set cpo&vim
 let s:current_file = expand("<sfile>")
 
 function! go#template#create() abort
-  if !&modifiable
-    return
-  endif
   let l:go_template_use_pkg = go#config#TemplateUsePkg()
   let l:root_dir = fnamemodify(s:current_file, ':h:h:h')
 
