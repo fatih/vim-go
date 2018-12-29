@@ -13,7 +13,8 @@ let b:did_ftplugin = 1
 let s:cpo_save = &cpo
 set cpo&vim
 
-let b:undo_ftplugin = "setl fo< com< cms<"
+let b:undo_ftplugin = "setl fo< com< cms<
+      \ | exe 'au! vim-go-buffer * <buffer>'"
 
 setlocal formatoptions-=t
 
@@ -71,6 +72,43 @@ endif
 if go#config#AutoTypeInfo() || go#config#AutoSameids()
   let &l:updatetime= get(g:, "go_updatetime", 800)
 endif
+
+" Autocommands
+" ============================================================================
+"
+augroup vim-go-buffer
+  autocmd! * <buffer>
+
+  autocmd CursorHold <buffer> call go#auto#auto_type_info()
+  autocmd CursorHold <buffer> call go#auto#auto_sameids()
+
+  " Echo the identifier information when completion is done. Useful to see
+  " the signature of a function, etc...
+  if exists('##CompleteDone')
+    autocmd CompleteDone <buffer> call go#auto#echo_go_info()
+  endif
+
+  autocmd BufWritePre <buffer> call go#auto#fmt_autosave()
+  autocmd BufWritePost <buffer> call go#auto#metalinter_autosave()
+
+  " clear SameIds when the buffer is unloaded so that loading another buffer
+  " in the same window doesn't highlight the most recently matched
+  " identifier's positions.
+  autocmd BufWinEnter <buffer> call go#guru#ClearSameIds()
+
+  autocmd BufEnter <buffer>
+        \  if go#config#AutodetectGopath() && !exists('b:old_gopath')
+        \|   let b:old_gopath = exists('$GOPATH') ? $GOPATH : -1
+        \|   let $GOPATH = go#path#Detect()
+        \| endif
+  autocmd BufLeave <buffer>
+        \  if exists('b:old_gopath')
+        \|   if b:old_gopath isnot -1
+        \|     let $GOPATH = b:old_gopath
+        \|   endif
+        \|   unlet b:old_gopath
+        \| endif
+augroup end
 
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
