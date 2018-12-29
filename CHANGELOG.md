@@ -15,6 +15,8 @@ IMPROVEMENTS:
 * Do not require `'autowrite'` or `'autowriteall'` to be set when using
   autocompletion in module mode.
   [[GH-2091]](https://github.com/fatih/vim-go/pull/2091)
+* Fix use of g:go_metalinter_command _and_ apply it even when autosaving.
+  [[GH-2101]](https://github.com/fatih/vim-go/pull/2101)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
