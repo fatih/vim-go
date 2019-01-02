@@ -467,7 +467,7 @@ CTRL-t
 
     If [!] is not given the first error is jumped to.
 
-                                                               *:GoStaticCheck*
+                                                              *:GoStaticCheck*
 :GoStaticCheck! [options]
 
     Check for errors (linting), unused global variables, and suggestions to
