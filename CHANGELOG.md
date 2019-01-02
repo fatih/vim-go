@@ -35,6 +35,8 @@ BUG FIXES:
 * Do not set fileencoding or fileformat options or populate from template when
   the buffer is not modifiable.
   [[GH-2097]](https://github.com/fatih/vim-go/pull/2097)
+* Do not clear buffer-local autocmds of other buffers. 
+  [[GH-2109]](https://github.com/fatih/vim-go/pull/2109)
 
 ## 1.19 - (November 4, 2018)
 
