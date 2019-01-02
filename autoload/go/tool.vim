@@ -175,7 +175,7 @@ function! go#tool#ExecuteInDir(cmd) abort
   let dir = getcwd()
   try
     execute cd . fnameescape(expand("%:p:h"))
-    let [l:out, l:err] = go#util#Exec(a:cmd)
+    let [l:out, l:err] = go#util#ExecSystem(a:cmd)
   finally
     execute cd . fnameescape(l:dir)
   endtry

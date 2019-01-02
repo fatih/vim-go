@@ -88,7 +88,7 @@ fun! gotest#assert_buffer(skipHeader, want) abort
     call writefile(l:want, l:tmp . '/want')
     call go#fmt#run('gofmt', l:tmp . '/have', l:tmp . '/have')
     call go#fmt#run('gofmt', l:tmp . '/want', l:tmp . '/want')
-    let [l:out, l:err] = go#util#Exec(["diff", "-u", l:tmp . '/have', l:tmp . '/want'])
+    let [l:out, l:err] = go#util#ExecSystem(["diff", "-u", l:tmp . '/have', l:tmp . '/want'])
   finally
     call delete(l:tmp . '/have')
     call delete(l:tmp . '/want')

@@ -30,7 +30,7 @@ function! go#mod#Format() abort
 
   let current_col = col('.')
   let l:args = ['go', 'mod', 'edit', '--fmt', l:tmpname]
-  let [l:out, l:err] = go#util#Exec(l:args)
+  let [l:out, l:err] = go#util#ExecSystem(l:args)
   let diff_offset = len(readfile(l:tmpname)) - line('$')
 
   if l:err == 0

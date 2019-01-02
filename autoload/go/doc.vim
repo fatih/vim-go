@@ -55,7 +55,7 @@ endfunction
 function! go#doc#Open(newmode, mode, ...) abort
   " With argument: run "godoc [arg]".
   if len(a:000)
-    let [l:out, l:err] = go#util#Exec(['go', 'doc'] + a:000)
+    let [l:out, l:err] = go#util#ExecSystem(['go', 'doc'] + a:000)
   else " Without argument: run gogetdoc on cursor position.
     let [l:out, l:err] = s:gogetdoc(0)
     if out == -1

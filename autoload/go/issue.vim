@@ -24,10 +24,10 @@ function! s:issuebody() abort
       redir END
       let body = extend(body, split(out, "\n")[0:2])
     elseif l =~ '^\* Go version'
-      let [out, err] = go#util#Exec(['go', 'version'])
+      let [out, err] = go#util#ExecSystem(['go', 'version'])
       let body = add(body, substitute(l:out, rtrimpat, '', ''))
     elseif l =~ '^\* Go environment'
-      let [out, err] = go#util#Exec(['go', 'env'])
+      let [out, err] = go#util#ExecSystem(['go', 'env'])
       let body = add(body, substitute(l:out, rtrimpat, '', ''))
     endif
   endfor

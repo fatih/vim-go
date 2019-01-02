@@ -96,7 +96,7 @@ function! go#package#FromPath(arg) abort
   endif
 
   execute l:cd fnameescape(l:path)
-  let [l:out, l:err] = go#util#Exec(['go', 'list'])
+  let [l:out, l:err] = go#util#ExecSystem(['go', 'list'])
   execute l:cd fnameescape(l:dir)
   if l:err != 0
     return -1
@@ -114,7 +114,7 @@ function! go#package#FromPath(arg) abort
 endfunction
 
 function! go#package#CompleteMembers(package, member) abort
-  let [l:content, l:err] = go#util#Exec(['go', 'doc', a:package])
+  let [l:content, l:err] = go#util#ExecSystem(['go', 'doc', a:package])
   if l:err || !len(content)
     return []
   endif

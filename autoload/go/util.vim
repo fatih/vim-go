@@ -52,7 +52,7 @@ function! go#util#IsMac() abort
   return has('mac') ||
         \ has('macunix') ||
         \ has('gui_macvim') ||
-        \ go#util#Exec(['uname'])[0] =~? '^darwin'
+        \ go#util#ExecSystem(['uname'])[0] =~? '^darwin'
 endfunction
 
  " Checks if using:
@@ -174,6 +174,8 @@ function! go#util#System(str, ...) abort
 endfunction
 
 " Exec runs a shell command "cmd", which must be a list, one argument per item.
+" Exec uses a modified PATH which includes go-specific binary locations before
+" the usual PATH.
 " Every list entry will be automatically shell-escaped
 " Every other argument is passed to stdin.
 function! go#util#Exec(cmd, ...) abort
@@ -193,6 +195,23 @@ function! go#util#Exec(cmd, ...) abort
 
   " Finally execute the command using the full, resolved path. Do not pass the
   " unmodified command as the correct program might not exist in $PATH.
+  return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
+endfunction
+
+" ExecSystem runs a shell command "cmd", which must be a list, one argument per item.
+" Unlike 'Exec', 'ExecSystem' will not modify the $PATH for go tools.
+" 'ExecSystem' should be preferred when running a tool that is not expected to
+" exist in the $GOPATH/bin directory.
+" Every list entry will be automatically shell-escaped
+" Every other argument is passed to stdin.
+function! go#util#ExecSystem(cmd, ...) abort
+  if len(a:cmd) == 0
+    call go#util#EchoError("go#util#ExecSystem() called with empty a:cmd")
+    return ['', 1]
+  endif
+
+  let l:bin = a:cmd[0]
+
   return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
 endfunction
 
