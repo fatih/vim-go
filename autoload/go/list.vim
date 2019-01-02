@@ -139,6 +139,7 @@ endfunction
 let s:default_list_type_commands = {
       \ "GoBuild":              "quickfix",
       \ "GoErrCheck":           "quickfix",
+      \ "GoStaticCheck":        "quickfix",
       \ "GoFmt":                "locationlist",
       \ "GoGenerate":           "quickfix",
       \ "GoInstall":            "quickfix",

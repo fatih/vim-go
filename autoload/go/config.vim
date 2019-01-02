@@ -258,6 +258,10 @@ function! go#config#ErrcheckBin() abort
   return get(g:, "go_errcheck_bin", "errcheck")
 endfunction
 
+function! go#config#StaticcheckBin() abort
+  return get(g:, "go_staticcheck_bin", "staticcheck")
+endfunction
+
 function! go#config#MetalinterAutosave() abort
   return get(g:, "go_metalinter_autosave", 0)
 endfunction

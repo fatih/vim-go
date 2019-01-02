@@ -26,6 +26,8 @@ This plugin adds Go language support for Vim, with the following main features:
   quickfix or location list.
 * Lint your code with `:GoLint`, run your code through `:GoVet` to catch static
   errors, or make sure errors are checked with `:GoErrCheck`.
+* In addition to linters, run `:GoStaticCheck` to get some suggestions to improve
+  overall code quality
 * Advanced source analysis tools utilizing `guru`, such as `:GoImplements`,
   `:GoCallees`, and `:GoReferrers`.
 * ... and many more! Please see [doc/vim-go.txt](doc/vim-go.txt) for more

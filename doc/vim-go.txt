@@ -55,6 +55,8 @@ tools developed by the Go community to provide a seamless Vim experience.
     quickfix or location list.
   * Lint your code with |:GoLint|, run your code through |:GoVet| to catch
     static errors, or make sure errors are checked with |:GoErrCheck|.
+  * Run your code through |:GoStaticCheck|to lint it, and get some suggestions
+    to improve your code.
   * Advanced source analysis tools utilizing `guru`, such as |:GoImplements|,
     |:GoCallees|, and |:GoReferrers|.
   * Automatic `GOPATH` detection which works with `gb` and `godep`. Change or
@@ -464,6 +466,17 @@ CTRL-t
     `-covermode set,count,atomic`. For a full list please see `go help test`.
 
     If [!] is not given the first error is jumped to.
+
+                                                                 *:GoStaticCheck*
+:GoStaticCheck! [options]
+
+    Check for errors (linting), unused global variables, and suggestions to
+    simplify your code. The output is displayed in the quickfix window.
+
+    You may optionally pass an import path, or full path to check. Default
+    will be the current package.
+
+    if [!] is not given, the first error is jumped to.
 
                                                                  *:GoErrCheck*
 :GoErrCheck! [options]
