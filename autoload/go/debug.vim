@@ -487,7 +487,7 @@ function! s:start_cb(res) abort
   exe bufwinnr(oldbuf) 'wincmd w'
 
   augroup vim-go-debug
-    autocmd!
+    autocmd! * <buffer>
     autocmd FileType go nmap <buffer> <F5>   <Plug>(go-debug-continue)
     autocmd FileType go nmap <buffer> <F6>   <Plug>(go-debug-print)
     autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
