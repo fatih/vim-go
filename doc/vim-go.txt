@@ -1649,6 +1649,8 @@ same `templates` folder, or to use a file stored elsewhere.
 If the new file is created in an already prepopulated package (with other Go
 files), in this case a Go code template with only the Go package declaration
 (which is automatically determined according to the current package) is added.
+If the new file here is a test file, the package name can be suffixed with the
+`_test` suffix by enabling |'g:go_template_test_suffix'|.
 
 To always use the package name instead of the template, enable the
 |'g:go_template_use_pkg'| setting.
@@ -1669,6 +1671,19 @@ use different templates for different projects.
 >
   let g:go_template_file = "hello_world.go"
 <
+                                                 *'g:go_template_test_suffix'*
+
+Specifies whether or not the package name for new test files should be
+suffixed with `_test`. If you're working in the package `foo`, and decide to
+add a test (`:new foo_test.go`), the default behaviour is to open a new buffer
+with `package foo`  at the top. Setting this config to one, the first line of
+the test file will be set to `package foo_test` instead.
+
+By default, this is disabled.
+>
+  let g:go_template_test_suffix = 0
+<
+                                                     *'g:go_template_use_pkg'*
                                                    *'g:go_template_test_file'*
 
 Like with |'g:go_template_file'|, this specifies the file to use for test
