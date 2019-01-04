@@ -77,6 +77,10 @@ function! go#config#TemplateFile() abort
   return get(g:, 'go_template_file', "hello_world.go")
 endfunction
 
+function! go#config#TemplateTestSuffix() abort
+  return get(g:, 'go_template_test_suffix', 0)
+endfunction
+
 function! go#config#StatuslineDuration() abort
   return get(g:, 'go_statusline_duration', 60000)
 endfunction
