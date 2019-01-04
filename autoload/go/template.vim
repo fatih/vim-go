@@ -24,7 +24,13 @@ function! go#template#create() abort
       else
         let l:template_file = go#config#TemplateFile()
       endif
-      let l:template_path = go#util#Join(l:root_dir, "templates", l:template_file)
+
+      " If template_file is an absolute path, use it as-is. This is to support
+      " overrides pointing to templates outside of the vim-go plugin dir
+      if fnamemodify(l:template_file, ':p') != l:template_file
+        let l:template_path = go#util#Join(l:root_dir, "templates", l:template_file)
+      endif
+
       silent exe 'keepalt 0r ' . fnameescape(l:template_path)
     endif
   else
