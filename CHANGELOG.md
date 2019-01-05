@@ -1,5 +1,9 @@
 ## unplanned
 
+BACKWARDS INCOMPATABILITIES:
+* g:go_highlight_fuction_arguments is renamed to g:go_highlight_function_parameters
+  [[GH-2117]](https://github.com/fatih/vim-go/pull/2117)
+
 IMPROVEMENTS:
 * Disable `g:go_gocode_propose_source` by default.
   [[GH-2050]](https://github.com/fatih/vim-go/pull/2050)
@@ -38,7 +42,7 @@ BUG FIXES:
 * Do not clear buffer-local autocmds of other buffers. 
   [[GH-2109]](https://github.com/fatih/vim-go/pull/2109)
 * Highlight return parameter types when g:go_highlight_function_arguments is set.
-  [[GH-2109]](https://github.com/fatih/vim-go/pull/2117)
+  [[GH-2116]](https://github.com/fatih/vim-go/pull/2116)
 
 ## 1.19 - (November 4, 2018)
 
