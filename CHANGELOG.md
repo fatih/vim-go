@@ -37,6 +37,8 @@ BUG FIXES:
   [[GH-2097]](https://github.com/fatih/vim-go/pull/2097)
 * Do not clear buffer-local autocmds of other buffers. 
   [[GH-2109]](https://github.com/fatih/vim-go/pull/2109)
+* Highlight return parameter types when g:go_highlight_function_arguments is set.
+  [[GH-2109]](https://github.com/fatih/vim-go/pull/2117)
 
 ## 1.19 - (November 4, 2018)
 
