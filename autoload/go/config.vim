@@ -388,8 +388,8 @@ function! go#config#HighlightFunctions() abort
   return get(g:, 'go_highlight_functions', 0)
 endfunction
 
-function! go#config#HighlightFunctionArguments() abort
-  return get(g:, 'go_highlight_function_arguments', 0)
+function! go#config#HighlightFunctionParameters() abort
+  return get(g:, 'go_highlight_function_parameters', 0)
 endfunction
 
 function! go#config#HighlightFunctionCalls() abort

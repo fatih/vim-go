@@ -263,13 +263,13 @@ endif
 hi def link     goOperator          Operator
 
 " Functions;
-if go#config#HighlightFunctions() || go#config#HighlightFunctionArguments()
+if go#config#HighlightFunctions() || go#config#HighlightFunctionParameters()
   syn match goDeclaration       /\<func\>/ nextgroup=goReceiver,goFunction,goSimpleParams skipwhite skipnl
   syn match goReceiverVar       /\w\+\ze\s\+\(\w\|\*\)/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goFunction          /\w\+/ nextgroup=goSimpleParams contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
-if go#config#HighlightFunctionArguments()
+if go#config#HighlightFunctionParameters()
   syn match goSimpleParams     /(\(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType nextgroup=goFunctionReturn skipwhite skipnl
   syn match goFunctionReturn   /(\(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType skipwhite skipnl
   syn match goParamName        /\w\+\(\s*,\s*\w\+\)*\ze\s\+\(\w\|\.\|\*\|\[\)/ contained nextgroup=goParamType skipwhite skipnl
