@@ -23,6 +23,9 @@ IMPROVEMENTS:
   [[GH-2101]](https://github.com/fatih/vim-go/pull/2101)
 * Report errors in quickfix when Delve fails to start (e.g. compiler errors).
   [[GH-2111]](https://github.com/fatih/vim-go/pull/2111)
+* Support undo_ftplugin, make most autocmd's buffer-local, and only do the bare
+  minimum based on file names alone.
+  [[GH-2108]](https://github.com/fatih/vim-go/pull/2108)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
