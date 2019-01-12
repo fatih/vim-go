@@ -101,6 +101,9 @@ function! s:call_jsonrpc(method, ...) abort
       call chansend(l:ch, l:req_json)
       while len(s:state.data) == 0
         sleep 50m
+        if get(s:state, 'ready', 0) == 0
+          return
+        endif
       endwhile
       let resp_json = s:state.data[0]
       let s:state.data = s:state.data[1:]
