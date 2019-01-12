@@ -48,6 +48,8 @@ BUG FIXES:
   [[GH-2109]](https://github.com/fatih/vim-go/pull/2109)
 * Highlight return parameter types when g:go_highlight_function_arguments is set.
   [[GH-2116]](https://github.com/fatih/vim-go/pull/2116)
+* Fix lockup in Neovim when trying to run `:GoDebugTest` when there are no tests.
+  [[GH-2125]](https://github.com/fatih/vim-go/pull/2125)
 
 ## 1.19 - (November 4, 2018)
 
