@@ -26,6 +26,8 @@ IMPROVEMENTS:
 * Support undo_ftplugin, make most autocmd's buffer-local, and only do the bare
   minimum based on file names alone.
   [[GH-2108]](https://github.com/fatih/vim-go/pull/2108)
+* Write a message when `:GoInfo` can't display any results when `g:go_info_mode='gocode'`.
+  [[GH-2122]](https://github.com/fatih/vim-go/pull/2122)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
