@@ -1,7 +1,7 @@
 ## unplanned
 
 BACKWARDS INCOMPATABILITIES:
-* g:go_highlight_fuction_arguments is renamed to g:go_highlight_function_parameters
+* g:go_highlight_function_arguments is renamed to g:go_highlight_function_parameters
   [[GH-2117]](https://github.com/fatih/vim-go/pull/2117)
 
 IMPROVEMENTS:
@@ -28,6 +28,8 @@ IMPROVEMENTS:
   [[GH-2108]](https://github.com/fatih/vim-go/pull/2108)
 * Write a message when `:GoInfo` can't display any results when `g:go_info_mode='gocode'`.
   [[GH-2122]](https://github.com/fatih/vim-go/pull/2122)
+* Highlight fields followed by an operator when `g:go_highlight_fields` is set.
+  [[GH-1907]](https://github.com/fatih/vim-go/pull/1907)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
