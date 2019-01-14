@@ -52,6 +52,11 @@ BUG FIXES:
   [[GH-2116]](https://github.com/fatih/vim-go/pull/2116)
 * Fix lockup in Neovim when trying to run `:GoDebugTest` when there are no tests.
   [[GH-2125]](https://github.com/fatih/vim-go/pull/2125)
+* Keep track of breakpoints correctly when buffer is edited after breakpoints
+  are set.
+  [[GH-2126]](https://github.com/fatih/vim-go/pull/2126)
+* Fix race conditions in `:GoDebugStop`.
+  [[GH-2127]](https://github.com/fatih/vim-go/pull/2127)
 
 ## 1.19 - (November 4, 2018)
 
