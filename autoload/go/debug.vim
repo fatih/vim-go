@@ -238,7 +238,11 @@ function! s:stop() abort
 
   if has_key(s:state, 'job')
     call go#job#Wait(s:state['job'])
-    call remove(s:state, 'job')
+
+    " while waiting, the s:complete may have already removed job from s:state.
+    if has_key(s:state, 'job')
+      call remove(s:state, 'job')
+    endif
   endif
 
   if has_key(s:state, 'ready')
