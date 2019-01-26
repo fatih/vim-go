@@ -47,7 +47,9 @@ endfunction
 function! go#auto#fmt_autosave()
   " Go code formatting on save
   if get(g:, "go_fmt_autosave", 1)
-    call go#fmt#Format(-1)
+    if filereadable(expand("%@"))
+      call go#fmt#Format(-1)
+    endif
   endif
 endfunction
 
