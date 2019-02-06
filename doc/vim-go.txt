@@ -1303,7 +1303,7 @@ fails. By default the location list is shown. >
 
 Use this option to enable fmt's experimental mode. This experimental mode is
 superior to the current mode as it fully saves the undo history, so undo/redo
-doesn't break. However it's slows (creates/deletes a file for every save) and
+doesn't break. However, it's slow (creates/deletes a file for every save) and
 it's causing problems on some Vim versions. By default it's disabled. >
 
   let g:go_fmt_experimental = 0
