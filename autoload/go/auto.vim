@@ -3,10 +3,12 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 function! go#auto#template_autocreate()
-  " create new template from scratch
-  if get(g:, "go_template_autocreate", 1) && &modifiable
-    call go#template#create()
+  if !go#config#TemplateAutocreate() || !&modifiable
+    return
   endif
+
+  " create new template from scratch
+  call go#template#create()
 endfunction
 
 function! go#auto#echo_go_info()
@@ -31,45 +33,57 @@ function! go#auto#echo_go_info()
 endfunction
 
 function! go#auto#auto_type_info()
-  " GoInfo automatic update
-  if get(g:, "go_auto_type_info", 0)
-    call go#tool#Info(0)
+  if !go#config#AutoTypeInfo() || !filereadable(expand('%:p'))
+    return
   endif
+
+  " GoInfo automatic update
+  call go#tool#Info(0)
 endfunction
 
 function! go#auto#auto_sameids()
-  " GoSameId automatic update
-  if get(g:, "go_auto_sameids", 0)
-    call go#guru#SameIds(0)
+  if !go#config#AutoSameids() || !filereadable(expand('%:p'))
+    return
   endif
+
+  " GoSameId automatic update
+  call go#guru#SameIds(0)
 endfunction
 
 function! go#auto#fmt_autosave()
-  " Go code formatting on save
-  if get(g:, "go_fmt_autosave", 1)
-    call go#fmt#Format(-1)
+  if !go#config#FmtAutosave() || !filereadable(expand('%:p'))
+    return
   endif
+
+  " Go code formatting on save
+  call go#fmt#Format(-1)
 endfunction
 
 function! go#auto#metalinter_autosave()
-  " run gometalinter on save
-  if get(g:, "go_metalinter_autosave", 0)
-    call go#lint#Gometa(0, 1)
+  if !go#config#MetalinterAutosave() || !filereadable(expand('%:p'))
+    return
   endif
+
+  " run gometalinter on save
+  call go#lint#Gometa(0, 1)
 endfunction
 
 function! go#auto#modfmt_autosave()
-  " go.mod code formatting on save
-  if get(g:, "go_mod_fmt_autosave", 1)
-    call go#mod#Format()
+  if !go#config#ModFmtAutosave() || !filereadable(expand('%:p'))
+    return
   endif
+
+  " go.mod code formatting on save
+  call go#mod#Format()
 endfunction
 
 function! go#auto#asmfmt_autosave()
-  " Go asm formatting on save
-  if get(g:, "go_asmfmt_autosave", 0)
-    call go#asmfmt#Format()
+  if !go#config#AsmfmtAutosave() || !filereadable(expand('%:p'))
+    return
   endif
+
+  " Go asm formatting on save
+  call go#asmfmt#Format()
 endfunction
 
 " restore Vi compatibility settings
