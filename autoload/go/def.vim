@@ -106,10 +106,24 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     let parts = split(out, ':')
   endif
 
+  if len(parts) == 0
+    call go#util#EchoError('go jump_to_declaration '. a:bin_name .' output is not valid.')
+    return
+  endif
+
+  let line = 1
+  let col = 1
+  let ident = 0
   let filename = parts[0]
-  let line = parts[1]
-  let col = parts[2]
-  let ident = parts[3]
+  if len(parts) > 1
+    let line = parts[1]
+  endif
+  if len(parts) > 2
+    let col = parts[2]
+  endif
+  if len(parts) > 3
+    let ident = parts[3]
+  endif
 
   " Remove anything newer than the current position, just like basic
   " vim tag support
