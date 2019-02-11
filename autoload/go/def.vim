@@ -107,7 +107,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   endif
 
   if len(parts) == 0
-    call go#util#EchoError('go jump_to_declaration '. bin_name .' output is not valid.')
+    call go#util#EchoError('go jump_to_declaration '. a:bin_name .' output is not valid.')
     return
   endif
 
