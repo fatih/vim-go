@@ -166,7 +166,7 @@ function! go#tool#FilterValids(items) abort
   return filtered
 endfunction
 
-function! go#tool#ExecuteInDir(cmd) abort
+function! go#tool#ExecuteInDir(cmd, ...) abort
   if !isdirectory(expand("%:p:h"))
     return ['', 1]
   endif
@@ -175,7 +175,7 @@ function! go#tool#ExecuteInDir(cmd) abort
   let dir = getcwd()
   try
     execute cd . fnameescape(expand("%:p:h"))
-    let [l:out, l:err] = go#util#Exec(a:cmd)
+    let [l:out, l:err] = call('go#util#Exec', [a:cmd] + a:000)
   finally
     execute cd . fnameescape(l:dir)
   endtry
