@@ -22,7 +22,6 @@ function! go#def#Jump(mode) abort
     if &modified
       let l:stdin_content = join(go#util#GetLines(), "\n")
       call add(l:cmd, "-i")
-      " let [l:out, l:err] = go#util#Exec(l:cmd, l:stdin_content)
       let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd, l:stdin_content)
     else
       let [l:out, l:err] = go#util#ExecuteInDir(l:cmd)
