@@ -32,6 +32,8 @@ IMPROVEMENTS:
   [[GH-1907]](https://github.com/fatih/vim-go/pull/1907)
 * Skip autosave actions when the buffer is not a readable file.
   [[GH-2143]](https://github.com/fatih/vim-go/pull/2143)
+* Run `godef` from the current buffer's directory to make sure it works with modules.
+  [[GH-2150]](https://github.com/fatih/vim-go/pull/2150)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
