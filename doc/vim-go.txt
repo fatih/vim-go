@@ -675,7 +675,9 @@ CTRL-t
 
     Alternates between the implementation and test code. For example if in
     main.go, switch to main_test.go. Uses the |'g:go_alternate_mode'| setting
-    as the command to open the file.
+    as the command to open the file. The files to alternate (in order) are
+    'x.go', 'x_test.go', and 'x_internal_test.go', if a file does not exist
+    then it will be skipped.
 
     If [!] is given then it switches to the new file even if it does not
     exist.
