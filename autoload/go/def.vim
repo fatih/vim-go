@@ -61,9 +61,9 @@ function! go#def#Jump(mode) abort
     endif
 
     if &modified
-      let [l:out, l:err] = go#util#Exec(l:cmd, stdin_content)
+      let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd, l:stdin_content)
     else
-      let [l:out, l:err] = go#util#Exec(l:cmd)
+      let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd)
     endif
   else
     call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, guru]')
