@@ -22,9 +22,9 @@ function! go#def#Jump(mode) abort
     if &modified
       let l:stdin_content = join(go#util#GetLines(), "\n")
       call add(l:cmd, "-i")
-      let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd, l:stdin_content)
+      let [l:out, l:err] = go#util#ExecInDir(l:cmd, l:stdin_content)
     else
-      let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd)
+      let [l:out, l:err] = go#util#ExecInDir(l:cmd)
     endif
   elseif bin_name == 'guru'
     let cmd = [go#path#CheckBinPath(bin_name)]
@@ -61,9 +61,9 @@ function! go#def#Jump(mode) abort
     endif
 
     if &modified
-      let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd, l:stdin_content)
+      let [l:out, l:err] = go#util#ExecInDir(l:cmd, l:stdin_content)
     else
-      let [l:out, l:err] = go#tool#ExecuteInDir(l:cmd)
+      let [l:out, l:err] = go#util#ExecInDir(l:cmd)
     endif
   else
     call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, guru]')
