@@ -196,7 +196,7 @@ function! go#util#Exec(cmd, ...) abort
   return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
 endfunction
 
-function! go#util#ExecuteInDir(cmd, ...) abort
+function! go#util#ExecInDir(cmd, ...) abort
   if !isdirectory(expand("%:p:h"))
     return ['', 1]
   endif

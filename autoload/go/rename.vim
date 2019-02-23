@@ -39,7 +39,7 @@ function! go#rename#Rename(bang, ...) abort
     return
   endif
 
-  let [l:out, l:err] = go#util#ExecuteInDir(l:cmd)
+  let [l:out, l:err] = go#util#ExecInDir(l:cmd)
   call s:parse_errors(l:err, a:bang, split(l:out, '\n'))
 endfunction
 

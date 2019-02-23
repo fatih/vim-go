@@ -40,7 +40,7 @@ function! go#tool#Files(...) abort
     endif
   endfor
 
-  let [l:out, l:err] = go#util#ExecuteInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', l:combined])
+  let [l:out, l:err] = go#util#ExecInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', l:combined])
   return split(l:out, '\n')
 endfunction
 
@@ -50,7 +50,7 @@ function! go#tool#Deps() abort
   else
     let format = "{{range $f := .Deps}}{{$f}}\n{{end}}"
   endif
-  let [l:out, l:err] = go#util#ExecuteInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', l:format])
+  let [l:out, l:err] = go#util#ExecInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', l:format])
   return split(l:out, '\n')
 endfunction
 
@@ -61,14 +61,14 @@ function! go#tool#Imports() abort
   else
     let format = "{{range $f := .Imports}}{{$f}}{{printf \"\\n\"}}{{end}}"
   endif
-  let [l:out, l:err] = go#util#ExecuteInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', l:format])
+  let [l:out, l:err] = go#util#ExecInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', l:format])
   if l:err != 0
     echo out
     return imports
   endif
 
   for package_path in split(out, '\n')
-    let [l:out, l:err] = go#util#ExecuteInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', '{{.Name}}', l:package_path])
+    let [l:out, l:err] = go#util#ExecInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', '{{.Name}}', l:package_path])
     if l:err != 0
       echo out
       return imports
@@ -92,7 +92,7 @@ function! go#tool#Info(showstatus) abort
 endfunction
 
 function! go#tool#PackageName() abort
-  let [l:out, l:err] = go#util#ExecuteInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', '{{.Name}}'])
+  let [l:out, l:err] = go#util#ExecInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', '{{.Name}}'])
   if l:err != 0
       return -1
   endif
@@ -169,7 +169,7 @@ endfunction
 " Exists checks whether the given importpath exists or not. It returns 0 if
 " the importpath exists under GOPATH.
 function! go#tool#Exists(importpath) abort
-    let [l:out, l:err] = go#util#ExecuteInDir(['go', 'list', a:importpath])
+    let [l:out, l:err] = go#util#ExecInDir(['go', 'list', a:importpath])
     if l:err != 0
         return -1
     endif
