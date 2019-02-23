@@ -177,30 +177,6 @@ function! go#tool#Exists(importpath) abort
     return 0
 endfunction
 
-function! go#tool#OpenBrowser(url) abort
-    let l:cmd = go#config#PlayBrowserCommand()
-    if len(l:cmd) == 0
-        redraw
-        echohl WarningMsg
-        echo "It seems that you don't have general web browser. Open URL below."
-        echohl None
-        echo a:url
-        return
-    endif
-
-    " if setting starts with a !.
-    if l:cmd =~ '^!'
-        let l:cmd = substitute(l:cmd, '%URL%', '\=escape(shellescape(a:url), "#")', 'g')
-        silent! exec l:cmd
-    elseif cmd =~ '^:[A-Z]'
-        let l:cmd = substitute(l:cmd, '%URL%', '\=escape(a:url,"#")', 'g')
-        exec l:cmd
-    else
-        let l:cmd = substitute(l:cmd, '%URL%', '\=shellescape(a:url)', 'g')
-        call go#util#System(l:cmd)
-    endif
-endfunction
-
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
