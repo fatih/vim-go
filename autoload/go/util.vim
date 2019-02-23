@@ -196,6 +196,22 @@ function! go#util#Exec(cmd, ...) abort
   return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
 endfunction
 
+function! go#util#ExecuteInDir(cmd, ...) abort
+  if !isdirectory(expand("%:p:h"))
+    return ['', 1]
+  endif
+
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let dir = getcwd()
+  try
+    execute cd . fnameescape(expand("%:p:h"))
+    let [l:out, l:err] = call('go#util#Exec', [a:cmd] + a:000)
+  finally
+    execute cd . fnameescape(l:dir)
+  endtry
+  return [l:out, l:err]
+endfunction
+
 function! s:exec(cmd, ...) abort
   let l:bin = a:cmd[0]
   let l:cmd = go#util#Shelljoin([l:bin] + a:cmd[1:])
