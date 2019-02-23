@@ -111,6 +111,10 @@ function! go#tool#Exists(importpath) abort
     return 0
 endfunction
 
+function! go#tool#DescribeBalloon()
+  return go#guru#DescribeBalloon()
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

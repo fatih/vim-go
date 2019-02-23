@@ -282,8 +282,8 @@ function! go#debug#Stop() abort
   silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
 
   if has('balloon_eval')
-    set noballooneval
-    set balloonexpr=
+    let &noballooneval=s:ballooneval
+    let &balloonexpr=s:balloonexpr
   endif
 
   augroup vim-go-debug
@@ -466,6 +466,9 @@ function! s:start_cb() abort
   nnoremap <silent> <Plug>(go-debug-print)      :<C-u>call go#debug#Print(expand('<cword>'))<CR>
 
   if has('balloon_eval')
+    let s:balloonexpr=&balloonexpr
+    let s:ballooneval=&ballooneval
+
     set balloonexpr=go#debug#BalloonExpr()
     set ballooneval
   endif

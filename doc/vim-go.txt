@@ -1176,6 +1176,12 @@ cleaned for each package after `60` seconds. This can be changed with the
 Returns the description of the identifer under the cursor. Can be used to plug
 into the statusline.
 
+
+                                                   *go#tool#DescribeBalloon()*
+
+Suitable to be used as an expression to show the evaluation balloon. See `help
+balloonexpr`.
+
 ==============================================================================
 SETTINGS                                                        *go-settings*
 
