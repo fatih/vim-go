@@ -34,6 +34,9 @@ IMPROVEMENTS:
   [[GH-2143]](https://github.com/fatih/vim-go/pull/2143)
 * Run `godef` from the current buffer's directory to make sure it works with modules.
   [[GH-2150]](https://github.com/fatih/vim-go/pull/2150)
+* Add a function, `go#tool#DescribeBalloon`, to show information in a balloon
+  with `'balloonexpr`. (Vim8 only).
+  [[GH-1975]](https://github.com/fatih/vim-go/pull/1975)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
