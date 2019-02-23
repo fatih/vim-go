@@ -84,7 +84,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
     return
   endif
 
-  let errors = go#tool#ParseErrors(self.stdout)
+  let errors = go#util#ParseErrors(self.stdout)
   let errors = go#tool#FilterValids(errors)
 
   if !empty(errors)
