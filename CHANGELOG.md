@@ -261,7 +261,7 @@ BUG FIXES:
 FEATURES:
 
 * **Debugger support!** Add integrated support for the
-  [`delve`](https://github.com/derekparker/delve) debugger. Use
+  [`delve`](https://github.com/go-delve/delve) debugger. Use
   `:GoInstallBinaries` to install `dlv`, and see `:help go-debug` to get
   started.
   [[GH-1390]](https://github.com/fatih/vim-go/pull/1390)

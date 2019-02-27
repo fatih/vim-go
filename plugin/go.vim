@@ -47,7 +47,7 @@ call s:checkVersion()
 " needed by the user with GoInstallBinaries.
 let s:packages = {
       \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt'],
-      \ 'dlv':           ['github.com/derekparker/delve/cmd/dlv'],
+      \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv'],
       \ 'errcheck':      ['github.com/kisielk/errcheck'],
       \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct'],
       \ 'gocode':        ['github.com/mdempsky/gocode', {'windows': ['-ldflags', '-H=windowsgui']}],
