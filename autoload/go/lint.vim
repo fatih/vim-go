@@ -39,6 +39,10 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let cmd = split(go#config#MetalinterCommand(), " ")
   endif
 
+  if !empty(go#config#MetalinterConfig())
+    let cmd += ["--config=".go#config#MetalinterConfig()]
+  endif
+
   if a:autosave
     " redraw so that any messages that were displayed while writing the file
     " will be cleared

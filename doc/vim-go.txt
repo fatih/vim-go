@@ -1504,6 +1504,13 @@ over how `gometalinter` should be executed. By default it's empty.
 >
   let g:go_metalinter_command = ""
 <
+                                                    *'g:go_metalinter_config'*
+
+Use this option to set config path for the |:GoMetaLinter| command. By
+default it's empty
+>
+  let g:go_metalinter_config = ""
+<
                                                   *'g:go_metalinter_deadline'*
 
 Overrides the maximum time the linters have to complete. By default it's 5
