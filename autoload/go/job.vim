@@ -296,6 +296,11 @@ function! go#job#Start(cmd, options)
     unlet l:options._start
   endif
 
+  " noblock was added in 8.1.350; remove it if it's not supported.
+  if has_key(l:options, 'noblock') && (has('nvim') || !has("patch-8.1.350"))
+    call remove(l:options, 'noblock')
+  endif
+
   if go#util#HasDebug('shell-commands')
     call go#util#EchoInfo('job command: ' . string(a:cmd))
   endif

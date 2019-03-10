@@ -3,9 +3,17 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 function! go#uri#Encode(value) abort
+    return s:encode(a:value, '[^A-Za-z0-9_.~-]')
+endfunction
+
+function! go#uri#EncodePath(value) abort
+    return s:encode(a:value, '[^/A-Za-z0-9_.~-]')
+endfunction
+
+function! s:encode(value, unreserved)
     return substitute(
     \   a:value,
-    \   '[^A-Za-z0-9_.~-]',
+    \   a:unreserved,
     \   '\="%".printf(''%02X'', char2nr(submatch(0)))',
     \   'g'
     \)
@@ -15,7 +23,7 @@ function! go#uri#Decode(value) abort
     return substitute(
     \   a:value,
     \   '%\(\x\x\)',
-    \   '\=nr2char(''0x'' . submatch(1))',
+    \   '\=nr2char(''0X'' . submatch(1))',
     \   'g'
     \)
 endfunction
