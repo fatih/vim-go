@@ -79,6 +79,10 @@ endif
 augroup vim-go-buffer
   autocmd! * <buffer>
 
+  " TODO(bc): notify gopls about changes on CursorHold when the buffer is
+  " modified.
+  " TODO(bc): notify gopls that the file on disk is correct on BufWritePost
+
   autocmd CursorHold <buffer> call go#auto#auto_type_info()
   autocmd CursorHold <buffer> call go#auto#auto_sameids()
 
