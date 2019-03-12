@@ -118,7 +118,7 @@ function! s:newlsp()
           if has_key(l:response, 'id') && has_key(self.handlers, l:response.id)
             try
               if has_key(l:response, 'error')
-                call go#util#EchoError(l:response.message)
+                call go#util#EchoError(l:response.error)
                 return
               endif
 
