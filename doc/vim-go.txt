@@ -260,7 +260,7 @@ CTRL-]
 g<C-LeftMouse>
 <C-LeftMouse>
 
-    Goto declaration/definition for the declaration under the cursor. By
+    Go to declaration/definition for the identifier under the cursor. By
     default the CTRL-] shortcut, the mapping `gd` and <C-LeftMouse>,
     g<LeftMouse> are enabled to invoke :GoDef for the identifier under the
     cursor. See |'g:go_def_mapping_enabled'| to disable them. No explicit
@@ -272,6 +272,14 @@ g<C-LeftMouse>
     list of file locations you have visited with :GoDef that is retained to
     help you navigate software.
 
+    The per-window location stack is shared with |:GoDefType|.
+
+                                                                  *:GoDefType*
+:GoDefType
+
+    Go to type definition for the identifier under the cursor.
+
+    The per-window location stack is shared with |:GoDef|.
                                                                  *:GoDefStack*
 :GoDefStack [number]
 
