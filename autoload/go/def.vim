@@ -5,7 +5,7 @@ set cpo&vim
 let s:go_stack = []
 let s:go_stack_level = 0
 
-function! go#def#Jump(mode) abort
+function! go#def#Jump(mode, type) abort
   let fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
 
   " so guru right now is slow for some people. previously we were using
@@ -69,7 +69,11 @@ function! go#def#Jump(mode) abort
     let [l:line, l:col] = getpos('.')[1:2]
     " delegate to gopls, with an empty job object and an exit status of 0
     " (they're irrelevant for gopls).
-    call go#lsp#Definition(l:fname, l:line, l:col, function('s:jump_to_declaration_cb', [a:mode, 'gopls', {}, 0]))
+    if a:type
+      call go#lsp#TypeDef(l:fname, l:line, l:col, function('s:jump_to_declaration_cb', [a:mode, 'gopls', {}, 0]))
+    else
+      call go#lsp#Definition(l:fname, l:line, l:col, function('s:jump_to_declaration_cb', [a:mode, 'gopls', {}, 0]))
+    endif
     return
   else
     call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, guru, gopls]')

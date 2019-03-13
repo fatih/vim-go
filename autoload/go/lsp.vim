@@ -295,6 +295,25 @@ function! go#lsp#Definition(fname, line, col, handler)
   call l:lsp.sendMessage(l:msg, funcref('s:definitionHandler', [function(a:handler, [], l:state)], l:state))
 endfunction
 
+" go#lsp#Type calls gopls to get the type definition of the identifier at
+" line and col in fname. handler should be a dictionary function that takes a
+" list of strings in the form 'file:line:col: message'. handler will be
+" attached to a dictionary that manages state (statuslines, sets the winid,
+" etc.)
+function! go#lsp#TypeDef(fname, line, col, handler)
+  function! s:typeDefinitionHandler(next, msg) abort dict
+    " gopls returns a []Location; just take the first one.
+    let l:msg = a:msg[0]
+    let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, l:msg.range.start.character+1, 'lsp does not supply a description')]]
+    call call(a:next, l:args)
+  endfunction
+
+  let l:lsp = s:lspfactory.get()
+  let l:state = s:newHandlerState()
+  let l:msg = go#lsp#message#TypeDefinition(fnamemodify(a:fname, ':p'), a:line, a:col)
+  call l:lsp.sendMessage(l:msg, funcref('s:typeDefinitionHandler', [function(a:handler, [], l:state)], l:state))
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
