@@ -342,6 +342,9 @@ function! s:neooptions(options)
   let l:options['stdout_buf'] = ''
   let l:options['stderr_buf'] = ''
 
+  let l:err_mode = get(a:options, 'err_mode', get(a:options, 'mode', ''))
+  let l:out_mode = get(a:options, 'out_mode', get(a:options, 'mode', ''))
+
   for key in keys(a:options)
       if key == 'cwd'
         let l:options['cwd'] = a:options['cwd']
@@ -352,17 +355,17 @@ function! s:neooptions(options)
         let l:options['callback'] = a:options['callback']
 
         if !has_key(a:options, 'out_cb')
-          function! s:callback2on_stdout(ch, data, event) dict
-            let self.stdout_buf = s:neocb(a:ch, self.stdout_buf, a:data, self.callback)
+          function! s:callback2on_stdout(mode, ch, data, event) dict
+            let self.stdout_buf = s:neocb(a:mode, a:ch, self.stdout_buf, a:data, self.callback)
           endfunction
-          let l:options['on_stdout'] = function('s:callback2on_stdout', [], l:options)
+          let l:options['on_stdout'] = function('s:callback2on_stdout', [l:out_mode], l:options)
         endif
 
         if !has_key(a:options, 'err_cb')
-          function! s:callback2on_stderr(ch, data, event) dict
-            let self.stderr_buf = s:neocb(a:ch, self.stderr_buf, a:data, self.callback)
+          function! s:callback2on_stderr(mode, ch, data, event) dict
+            let self.stderr_buf = s:neocb(a:mode, a:ch, self.stderr_buf, a:data, self.callback)
           endfunction
-          let l:options['on_stderr'] = function('s:callback2on_stderr', [], l:options)
+          let l:options['on_stderr'] = function('s:callback2on_stderr', [l:err_mode], l:options)
         endif
 
         continue
@@ -370,20 +373,20 @@ function! s:neooptions(options)
 
       if key == 'out_cb'
         let l:options['out_cb'] = a:options['out_cb']
-        function! s:on_stdout(ch, data, event) dict
-          let self.stdout_buf = s:neocb(a:ch, self.stdout_buf, a:data, self.out_cb)
+        function! s:on_stdout(mode, ch, data, event) dict
+          let self.stdout_buf = s:neocb(a:mode, a:ch, self.stdout_buf, a:data, self.out_cb)
         endfunction
-        let l:options['on_stdout'] = function('s:on_stdout', [], l:options)
+        let l:options['on_stdout'] = function('s:on_stdout', [l:out_mode], l:options)
 
         continue
       endif
 
       if key == 'err_cb'
         let l:options['err_cb'] = a:options['err_cb']
-        function! s:on_stderr(ch, data, event) dict
-          let self.stderr_buf = s:neocb(a:ch, self.stderr_buf, a:data, self.err_cb )
+        function! s:on_stderr(mode, ch, data, event) dict
+          let self.stderr_buf = s:neocb(a:mode, a:ch, self.stderr_buf, a:data, self.err_cb )
         endfunction
-        let l:options['on_stderr'] = function('s:on_stderr', [], l:options)
+        let l:options['on_stderr'] = function('s:on_stderr', [l:err_mode], l:options)
 
         continue
       endif
@@ -441,15 +444,34 @@ function! s:winjobarg(idx, val) abort
   return a:val
 endfunction
 
-function! s:neocb(ch, buf, data, callback)
+function! s:neocb(mode, ch, buf, data, callback)
   " dealing with the channel lines of Neovim is awful. The docs (:help
   " channel-lines) say:
-  " stream event handlers may receive partial (incomplete) lines. For a
-  " given invocation of on_stdout etc, `a:data` is not guaranteed to end
-  " with a newline.
-  "   - `abcdefg` may arrive as `['abc']`, `['defg']`.
-  "   - `abc\nefg` may arrive as `['abc', '']`, `['efg']` or `['abc']`,
-  "     `['','efg']`, or even `['ab']`, `['c','efg']`.
+  "     stream event handlers may receive partial (incomplete) lines. For a
+  "     given invocation of on_stdout etc, `a:data` is not guaranteed to end
+  "     with a newline.
+  "       - `abcdefg` may arrive as `['abc']`, `['defg']`.
+  "       - `abc\nefg` may arrive as `['abc', '']`, `['efg']` or `['abc']`,
+  "         `['','efg']`, or even `['ab']`, `['c','efg']`.
+  "
+  " Thankfully, though, this is explained a bit better in an issue:
+  " https://github.com/neovim/neovim/issues/3555. Specifically in these two
+  " comments:
+  "     * https://github.com/neovim/neovim/issues/3555#issuecomment-152290804
+  "     * https://github.com/neovim/neovim/issues/3555#issuecomment-152588749
+  "
+  " The key is
+  "     Every item in the list passed to job control callbacks represents a
+  "     string after a newline(Except the first, of course). If the program
+  "     outputs: "hello\nworld" the corresponding list is ["hello", "world"].
+  "     If the program outputs "hello\nworld\n", the corresponding list is
+  "     ["hello", "world", ""]. In other words, you can always determine if
+  "     the last line received is complete or not.
+  " and
+  "     for every list you receive in a callback, all items except the first
+  "     represent newlines.
+
+  let l:buf = ''
 
   " a single empty string means EOF was reached.
   if len(a:data) == 1 && a:data[0] == ''
@@ -460,20 +482,28 @@ function! s:neocb(ch, buf, data, callback)
     endif
 
     let l:data = [a:buf]
-    let l:buf = ''
   else
     let l:data = copy(a:data)
     let l:data[0] = a:buf . l:data[0]
 
     " The last element may be a partial line; save it for next time.
-    let l:buf = l:data[-1]
-
-    let l:data = l:data[:-2]
+    if a:mode != 'raw'
+      let l:buf = l:data[-1]
+      let l:data = l:data[:-2]
+    endif
   endif
 
-  for l:msg in l:data
+  let l:i = 0
+  let l:last = len(l:data) - 1
+  while l:i <= l:last
+    let l:msg = l:data[l:i]
+    if a:mode == 'raw' && l:i < l:last
+      let l:msg = l:msg . "\n"
+    endif
     call a:callback(a:ch, l:msg)
-  endfor
+
+    let l:i += 1
+  endwhile
 
   return l:buf
 endfunction
