@@ -33,7 +33,7 @@ function! s:newlsp()
   " queue is messages to send after initialization
   " last_request_id is id of the most recently sent request.
   " buf is unprocessed/incomplete responses
-  " handlers is request id -> callback
+  " handlers is request id -> {start, showstatus, handleResult}
   let l:lsp = {
         \ 'job':  '',
         \ 'ready': 0,
@@ -117,12 +117,15 @@ function! s:newlsp()
         for l:response in l:responses
           if has_key(l:response, 'id') && has_key(self.handlers, l:response.id)
             try
+              let l:handler = self.handlers[l:response.id]
+
               if has_key(l:response, 'error')
-                call go#util#EchoError(l:response.error)
+                call l:handler.showstatus(0)
+                call go#util#EchoError(l:response.error.message)
                 return
               endif
-
-              call call(self.handlers[l:response.id], [l:response.result])
+              call l:handler.showstatus(1)
+              call call(l:handler.handleResult, [l:response.result])
             finally
               call remove(self.handlers, l:response.id)
             endtry
@@ -177,8 +180,7 @@ function! s:newlsp()
       let self.handlers[l:msg.id] = a:handler
     endif
 
-    " TODO(bc): update the statusline similarly to how job.vim does when
-    " starting a job.
+    call a:handler.start()
     call self.write(l:msg)
   endfunction
 
@@ -267,11 +269,65 @@ endfunction
 function! s:noop()
 endfunction
 
-function! s:newHandlerState()
-  " TODO(bc): capture the window id, set status, etc.
+function! s:newHandlerState(statustype)
   let l:state = {
         \ 'winid': win_getid(winnr()),
+        \ 'statustype': a:statustype,
+        \ 'jobdir': getcwd(),
       \ }
+
+  function! s:showstatus(ok) abort dict
+    if self.statustype == ''
+      return
+    endif
+
+    if go#config#EchoCommandInfo()
+      let prefix = '[' . self.statustype . '] '
+      if a:ok
+        call go#util#EchoSuccess(prefix . "SUCCESS")
+      else
+        call go#util#EchoError(prefix . "FAIL")
+      endif
+    endif
+
+    let status = {
+          \ 'desc': 'last status',
+          \ 'type': self.statustype,
+          \ 'state': "success",
+          \ }
+
+    if !a:ok
+      let status.state = "failed"
+    endif
+
+    if has_key(self, 'started_at')
+      let elapsed_time = reltimestr(reltime(self.started_at))
+      " strip whitespace
+      let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
+      let status.state .= printf(" (%ss)", elapsed_time)
+    endif
+
+    call go#statusline#Update(self.jobdir, status)
+  endfunction
+  " explicitly bind showstatus to state so that within it, self will
+  " always refer to state. See :help Partial for more information.
+  let l:state.showstatus = funcref('s:showstatus', [], l:state)
+
+  function! s:start() abort dict
+    if self.statustype != ''
+      let status = {
+            \ 'desc': 'current status',
+            \ 'type': self.statustype,
+            \ 'state': "started",
+            \ }
+
+      call go#statusline#Update(self.jobdir, status)
+    endif
+    let self.started_at = reltime()
+  endfunction
+  " explicitly bind start to state so that within it, self will
+  " always refer to state. See :help Partial for more information.
+  let l:state.start = funcref('s:start', [], l:state)
 
   return l:state
 endfunction
@@ -290,9 +346,10 @@ function! go#lsp#Definition(fname, line, col, handler)
   endfunction
 
   let l:lsp = s:lspfactory.get()
-  let l:state = s:newHandlerState()
+  let l:state = s:newHandlerState('definition')
+  let l:state.handleResult = funcref('s:definitionHandler', [function(a:handler, [], l:state)], l:state)
   let l:msg = go#lsp#message#Definition(fnamemodify(a:fname, ':p'), a:line, a:col)
-  call l:lsp.sendMessage(l:msg, funcref('s:definitionHandler', [function(a:handler, [], l:state)], l:state))
+  call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
 " go#lsp#Type calls gopls to get the type definition of the identifier at
@@ -309,9 +366,10 @@ function! go#lsp#TypeDef(fname, line, col, handler)
   endfunction
 
   let l:lsp = s:lspfactory.get()
-  let l:state = s:newHandlerState()
+  let l:state = s:newHandlerState('type definition')
   let l:msg = go#lsp#message#TypeDefinition(fnamemodify(a:fname, ':p'), a:line, a:col)
-  call l:lsp.sendMessage(l:msg, funcref('s:typeDefinitionHandler', [function(a:handler, [], l:state)], l:state))
+  let l:state.handleResult = funcref('s:typeDefinitionHandler', [function(a:handler, [], l:state)], l:state)
+  call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
 " restore Vi compatibility settings
