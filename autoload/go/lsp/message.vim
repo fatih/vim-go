@@ -44,6 +44,49 @@ function! go#lsp#message#TypeDefinition(file, line, col)
        \ }
 endfunction
 
+function! go#lsp#message#DidOpen(file, content)
+  return {
+          \ 'notification': 1,
+          \ 'method': 'textDocument/didOpen',
+          \ 'params': {
+          \     'textDocument': {
+          \         'uri': go#path#ToURI(a:file),
+          \         'languageId': 'go',
+          \         'text': a:content,
+          \     }
+          \ }
+       \ }
+endfunction
+
+function! go#lsp#message#DidChange(file, content)
+  return {
+          \ 'notification': 1,
+          \ 'method': 'textDocument/didChange',
+          \ 'params': {
+          \     'textDocument': {
+          \         'uri': go#path#ToURI(a:file),
+          \     },
+          \     'contentChanges': [
+          \       {
+          \         'text': a:content,
+          \       }
+          \     ]
+          \ }
+       \ }
+endfunction
+
+function! go#lsp#message#DidClose(file)
+  return {
+          \ 'notification': 1,
+          \ 'method': 'textDocument/didClose',
+          \ 'params': {
+          \     'textDocument': {
+          \         'uri': go#path#ToURI(a:file),
+          \     }
+          \ }
+       \ }
+endfunction
+
 function! s:position(line, col)
   return {'line': a:line - 1, 'character': a:col-1}
 endfunction

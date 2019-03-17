@@ -345,6 +345,8 @@ function! go#lsp#Definition(fname, line, col, handler)
     call call(a:next, l:args)
   endfunction
 
+  call go#lsp#DidChange(a:fname)
+
   let l:lsp = s:lspfactory.get()
   let l:state = s:newHandlerState('definition')
   let l:state.handleResult = funcref('s:definitionHandler', [function(a:handler, [], l:state)], l:state)
@@ -365,11 +367,53 @@ function! go#lsp#TypeDef(fname, line, col, handler)
     call call(a:next, l:args)
   endfunction
 
+  call go#lsp#DidChange(a:fname)
+
   let l:lsp = s:lspfactory.get()
   let l:state = s:newHandlerState('type definition')
   let l:msg = go#lsp#message#TypeDefinition(fnamemodify(a:fname, ':p'), a:line, a:col)
   let l:state.handleResult = funcref('s:typeDefinitionHandler', [function(a:handler, [], l:state)], l:state)
   call l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! go#lsp#DidOpen(fname)
+  if get(b:, 'go_lsp_did_open', 0)
+    return
+  endif
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#DidOpen(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  let b:go_lsp_did_open = 1
+endfunction
+
+function! go#lsp#DidChange(fname)
+  if get(b:, 'go_lsp_did_open', 0)
+    return go#lsp#DidOpen(a:fname)
+  endif
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#DidChange(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  call l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! go#lsp#DidClose(fname)
+  if !get(b:, 'go_lsp_did_open', 0)
+    return
+  endif
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#DidClose(fnamemodify(a:fname, ':p'))
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  let b:go_lsp_did_open = 0
 endfunction
 
 " restore Vi compatibility settings
