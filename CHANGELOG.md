@@ -41,7 +41,11 @@ IMPROVEMENTS:
   [[GH-2163]](https://github.com/fatih/vim-go/pull/2163).
 * Add `:GoDefType` to jump to the type definition of the identifier under the
   cursor.
-  [[GH-2165]](https://github.com/fatih/vim-go/pull/2165).
+  [[GH-2165]](https://github.com/fatih/vim-go/pull/2165)
+* Notify gopls about changes.
+  [[GH-2171]](https://github.com/fatih/vim-go/pull/2171)
+* Use gopls for code completion by default in Vim8 and Neovim.
+  [[GH-2172]](https://github.com/fatih/vim-go/pull/2172)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
