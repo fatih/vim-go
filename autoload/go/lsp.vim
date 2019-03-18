@@ -33,7 +33,14 @@ function! s:newlsp()
   " queue is messages to send after initialization
   " last_request_id is id of the most recently sent request.
   " buf is unprocessed/incomplete responses
-  " handlers is request id -> {start, showstatus, handleResult}
+  " handlers is a mapping of request ids to dictionaries of functions.
+  "   request id -> {start, showstatus, handleResult, error}
+  "   * start is a function that takes no arguments
+  "   * showstatus is a function that takes 1 argument. The parameter will be 1
+  "     if the call was succesful.
+  "   * handleResult takes a single argument, the result message received from gopls
+  "   * error takes a single argument, the error message received from gopls.
+  "     The error method is optional.
   let l:lsp = {
         \ 'job':  '',
         \ 'ready': 0,
@@ -77,9 +84,7 @@ function! s:newlsp()
       endif
 
       if go#util#HasDebug('lsp')
-        let g:go_lsp_log = add(go#config#LspLog(), {
-              \ 'response': l:rest[:l:rest_start_idx - 1]
-        \ })
+        let g:go_lsp_log = add(go#config#LspLog(), "<-\n" . l:rest[:l:rest_start_idx - 1])
       endif
 
       let l:body = l:rest[l:body_start_idx : l:rest_start_idx - 1]
@@ -122,6 +127,9 @@ function! s:newlsp()
               if has_key(l:response, 'error')
                 call l:handler.showstatus(0)
                 call go#util#EchoError(l:response.error.message)
+                if has_key(l:handler, 'error')
+                  call call(l:handler.error, [l:response.error.message])
+                endif
                 return
               endif
               call l:handler.showstatus(1)
@@ -209,9 +217,7 @@ function! s:newlsp()
       let l:data = 'Content-Length: ' . strlen(l:body) . "\r\n\r\n" . l:body
 
     if go#util#HasDebug('lsp')
-      let g:go_lsp_log = add(go#config#LspLog(), {
-            \ 'request':  l:data,
-      \ })
+      let g:go_lsp_log = add(go#config#LspLog(), "->\n" . l:data)
     endif
 
     if has('nvim')
@@ -233,9 +239,7 @@ function! s:newlsp()
 
   function! l:lsp.err_cb(ch, msg) dict abort
     if go#util#HasDebug('lsp')
-      let g:go_lsp_log = add(go#config#LspLog(), {
-            \ 'stderr':  a:msg,
-      \ })
+      let g:go_lsp_log = add(go#config#LspLog(), "<-stderr\n" .  a:msg)
     endif
   endfunction
 
@@ -414,6 +418,32 @@ function! go#lsp#DidClose(fname)
   call l:lsp.sendMessage(l:msg, l:state)
 
   let b:go_lsp_did_open = 0
+endfunction
+
+function! go#lsp#Completion(fname, line, col, handler)
+  function! s:completionHandler(next, msg) abort dict
+    " gopls returns a CompletionList.
+    let l:matches = []
+    for l:item in a:msg.items
+      let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': l:item.detail, 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
+      if has_key(l:item, 'documentation')
+        let l:match.info .= "\n\n" . l:item.documentation
+      endif
+
+      let l:matches = add(l:matches, l:match)
+    endfor
+    let l:args = [l:matches]
+    call call(a:next, l:args)
+  endfunction
+
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#Completion(a:fname, a:line, a:col)
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:completionHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:completionHandler', [function(a:handler, [{'items': []}], l:state)], l:state)
+  call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
 " restore Vi compatibility settings

@@ -87,6 +87,19 @@ function! go#lsp#message#DidClose(file)
        \ }
 endfunction
 
+function! go#lsp#message#Completion(file, line, col)
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/completion',
+          \ 'params': {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:file)
+          \   },
+          \   'position': s:position(a:line, a:col),
+          \ }
+       \ }
+endfunction
+
 function! s:position(line, col)
   return {'line': a:line - 1, 'character': a:col-1}
 endfunction
