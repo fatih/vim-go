@@ -425,7 +425,11 @@ function! go#lsp#Completion(fname, line, col, handler)
     " gopls returns a CompletionList.
     let l:matches = []
     for l:item in a:msg.items
-      let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': l:item.detail, 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
+      let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
+      if has_key(l:item, 'detail')
+          let l:item.info = l:item.detail
+      endif
+
       if has_key(l:item, 'documentation')
         let l:match.info .= "\n\n" . l:item.documentation
       endif
