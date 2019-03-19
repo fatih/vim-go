@@ -421,13 +421,17 @@ function! go#lsp#Completion(fname, line, col, handler)
     call call(a:next, l:args)
   endfunction
 
+  function! s:errorHandler(next, error) abort dict
+    call call(a:next, [[]])
+  endfunction
+
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#Completion(a:fname, a:line, a:col)
-  let l:state = s:newHandlerState('')
+  let l:state = s:newHandlerState('completion')
   let l:state.handleResult = funcref('s:completionHandler', [function(a:handler, [], l:state)], l:state)
-  let l:state.error = funcref('s:completionHandler', [function(a:handler, [{'items': []}], l:state)], l:state)
+  let l:state.error = funcref('s:errorHandler', [function(a:handler, [], l:state)], l:state)
   call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
