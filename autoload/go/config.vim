@@ -240,16 +240,32 @@ function! go#config#SetTemplateAutocreate(value) abort
   let g:go_template_autocreate = a:value
 endfunction
 
+function! go#config#Metalinter() abort
+  return get(g:, "go_metalinter", "gometalinter")
+endfunction
+
 function! go#config#MetalinterCommand() abort
   return get(g:, "go_metalinter_command", "")
 endfunction
 
 function! go#config#MetalinterAutosaveEnabled() abort
-  return get(g:, 'go_metalinter_autosave_enabled', ['vet', 'golint'])
+  let l:default_enabled = ["vet", "golint"]
+
+  if go#config#Metalinter() == "golangci-lint"
+    let l:default_enabled = ["deadcode", "errcheck", "ineffassign", "structcheck", "typecheck", "varcheck", "golint"]
+  endif
+
+  return get(g:, "go_metalinter_autosave_enabled", default_enabled)
 endfunction
 
 function! go#config#MetalinterEnabled() abort
-  return get(g:, "go_metalinter_enabled", ['vet', 'golint', 'errcheck'])
+  let l:default_enabled = ["vet", "golint", "errcheck"]
+
+  if go#config#Metalinter() == "golangci-lint"
+    let l:default_enabled = ["deadcode", "errcheck", "ineffassign", "structcheck", "typecheck", "varcheck", "gosimple", "govet", "staticcheck", "unused", "golint"]
+  endif
+
+  return get(g:, "go_metalinter_enabled", default_enabled)
 endfunction
 
 function! go#config#MetalinterDisabled() abort
