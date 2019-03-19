@@ -405,6 +405,12 @@ function! go#lsp#Completion(fname, line, col, handler)
   function! s:completionHandler(next, msg) abort dict
     " gopls returns a CompletionList.
     let l:matches = []
+
+    " a:msg is of type String when it can't resolve the completion
+    if type(a:msg) != v:t_dict 
+      return
+    endif
+
     for l:item in a:msg.items
       let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
       if has_key(l:item, 'detail')
