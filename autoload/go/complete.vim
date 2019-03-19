@@ -270,9 +270,8 @@ function! go#complete#Complete(findstart, base) abort
       return -3
     endif
 
-    return col('.') - (len(l:state.matches[0].abbr) - len(l:state.matches[0].word))
-    "findstart = 0 when we need to return the list of completions
-  else
+    return col('.')
+  else "findstart = 0 when we need to return the list of completions
     return s:completions
   endif
 endfunction
