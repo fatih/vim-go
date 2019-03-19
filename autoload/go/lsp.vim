@@ -34,9 +34,9 @@ function! s:newlsp()
   " last_request_id is id of the most recently sent request.
   " buf is unprocessed/incomplete responses
   " handlers is a mapping of request ids to dictionaries of functions.
-  "   request id -> {start, showstatus, handleResult, error}
+  "   request id -> {start, requestComplete, handleResult, error}
   "   * start is a function that takes no arguments
-  "   * showstatus is a function that takes 1 argument. The parameter will be 1
+  "   * requestComplete is a function that takes 1 argument. The parameter will be 1
   "     if the call was succesful.
   "   * handleResult takes a single argument, the result message received from gopls
   "   * error takes a single argument, the error message received from gopls.
@@ -93,8 +93,6 @@ function! s:newlsp()
       try
         " add the json body to the list.
         call add(l:responses, json_decode(l:body))
-
-        " TODO(bc): set status line stuff similarly to how job.vim handles it.
       catch
         " TODO(bc): log the message and/or show an error message.
       finally
@@ -110,53 +108,33 @@ function! s:newlsp()
 
       let [self.buf, l:responses] = self.readMessage(self.buf)
 
-      if self.ready is 0
-        for l:response in l:responses
-          " TODO(bc): handle notifications that aren't InitializeResult (e.g.
-          " window/showMessage).
-          call self.handleInitializeResult(l:response)
-        endfor
-      endif
+      " TODO(bc): handle notifications (e.g. window/showMessage).
 
-      if self.ready is 1
-        for l:response in l:responses
-          if has_key(l:response, 'id') && has_key(self.handlers, l:response.id)
-            try
-              let l:handler = self.handlers[l:response.id]
+      for l:response in l:responses
+        if has_key(l:response, 'id') && has_key(self.handlers, l:response.id)
+          try
+            let l:handler = self.handlers[l:response.id]
 
-              if has_key(l:response, 'error')
-                call l:handler.showstatus(0)
-                call go#util#EchoError(l:response.error.message)
-                if has_key(l:handler, 'error')
-                  call call(l:handler.error, [l:response.error.message])
-                endif
-                return
+            if has_key(l:response, 'error')
+              call l:handler.requestComplete(0)
+              call go#util#EchoError(l:response.error.message)
+              if has_key(l:handler, 'error')
+                call call(l:handler.error, [l:response.error.message])
               endif
-              call l:handler.showstatus(1)
-              call call(l:handler.handleResult, [l:response.result])
-            finally
-              call remove(self.handlers, l:response.id)
-            endtry
-          endif
-        endfor
-      endif
+              return
+            endif
+            call l:handler.requestComplete(1)
+            call call(l:handler.handleResult, [l:response.result])
+          finally
+            call remove(self.handlers, l:response.id)
+          endtry
+        endif
+      endfor
   endfunction
 
-  function! l:lsp.handleInitializeResult(response) dict abort
+  function! l:lsp.handleInitializeResult(result) dict abort
+    let self.ready = 1
     " TODO(bc): send initialized message to the server?
-
-    "if get(a:response, 'method', '') is# 'initialize'
-    "  " TODO(bc): can this even happen?
-    "  let self.ready = 1
-    " elseif type(get(a:response, 'result')) is v:t_dict && has_key(a:response.result, 'capabilities')
-    if type(get(a:response, 'result')) is v:t_dict && has_key(a:response.result, 'capabilities')
-      " TODO(bc): store capabilities
-      let self.ready = 1
-    endif
-
-    if self.ready is 0
-      return
-    endif
 
     " send messages queued while waiting for ready.
     for l:item in self.queue
@@ -173,8 +151,11 @@ function! s:newlsp()
       " keep track of servers by rootUri).
       let l:msg = self.newMessage(go#lsp#message#Initialize(getcwd()))
 
-      " TODO(bc): update the statusline similarly to how job.vim does when
-      " starting a job.
+      let l:state = s:newHandlerState('gopls')
+      let l:state.handleResult = funcref('self.handleInitializeResult', [], l:self)
+      let self.handlers[l:msg.id] = l:state
+
+      call l:state.start()
       call self.write(l:msg)
     endif
 
@@ -280,7 +261,7 @@ function! s:newHandlerState(statustype)
         \ 'jobdir': getcwd(),
       \ }
 
-  function! s:showstatus(ok) abort dict
+  function! s:requestComplete(ok) abort dict
     if self.statustype == ''
       return
     endif
@@ -313,9 +294,9 @@ function! s:newHandlerState(statustype)
 
     call go#statusline#Update(self.jobdir, status)
   endfunction
-  " explicitly bind showstatus to state so that within it, self will
+  " explicitly bind requestComplete to state so that within it, self will
   " always refer to state. See :help Partial for more information.
-  let l:state.showstatus = funcref('s:showstatus', [], l:state)
+  let l:state.requestComplete = funcref('s:requestComplete', [], l:state)
 
   function! s:start() abort dict
     if self.statustype != ''
