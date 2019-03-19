@@ -450,7 +450,6 @@ function! go#config#EchoGoInfo() abort
   return get(g:, "go_echo_go_info", 1)
 endfunction
 
-
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
