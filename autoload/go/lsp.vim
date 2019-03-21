@@ -238,14 +238,14 @@ function! s:newlsp()
         \ 'cwd': getcwd(),
         \}
 
-  let bin_path = go#path#CheckBinPath("gopls")
-  if empty(bin_path)
+  let l:bin_path = go#path#CheckBinPath("gopls")
+  if empty(l:bin_path)
     return
   endif
 
   " TODO(bc): output a message indicating which directory lsp is going to
   " start in.
-  let l:lsp.job = go#job#Start('gopls', l:opts)
+  let l:lsp.job = go#job#Start([l:bin_path], l:opts)
 
   " TODO(bc): send the initialize message now?
   return l:lsp
