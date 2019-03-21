@@ -61,7 +61,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     "   <file>:<line>:<column>:<severity>: <message> (<linter>)
     "   <file>:<line>::<severity>: <message> (<linter>)
     " This can be defined by the following errorformat:
-    let errformat = "f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
+    let errformat = "%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
   else
     " Golangci-lint can output the following:
     "   <file>:<line>:<column>: <message> (<linter>)
