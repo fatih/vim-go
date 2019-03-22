@@ -240,12 +240,8 @@ function! go#config#SetTemplateAutocreate(value) abort
   let g:go_template_autocreate = a:value
 endfunction
 
-function! go#config#Metalinter() abort
-  return get(g:, "go_metalinter", "gometalinter")
-endfunction
-
 function! go#config#MetalinterCommand() abort
-  return get(g:, "go_metalinter_command", "")
+  return get(g:, "go_metalinter_command", "gometalinter")
 endfunction
 
 function! go#config#MetalinterAutosaveEnabled() abort

@@ -9,9 +9,9 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let goargs = a:000
   endif
 
-  let l:metalinter = go#config#Metalinter()
+  let l:metalinter = go#config#MetalinterCommand()
 
-  if empty(go#config#MetalinterCommand())
+  if l:metalinter == 'gometalinter' || l:metalinter == 'golangci-lint'
     let cmd = s:metalintercmd(l:metalinter)
     if empty(cmd)
       return
@@ -231,7 +231,7 @@ function! s:metalintercmd(metalinter)
     if a:metalinter == "gometalinter"
       let l:cmd = s:gometalintercmd(bin_path)
     elseif a:metalinter == "golangci-lint"
-      let l:cmd =  s:golangcilintcmd(bin_path)
+      let l:cmd = s:golangcilintcmd(bin_path)
     endif
   endif
 

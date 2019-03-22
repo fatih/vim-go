@@ -1515,11 +1515,12 @@ it's empty
 <
                                                    *'g:go_metalinter_command'*
 
-Overrides the command to be executed when |:GoMetaLinter| is called. This is
-an advanced settings and is for users who want to have a complete control
-over how `gometalinter` should be executed. By default it's empty.
+Overrides the command to be executed when |:GoMetaLinter| is called.  By
+default it's `gometalinter`. `golangci-lint` is also supported. It can also be
+used as an advanced setting for users who want to have more control over
+the metalinter.
 >
-  let g:go_metalinter_command = ""
+  let g:go_metalinter_command = "gometalinter"
 <
                                                   *'g:go_metalinter_deadline'*
 
