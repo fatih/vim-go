@@ -88,7 +88,7 @@ func! Test_Vet()
   compiler go
 
   let expected = [
-        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
+        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
         \ 'text': 'Printf format %d has arg str of wrong type string'}
       \ ]
 
