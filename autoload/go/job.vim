@@ -145,23 +145,6 @@ function! go#job#Options(args)
     let state.custom_complete = a:args.complete
   endif
 
-  function! s:start(args) dict
-    if go#config#EchoCommandInfo() && self.statustype != ""
-      let prefix = '[' . self.statustype . '] '
-      call go#util#EchoSuccess(prefix . "dispatched")
-    endif
-
-    if self.statustype != ''
-      let status = {
-            \ 'desc': 'current status',
-            \ 'type': self.statustype,
-            \ 'state': "started",
-            \ }
-
-      call go#statusline#Update(self.jobdir, status)
-    endif
-    let self.started_at = reltime()
-  endfunction
   " explicitly bind _start to state so that within it, self will
   " always refer to state. See :help Partial for more information.
   "
@@ -169,35 +152,14 @@ function! go#job#Options(args)
   " outside of this file.
   let cbs._start = function('s:start', [''], state)
 
-  function! s:callback(chan, msg) dict
-    call add(self.messages, a:msg)
-  endfunction
   " explicitly bind callback to state so that within it, self will
   " always refer to state. See :help Partial for more information.
   let cbs.callback = function('s:callback', [], state)
 
-  function! s:exit_cb(job, exitval) dict
-    let self.exit_status = a:exitval
-    let self.exited = 1
-
-    call self.show_status(a:job, a:exitval)
-
-    if self.closed || has('nvim')
-      call self.complete(a:job, self.exit_status, self.messages)
-    endif
-  endfunction
   " explicitly bind exit_cb to state so that within it, self will always refer
   " to state. See :help Partial for more information.
   let cbs.exit_cb = function('s:exit_cb', [], state)
 
-  function! s:close_cb(ch) dict
-    let self.closed = 1
-
-    if self.exited
-      let job = ch_getjob(a:ch)
-      call self.complete(job, self.exit_status, self.messages)
-    endif
-  endfunction
   " explicitly bind close_cb to state so that within it, self will
   " always refer to state. See :help Partial for more information.
   let cbs.close_cb = function('s:close_cb', [], state)
@@ -259,6 +221,48 @@ function! go#job#Options(args)
   endfunction
 
   return cbs
+endfunction
+
+function! s:start(args) dict
+  if go#config#EchoCommandInfo() && self.statustype != ""
+    let prefix = '[' . self.statustype . '] '
+    call go#util#EchoSuccess(prefix . "dispatched")
+  endif
+
+  if self.statustype != ''
+    let status = {
+          \ 'desc': 'current status',
+          \ 'type': self.statustype,
+          \ 'state': "started",
+          \ }
+
+    call go#statusline#Update(self.jobdir, status)
+  endif
+  let self.started_at = reltime()
+endfunction
+
+function! s:callback(chan, msg) dict
+  call add(self.messages, a:msg)
+endfunction
+
+function! s:exit_cb(job, exitval) dict
+  let self.exit_status = a:exitval
+  let self.exited = 1
+
+  call self.show_status(a:job, a:exitval)
+
+  if self.closed || has('nvim')
+    call self.complete(a:job, self.exit_status, self.messages)
+  endif
+endfunction
+
+function! s:close_cb(ch) dict
+  let self.closed = 1
+
+  if self.exited
+    let job = ch_getjob(a:ch)
+    call self.complete(job, self.exit_status, self.messages)
+  endif
 endfunction
 
 " go#job#Start runs a job. The options are expected to be the options
@@ -355,16 +359,10 @@ function! s:neooptions(options)
         let l:options['callback'] = a:options['callback']
 
         if !has_key(a:options, 'out_cb')
-          function! s:callback2on_stdout(mode, ch, data, event) dict
-            let self.stdout_buf = s:neocb(a:mode, a:ch, self.stdout_buf, a:data, self.callback)
-          endfunction
           let l:options['on_stdout'] = function('s:callback2on_stdout', [l:out_mode], l:options)
         endif
 
         if !has_key(a:options, 'err_cb')
-          function! s:callback2on_stderr(mode, ch, data, event) dict
-            let self.stderr_buf = s:neocb(a:mode, a:ch, self.stderr_buf, a:data, self.callback)
-          endfunction
           let l:options['on_stderr'] = function('s:callback2on_stderr', [l:err_mode], l:options)
         endif
 
@@ -373,9 +371,6 @@ function! s:neooptions(options)
 
       if key == 'out_cb'
         let l:options['out_cb'] = a:options['out_cb']
-        function! s:on_stdout(mode, ch, data, event) dict
-          let self.stdout_buf = s:neocb(a:mode, a:ch, self.stdout_buf, a:data, self.out_cb)
-        endfunction
         let l:options['on_stdout'] = function('s:on_stdout', [l:out_mode], l:options)
 
         continue
@@ -383,9 +378,6 @@ function! s:neooptions(options)
 
       if key == 'err_cb'
         let l:options['err_cb'] = a:options['err_cb']
-        function! s:on_stderr(mode, ch, data, event) dict
-          let self.stderr_buf = s:neocb(a:mode, a:ch, self.stderr_buf, a:data, self.err_cb )
-        endfunction
         let l:options['on_stderr'] = function('s:on_stderr', [l:err_mode], l:options)
 
         continue
@@ -393,9 +385,6 @@ function! s:neooptions(options)
 
       if key == 'exit_cb'
         let l:options['exit_cb'] = a:options['exit_cb']
-        function! s:on_exit(jobid, exitval, event) dict
-          call self.exit_cb(a:jobid, a:exitval)
-        endfunction
         let l:options['on_exit'] = function('s:on_exit', [], l:options)
 
         continue
@@ -413,6 +402,26 @@ function! s:neooptions(options)
       endif
   endfor
   return l:options
+endfunction
+
+function! s:callback2on_stdout(mode, ch, data, event) dict
+  let self.stdout_buf = s:neocb(a:mode, a:ch, self.stdout_buf, a:data, self.callback)
+endfunction
+
+function! s:callback2on_stderr(mode, ch, data, event) dict
+  let self.stderr_buf = s:neocb(a:mode, a:ch, self.stderr_buf, a:data, self.callback)
+endfunction
+
+function! s:on_stdout(mode, ch, data, event) dict
+  let self.stdout_buf = s:neocb(a:mode, a:ch, self.stdout_buf, a:data, self.out_cb)
+endfunction
+
+function! s:on_stderr(mode, ch, data, event) dict
+  let self.stderr_buf = s:neocb(a:mode, a:ch, self.stderr_buf, a:data, self.err_cb )
+endfunction
+
+function! s:on_exit(jobid, exitval, event) dict
+  call self.exit_cb(a:jobid, a:exitval)
 endfunction
 
 function! go#job#Stop(job) abort
