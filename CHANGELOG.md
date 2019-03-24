@@ -91,6 +91,8 @@ BUG FIXES:
   [[GH-2141]](https://github.com/fatih/vim-go/pull/2141)
 * Fix errors caused by redefining functions within functions.
   [[GH-2189]](https://github.com/fatih/vim-go/pull/2189)
+* Highlight pre-release and metadata in versions in go.mod.
+  [[GH-2192]](https://github.com/fatih/vim-go/pull/2192)
 
 ## 1.19 - (November 4, 2018)
 
