@@ -48,6 +48,8 @@ IMPROVEMENTS:
   [[GH-2172]](https://github.com/fatih/vim-go/pull/2172)
 * Respect `g:go_jump_to_error` when running `gometalinter` automatically on save.
   [[GH-2176]](https://github.com/fatih/vim-go/pull/2176)
+* Add support for golangci-lint.
+  [[GH-2182]](https://github.com/fatih/vim-go/pull/2182)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
@@ -77,6 +79,8 @@ BUG FIXES:
   [[GH-2127]](https://github.com/fatih/vim-go/pull/2127)
 * Fix jumping to module or package using godef.
   [[GH-2141]](https://github.com/fatih/vim-go/pull/2141)
+* Fix errors caused by redefining functions within functions.
+  [[GH-2189]](https://github.com/fatih/vim-go/pull/2189)
 
 ## 1.19 - (November 4, 2018)
 
