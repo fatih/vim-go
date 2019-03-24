@@ -261,60 +261,62 @@ function! s:newHandlerState(statustype)
         \ 'jobdir': getcwd(),
       \ }
 
-  function! s:requestComplete(ok) abort dict
-    if self.statustype == ''
-      return
-    endif
-
-    if go#config#EchoCommandInfo()
-      let prefix = '[' . self.statustype . '] '
-      if a:ok
-        call go#util#EchoSuccess(prefix . "SUCCESS")
-      else
-        call go#util#EchoError(prefix . "FAIL")
-      endif
-    endif
-
-    let status = {
-          \ 'desc': 'last status',
-          \ 'type': self.statustype,
-          \ 'state': "success",
-          \ }
-
-    if !a:ok
-      let status.state = "failed"
-    endif
-
-    if has_key(self, 'started_at')
-      let elapsed_time = reltimestr(reltime(self.started_at))
-      " strip whitespace
-      let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
-      let status.state .= printf(" (%ss)", elapsed_time)
-    endif
-
-    call go#statusline#Update(self.jobdir, status)
-  endfunction
   " explicitly bind requestComplete to state so that within it, self will
   " always refer to state. See :help Partial for more information.
   let l:state.requestComplete = funcref('s:requestComplete', [], l:state)
 
-  function! s:start() abort dict
-    if self.statustype != ''
-      let status = {
-            \ 'desc': 'current status',
-            \ 'type': self.statustype,
-            \ 'state': "started",
-            \ }
-
-      call go#statusline#Update(self.jobdir, status)
-    endif
-    let self.started_at = reltime()
-  endfunction
   " explicitly bind start to state so that within it, self will
   " always refer to state. See :help Partial for more information.
   let l:state.start = funcref('s:start', [], l:state)
 
   return l:state
+endfunction
+
+function! s:requestComplete(ok) abort dict
+  if self.statustype == ''
+    return
+  endif
+
+  if go#config#EchoCommandInfo()
+    let prefix = '[' . self.statustype . '] '
+    if a:ok
+      call go#util#EchoSuccess(prefix . "SUCCESS")
+    else
+      call go#util#EchoError(prefix . "FAIL")
+    endif
+  endif
+
+  let status = {
+        \ 'desc': 'last status',
+        \ 'type': self.statustype,
+        \ 'state': "success",
+        \ }
+
+  if !a:ok
+    let status.state = "failed"
+  endif
+
+  if has_key(self, 'started_at')
+    let elapsed_time = reltimestr(reltime(self.started_at))
+    " strip whitespace
+    let elapsed_time = substitute(elapsed_time, '^\s*\(.\{-}\)\s*$', '\1', '')
+    let status.state .= printf(" (%ss)", elapsed_time)
+  endif
+
+  call go#statusline#Update(self.jobdir, status)
+endfunction
+
+function! s:start() abort dict
+  if self.statustype != ''
+    let status = {
+          \ 'desc': 'current status',
+          \ 'type': self.statustype,
+          \ 'state': "started",
+          \ }
+
+    call go#statusline#Update(self.jobdir, status)
+  endif
+  let self.started_at = reltime()
 endfunction
 
 " go#lsp#Definition calls gopls to get the definition of the identifier at
@@ -323,13 +325,6 @@ endfunction
 " attached to a dictionary that manages state (statuslines, sets the winid,
 " etc.)
 function! go#lsp#Definition(fname, line, col, handler)
-  function! s:definitionHandler(next, msg) abort dict
-    " gopls returns a []Location; just take the first one.
-    let l:msg = a:msg[0]
-    let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, l:msg.range.start.character+1, 'lsp does not supply a description')]]
-    call call(a:next, l:args)
-  endfunction
-
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()
@@ -339,19 +334,19 @@ function! go#lsp#Definition(fname, line, col, handler)
   call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
+function! s:definitionHandler(next, msg) abort dict
+  " gopls returns a []Location; just take the first one.
+  let l:msg = a:msg[0]
+  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, l:msg.range.start.character+1, 'lsp does not supply a description')]]
+  call call(a:next, l:args)
+endfunction
+
 " go#lsp#Type calls gopls to get the type definition of the identifier at
 " line and col in fname. handler should be a dictionary function that takes a
 " list of strings in the form 'file:line:col: message'. handler will be
 " attached to a dictionary that manages state (statuslines, sets the winid,
 " etc.)
 function! go#lsp#TypeDef(fname, line, col, handler)
-  function! s:typeDefinitionHandler(next, msg) abort dict
-    " gopls returns a []Location; just take the first one.
-    let l:msg = a:msg[0]
-    let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, l:msg.range.start.character+1, 'lsp does not supply a description')]]
-    call call(a:next, l:args)
-  endfunction
-
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()
@@ -359,6 +354,13 @@ function! go#lsp#TypeDef(fname, line, col, handler)
   let l:msg = go#lsp#message#TypeDefinition(fnamemodify(a:fname, ':p'), a:line, a:col)
   let l:state.handleResult = funcref('s:typeDefinitionHandler', [function(a:handler, [], l:state)], l:state)
   call l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:typeDefinitionHandler(next, msg) abort dict
+  " gopls returns a []Location; just take the first one.
+  let l:msg = a:msg[0]
+  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, l:msg.range.start.character+1, 'lsp does not supply a description')]]
+  call call(a:next, l:args)
 endfunction
 
 function! go#lsp#DidOpen(fname)
@@ -402,37 +404,37 @@ function! go#lsp#DidClose(fname)
 endfunction
 
 function! go#lsp#Completion(fname, line, col, handler)
-  function! s:completionHandler(next, msg) abort dict
-    " gopls returns a CompletionList.
-    let l:matches = []
-    for l:item in a:msg.items
-      let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
-      if has_key(l:item, 'detail')
-          let l:item.info = l:item.detail
-      endif
-
-      if has_key(l:item, 'documentation')
-        let l:match.info .= "\n\n" . l:item.documentation
-      endif
-
-      let l:matches = add(l:matches, l:match)
-    endfor
-    let l:args = [l:matches]
-    call call(a:next, l:args)
-  endfunction
-
-  function! s:errorHandler(next, error) abort dict
-    call call(a:next, [[]])
-  endfunction
-
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#Completion(a:fname, a:line, a:col)
   let l:state = s:newHandlerState('completion')
   let l:state.handleResult = funcref('s:completionHandler', [function(a:handler, [], l:state)], l:state)
-  let l:state.error = funcref('s:errorHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:completionErrorHandler', [function(a:handler, [], l:state)], l:state)
   call l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:completionHandler(next, msg) abort dict
+  " gopls returns a CompletionList.
+  let l:matches = []
+  for l:item in a:msg.items
+    let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
+    if has_key(l:item, 'detail')
+        let l:item.info = l:item.detail
+    endif
+
+    if has_key(l:item, 'documentation')
+      let l:match.info .= "\n\n" . l:item.documentation
+    endif
+
+    let l:matches = add(l:matches, l:match)
+  endfor
+  let l:args = [l:matches]
+  call call(a:next, l:args)
+endfunction
+
+function! s:completionErrorHandler(next, error) abort dict
+  call call(a:next, [[]])
 endfunction
 
 " restore Vi compatibility settings
