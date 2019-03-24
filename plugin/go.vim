@@ -58,6 +58,7 @@ let s:packages = {
       \ 'golint':        ['golang.org/x/lint/golint'],
       \ 'gopls':         ['golang.org/x/tools/cmd/gopls'],
       \ 'gometalinter':  ['github.com/alecthomas/gometalinter'],
+      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename'],
       \ 'gotags':        ['github.com/jstemmer/gotags'],
