@@ -297,6 +297,7 @@ function! go#job#Start(cmd, options)
     let l:manualcd = 1
     let l:dir = l:options.cwd
     execute l:cd fnameescape(l:dir)
+    call remove(l:options, 'cwd')
   endif
 
   if has_key(l:options, '_start')
