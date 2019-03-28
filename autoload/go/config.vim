@@ -211,12 +211,7 @@ function! go#config#DebugCommands() abort
 endfunction
 
 function! go#config#DebugLogOutput() abort
-  let shouldlog = get(g:, 'go_debug_log', 1)
-  if shouldlog
-     return  "--log --log_output " .  get(g:, 'go_debug_log_output', 'debugger, rpc')
-   else
-     return ""
-   endif
+  return get(g:, 'go_debug_log_output', 'debugger, rpc')
 endfunction
 
 function! go#config#LspLog() abort
