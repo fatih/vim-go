@@ -60,6 +60,8 @@ IMPROVEMENTS:
   [[GH-2172]](https://github.com/fatih/vim-go/pull/2172)
 * Add support for golangci-lint.
   [[GH-2182]](https://github.com/fatih/vim-go/pull/2182)
+* Show hover balloon using gopls instead of gocode.
+  [[GH-2202]](https://github.com/fatih/vim-go/pull/2202)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
