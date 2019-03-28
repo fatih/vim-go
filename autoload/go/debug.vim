@@ -624,7 +624,7 @@ function! go#debug#Start(is_test, ...) abort
           \ '--output', tempname(),
           \ '--headless',
           \ '--api-version', '2',
-          \ '--log', '--log-output', 'debugger,rpc',
+          \ go#config#DebugLogOutput(),
           \ '--listen', go#config#DebugAddress(),
     \]
 

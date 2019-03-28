@@ -2153,6 +2153,22 @@ Defaults to `127.0.0.1:8181`:
   let g:go_debug_address = '127.0.0.1:8181'
 <
 
+                                                        *'g:go_debug_log'*
+
+Set to `1` to enable logging of debugging output to standard error, or `0` to suppress log output.
+Defaults to `1`:
+>
+  let g:go_debug_log = 1
+<
+
+                                                        *'g:go_debug_log_output'*
+
+Specifies log output options for `dlv` if |g:go_debug_log| is set to `1`. Value should be a single string of comma-separated options suitable for passing to `dlv`.
+Default: `'debugger, rpc'`:
+>
+  let g:go_debug_log = 'debugger, rpc'
+<
+
                                                      *'g:go_highlight_debug'*
 
 Highlight the current line and breakpoints in the debugger.
