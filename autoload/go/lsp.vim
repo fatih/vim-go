@@ -437,6 +437,23 @@ function! s:completionErrorHandler(next, error) abort dict
   call call(a:next, [[]])
 endfunction
 
+function! go#lsp#Hover(fname, line, col, handler)
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#Hover(a:fname, a:line, a:col)
+  let l:state = s:newHandlerState('hover')
+  let l:state.handleResult = funcref('s:hoverHandler', [function(a:handler, [], l:state)], l:state)
+  call l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:hoverHandler(next, msg) abort dict
+  " gopls returns a MarkupContent.
+  let l:content = substitute(a:msg.contents.value, '```go\n\(.*\)\n```', '\1', '')
+  let l:args = [l:content]
+  call call(a:next, l:args)
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
