@@ -62,6 +62,12 @@ IMPROVEMENTS:
   [[GH-2182]](https://github.com/fatih/vim-go/pull/2182)
 * Show hover balloon using gopls instead of gocode.
   [[GH-2202]](https://github.com/fatih/vim-go/pull/2202)
+* Add a new option, `g:go_debug_log_output`, to control logging with the
+  debugger.
+  [[GH-2203]](https://github.com/fatih/vim-go/pull/2203)
+* Do not jump to quickfix or location list window when bang is used for async
+  jobs or linting.
+  [[GH-2205]](https://github.com/fatih/vim-go/pull/2205)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
