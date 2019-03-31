@@ -617,8 +617,6 @@ function! go#debug#Start(is_test, ...) abort
       let l:args = ['--'] + a:000[1:]
     endif
 
-    let l:debugLogOutput = go#config#DebugLogOutput()
-    let l:shouldLog = debugLogOutput isnot '' ? 1 : 0
     let l:cmd = [
           \ dlv,
           \ (a:is_test ? 'test' : 'debug'),
@@ -628,11 +626,12 @@ function! go#debug#Start(is_test, ...) abort
           \ '--api-version', '2',
           \ '--listen', go#config#DebugAddress(),
     \]
-    if shouldLog
-      let cmd += ['--log', '--log-output', debugLogOutput]
+    let l:debugLogOutput = go#config#DebugLogOutput()
+    if l:debugLogOutput != ''
+      let cmd += ['--log', '--log-output', l:debugLogOutput]
     endif
 
-    let buildtags = go#config#BuildTags()
+    let l:buildtags = go#config#BuildTags()
     if buildtags isnot ''
       let l:cmd += ['--build-flags', '--tags=' . buildtags]
     endif
