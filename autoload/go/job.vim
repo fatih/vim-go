@@ -214,7 +214,9 @@ function! go#job#Options(args)
     " the job was started.
     if self.winid == l:winid
       call go#list#Window(l:listtype, len(errors))
-      if !self.bang
+      if self.bang
+        call win_gotoid(l:winid)
+      else
         call go#list#JumpToFirst(l:listtype)
       endif
     endif

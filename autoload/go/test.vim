@@ -75,14 +75,17 @@ function! go#test#Test(bang, compile, ...) abort
   execute cd fnameescape(expand("%:p:h"))
 
   if l:err != 0
+    let l:winid = win_getid(winnr())
     call go#list#ParseFormat(l:listtype, s:errorformat(), split(out, '\n'), l:cmd)
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
-    if !empty(errors) && !a:bang
-      call go#list#JumpToFirst(l:listtype)
-    elseif empty(errors)
+    if empty(errors)
       " failed to parse errors, output the original content
       call go#util#EchoError(out)
+    elseif a:bang
+      call win_gotoid(l:winid)
+    else
+      call go#list#JumpToFirst(l:listtype)
     endif
   else
     call go#list#Clean(l:listtype)
