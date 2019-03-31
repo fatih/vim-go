@@ -48,7 +48,7 @@ function! go#config#TermMode() abort
 endfunction
 
 function! go#config#TermEnabled() abort
-  return get(g:, 'go_term_enabled', 0)
+  return has('nvim') && get(g:, 'go_term_enabled', 0)
 endfunction
 
 function! go#config#SetTermEnabled(value) abort
