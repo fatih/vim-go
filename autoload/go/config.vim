@@ -210,6 +210,10 @@ function! go#config#DebugCommands() abort
   return g:go_debug_commands
 endfunction
 
+function! go#config#DebugLogOutput() abort
+  return get(g:, 'go_debug_log_output', 'debugger, rpc')
+endfunction
+
 function! go#config#LspLog() abort
   " make sure g:go_lsp_log is set so that it can be added to easily.
   let g:go_lsp_log = get(g:, 'go_lsp_log', [])
