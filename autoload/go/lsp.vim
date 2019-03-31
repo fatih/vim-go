@@ -368,6 +368,10 @@ function! go#lsp#DidOpen(fname)
     return
   endif
 
+  if !filereadable(a:fname)
+    return
+  endif
+
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#DidOpen(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
   let l:state = s:newHandlerState('')
@@ -382,6 +386,10 @@ function! go#lsp#DidChange(fname)
     return go#lsp#DidOpen(a:fname)
   endif
 
+  if !filereadable(a:fname)
+    return
+  endif
+
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#DidChange(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
   let l:state = s:newHandlerState('')
@@ -390,6 +398,10 @@ function! go#lsp#DidChange(fname)
 endfunction
 
 function! go#lsp#DidClose(fname)
+  if !filereadable(a:fname)
+    return
+  endif
+
   if !get(b:, 'go_lsp_did_open', 0)
     return
   endif
