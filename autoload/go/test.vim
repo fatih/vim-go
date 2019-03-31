@@ -30,8 +30,8 @@ function! go#test#Test(bang, compile, ...) abort
     call add(args, printf("-timeout=%s", timeout))
   endif
 
-  if has('nvim') && go#config#TermEnabled()
-    call go#term#new(a:bang, ["go"] + args)
+  if go#config#TermEnabled()
+    call go#term#new(a:bang, ["go"] + args, s:errorformat())
   endif
 
   if go#util#has_job()

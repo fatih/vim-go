@@ -491,7 +491,9 @@ function! s:neocb(mode, ch, buf, data, callback)
 
   let l:buf = ''
 
-  " a single empty string means EOF was reached.
+  " A single empty string means EOF was reached. The first item will never be
+  " an empty string except for when it's the only item and is signaling that
+  " EOF was reached.
   if len(a:data) == 1 && a:data[0] == ''
     " when there's nothing buffered, return early so that an
     " erroneous message will not be added.
