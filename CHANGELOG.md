@@ -5,7 +5,7 @@ FEATURES:
   * use gopls for autocompletion by default in Vim8 and Neovim.
   * use gopls for `:GoDef` by setting `g:go_def_mode='gopls'`.
 * Add support for golangci-lint.
-  * set `g:go_metalinter_command='golanci-lint'` to use golangci-lint instead
+  * set `g:go_metalinter_command='golangci-lint'` to use golangci-lint instead
     of gometalinter.
 * New `:GoDefType` command to jump to a type definition from an instance of the
   type.
