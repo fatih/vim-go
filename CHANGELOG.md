@@ -101,6 +101,8 @@ BUG FIXES:
   [[GH-2189]](https://github.com/fatih/vim-go/pull/2189)
 * Highlight pre-release and metadata in versions in go.mod.
   [[GH-2192]](https://github.com/fatih/vim-go/pull/2192)
+* Handle runtime panics from `:GoRun` when using Neovim's terminal.
+  [[GH-2209]](https://github.com/fatih/vim-go/pull/2209)
 
 ## 1.19 - (November 4, 2018)
 
