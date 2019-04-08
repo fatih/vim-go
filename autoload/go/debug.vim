@@ -282,7 +282,7 @@ function! go#debug#Stop() abort
   silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
 
   if has('balloon_eval')
-    let &noballooneval=s:ballooneval
+    let &ballooneval=s:ballooneval
     let &balloonexpr=s:balloonexpr
   endif
 
