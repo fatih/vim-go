@@ -381,10 +381,8 @@ function! go#lsp#DidOpen(fname) abort
   let b:go_lsp_did_open = 1
 endfunction
 
-function! go#lsp#DidChange(fname)
-  if get(b:, 'go_lsp_did_open', 0)
-    return go#lsp#DidOpen(a:fname)
-  endif
+function! go#lsp#DidChange(fname) abort
+  call go#lsp#DidOpen(a:fname)
 
   if !filereadable(a:fname)
     return
