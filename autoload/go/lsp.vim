@@ -21,7 +21,7 @@ function! s:lspfactory.reset() dict abort
   endif
 endfunction
 
-function! s:newlsp()
+function! s:newlsp() abort
   if !go#util#has_job()
     " TODO(bc): start the server in the background using a shell that waits for the right output before returning.
     call go#util#EchoError('This feature requires either Vim 8.0.0087 or newer with +job or Neovim.')
@@ -251,10 +251,10 @@ function! s:newlsp()
   return l:lsp
 endfunction
 
-function! s:noop()
+function! s:noop() abort
 endfunction
 
-function! s:newHandlerState(statustype)
+function! s:newHandlerState(statustype) abort
   let l:state = {
         \ 'winid': win_getid(winnr()),
         \ 'statustype': a:statustype,
@@ -324,7 +324,7 @@ endfunction
 " list of strings in the form 'file:line:col: message'. handler will be
 " attached to a dictionary that manages state (statuslines, sets the winid,
 " etc.)
-function! go#lsp#Definition(fname, line, col, handler)
+function! go#lsp#Definition(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()
@@ -346,7 +346,7 @@ endfunction
 " list of strings in the form 'file:line:col: message'. handler will be
 " attached to a dictionary that manages state (statuslines, sets the winid,
 " etc.)
-function! go#lsp#TypeDef(fname, line, col, handler)
+function! go#lsp#TypeDef(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()
@@ -363,7 +363,7 @@ function! s:typeDefinitionHandler(next, msg) abort dict
   call call(a:next, l:args)
 endfunction
 
-function! go#lsp#DidOpen(fname)
+function! go#lsp#DidOpen(fname) abort
   if get(b:, 'go_lsp_did_open', 0)
     return
   endif
@@ -381,10 +381,8 @@ function! go#lsp#DidOpen(fname)
   let b:go_lsp_did_open = 1
 endfunction
 
-function! go#lsp#DidChange(fname)
-  if get(b:, 'go_lsp_did_open', 0)
-    return go#lsp#DidOpen(a:fname)
-  endif
+function! go#lsp#DidChange(fname) abort
+  call go#lsp#DidOpen(a:fname)
 
   if !filereadable(a:fname)
     return
@@ -397,7 +395,7 @@ function! go#lsp#DidChange(fname)
   call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! go#lsp#DidClose(fname)
+function! go#lsp#DidClose(fname) abort
   if !filereadable(a:fname)
     return
   endif
@@ -415,7 +413,7 @@ function! go#lsp#DidClose(fname)
   let b:go_lsp_did_open = 0
 endfunction
 
-function! go#lsp#Completion(fname, line, col, handler)
+function! go#lsp#Completion(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()
@@ -449,7 +447,7 @@ function! s:completionErrorHandler(next, error) abort dict
   call call(a:next, [[]])
 endfunction
 
-function! go#lsp#Hover(fname, line, col, handler)
+function! go#lsp#Hover(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
   let l:lsp = s:lspfactory.get()

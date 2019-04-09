@@ -2,7 +2,7 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! go#lsp#message#Initialize(wd)
+function! go#lsp#message#Initialize(wd) abort
   return {
           \ 'notification': 0,
           \ 'method': 'initialize',
@@ -17,7 +17,7 @@ function! go#lsp#message#Initialize(wd)
        \ }
 endfunction
 
-function! go#lsp#message#Definition(file, line, col)
+function! go#lsp#message#Definition(file, line, col) abort
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/definition',
@@ -31,7 +31,7 @@ function! go#lsp#message#Definition(file, line, col)
 endfunction
 
 
-function! go#lsp#message#TypeDefinition(file, line, col)
+function! go#lsp#message#TypeDefinition(file, line, col) abort
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/typeDefinition',
@@ -44,7 +44,7 @@ function! go#lsp#message#TypeDefinition(file, line, col)
        \ }
 endfunction
 
-function! go#lsp#message#DidOpen(file, content)
+function! go#lsp#message#DidOpen(file, content) abort
   return {
           \ 'notification': 1,
           \ 'method': 'textDocument/didOpen',
@@ -58,7 +58,7 @@ function! go#lsp#message#DidOpen(file, content)
        \ }
 endfunction
 
-function! go#lsp#message#DidChange(file, content)
+function! go#lsp#message#DidChange(file, content) abort
   return {
           \ 'notification': 1,
           \ 'method': 'textDocument/didChange',
@@ -75,7 +75,7 @@ function! go#lsp#message#DidChange(file, content)
        \ }
 endfunction
 
-function! go#lsp#message#DidClose(file)
+function! go#lsp#message#DidClose(file) abort
   return {
           \ 'notification': 1,
           \ 'method': 'textDocument/didClose',
@@ -87,7 +87,7 @@ function! go#lsp#message#DidClose(file)
        \ }
 endfunction
 
-function! go#lsp#message#Completion(file, line, col)
+function! go#lsp#message#Completion(file, line, col) abort
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/completion',
@@ -100,7 +100,7 @@ function! go#lsp#message#Completion(file, line, col)
        \ }
 endfunction
 
-function! go#lsp#message#Hover(file, line, col)
+function! go#lsp#message#Hover(file, line, col) abort
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/hover',
@@ -113,7 +113,7 @@ function! go#lsp#message#Hover(file, line, col)
        \ }
 endfunction
 
-function! s:position(line, col)
+function! s:position(line, col) abort
   return {'line': a:line - 1, 'character': a:col-1}
 endfunction
 
