@@ -68,6 +68,9 @@ IMPROVEMENTS:
 * Do not jump to quickfix or location list window when bang is used for async
   jobs or linting.
   [[GH-2205]](https://github.com/fatih/vim-go/pull/2205)
+* Tab complete package names for commands from vendor directories and in
+  modules.
+  [[GH-2213]](https://github.com/fatih/vim-go/pull/2213)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
