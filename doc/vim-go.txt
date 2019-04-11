@@ -1251,8 +1251,8 @@ updated. By default it's disabled. The delay can be configured with the
 
 Use this option to define the command to be used for |:GoInfo|. By default
 `gocode` is being used as it's the fastest option. But one might also use
-`guru` as it's covers more cases and is more accurate.  Current valid options
-are: `[gocode, guru]` >
+`gopls` or `guru` as they cover more cases and are more accurate.  Current
+valid options are: `[gocode, guru, gopls]` >
 
   let g:go_info_mode = 'gocode'
 <
