@@ -117,9 +117,10 @@ function! s:newlsp() abort
 
             if has_key(l:response, 'error')
               call l:handler.requestComplete(0)
-              call go#util#EchoError(l:response.error.message)
               if has_key(l:handler, 'error')
                 call call(l:handler.error, [l:response.error.message])
+              else
+                call go#util#EchoError(l:response.error.message)
               endif
               return
             endif
