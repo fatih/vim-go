@@ -117,9 +117,10 @@ function! s:newlsp() abort
 
             if has_key(l:response, 'error')
               call l:handler.requestComplete(0)
-              call go#util#EchoError(l:response.error.message)
               if has_key(l:handler, 'error')
                 call call(l:handler.error, [l:response.error.message])
+              else
+                call go#util#EchoError(l:response.error.message)
               endif
               return
             endif
@@ -251,7 +252,7 @@ function! s:newlsp() abort
   return l:lsp
 endfunction
 
-function! s:noop() abort
+function! s:noop(...) abort
 endfunction
 
 function! s:newHandlerState(statustype) abort
@@ -382,6 +383,13 @@ function! go#lsp#DidOpen(fname) abort
 endfunction
 
 function! go#lsp#DidChange(fname) abort
+  " DidChange is called even when fname isn't open in a buffer (e.g. via
+  " go#lsp#Info); don't report the file as open or as having changed when it's
+  " not actually a buffer.
+  if bufnr(a:fname) == -1
+    return
+  endif
+
   call go#lsp#DidOpen(a:fname)
 
   if !filereadable(a:fname)
@@ -454,6 +462,7 @@ function! go#lsp#Hover(fname, line, col, handler) abort
   let l:msg = go#lsp#message#Hover(a:fname, a:line, a:col)
   let l:state = s:newHandlerState('hover')
   let l:state.handleResult = funcref('s:hoverHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:noop')
   call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
@@ -462,6 +471,42 @@ function! s:hoverHandler(next, msg) abort dict
   let l:content = substitute(a:msg.contents.value, '```go\n\(.*\)\n```', '\1', '')
   let l:args = [l:content]
   call call(a:next, l:args)
+endfunction
+
+function! go#lsp#Info(showstatus)
+  let l:fname = expand('%:p')
+  let [l:line, l:col] = getpos('.')[1:2]
+
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:infoDefinitionHandler', [function('s:info', [])], l:state)
+  let l:state.error = funcref('s:noop')
+  let l:msg = go#lsp#message#Definition(l:fname, l:line, l:col)
+  call l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:infoDefinitionHandler(next, msg) abort dict
+  " gopls returns a []Location; just take the first one.
+  let l:msg = a:msg[0]
+
+  let l:fname = go#path#FromURI(l:msg.uri)
+  let l:line = l:msg.range.start.line+1
+  let l:col = l:msg.range.start.character+1
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#Hover(l:fname, l:line, l:col)
+  let l:state = s:newHandlerState('info')
+  let l:state.handleResult = funcref('s:hoverHandler', [function('s:info', [], l:state)], l:state)
+  let l:state.error = funcref('s:noop')
+  call l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:info(content) abort dict
+  " strip off the method set and fields of structs and interfaces.
+  let l:content = substitute(a:content, '{.*', '', '')
+  call go#util#ShowInfo(l:content)
 endfunction
 
 " restore Vi compatibility settings

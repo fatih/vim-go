@@ -30,7 +30,6 @@ function! go#lsp#message#Definition(file, line, col) abort
        \ }
 endfunction
 
-
 function! go#lsp#message#TypeDefinition(file, line, col) abort
   return {
           \ 'notification': 0,
