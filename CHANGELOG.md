@@ -108,6 +108,8 @@ BUG FIXES:
   [[GH-2192]](https://github.com/fatih/vim-go/pull/2192)
 * Handle runtime panics from `:GoRun` when using Neovim's terminal.
   [[GH-2209]](https://github.com/fatih/vim-go/pull/2209)
+* Fix adding tag option when a tag is added.
+  [[GH-2227]](https://github.com/fatih/vim-go/pull/2227)
 
 ## 1.19 - (November 4, 2018)
 
