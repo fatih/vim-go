@@ -480,14 +480,20 @@ function! go#lsp#Info(showstatus)
   call go#lsp#DidChange(l:fname)
 
   let l:lsp = s:lspfactory.get()
-  let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:infoDefinitionHandler', [function('s:info', [])], l:state)
+
+  if a:showstatus
+    let l:state = s:newHandlerState('info')
+  else
+    let l:state = s:newHandlerState('')
+  endif
+
+  let l:state.handleResult = funcref('s:infoDefinitionHandler', [function('s:info', []), a:showstatus], l:state)
   let l:state.error = funcref('s:noop')
   let l:msg = go#lsp#message#Definition(l:fname, l:line, l:col)
   call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:infoDefinitionHandler(next, msg) abort dict
+function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
 
@@ -497,7 +503,13 @@ function! s:infoDefinitionHandler(next, msg) abort dict
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#Hover(l:fname, l:line, l:col)
-  let l:state = s:newHandlerState('info')
+
+  if a:showstatus
+    let l:state = s:newHandlerState('info')
+  else
+    let l:state = s:newHandlerState('')
+  endif
+
   let l:state.handleResult = funcref('s:hoverHandler', [function('s:info', [], l:state)], l:state)
   let l:state.error = funcref('s:noop')
   call l:lsp.sendMessage(l:msg, l:state)
