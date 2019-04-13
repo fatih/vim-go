@@ -71,6 +71,8 @@ IMPROVEMENTS:
 * Tab complete package names for commands from vendor directories and in
   modules.
   [[GH-2213]](https://github.com/fatih/vim-go/pull/2213)
+* Add support for `gopls` to `g:go_info_mode`.
+  [[GH-2224]](https://github.com/fatih/vim-go/pull/2224)
 
 BUG FIXES:
 * Fix opening of non-existent file from `:GoDeclsDir` when the current
