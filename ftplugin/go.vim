@@ -25,10 +25,12 @@ setlocal noexpandtab
 
 compiler go
 
-" Set autocompletion
-setlocal omnifunc=go#complete#Complete
-if !go#util#has_job()
-  setlocal omnifunc=go#complete#GocodeComplete
+if get(g:, "go_autocomplete_enabled", 1)
+  " Set autocompletion
+  setlocal omnifunc=go#complete#Complete
+  if !go#util#has_job()
+    setlocal omnifunc=go#complete#GocodeComplete
+  endif
 endif
 
 if get(g:, "go_doc_keywordprg_enabled", 1)
