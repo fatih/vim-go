@@ -138,8 +138,16 @@ The following plugins are supported for use with vim-go:
   https://github.com/Shougo/neocomplete.vim
 
 * Real-time completion (Neovim and Vim 8):
-  https://github.com/Shougo/deoplete.nvim and
-  https://github.com/zchee/deoplete-go
+  https://github.com/Shougo/deoplete.nvim
+
+  When using gopls for autocompletion, add the following line to your vimrc.
+  This instructs deoplete to use omni completion for Go files.
+
+    call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
+
+  When using gocode for autocompletion, install:
+
+    https://github.com/zchee/deoplete-go
 
 * Display source code navigation in a sidebar:
   https://github.com/majutsushi/tagbar
