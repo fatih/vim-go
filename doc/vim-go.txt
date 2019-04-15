@@ -149,9 +149,6 @@ The following plugins are supported for use with vim-go:
   https://github.com/SirVer/ultisnips or
   https://github.com/joereynolds/vim-minisnip
 
-* Integration with `delve` (Neovim only):
-  https://github.com/jodosha/vim-godebug
-
 * Interactive |:GoDecls| and |:GoDeclsDir|:
   https://github.com/ctrlpvim/ctrlp.vim or
   https://github.com/junegunn/fzf.vim or
