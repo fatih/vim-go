@@ -152,7 +152,7 @@ function! s:newlsp() abort
       " keep track of servers by rootUri).
       let l:msg = self.newMessage(go#lsp#message#Initialize(getcwd()))
 
-      let l:state = s:newHandlerState('gopls')
+      let l:state = s:newHandlerState('')
       let l:state.handleResult = funcref('self.handleInitializeResult', [], l:self)
       let self.handlers[l:msg.id] = l:state
 
