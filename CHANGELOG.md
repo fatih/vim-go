@@ -4,6 +4,7 @@ FEATURES:
 * ***gopls support!***
   * use gopls for autocompletion by default in Vim8 and Neovim.
   * use gopls for `:GoDef` by setting `g:go_def_mode='gopls'`.
+  * use gopls for `:GoInfo` by setting `g:go_info_mode='gopls'`.
 * Add support for golangci-lint.
   * set `g:go_metalinter_command='golangci-lint'` to use golangci-lint instead
     of gometalinter.
