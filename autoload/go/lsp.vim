@@ -460,7 +460,7 @@ function! go#lsp#Hover(fname, line, col, handler) abort
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#Hover(a:fname, a:line, a:col)
-  let l:state = s:newHandlerState('hover')
+  let l:state = s:newHandlerState('')
   let l:state.handleResult = funcref('s:hoverHandler', [function(a:handler, [], l:state)], l:state)
   let l:state.error = funcref('s:noop')
   call l:lsp.sendMessage(l:msg, l:state)
