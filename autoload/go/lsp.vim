@@ -467,9 +467,7 @@ function! go#lsp#Hover(fname, line, col, handler) abort
 endfunction
 
 function! s:hoverHandler(next, msg) abort dict
-  " gopls returns a MarkupContent.
-  let l:content = substitute(a:msg.contents.value, '```go\n\(.*\)\n```', '\1', '')
-  let l:args = [l:content]
+  let l:args = [a:msg.contents.value]
   call call(a:next, l:args)
 endfunction
 
