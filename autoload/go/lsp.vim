@@ -467,7 +467,14 @@ function! go#lsp#Hover(fname, line, col, handler) abort
 endfunction
 
 function! s:hoverHandler(next, msg) abort dict
-  let l:args = [a:msg.contents.value]
+  let l:content = split(a:msg.contents.value, '; ')
+  if len(l:content) > 1
+    let l:curly = stridx(l:content[0], '{')
+    let l:content = extend([l:content[0][0:l:curly]], map(extend([l:content[0][l:curly+1:]], l:content[1:]), '"\t" . v:val'))
+    let l:content[len(l:content)-1] = '}'
+  endif
+
+  let l:args = [l:content]
   call call(a:next, l:args)
 endfunction
 
@@ -515,7 +522,7 @@ endfunction
 
 function! s:info(content) abort dict
   " strip off the method set and fields of structs and interfaces.
-  let l:content = substitute(a:content, '{.*', '', '')
+  let l:content = substitute(a:content[0], '{.*', '', '')
   call go#util#ShowInfo(l:content)
 endfunction
 

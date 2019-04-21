@@ -120,12 +120,12 @@ function! go#tool#DescribeBalloon()
 endfunction
 
 function! s:balloon(msg)
+  let l:msg = a:msg
   if has('balloon_eval')
-    call balloon_show(a:msg)
-    return
+    let l:msg = join(a:msg)
   endif
 
-  call balloon_show(balloon_split(a:msg))
+  call balloon_show(l:msg)
 endfunction
 
 " restore Vi compatibility settings
