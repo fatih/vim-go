@@ -2375,14 +2375,14 @@ You can install and test all Vim versions by running `make`.
 DONATION                                                         *go-donation*
 
 People have asked for this for a long time, now you can be a fully supporter
-by being a patreon at: https://www.patreon.com/fatih
+by being a patreon at: https://www.patreon.com/bhcleek
 
 By being a patron, you are enabling vim-go to grow and mature, helping me to
 invest in bug fixes, new documentation, and improving both current and future
 features. It's completely optional and is just a direct way to support
 vim-go's ongoing development. Thanks!
 
-Check it out: https://www.patreon.com/fatih
+Check it out: https://www.patreon.com/bhcleek
 
 
 ==============================================================================
