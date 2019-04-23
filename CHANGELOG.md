@@ -1,5 +1,7 @@
 ## unplanned
 
+## 1.20 - (April 22, 2019)
+
 FEATURES:
 * ***gopls support!***
   * use gopls for autocompletion by default in Vim8 and Neovim.
