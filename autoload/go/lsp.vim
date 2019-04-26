@@ -521,8 +521,11 @@ function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
 endfunction
 
 function! s:info(content) abort dict
+  let l:content = a:content[0]
   " strip off the method set and fields of structs and interfaces.
-  let l:content = substitute(a:content[0], '{.*', '', '')
+  if l:content =~# '^type [^ ]\+ \(struct\|interface\)'
+    let l:content = substitute(l:content, '{.*', '', '')
+  endif
   call go#util#ShowInfo(l:content)
 endfunction
 
