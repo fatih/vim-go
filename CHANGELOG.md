@@ -1,5 +1,10 @@
 ## unplanned
 
+BUG FIXES:
+* display info about function and function types whose parameters are
+  `interface{}` without truncating the function signature.
+  [[GH-2244]](https://github.com/fatih/vim-go/pull/2244)
+
 ## 1.20 - (April 22, 2019)
 
 FEATURES:
