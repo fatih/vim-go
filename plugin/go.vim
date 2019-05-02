@@ -241,9 +241,15 @@ function! s:register()
     return
   endif
 
-  let l:RestoreGopath = go#util#SetEnv('GOPATH', go#path#Detect())
+  let l:RestoreGopath = function('s:noop')
+  if go#config#AutodetectGopath()
+    let l:RestoreGopath = go#util#SetEnv('GOPATH', go#path#Detect())
+  endif
   call go#lsp#DidOpen(expand('<afile>:p'))
   call call(l:RestoreGopath, [])
+endfunction
+
+function! s:noop(...) abort
 endfunction
 
 augroup vim-go
