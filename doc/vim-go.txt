@@ -1202,7 +1202,7 @@ balloonexpr`.
 ==============================================================================
 SETTINGS                                                        *go-settings*
 
-                                                      *'g:auto_complete_enabled'*
+                                                   *'g:auto_complete_enabled'*
 
 Use auto complation(set omnifunc=go#complete#Complete).
 By default it is enabled.
