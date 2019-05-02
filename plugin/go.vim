@@ -241,7 +241,9 @@ function! s:register()
     return
   endif
 
+  let l:RestoreGopath = go#util#SetEnv('GOPATH', go#path#Detect())
   call go#lsp#DidOpen(expand('<afile>:p'))
+  call call(l:RestoreGopath, [])
 endfunction
 
 augroup vim-go
