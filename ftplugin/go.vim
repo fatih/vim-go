@@ -82,8 +82,8 @@ endif
 augroup vim-go-buffer
   autocmd! * <buffer>
 
-  " The file is registered (textDocument/DidOpen) with gopls in in
-  " plugin/go.vim on the FileType event.
+  " The file is registered (textDocument/DidOpen) with gopls in plugin/go.vim
+  " on the FileType event.
   " TODO(bc): handle all the other events that may be of interest to gopls,
   " too (e.g.  BufFilePost , CursorHold , CursorHoldI, FileReadPost,
   " StdinReadPre, BufWritePost, TextChange, TextChangedI)
