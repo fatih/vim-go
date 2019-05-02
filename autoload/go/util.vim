@@ -519,6 +519,37 @@ function! go#util#ShowInfo(info)
   echo "vim-go: " | echohl Function | echon a:info | echohl None
 endfunction
 
+" go#util#SetEnv takes the name of an environment variable and what its value
+" should be and returns a function that will restore it to its original value.
+function! go#util#SetEnv(name, value) abort
+  let l:state = {}
+
+  if len(a:name) == 0
+    return function('s:noop', [], l:state)
+  endif
+
+  let l:remove = 0
+  if exists('$' . a:name)
+    let l:oldvalue = eval('$' . a:name)
+  else
+    let l:remove = 1
+  endif
+
+  call execute('let $' . a:name . ' = "' . a:value . '"')
+
+  if l:remove
+    function! s:remove(name) abort
+      call execute('unlet $' . a:name)
+    endfunction
+    return function('s:remove', [a:name], l:state)
+  endif
+
+  return function('go#util#SetEnv', [a:name, l:oldvalue], l:state)
+endfunction
+
+function! s:noop(...) abort dict
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

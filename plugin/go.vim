@@ -101,11 +101,11 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   " change $GOBIN so go get can automatically install to it
   let $GOBIN = go_bin_path
 
-  " old_path is used to restore users own path
-  let old_path = $PATH
-
   " vim's executable path is looking in PATH so add our go_bin path to it
-  let $PATH = go_bin_path . go#util#PathListSep() . $PATH
+  let Restore_path = go#util#SetEnv('PATH', go_bin_path . go#util#PathListSep() . $PATH)
+
+  " GO111MODULE must be off to install golanci-lint and gometalinter
+  let Restore_modules = go#util#SetEnv('GO111MODULE', 'off')
 
   " when shellslash is set on MS-* systems, shellescape puts single quotes
   " around the output string. cmd on Windows does not handle single quotes
@@ -185,7 +185,9 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   endfor
 
   " restore back!
-  let $PATH = old_path
+  call call(Restore_path, [])
+  call call(Restore_modules, [])
+
   if resetshellslash
     set shellslash
   endif
