@@ -6,6 +6,9 @@ BUG FIXES:
   [[GH-2244]](https://github.com/fatih/vim-go/pull/2244)
 * install tools that require GOPATH mode when in module mode.
   [[GH-2253]](https://github.com/fatih/vim-go/pull/2253)
+* Detect GOPATH when starting `gopls`
+  [[GH-2255]](https://github.com/fatih/vim-go/pull/2255)
+
 
 ## 1.20 - (April 22, 2019)
 
