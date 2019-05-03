@@ -269,11 +269,13 @@ function! s:golangcilintcmd(bin_path)
   let cmd = [a:bin_path]
   let cmd += ["run"]
   let cmd += ["--print-issued-lines=false"]
+  let cmd += ['--build-tags', go#config#BuildTags()]
   let cmd += ["--disable-all"]
   " do not use the default exclude patterns, because doing so causes golint
   " problems about missing doc strings to be ignored and other things that
   " golint identifies.
   let cmd += ["--exclude-use-default=false"]
+
   return cmd
 endfunction
 
