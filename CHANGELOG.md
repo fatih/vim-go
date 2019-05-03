@@ -4,6 +4,8 @@ IMPROVEMENTS:
 * Add a new option, `g:go_code_completion_enabled`, to control whether omnifunc
   is set.
   [[GH-2229]](https://github.com/fatih/vim-go/pull/2229)
+* Use build tags with golangci-lint.
+  [[GH-2261]](https://github.com/fatih/vim-go/pull/2261)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
@@ -13,7 +15,6 @@ BUG FIXES:
   [[GH-2253]](https://github.com/fatih/vim-go/pull/2253)
 * Detect GOPATH when starting `gopls`
   [[GH-2255]](https://github.com/fatih/vim-go/pull/2255)
-
 
 ## 1.20 - (April 22, 2019)
 
