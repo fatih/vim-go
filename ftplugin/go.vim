@@ -25,7 +25,7 @@ setlocal noexpandtab
 
 compiler go
 
-if get(g:, "go_autocomplete_enabled", 1)
+if go#config#CodeCompletionEnabled()
   " Set autocompletion
   setlocal omnifunc=go#complete#Complete
   if !go#util#has_job()

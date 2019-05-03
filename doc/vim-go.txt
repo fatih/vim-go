@@ -1203,12 +1203,11 @@ balloonexpr`.
 ==============================================================================
 SETTINGS                                                        *go-settings*
 
-                                                   *'g:auto_complete_enabled'*
+                                              *'g:go_code_completion_enabled'*
 
-Use auto complation(set omnifunc=go#complete#Complete).
-By default it is enabled.
+Enable code completion with |'omnifunc'|. By default it is enabled.
 >
-  let g:auto_complete_enabled = 1
+  let g:go_code_completion_enabled = 1
 <
 
                                                       *'g:go_test_show_name'*
