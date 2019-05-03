@@ -1203,6 +1203,14 @@ balloonexpr`.
 ==============================================================================
 SETTINGS                                                        *go-settings*
 
+                                                   *'g:auto_complete_enabled'*
+
+Use auto complation(set omnifunc=go#complete#Complete).
+By default it is enabled.
+>
+  let g:auto_complete_enabled = 1
+<
+
                                                       *'g:go_test_show_name'*
 
 Show the name of each failed test before the errors and logs output by the
@@ -2156,8 +2164,8 @@ Defaults to `127.0.0.1:8181`:
 
                                                      *'g:go_debug_log_output'*
 
-Specifies log output options for `dlv`. Value should be a single string 
-of comma-separated options suitable for passing to `dlv`.  An empty string 
+Specifies log output options for `dlv`. Value should be a single string
+of comma-separated options suitable for passing to `dlv`.  An empty string
 (`''`) will suppress logging entirely.
 Default: `'debugger, rpc'`:
 >
