@@ -32,17 +32,18 @@ CONTENTS                                                         *go-contents*
 INTRO                                                               *go-intro*
 
 Go (golang) support for Vim. vim-go comes with sensible predefined settings
-(e.g. automatic `gofmt` on save), has autocomplete, snippet support, improved
-syntax highlighting, go toolchain commands, etc. It is highly customizable,
-and individual features can be toggled easily. vim-go leverages a number of
-tools developed by the Go community to provide a seamless Vim experience.
+(e.g. automatic `gofmt` on save), has code completion, snippet support,
+improved syntax highlighting, go toolchain commands, etc. It is highly
+customizable, and individual features can be toggled easily. vim-go leverages
+a number of tools developed by the Go community to provide a seamless Vim
+experience.
 
   * Compile your package with |:GoBuild|, install it with |:GoInstall| or
     test it with |:GoTest|. Run a single test with |:GoTestFunc|).
   * Quickly execute your current file(s) with |:GoRun|.
   * Improved syntax highlighting and folding.
   * Debug programs with integrated `delve` support with |:GoDebugStart|.
-  * Completion support via `gocode` and `gopls`.
+  * Code completion support via `gocode` and `gopls`.
   * `gofmt` or `goimports` on save keeps the cursor position and undo history.
   * Go to symbol/declaration with |:GoDef|.
   * Look up documentation with |:GoDoc| or |:GoDocBrowser|.
@@ -127,7 +128,7 @@ or $GOPATH/bin (default: $HOME/go/bin). It requires `git`.
 Depending on your installation method, you may have to generate the plugin's
 |:helptags| manually (e.g. `:helptags ALL`).
 
-Autocompletion is enabled by default via 'omnifunc', which you can trigger
+Code completion is enabled by default via 'omnifunc', which you can trigger
 with |i_CTRL-X_CTRL-O| (`<C-x><C-o>`).
 
 Supported Go plugins~                                         *vim-go-plugins*
@@ -1203,12 +1204,11 @@ balloonexpr`.
 ==============================================================================
 SETTINGS                                                        *go-settings*
 
-                                                   *'g:auto_complete_enabled'*
+                                              *'g:go_code_completion_enabled'*
 
-Use auto complation(set omnifunc=go#complete#Complete).
-By default it is enabled.
+Enable code completion with |'omnifunc'|. By default it is enabled.
 >
-  let g:auto_complete_enabled = 1
+  let g:go_code_completion_enabled = 1
 <
 
                                                       *'g:go_test_show_name'*
@@ -1644,15 +1644,15 @@ same.
                                               *'g:go_gocode_propose_builtins'*
 
 Specifies whether `gocode` should add built-in types, functions and constants
-to an autocompletion proposals. By default it is enabled.
+to code completion proposals. By default it is enabled.
 >
   let g:go_gocode_propose_builtins = 1
 <
                                                *'g:go_gocode_propose_source'*
 
 Specifies whether `gocode` should use source files instead of binary packages
-for autocompletion proposals. When disabled, only identifiers from the current
-package and packages that have been installed will proposed.
+for code completion proposals. When disabled, only identifiers from the
+current package and packages that have been installed will proposed.
 >
   let g:go_gocode_propose_source = 0
 <
@@ -1741,8 +1741,8 @@ i.e: |go#statusline#Show()|. By default it's enabled
 <
                                                        *'g:go_echo_go_info'*
 
-Use this option to show the identifier information when completion is done. By
-default it's enabled >
+Use this option to show the identifier information when code completion is
+done. By default it's enabled. >
 
       let g:go_echo_go_info = 1
 <

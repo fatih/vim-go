@@ -1,5 +1,10 @@
 ## unplanned
 
+IMPROVEMENTS:
+* Add a new option, `g:go_code_completion_enabled`, to control whether omnifunc
+  is set.
+  [[GH-2229]](https://github.com/fatih/vim-go/pull/2229)
+
 BUG FIXES:
 * display info about function and function types whose parameters are
   `interface{}` without truncating the function signature.
