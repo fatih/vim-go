@@ -7,8 +7,7 @@ scriptencoding utf-8
 let s:lspfactory = {}
 
 function! s:lspfactory.get() dict abort
-  if !has_key(self, 'current')
-    " TODO(bc): check that the lsp is still running.
+  if !has_key(self, 'current') || empty(self.current)
     let self.current = s:newlsp()
   endif
 
@@ -150,7 +149,17 @@ function! s:newlsp() abort
     if !self.last_request_id
       " TODO(bc): run a server per module and one per GOPATH? (may need to
       " keep track of servers by rootUri).
-      let l:msg = self.newMessage(go#lsp#message#Initialize(getcwd()))
+      let l:wd = go#util#ModuleRoot()
+      if l:wd == -1
+        call go#util#EchoError('could not determine appropriate working directory for gopls')
+        return
+      endif
+
+      if l:wd == ''
+        let l:wd = getcwd()
+      endif
+
+      let l:msg = self.newMessage(go#lsp#message#Initialize(l:wd))
 
       let l:state = s:newHandlerState('')
       let l:state.handleResult = funcref('self.handleInitializeResult', [], l:self)

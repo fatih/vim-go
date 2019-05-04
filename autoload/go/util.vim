@@ -137,9 +137,31 @@ function! go#util#gomod() abort
   return substitute(s:exec(['go', 'env', 'GOMOD'])[0], '\n', '', 'g')
 endfunction
 
-
 function! go#util#osarch() abort
   return go#util#env("goos") . '_' . go#util#env("goarch")
+endfunction
+
+" go#util#ModuleRoot returns the root directory of the module of the current
+" buffer.
+function! go#util#ModuleRoot() abort
+  let [l:out, l:err] = go#util#ExecInDir(['go', 'env', 'GOMOD'])
+  if l:err != 0
+    return -1
+  endif
+
+  let l:module = split(l:out, '\n', 1)[0]
+
+  " When run with `GO111MODULE=on and not in a module directory, the module will be reported as /dev/null.
+  let l:fakeModule = '/dev/null'
+  if go#util#IsWin()
+    let l:fakeModule = 'NUL'
+  endif
+
+  if l:fakeModule == l:module
+    return expand('%:p:h')
+  endif
+
+  return fnamemodify(l:module, ':p:h')
 endfunction
 
 " Run a shell command.
