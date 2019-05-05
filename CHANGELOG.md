@@ -15,6 +15,13 @@ BUG FIXES:
   [[GH-2253]](https://github.com/fatih/vim-go/pull/2253)
 * Detect GOPATH when starting `gopls`
   [[GH-2255]](https://github.com/fatih/vim-go/pull/2255)
+* Handle `gopls` responses in the same window from which the respective request
+  originated.
+  [[GH-2266]](https://github.com/fatih/vim-go/pull/2266)
+* Show completion matches from gocode.
+  [[GH-2267]](https://github.com/fatih/vim-go/pull/2267)
+* Show the completion preview window.
+  [[GH-2268]](https://github.com/fatih/vim-go/pull/2268)
 
 ## 1.20 - (April 22, 2019)
 
