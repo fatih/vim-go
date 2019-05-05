@@ -2026,8 +2026,9 @@ rest of the commands and mappings become available after starting debug mode.
       * Setup the debug windows according to |'g:go_debug_windows'|.
       * Make the `:GoDebug*` commands and `(go-debug-*)` mappings available.
 
-    The current directory is used if [pkg] is empty. Any other arguments will
-    be passed to the program.
+    The directory of the current buffer is used if [pkg] is empty. Any other
+    arguments will be passed to the program. When [pkg] is relative, it will
+    be interpreted relative to the directory of the current buffer.
 
     Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
@@ -2039,7 +2040,6 @@ rest of the commands and mappings become available after starting debug mode.
 
     Use `-test.flag` to pass flags to `go test` when debugging a test; for
     example `-test.v` or `-test.run TestFoo`
-
 
                                                              *:GoDebugRestart*
 :GoDebugRestart

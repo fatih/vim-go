@@ -12,7 +12,6 @@ if !exists('s:state')
       \ 'localVars': {},
       \ 'functionArgs': {},
       \ 'message': [],
-      \ 'is_test': 0,
       \}
 
   if go#util#HasDebug('debugger-state')
@@ -507,7 +506,7 @@ function! s:out_cb(ch, msg) abort
     if has('nvim')
       let s:state['data'] = []
       let l:state = {'databuf': ''}
-      
+
       " explicitly bind callback to state so that within it, self will
       " always refer to state. See :help Partial for more information.
       let l:state.on_data = function('s:on_data', [], l:state)
@@ -589,38 +588,23 @@ function! go#debug#Start(is_test, ...) abort
   endif
 
   try
-    if len(a:000) > 0
-      let l:pkgname = a:1
-      if l:pkgname[0] == '.'
-        let l:pkgname = go#package#FromPath(l:pkgname)
-      endif
-    else
-      let l:pkgname = go#package#FromPath(getcwd())
-    endif
-
-    if l:pkgname is -1
-      call go#util#EchoError('could not determine package name')
-      return
-    endif
-
-    " cd in to test directory; this is also what running "go test" does.
-    if a:is_test
-      " TODO(bc): Either remove this if it's ok to do so or else record it and
-      " reset cwd after the job completes.
-      lcd %:p:h
-    endif
-
-    let s:state.is_test = a:is_test
-
-    let l:args = []
-    if len(a:000) > 1
-      let l:args = ['--'] + a:000[1:]
-    endif
-
     let l:cmd = [
           \ dlv,
           \ (a:is_test ? 'test' : 'debug'),
-          \ l:pkgname,
+     \]
+
+    " append the package when it's given.
+    if len(a:000) > 0
+      let l:pkgname = go#package#FromPath(a:1)
+      if l:pkgname is -1
+        call go#util#EchoError('could not determine package name')
+        return
+      endif
+
+      let l:cmd += [l:pkgname]
+    endif
+
+    let l:cmd += [
           \ '--output', tempname(),
           \ '--headless',
           \ '--api-version', '2',
@@ -635,7 +619,10 @@ function! go#debug#Start(is_test, ...) abort
     if buildtags isnot ''
       let l:cmd += ['--build-flags', '--tags=' . buildtags]
     endif
-    let l:cmd += l:args
+
+    if len(a:000) > 1
+      let l:cmd += ['--'] + a:000[1:]
+    endif
 
     let s:state['message'] = []
     let l:opts = {
