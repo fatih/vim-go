@@ -242,8 +242,7 @@ function! go#complete#GocodeComplete(findstart, base) abort
     if s =~ '[(){}\{\}]'
       return map(copy(s:completions[1]), 's:trim_bracket(v:val)')
     endif
-
-    return s:completions[1]
+    return s:completions
   endif
 endfunction
 
