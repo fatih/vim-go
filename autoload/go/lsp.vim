@@ -447,7 +447,7 @@ function! s:completionHandler(next, msg) abort dict
   for l:item in a:msg.items
     let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
     if has_key(l:item, 'detail')
-        let l:item.info = l:item.detail
+        let l:match.info = l:item.detail
     endif
 
     if has_key(l:item, 'documentation')
