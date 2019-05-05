@@ -114,6 +114,14 @@ function! s:newlsp() abort
           try
             let l:handler = self.handlers[l:response.id]
 
+            let l:winid = win_getid(winnr())
+            " Always set the active window to the window that was active when
+            " the request was sent. Among other things, this makes sure that
+            " the correct window's location list will be populated when the
+            " list type is 'location' and the user has moved windows since
+            " sending the reques.
+            call win_gotoid(l:handler.winid)
+
             if has_key(l:response, 'error')
               call l:handler.requestComplete(0)
               if has_key(l:handler, 'error')
@@ -121,10 +129,12 @@ function! s:newlsp() abort
               else
                 call go#util#EchoError(l:response.error.message)
               endif
+              call win_gotoid(l:winid)
               return
             endif
             call l:handler.requestComplete(1)
             call call(l:handler.handleResult, [l:response.result])
+            call win_gotoid(l:winid)
           finally
             call remove(self.handlers, l:response.id)
           endtry
