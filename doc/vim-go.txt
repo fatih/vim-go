@@ -2183,6 +2183,12 @@ Highlight the current line and breakpoints in the debugger.
 ==============================================================================
 FAQ TROUBLESHOOTING                                     *go-troubleshooting*
 
+I get "Unknown function: go#config#..." error when I open a Go file.~
+
+This often happens to vim-polyglot users when new config options are added to
+vim-go. Run vim-polyglot's `build` script or make sure that vim-go is loaded
+before vim-polyglot.
+
 I get "not an editor command" error when I invoke :GoXXX~
 
 This happens if vim-go is not installed properly. Be sure you have added this
