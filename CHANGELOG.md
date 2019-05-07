@@ -6,6 +6,8 @@ IMPROVEMENTS:
   [[GH-2229]](https://github.com/fatih/vim-go/pull/2229)
 * Use build tags with golangci-lint.
   [[GH-2261]](https://github.com/fatih/vim-go/pull/2261)
+* Allow debugging of packages outside of GOPATH without a go.mod file.
+  [[GH-2269]](https://github.com/fatih/vim-go/pull/2269)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
@@ -22,6 +24,8 @@ BUG FIXES:
   [[GH-2267]](https://github.com/fatih/vim-go/pull/2267)
 * Show the completion preview window.
   [[GH-2268]](https://github.com/fatih/vim-go/pull/2268)
+* Set the anchor for method documentation correctly.
+  [[GH-2276]](https://github.com/fatih/vim-go/pull/2276)
 
 ## 1.20 - (April 22, 2019)
 
