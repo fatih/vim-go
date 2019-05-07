@@ -137,7 +137,9 @@ function! go#package#ImportPath() abort
 endfunction
 
 
-" FromPath returns the import path of arg.
+" go#package#FromPath returns the import path of arg. -1 is returned when arg
+" does not specify a package. -2 is returned when arg is a relative path
+" outside of GOPATH and not in a module.
 function! go#package#FromPath(arg) abort
   let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
   let l:dir = getcwd()
@@ -156,10 +158,10 @@ function! go#package#FromPath(arg) abort
 
   let l:importpath = split(l:out, '\n')[0]
 
-  " go list returns '_CURRENTDIRECTORY' if the directory is not inside GOPATH.
-  " Check it and retun an error if that is the case
+  " go list returns '_CURRENTDIRECTORY' if the directory is neither in GOPATH
+  " nor in a module. Check it and retun an error if that is the case
   if l:importpath[0] ==# '_'
-    return -1
+    return -2
   endif
 
   return l:importpath
