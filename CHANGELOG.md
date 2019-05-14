@@ -8,6 +8,9 @@ IMPROVEMENTS:
   [[GH-2261]](https://github.com/fatih/vim-go/pull/2261)
 * Allow debugging of packages outside of GOPATH without a go.mod file.
   [[GH-2269]](https://github.com/fatih/vim-go/pull/2269)
+* Show which example failed when Example tests fail
+  [[GH-2277]](https://github.com/fatih/vim-go/pull/2277)
+
 
 BUG FIXES:
 * display info about function and function types whose parameters are
