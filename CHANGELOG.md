@@ -10,6 +10,8 @@ IMPROVEMENTS:
   [[GH-2269]](https://github.com/fatih/vim-go/pull/2269)
 * Show which example failed when Example tests fail
   [[GH-2277]](https://github.com/fatih/vim-go/pull/2277)
+* Show function signature and return types in preview window when autocompleting functions and methods.
+  [[GH-2289]](https://github.com/fatih/vim-go/pull/2289)
 
 
 BUG FIXES:
