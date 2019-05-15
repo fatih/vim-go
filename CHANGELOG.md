@@ -31,6 +31,8 @@ BUG FIXES:
   [[GH-2268]](https://github.com/fatih/vim-go/pull/2268)
 * Set the anchor for method documentation correctly.
   [[GH-2276]](https://github.com/fatih/vim-go/pull/2276)
+* Respect the LSP information for determining where candidate matches start.
+  [[GH-2291]](https://github.com/fatih/vim-go/pull/2291)
 
 ## 1.20 - (April 22, 2019)
 
