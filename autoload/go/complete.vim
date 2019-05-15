@@ -247,9 +247,10 @@ function! go#complete#GocodeComplete(findstart, base) abort
 endfunction
 
 function! go#complete#Complete(findstart, base) abort
-  let l:state = {'done': 0, 'matches': []}
+  let l:state = {'done': 0, 'matches': [], 'start': -1}
 
-  function! s:handler(state, matches) abort dict
+  function! s:handler(state, start, matches) abort dict
+    let a:state.start = a:start
     let a:state.matches = a:matches
     let a:state.done = 1
   endfunction
@@ -262,15 +263,16 @@ function! go#complete#Complete(findstart, base) abort
       sleep 10m
     endwhile
 
-    let s:completions = l:state.matches
-
     if len(l:state.matches) == 0
       " no matches. cancel and leave completion mode.
       call go#util#EchoInfo("no matches")
       return -3
     endif
 
-    return col('.')
+    let s:completions = l:state.matches
+
+    return l:state.start
+
   else "findstart = 0 when we need to return the list of completions
     return s:completions
   endif
