@@ -214,8 +214,8 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.write(msg) dict abort
-      let l:body = json_encode(a:msg)
-      let l:data = 'Content-Length: ' . strlen(l:body) . "\r\n\r\n" . l:body
+    let l:body = json_encode(a:msg)
+    let l:data = 'Content-Length: ' . strlen(l:body) . "\r\n\r\n" . l:body
 
     if go#util#HasDebug('lsp')
       let g:go_lsp_log = add(go#config#LspLog(), "->\n" . l:data)
@@ -454,7 +454,11 @@ endfunction
 function! s:completionHandler(next, msg) abort dict
   " gopls returns a CompletionList.
   let l:matches = []
+  let l:start = -1
+
   for l:item in a:msg.items
+    let l:start = l:item.textEdit.range.start.character
+
     let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
     if has_key(l:item, 'detail')
         let l:match.info = l:item.detail
@@ -469,7 +473,7 @@ function! s:completionHandler(next, msg) abort dict
 
     let l:matches = add(l:matches, l:match)
   endfor
-  let l:args = [l:matches]
+  let l:args = [l:start, l:matches]
   call call(a:next, l:args)
 endfunction
 
