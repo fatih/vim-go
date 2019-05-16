@@ -33,6 +33,8 @@ BUG FIXES:
   [[GH-2276]](https://github.com/fatih/vim-go/pull/2276)
 * Respect the LSP information for determining where candidate matches start.
   [[GH-2291]](https://github.com/fatih/vim-go/pull/2291)
+* Restore environment variables with backslashes correctly.
+  [[GH-2292]](https://github.com/fatih/vim-go/pull/2292)
 
 ## 1.20 - (April 22, 2019)
 
