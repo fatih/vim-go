@@ -504,7 +504,7 @@ function! s:hoverHandler(next, msg) abort dict
   call call(a:next, l:args)
 endfunction
 
-function! go#lsp#Info(showstatus)
+function! go#lsp#Info(showstatus) abort
   let l:fname = expand('%:p')
   let [l:line, l:col] = getpos('.')[1:2]
 

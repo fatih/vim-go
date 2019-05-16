@@ -90,7 +90,7 @@ function! go#complete#Info(showstatus) abort
   endif
 endfunction
 
-function! s:async_info(echo, showstatus)
+function! s:async_info(echo, showstatus) abort
   let state = {'echo': a:echo}
 
   " explicitly bind complete to state so that within it, self will
@@ -152,13 +152,13 @@ function! s:complete(job, exit_status, messages) abort dict
   call s:info_complete(self.echo, result)
 endfunction
 
-function! s:gocodeFile()
+function! s:gocodeFile() abort
   let file = tempname()
   call writefile(go#util#GetLines(), file)
   return file
 endfunction
 
-function! s:sync_info(echo)
+function! s:sync_info(echo) abort
   " add 1 to the offset, so that the position at the cursor will be included
   " in gocode's search
   let offset = go#util#OffsetCursor()+1
