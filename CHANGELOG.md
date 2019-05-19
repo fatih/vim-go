@@ -12,6 +12,8 @@ IMPROVEMENTS:
   [[GH-2277]](https://github.com/fatih/vim-go/pull/2277)
 * Show function signature and return types in preview window when autocompleting functions and methods.
   [[GH-2289]](https://github.com/fatih/vim-go/pull/2289)
+* Improve the user experience when using null modules.
+  [[GH-2300]](https://github.com/fatih/vim-go/pull/2300)
 
 
 BUG FIXES:
