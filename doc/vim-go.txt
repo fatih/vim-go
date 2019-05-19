@@ -2183,6 +2183,12 @@ Highlight the current line and breakpoints in the debugger.
 ==============================================================================
 FAQ TROUBLESHOOTING                                     *go-troubleshooting*
 
+How do I troubleshoot problems?~
+
+One of the best ways to understand what vim-go is doing and the output from
+the tools to which it delegates is to use leverage the features described in
+|'g:go_debug'|.
+
 Completion and other functions that use `gopls` don't work~
 
 Vim-go is heavily reliant on `gopls` for completion and other functionality.
