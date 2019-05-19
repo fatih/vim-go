@@ -7,7 +7,7 @@ scriptencoding utf-8
 let s:lspfactory = {}
 
 function! s:lspfactory.get() dict abort
-  if !has_key(self, 'current') || empty(self.current)
+  if !has_key(self, 'current') || empty(self.current) || !has_key(self.current, 'job') || empty(self.current.job)
     let self.current = s:newlsp()
   endif
 
@@ -23,8 +23,11 @@ endfunction
 function! s:newlsp() abort
   if !go#util#has_job()
     " TODO(bc): start the server in the background using a shell that waits for the right output before returning.
-    call go#util#EchoError('This feature requires either Vim 8.0.0087 or newer with +job or Neovim.')
-    return
+    call go#util#EchoWarning('Features that rely on gopls will not work without either Vim 8.0.0087 or newer with +job or Neovim')
+    " Sleep one second to make sure people see the message. Otherwise it is
+    " often immediately overwritten by an async message.
+    sleep 1
+    return {'sendMessage': funcref('s:noop')}
   endif
 
   " job is the job used to talk to the backing instance of gopls.
