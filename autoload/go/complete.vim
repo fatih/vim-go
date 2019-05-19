@@ -258,7 +258,10 @@ function! go#complete#Complete(findstart, base) abort
 
   "findstart = 1 when we need to get the start of the match
   if a:findstart == 1
-    call go#lsp#Completion(expand('%:p'), line('.'), col('.'), funcref('s:handler', [l:state]))
+    let l:completion = go#lsp#Completion(expand('%:p'), line('.'), col('.'), funcref('s:handler', [l:state]))
+    if l:completion
+      return -3
+    endif
 
     while !l:state.done
       sleep 10m
