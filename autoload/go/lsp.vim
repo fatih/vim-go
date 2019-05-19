@@ -478,7 +478,7 @@ function! s:completionHandler(next, msg) abort dict
 endfunction
 
 function! s:completionErrorHandler(next, error) abort dict
-  call call(a:next, [[]])
+  call call(a:next, [-1, []])
 endfunction
 
 function! go#lsp#Hover(fname, line, col, handler) abort
