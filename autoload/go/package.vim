@@ -153,20 +153,8 @@ function! go#package#FromPath(arg) abort
   if glob("*.go") == ""
     " There's no Go code in this directory. We might be in a module directory
     " which doesn't have any code at this level.
-    let l:module = s:module()
-    if !empty(l:module)
-      let l:importpath = l:module.path
-
-      " Build up a fake import path by combining the module path and the path
-      " to the target directory (relative to the module diretory).
-      execute l:cd fnameescape(l:module.dir)
-      let l:relativepath = fnamemodify(l:path, ':.')
-      if l:relativepath != l:path
-        let l:importpath .= '/' . l:relativepath
-      endif
-      execute l:cd fnameescape(l:dir)
-
-      return l:importpath
+    if !empty(s:module())
+      return -1
     endif
   endif
   let [l:out, l:err] = go#util#Exec(['go', 'list'])
