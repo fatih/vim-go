@@ -235,6 +235,20 @@ for ${2:k}, ${3:v} := range ${1} {
 }
 endsnippet
 
+snippet forsel "for select"
+for {
+	select {
+		case ${2:${1:result} := }<- ${3:someChan}:
+			${0}
+	}
+}
+endsnippet
+
+snippet selc "select case" !b
+case ${1:${2:var} := }<-${3:someChan}:
+  ${0}
+endsnippet
+
 # function
 snippet func "func Function(...) [error] { ... }"
 func ${1:name}(${2:params})${3/(.+)/ /}`!p opening_par(snip, 3)`$3`!p closing_par(snip, 3)` {
@@ -385,7 +399,7 @@ for _, tt := range tests {
 endsnippet
 
 
-snippet hf "http.HandlerFunc" !b
+snippet hf "http.HandlerFunc" !
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 }
@@ -419,6 +433,11 @@ snippet terf "if err != nil { t.Fatalf(...) }"
 if err != nil {
 	t.Fatalf("${0:message}")
 }
+endsnippet
+
+snippet tas "testify/assert.New" !b
+asrt := assert.New(t)
+$0
 endsnippet
 
 snippet example "func ExampleXYZ() { ... }"
@@ -457,6 +476,10 @@ if !reflect.DeepEqual(${1:expected}, ${2:actual}) {
 }
 endsnippet
 
+snippet ew "errors.Wrap"
+errors.Wrap(${1:err}, "${2:message}")
+endsnippet
+
 global !p
 
 import re
@@ -483,3 +506,4 @@ def closing_par(snip, pos):
 endglobal
 
 # vim:ft=snippets:
+
