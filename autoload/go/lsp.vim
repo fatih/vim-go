@@ -82,19 +82,19 @@ function! s:newlsp() abort
       endif
 
       " get the start of the rest
-      let l:rest_start_idx = l:body_start_idx + str2nr(l:length_match[1])
+      let l:next_start_idx = l:body_start_idx + str2nr(l:length_match[1])
 
-      if len(l:rest) < l:rest_start_idx
+      if len(l:rest) < l:next_start_idx
         " incomplete response body
         break
       endif
 
       if go#util#HasDebug('lsp')
-        let g:go_lsp_log = add(go#config#LspLog(), "<-\n" . l:rest[:l:rest_start_idx - 1])
+        let g:go_lsp_log = add(go#config#LspLog(), "<-\n" . l:rest[:l:next_start_idx - 1])
       endif
 
-      let l:body = l:rest[l:body_start_idx : l:rest_start_idx - 1]
-      let l:rest = l:rest[l:rest_start_idx :]
+      let l:body = l:rest[l:body_start_idx : l:next_start_idx - 1]
+      let l:rest = l:rest[l:next_start_idx :]
 
       try
         " add the json body to the list.
