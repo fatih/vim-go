@@ -90,7 +90,7 @@ function! s:newlsp() abort
       endif
 
       if go#util#HasDebug('lsp')
-        let g:go_lsp_log = add(go#config#LspLog(), "<-\n" . l:rest[:l:next_start_idx - 1])
+        let g:go_lsp_log = add(go#config#LspLog(), {'response':l:rest[:l:next_start_idx - 1]})
       endif
 
       let l:body = l:rest[l:body_start_idx : l:next_start_idx - 1]
@@ -260,7 +260,7 @@ function! s:newlsp() abort
     let l:data = 'Content-Length: ' . strlen(l:body) . "\r\n\r\n" . l:body
 
     if go#util#HasDebug('lsp')
-      let g:go_lsp_log = add(go#config#LspLog(), "->\n" . l:data)
+      let g:go_lsp_log = add(go#config#LspLog(), {'request': l:data})
     endif
 
     if has('nvim')
@@ -282,7 +282,7 @@ function! s:newlsp() abort
 
   function! l:lsp.err_cb(ch, msg) dict abort
     if go#util#HasDebug('lsp')
-      let g:go_lsp_log = add(go#config#LspLog(), "<-stderr\n" .  a:msg)
+      let g:go_lsp_log = add(go#config#LspLog(), {'stderr': a:msg})
     endif
   endfunction
 
