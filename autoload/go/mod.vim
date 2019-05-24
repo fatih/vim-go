@@ -11,11 +11,11 @@ function! go#mod#Format() abort
     if len(tokens) > 0
       let s:go_major_version = str2nr(tokens[1])
     else
-      let s:go_major_version = 13
+      let s:go_major_version = ""
     endif
   endif
 
-  if s:go_major_version < "11" 
+  if !empty(s:go_major_version) && s:go_major_version < "11"
     call go#util#EchoError("Go v1.11 is required to format go.mod file")
     return
   endif
