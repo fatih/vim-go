@@ -8,7 +8,11 @@ function! go#mod#Format() abort
   " go mod only exists in `v1.11`
   if empty(s:go_major_version)
     let tokens = matchlist(go#util#Exec(['go', 'version']), '\d\+.\(\d\+\)\(\.\d\+\)\? ')
-    let s:go_major_version = str2nr(tokens[1])
+    if len(tokens) > 0
+      let s:go_major_version = str2nr(tokens[1])
+    else
+      let s:go_major_version = 13
+    endif
   endif
 
   if s:go_major_version < "11" 
