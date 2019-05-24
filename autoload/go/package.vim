@@ -163,7 +163,11 @@ function! go#package#FromPath(arg) abort
     return -1
   endif
 
-  let l:importpath = split(l:out, '\n')[0]
+  let l:lines = split(l:out, '\n')
+  if empty(l:lines)
+    return -1
+  endif
+  let l:importpath = l:lines[0]
 
   " go list returns '_CURRENTDIRECTORY' if the directory is neither in GOPATH
   " nor in a module. Check it and retun an error if that is the case
