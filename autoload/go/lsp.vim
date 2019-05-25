@@ -175,7 +175,7 @@ function! s:newlsp() abort
       " do not attempt to send a message to gopls when using neither GOPATH
       " mode nor module mode.
       if go#package#FromPath(l:wd) == -2
-        if !has_key(self, 'warned') || !self.warned
+        if go#config#NullModuleWarning() && (!has_key(self, 'warned') || !self.warned)
           call go#util#EchoWarning('Features that rely on gopls will not work correctly outside of GOPATH or a module.')
           let self.warned = 1
           " Sleep one second to make sure people see the message. Otherwise it is

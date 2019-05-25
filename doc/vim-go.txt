@@ -1212,6 +1212,14 @@ enabled.
   let g:go_version_warning = 1
 <
 
+                                                  *'g:go_null_module_warning'*
+
+Enable warning when trying to use lsp features in a null module. By default it
+is enabled.
+>
+  let g:go_null_module_warning = 1
+<
+
                                               *'g:go_code_completion_enabled'*
 
 Enable code completion with |'omnifunc'|. By default it is enabled.
