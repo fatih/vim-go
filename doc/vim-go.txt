@@ -1204,6 +1204,14 @@ balloonexpr`.
 ==============================================================================
 SETTINGS                                                        *go-settings*
 
+                                                     *'g:go_version_warning'*
+
+Enable warning when using an unsupported version of Vim. By default it is
+enabled.
+>
+  let g:go_version_warning = 1
+<
+
                                               *'g:go_code_completion_enabled'*
 
 Enable code completion with |'omnifunc'|. By default it is enabled.
