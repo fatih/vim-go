@@ -14,6 +14,9 @@ IMPROVEMENTS:
   [[GH-2289]](https://github.com/fatih/vim-go/pull/2289)
 * Improve the user experience when using null modules.
   [[GH-2300]](https://github.com/fatih/vim-go/pull/2300)
+* Add option, `g:go_null_module_warning' to silence the warning when trying to
+  use gopls with a null module.
+  [[GH-2309]](https://github.com/fatih/vim-go/pull/2309)
 
 
 BUG FIXES:
