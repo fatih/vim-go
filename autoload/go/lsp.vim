@@ -542,13 +542,13 @@ function! go#lsp#Info(showstatus)
     let l:state = s:newHandlerState('')
   endif
 
-  let l:state.handleResult = funcref('s:infoDefinitionHandler', [function('s:info', []), a:showstatus], l:state)
+  let l:state.handleResult = funcref('s:infoDefinitionHandler', [a:showstatus], l:state)
   let l:state.error = funcref('s:noop')
   let l:msg = go#lsp#message#Definition(l:fname, l:line, l:col)
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
+function! s:infoDefinitionHandler(showstatus, msg) abort dict
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
 
@@ -572,6 +572,10 @@ endfunction
 
 function! s:info(content) abort dict
   let l:content = a:content[0]
+
+  " strip godoc summary
+  let l:content = substitute(l:content, '^[^\n]\+\n', '', '')
+
   " strip off the method set and fields of structs and interfaces.
   if l:content =~# '^type [^ ]\+ \(struct\|interface\)'
     let l:content = substitute(l:content, '{.*', '', '')
