@@ -17,7 +17,8 @@ IMPROVEMENTS:
 * Add option, `g:go_null_module_warning' to silence the warning when trying to
   use gopls with a null module.
   [[GH-2309]](https://github.com/fatih/vim-go/pull/2309)
-
+* Modify `:GoReportGitHubIssue` to include vim-go configuration values
+  [[GH-2312]](https://github.com/fatih/vim-go/pull/2312)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
@@ -40,6 +41,9 @@ BUG FIXES:
   [[GH-2291]](https://github.com/fatih/vim-go/pull/2291)
 * Restore environment variables with backslashes correctly.
   [[GH-2292]](https://github.com/fatih/vim-go/pull/2292)
+* Modify handling of gopls output for `:GoInfo` to ensure the value will be
+  displayed.
+  [[GH-2311]](https://github.com/fatih/vim-go/pull/2311)
 
 ## 1.20 - (April 22, 2019)
 
