@@ -18,15 +18,15 @@ function! s:issuebody() abort
   for l in lines
     let body = add(body, l)
 
-    if l =~ '^\* Vim version'
+    if l =~ '^<!-- :version'
       redir => out
         silent version
       redir END
       let body = extend(body, split(out, "\n")[0:2])
-    elseif l =~ '^\* Go version'
+    elseif l =~ '^<!-- go version -->'
       let [out, err] = go#util#Exec(['go', 'version'])
       let body = add(body, substitute(l:out, rtrimpat, '', ''))
-    elseif l =~ '^\* Go environment'
+    elseif l =~ '^<!-- go env -->'
       let [out, err] = go#util#Exec(['go', 'env'])
       let body = add(body, substitute(l:out, rtrimpat, '', ''))
     endif
