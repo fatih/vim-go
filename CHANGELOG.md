@@ -44,6 +44,8 @@ BUG FIXES:
 * Modify handling of gopls output for `:GoInfo` to ensure the value will be
   displayed.
   [[GH-2311]](https://github.com/fatih/vim-go/pull/2311)
+* Run `:GoLint` successfully in null modules.
+  [[GH-2318]](https://github.com/fatih/vim-go/pull/2318)
 
 ## 1.20 - (April 22, 2019)
 
