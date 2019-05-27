@@ -46,6 +46,8 @@ BUG FIXES:
   [[GH-2311]](https://github.com/fatih/vim-go/pull/2311)
 * Run `:GoLint` successfully in null modules.
   [[GH-2318]](https://github.com/fatih/vim-go/pull/2318)
+* Ensure actions on save work in new buffers that have not yet been persisted to disk.
+  [[GH-2319]](https://github.com/fatih/vim-go/pull/2319)
 
 ## 1.20 - (April 22, 2019)
 
