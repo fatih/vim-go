@@ -14,6 +14,12 @@ func! Test_GetInfo_guru()
     unlet g:go_info_mode
 endfunction
 
+func! Test_GetInfo_gopls()
+    let g:go_info_mode = 'gopls'
+    call s:getinfo()
+    unlet g:go_info_mode
+endfunction
+
 func! s:getinfo()
     let l:filename = 'complete/complete.go'
     let l:tmp = gotest#load_fixture(l:filename)
