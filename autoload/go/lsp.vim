@@ -24,9 +24,6 @@ function! s:newlsp() abort
   if !go#util#has_job()
     " TODO(bc): start the server in the background using a shell that waits for the right output before returning.
     call go#util#EchoWarning('Features that rely on gopls will not work without either Vim 8.0.0087 or newer with +job or Neovim')
-    " Sleep one second to make sure people see the message. Otherwise it is
-    " often immediately overwritten by an async message.
-    sleep 1
     return {'sendMessage': funcref('s:noop')}
   endif
 
@@ -178,9 +175,6 @@ function! s:newlsp() abort
         if go#config#NullModuleWarning() && (!has_key(self, 'warned') || !self.warned)
           call go#util#EchoWarning('Features that rely on gopls will not work correctly outside of GOPATH or a module.')
           let self.warned = 1
-          " Sleep one second to make sure people see the message. Otherwise it is
-          " often immediately overwritten by an async message.
-          sleep 1
         endif
 
         return -1
