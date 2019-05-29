@@ -22,11 +22,16 @@ endfunction
 
 function! s:newlsp() abort
   if !go#util#has_job()
+    let l:oldshortmess=&shortmess
+    if has('nvim')
+      set shortmess-=F
+    endif
     " TODO(bc): start the server in the background using a shell that waits for the right output before returning.
     call go#util#EchoWarning('Features that rely on gopls will not work without either Vim 8.0.0087 or newer with +job or Neovim')
     " Sleep one second to make sure people see the message. Otherwise it is
     " often immediately overwritten by an async message.
     sleep 1
+    let &shortmess=l:oldshortmess
     return {'sendMessage': funcref('s:noop')}
   endif
 
@@ -176,11 +181,16 @@ function! s:newlsp() abort
       " mode nor module mode.
       if go#package#FromPath(l:wd) == -2
         if go#config#NullModuleWarning() && (!has_key(self, 'warned') || !self.warned)
+          let l:oldshortmess=&shortmess
+          if has('nvim')
+            set shortmess-=F
+          endif
           call go#util#EchoWarning('Features that rely on gopls will not work correctly outside of GOPATH or a module.')
           let self.warned = 1
           " Sleep one second to make sure people see the message. Otherwise it is
           " often immediately overwritten by an async message.
           sleep 1
+          let &shortmess=l:oldshortmess
         endif
 
         return -1
