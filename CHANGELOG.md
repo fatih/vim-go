@@ -18,7 +18,7 @@ IMPROVEMENTS:
   use gopls with a null module.
   [[GH-2309]](https://github.com/fatih/vim-go/pull/2309)
 * Modify `:GoReportGitHubIssue` to include vim-go configuration values
-  [[GH-2312]](https://github.com/fatih/vim-go/pull/2312)
+  [[GH-2323]](https://github.com/fatih/vim-go/pull/2323)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
@@ -48,6 +48,8 @@ BUG FIXES:
   [[GH-2318]](https://github.com/fatih/vim-go/pull/2318)
 * Ensure actions on save work in new buffers that have not yet been persisted to disk.
   [[GH-2319]](https://github.com/fatih/vim-go/pull/2319)
+* Restore population of information in `:GoReportGitHubIssue`.
+  [[GH-2312]](https://github.com/fatih/vim-go/pull/2312)
 
 ## 1.20 - (April 22, 2019)
 
