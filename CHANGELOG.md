@@ -50,6 +50,9 @@ BUG FIXES:
   [[GH-2319]](https://github.com/fatih/vim-go/pull/2319)
 * Restore population of information in `:GoReportGitHubIssue`.
   [[GH-2312]](https://github.com/fatih/vim-go/pull/2312)
+* Do not jump back to the originating window when jumping to definitions with
+  `g:go_def_mode='gopls'`.
+  [[GH-2327]](https://github.com/fatih/vim-go/pull/2327)
 
 ## 1.20 - (April 22, 2019)
 
