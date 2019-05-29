@@ -141,8 +141,17 @@ function! s:newlsp() abort
               return
             endif
             call l:handler.requestComplete(1)
+
+            let l:winidBeforeHandler = l:handler.winid
             call call(l:handler.handleResult, [l:response.result])
-            call win_gotoid(l:winid)
+
+            " change the window back to the window that was active when
+            " starting to handle the response _only_ if the handler didn't
+            " update the winid, so that handlers can set the winid if needed
+            " (e.g. :GoDef).
+            if l:handler.winid == l:winidBeforeHandler
+              call win_gotoid(l:winid)
+            endif
           finally
             call remove(self.handlers, l:response.id)
           endtry
