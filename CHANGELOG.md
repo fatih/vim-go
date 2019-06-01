@@ -19,6 +19,8 @@ IMPROVEMENTS:
   [[GH-2309]](https://github.com/fatih/vim-go/pull/2309)
 * Modify `:GoReportGitHubIssue` to include vim-go configuration values
   [[GH-2323]](https://github.com/fatih/vim-go/pull/2323)
+* Respect `g:go_info_mode='gopls'` in go#complete#GetInfo.
+  [[GH-2313]](https://github.com/fatih/vim-go/pull/2313)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
