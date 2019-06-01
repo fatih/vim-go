@@ -561,13 +561,32 @@ function! go#lsp#Info(showstatus)
     let l:state = s:newHandlerState('')
   endif
 
-  let l:state.handleResult = funcref('s:infoDefinitionHandler', [a:showstatus], l:state)
+  let l:state.handleResult = funcref('s:infoDefinitionHandler', [function('s:info', [1], l:state), a:showstatus], l:state)
   let l:state.error = funcref('s:noop')
   let l:msg = go#lsp#message#Definition(l:fname, l:line, l:col)
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:infoDefinitionHandler(showstatus, msg) abort dict
+function! go#lsp#GetInfo()
+  let l:fname = expand('%:p')
+  let [l:line, l:col] = getpos('.')[1:2]
+
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('')
+
+  let l:info = go#promise#New(function('s:info', [0], l:state), 10000, '')
+
+  let l:state.handleResult = funcref('s:infoDefinitionHandler', [l:info.wrapper, 0], l:state)
+  let l:state.error = funcref('s:noop')
+  let l:msg = go#lsp#message#Definition(l:fname, l:line, l:col)
+  call l:lsp.sendMessage(l:msg, l:state)
+  return l:info.await()
+endfunction
+
+function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
 
@@ -584,12 +603,22 @@ function! s:infoDefinitionHandler(showstatus, msg) abort dict
     let l:state = s:newHandlerState('')
   endif
 
-  let l:state.handleResult = funcref('s:hoverHandler', [function('s:info', [], l:state)], l:state)
+  let l:state.handleResult = funcref('s:hoverHandler', [a:next], l:state)
   let l:state.error = funcref('s:noop')
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:info(content) abort dict
+function! s:info(show, content) abort dict
+  let l:content = s:infoFromHoverContent(a:content)
+
+  if a:show
+    call go#util#ShowInfo(l:content)
+  endif
+
+  return l:content
+endfunction
+
+function! s:infoFromHoverContent(content) abort
   let l:content = a:content[0]
 
   " strip godoc summary
@@ -599,7 +628,8 @@ function! s:info(content) abort dict
   if l:content =~# '^type [^ ]\+ \(struct\|interface\)'
     let l:content = substitute(l:content, '{.*', '', '')
   endif
-  call go#util#ShowInfo(l:content)
+
+  return l:content
 endfunction
 
 " restore Vi compatibility settings
