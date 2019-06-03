@@ -105,7 +105,7 @@ endfunction
 " the location list
 function! go#lint#Golint(bang, ...) abort
   if a:0 == 0
-    let [l:out, l:err] = go#util#Exec([go#config#GolintBin(), go#package#ImportPath()])
+    let [l:out, l:err] = go#util#Exec([go#config#GolintBin(), expand('%:p:h')])
   else
     let [l:out, l:err] = go#util#Exec([go#config#GolintBin()] + a:000)
   endif
