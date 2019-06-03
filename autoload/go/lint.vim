@@ -101,10 +101,11 @@ function! go#lint#Gometa(bang, autosave, ...) abort
   endif
 endfunction
 
-" Golint calls 'golint'.
+" Golint calls 'golint' on the current directory. Any warnings are populated in
+" the location list
 function! go#lint#Golint(bang, ...) abort
   if a:0 == 0
-    let [l:out, l:err] = go#util#ExecInDir([go#config#GolintBin(), '.'])
+    let [l:out, l:err] = go#util#Exec([go#config#GolintBin(), expand('%:p:h')])
   else
     let [l:out, l:err] = go#util#Exec([go#config#GolintBin()] + a:000)
   endif
