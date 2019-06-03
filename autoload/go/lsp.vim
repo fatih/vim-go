@@ -186,15 +186,16 @@ function! s:newlsp() abort
         let l:wd = getcwd()
       endif
 
-      " do not attempt to send a message to gopls when using neither GOPATH
-      " mode nor module mode.
-      if go#package#FromPath(l:wd) == -2
+      " do not attempt to send a message to gopls when using a null module in
+      " module mode.
+      let l:importpath = go#package#FromPath(l:wd)
+      if l:importpath == -2 || (type(l:importpath) == type('') && l:importpath[0] == '.')
         if go#config#NullModuleWarning() && (!has_key(self, 'warned') || !self.warned)
           let l:oldshortmess=&shortmess
           if has('nvim')
             set shortmess-=F
           endif
-          call go#util#EchoWarning('Features that rely on gopls will not work correctly outside of GOPATH or a module.')
+          call go#util#EchoWarning('Features that rely on gopls will not work correctly in a null module.')
           let self.warned = 1
           " Sleep one second to make sure people see the message. Otherwise it is
           " often immediately overwritten by an async message.
