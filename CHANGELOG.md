@@ -23,6 +23,8 @@ IMPROVEMENTS:
   [[GH-2313]](https://github.com/fatih/vim-go/pull/2313)
 * Allow `:GoLint`, `:GoErrCheck`, and `:GoDebug` to work in null modules.
   [[GH-2335]](https://github.com/fatih/vim-go/pull/2335)
+* Change default value for `g:go_info_mode` and `g:go_def_mode` to `'gopls'`.
+  [[GH-2329]](https://github.com/fatih/vim-go/pull/2329)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
