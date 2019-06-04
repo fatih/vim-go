@@ -619,6 +619,10 @@ function! s:info(show, content) abort dict
 endfunction
 
 function! s:infoFromHoverContent(content) abort
+  if len(a:content) < 1
+    return ''
+  endif
+
   let l:content = a:content[0]
 
   " strip godoc summary
