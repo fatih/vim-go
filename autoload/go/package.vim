@@ -82,6 +82,10 @@ function! s:vendordirs() abort
     if l:err != 0
       return []
     endif
+    if empty(l:root)
+      return []
+    endif
+
     let l:root = split(l:root, '\n')[0] . go#util#PathSep() . 'src'
 
     let [l:dir, l:err] = go#util#ExecInDir(['go', 'list', '-f', '{{.Dir}}'])
