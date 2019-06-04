@@ -58,6 +58,8 @@ BUG FIXES:
 * Fix getting information about a valid identifier for which gopls returns no
   information (e.g. calling `:GoInfo` on a package identifier).
   [[GH-2339]](https://github.com/fatih/vim-go/pull/2339)
+* Fix tab completion of package names on the cmdline in null modules.
+  [[GH-2342]](https://github.com/fatih/vim-go/pull/2342)
 
 ## 1.20 - (April 22, 2019)
 
