@@ -55,6 +55,9 @@ BUG FIXES:
 * Do not jump back to the originating window when jumping to definitions with
   `g:go_def_mode='gopls'`.
   [[GH-2327]](https://github.com/fatih/vim-go/pull/2327)
+* Fix getting information about a valid identifier for which gopls returns no
+  information (e.g. calling `:GoInfo` on a package identifier).
+  [[GH-2339]](https://github.com/fatih/vim-go/pull/2339)
 
 ## 1.20 - (April 22, 2019)
 
