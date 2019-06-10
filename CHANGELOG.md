@@ -14,8 +14,8 @@ IMPROVEMENTS:
   [[GH-2289]](https://github.com/fatih/vim-go/pull/2289)
 * Improve the user experience when using null modules.
   [[GH-2300]](https://github.com/fatih/vim-go/pull/2300)
-* Add option, `g:go_null_module_warning` to silence the warning when trying to
-  use gopls with a null module.
+* Add a new option, `g:go_null_module_warning` to silence the warning when
+  trying to use gopls with a null module.
   [[GH-2309]](https://github.com/fatih/vim-go/pull/2309)
 * Modify `:GoReportGitHubIssue` to include vim-go configuration values
   [[GH-2323]](https://github.com/fatih/vim-go/pull/2323)
@@ -25,6 +25,11 @@ IMPROVEMENTS:
   [[GH-2335]](https://github.com/fatih/vim-go/pull/2335)
 * Change default value for `g:go_info_mode` and `g:go_def_mode` to `'gopls'`.
   [[GH-2329]](https://github.com/fatih/vim-go/pull/2329)
+* Add a new option, `g:go_doc_popup_window` to optionally use a popup window
+  for godoc in Vim 8.1.1513 and later.
+  [[GH-2347]](https://github.com/fatih/vim-go/pull/2347)
+* Check for null modules in the background when initializing gopls.
+  [[GH-2351]](https://github.com/fatih/vim-go/pull/2351)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
