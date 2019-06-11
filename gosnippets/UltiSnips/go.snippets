@@ -261,6 +261,11 @@ snippet ff "fmt.Printf(...)"
 fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
 endsnippet
 
+# Fmt Printf debug
+snippet ffh "fmt.Printf(...) hash"
+fmt.Printf("${1:${VISUAL}} = %#v\n", $1)
+endsnippet
+
 # Fmt Println debug
 snippet fn "fmt.Println(...)"
 fmt.Println("${1:${VISUAL}}")
@@ -438,6 +443,10 @@ endsnippet
 snippet tas "testify/assert.New" !b
 asrt := assert.New(t)
 $0
+endsnippet
+
+snippet tasr "testify/assert.New and testify/require.New" !b
+asrt, rq := assert.New(t), require.New(t)
 endsnippet
 
 snippet example "func ExampleXYZ() { ... }"
