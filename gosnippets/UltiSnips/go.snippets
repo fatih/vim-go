@@ -158,6 +158,13 @@ if err != nil {
 ${0}
 endsnippet
 
+snippet errnw "Error return wrap" !b
+if err != nil {
+	return errors.Wrap(err, "${1:message}")
+}
+${0}
+endsnippet
+
 # error log snippet
 snippet errl "Error with log.Fatal(err)" !b
 if err != nil {
@@ -170,6 +177,13 @@ endsnippet
 snippet errn, "Error return with two return values" !b
 if err != nil {
 	return ${1:nil}, ${2:err}
+}
+${0}
+endsnippet
+
+snippet errn,w "Error return wrap with two return values" !b
+if err != nil {
+	return nil, errors.Wrap(err, "${1:message}")
 }
 ${0}
 endsnippet
@@ -245,6 +259,11 @@ endsnippet
 # Fmt Printf debug
 snippet ff "fmt.Printf(...)"
 fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
+endsnippet
+
+# Fmt Printf debug with hash
+snippet ffh "fmt.Printf(#...)"
+fmt.Printf("${1:${VISUAL}} = %#v\n", $1)
 endsnippet
 
 # Fmt Println debug
@@ -385,15 +404,21 @@ for _, tt := range tests {
 endsnippet
 
 
-snippet hf "http.HandlerFunc" !b
+snippet hf "http.HandlerFunc"
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 }
 endsnippet
 
-snippet hhf "mux.HandleFunc" !b
+snippet hhf "mux.HandleFunc"
 ${1:http}.HandleFunc("${2:/}", func(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
+})
+endsnippet
+
+snippet mux "Mux handler" !b
+${1:mux}.Path("${2:/path}").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	$0
 })
 endsnippet
 
@@ -420,6 +445,18 @@ if err != nil {
 	t.Fatalf("${0:message}")
 }
 endsnippet
+
+snippet tas "testify/assert.New" !b
+asrt := assert.New(t)
+$0
+endsnippet
+
+snippet tasr "testify/assert.New and testify/require.New" !b
+asrt, rq := assert.New(t), require.New(t)
+$0
+endsnippet
+
+
 
 snippet example "func ExampleXYZ() { ... }"
 func Example${1:Method}() {
@@ -481,5 +518,31 @@ def closing_par(snip, pos):
 		snip.rv = ""
 
 endglobal
+
+snippet dup "Repeat something"
+${1:something} $1$0
+endsnippet
+
+
+snippet lwe "logrus with error" !b
+${1:logrus}.WithError(${2:err}).Error("${3:something happened}")
+endsnippet
+
+snippet lwf "logrus with field" !b
+${1:logrus}.WithField("${2:foo}", ${3:"bar"}).${4:Info}("${5:something happened}")
+$0
+endsnippet
+
+snippet ew "errors.Wrap"
+errors.Wrap(${2:err}, "${3:someMessage}")
+endsnippet
+
+snippet ewf "errors.Wrapf"
+errors.Wrapf(${2:err}, "${3:someMessage %#v}", ${4:someargs...})
+endsnippet
+
+snippet rew "return errors.Wrap"
+return errors.Wrap(${2:err}, "${3:someMessage}")
+endsnippet
 
 # vim:ft=snippets:
