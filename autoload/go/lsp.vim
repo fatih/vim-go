@@ -176,6 +176,7 @@ function! s:newlsp() abort
     " conditions initializing gopls.
     while get(self, 'checkingmodule', 0)
       sleep 50 m
+      redraw
     endwhile
 
     if !self.last_request_id
