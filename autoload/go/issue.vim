@@ -32,6 +32,16 @@ function! s:issuebody() abort
     endif
   endfor
 
+  let body = add(body, "#### vim-go configuration:\n<details><summary>vim-go configuration</summary><br><pre>")
+
+  for k in keys(g:)
+    if k =~ '^go_'
+      let body = add(body, 'g:' . k . ' = ' . string(get(g:, k)))
+    endif
+  endfor
+
+  let body = add(body, '</pre></details>')
+
   return join(body, "\n")
 endfunction
 

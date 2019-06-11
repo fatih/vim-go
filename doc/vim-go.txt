@@ -1275,11 +1275,11 @@ updated. By default it's disabled. The delay can be configured with the
                                                             *'g:go_info_mode'*
 
 Use this option to define the command to be used for |:GoInfo|. By default
-`gocode` is being used as it's the fastest option. But one might also use
-`gopls` or `guru` as they cover more cases and are more accurate.  Current
-valid options are: `[gocode, guru, gopls]` >
-
-  let g:go_info_mode = 'gocode'
+`gopls` is used, because it is the fastest and is known to be highly accurate.
+One might also use `guru` for its accuracy or `gocode` for its performance.
+Valid options are `gocode`, `gopls`, and `guru`.
+>
+  let g:go_info_mode = 'gopls'
 <
                                                          *'g:go_auto_sameids'*
 
@@ -1391,10 +1391,11 @@ a private internal service. Default is 'https://godoc.org'.
                                                              *'g:go_def_mode'*
 
 Use this option to define the command to be used for |:GoDef|. By default
-`guru` is being used as it covers all edge cases. But one might also use
-`godef` as it's faster. Current valid options are: `[guru, godef, gopls]` >
-
-  let g:go_def_mode = 'guru'
+`gopls` is used, because it is the fastest. One might also use `guru` for its
+accuracy or `godef` for its performance. Valid options are `godef`, `gopls`,
+and `guru`.
+>
+  let g:go_def_mode = 'gopls'
 <
                                                   *'g:go_def_mapping_enabled'*
 
@@ -2043,8 +2044,7 @@ rest of the commands and mappings become available after starting debug mode.
       * Make the `:GoDebug*` commands and `(go-debug-*)` mappings available.
 
     The directory of the current buffer is used if [pkg] is empty. Any other
-    arguments will be passed to the program. When [pkg] is relative, it will
-    be interpreted relative to the directory of the current buffer.
+    arguments will be passed to the program.
 
     Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
