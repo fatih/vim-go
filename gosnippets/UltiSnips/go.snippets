@@ -249,6 +249,20 @@ for ${2:k}, ${3:v} := range ${1} {
 }
 endsnippet
 
+snippet forsel "for select"
+for {
+	select {
+		case ${2:${1:result} := }<- ${3:someChan}:
+			${0}
+	}
+}
+endsnippet
+
+snippet selc "select case" !b
+case ${1:${2:var} := }<-${3:someChan}:
+  ${0}
+endsnippet
+
 # function
 snippet func "func Function(...) [error] { ... }"
 func ${1:name}(${2:params})${3/(.+)/ /}`!p opening_par(snip, 3)`$3`!p closing_par(snip, 3)` {
@@ -262,7 +276,7 @@ fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
 endsnippet
 
 # Fmt Printf debug with hash
-snippet ffh "fmt.Printf(#...)"
+snippet ffh "fmt.Printf(#...) hash"
 fmt.Printf("${1:${VISUAL}} = %#v\n", $1)
 endsnippet
 
@@ -404,7 +418,11 @@ for _, tt := range tests {
 endsnippet
 
 
+<<<<<<< HEAD
 snippet hf "http.HandlerFunc"
+=======
+snippet hf "http.HandlerFunc" !
+>>>>>>> 7777f34681a252625802e1d609bbb895ae6f1271
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 }
@@ -453,11 +471,16 @@ endsnippet
 
 snippet tasr "testify/assert.New and testify/require.New" !b
 asrt, rq := assert.New(t), require.New(t)
+<<<<<<< HEAD
 $0
 endsnippet
 
 
 
+=======
+endsnippet
+
+>>>>>>> 7777f34681a252625802e1d609bbb895ae6f1271
 snippet example "func ExampleXYZ() { ... }"
 func Example${1:Method}() {
 	${0:${VISUAL}}
@@ -492,6 +515,10 @@ if !reflect.DeepEqual(${1:expected}, ${2:actual}) {
 	fmt.Printf("%s:%d:\n\n\texp: %#v\n\n\tgot: %#v\n\n", filepath.Base(file), line, $1, $2)
 	t.FailNow()
 }
+endsnippet
+
+snippet ew "errors.Wrap"
+errors.Wrap(${1:err}, "${2:message}")
 endsnippet
 
 global !p
@@ -546,3 +573,4 @@ return errors.Wrap(${2:err}, "${3:someMessage}")
 endsnippet
 
 # vim:ft=snippets:
+
