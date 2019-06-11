@@ -418,11 +418,7 @@ for _, tt := range tests {
 endsnippet
 
 
-<<<<<<< HEAD
 snippet hf "http.HandlerFunc"
-=======
-snippet hf "http.HandlerFunc" !
->>>>>>> 7777f34681a252625802e1d609bbb895ae6f1271
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 }
@@ -471,16 +467,9 @@ endsnippet
 
 snippet tasr "testify/assert.New and testify/require.New" !b
 asrt, rq := assert.New(t), require.New(t)
-<<<<<<< HEAD
 $0
 endsnippet
 
-
-
-=======
-endsnippet
-
->>>>>>> 7777f34681a252625802e1d609bbb895ae6f1271
 snippet example "func ExampleXYZ() { ... }"
 func Example${1:Method}() {
 	${0:${VISUAL}}
