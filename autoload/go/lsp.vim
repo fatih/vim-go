@@ -89,9 +89,7 @@ function! s:newlsp() abort
         break
       endif
 
-      if go#util#HasDebug('lsp')
-        let g:go_lsp_log = add(go#config#LspLog(), {'response':l:rest[:l:next_start_idx - 1]})
-      endif
+      call s:debug('received', l:rest[:l:next_start_idx - 1])
 
       let l:body = l:rest[l:body_start_idx : l:next_start_idx - 1]
       let l:rest = l:rest[l:next_start_idx :]
@@ -259,9 +257,7 @@ function! s:newlsp() abort
     let l:body = json_encode(a:msg)
     let l:data = 'Content-Length: ' . strlen(l:body) . "\r\n\r\n" . l:body
 
-    if go#util#HasDebug('lsp')
-      let g:go_lsp_log = add(go#config#LspLog(), {'request': l:data})
-    endif
+    call s:debug('sent', l:data)
 
     if has('nvim')
       call chansend(self.job, l:data)
@@ -281,9 +277,7 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.err_cb(ch, msg) dict abort
-    if go#util#HasDebug('lsp')
-      let g:go_lsp_log = add(go#config#LspLog(), {'stderr': a:msg})
-    endif
+    call s:debug('stderr', a:msg)
   endfunction
 
   " explicitly bind callbacks to l:lsp so that within it, self will always refer
@@ -662,6 +656,38 @@ function! s:infoFromHoverContent(content) abort
   endif
 
   return l:content
+endfunction
+
+function! s:debug(event, data) abort
+  if !go#util#HasDebug('lsp')
+    return
+  endif
+
+  let l:winid = win_getid()
+
+  let l:name = '__GOLSP_LOG__'
+  let l:log_winid = bufwinid(l:name)
+  if l:log_winid == -1
+    silent keepalt botright 10new
+    silent file `='__GOLSP_LOG__'`
+    setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
+    setlocal filetype=golsplog
+  else
+    call win_gotoid(l:log_winid)
+  endif
+
+  try
+    setlocal modifiable
+    if getline(1) == ''
+      call setline('$', printf('%s: %s', a:event, a:data))
+    else
+      call append('$', printf('%s: %s', a:event, a:data))
+    endif
+    normal! G
+    setlocal nomodifiable
+  finally
+    call win_gotoid(l:winid)
+  endtry
 endfunction
 
 " restore Vi compatibility settings
