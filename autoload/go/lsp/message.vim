@@ -126,6 +126,25 @@ function! go#lsp#message#Hover(file, line, col) abort
        \ }
 endfunction
 
+function! go#lsp#message#AddWorkspaces(dirs) abort
+  let l:dirs = map(copy(a:dirs), function('s:workspaceFodlerToAddURI', []))
+
+  return {
+          \ 'notification': 1,
+          \ 'method': 'workspace/didChangeWorkspaceFolders',
+          \ 'params': {
+          \   'event': {
+          \     'added': l:dirs,
+          \     },
+          \ }
+       \ }
+
+endfunction
+
+function s:workspaceFolderToAddURI(key, val) abort
+  return {'uri': go#path#ToURI(a:val), 'name': a:val}
+endfunction
+
 function! s:position(line, col) abort
   return {'line': a:line - 1, 'character': a:col-1}
 endfunction

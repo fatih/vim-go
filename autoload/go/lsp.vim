@@ -280,7 +280,6 @@ function! s:newlsp() abort
 
   function l:lsp.newResponse(id, result) dict abort
     let l:msg = {
-          \ 'method': a:data.method,
           \ 'jsonrpc': '2.0',
           \ 'id': a:id,
           \ 'result': a:result,
@@ -690,6 +689,31 @@ function! s:infoFromHoverContent(content) abort
   endif
 
   return l:content
+endfunction
+
+function! go#lsp#AddWorkspace(...) abort
+  if a:0 == 0
+    return
+  endif
+
+  let l:workspaces = []
+  for l:dir in a:000
+    let l:dir = fnamemodify(l:dir, ':p')
+    if !isdirectory(l:dir)
+      continue
+    endif
+
+    let l:workspaces = add(l:workspaces, l:dir)
+  endfor
+
+  let l:lsp = s:lspfactory.get()
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  let l:lsp.workspaceDirectories = extend(l:lsp.workspaceDirectories, l:workspaces)
+  let l:msg = go#lsp#message#AddWorkspaces(l:workspaces)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return 0
 endfunction
 
 function! s:debug(event, data) abort
