@@ -54,6 +54,7 @@ function! s:newlsp() abort
         \ 'last_request_id': 0,
         \ 'buf': '',
         \ 'handlers': {},
+        \ 'workspaceDirectories': [],
         \ }
 
   function! l:lsp.readMessage(data) dict abort
@@ -126,6 +127,12 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.handleRequest(req) dict abort
+    if a:req.method == 'workspace/workspaceFolders'
+      let l:resp = go#lsp#message#workspaceFolders(self.workspaceDirectories)
+    endif
+
+    let l:msg = self.newResponse(l:resp)
+    call self.write(l:msg)
   endfunction
 
   function! l:lsp.handleNotification(req) dict abort
@@ -226,6 +233,7 @@ function! s:newlsp() abort
         return -1
       endif
 
+      let self.workspaceDirectories = add(self.workspaceDirectories, l:wd)
       let l:msg = self.newMessage(go#lsp#message#Initialize(l:wd))
 
       let l:state = s:newHandlerState('')

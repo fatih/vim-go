@@ -10,7 +10,9 @@ function! go#lsp#message#Initialize(wd) abort
             \ 'processId': getpid(),
             \ 'rootUri': go#path#ToURI(a:wd),
             \ 'capabilities': {
-              \ 'workspace': {},
+              \ 'workspace': {
+                \ 'workspaceFolders': v:true,
+              \ },
               \ 'textDocument': {
                 \ 'hover': {
                   \ 'contentFormat': ['plaintext'],
@@ -19,6 +21,14 @@ function! go#lsp#message#Initialize(wd) abort
             \ }
           \ }
        \ }
+endfunction
+
+function! go#lsp#message#workspaceFolders(dirs) abort
+  return map(copy(a:dirs), function('s:workspaceFolderToURI', []))
+endfunction
+
+function s:workspaceFolderToURI(key, val) abort
+  return go#path#ToURI(a:val)
 endfunction
 
 function! go#lsp#message#Definition(file, line, col) abort
