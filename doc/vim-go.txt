@@ -1805,7 +1805,8 @@ Currently accepted values:
   debugger-state     Expose debugger state in 'g:go_debug_diag'.
   debugger-commands  Echo communication between vim-go and `dlv`; requests and
                      responses are recorded in `g:go_debug_commands`.
-  lsp                Record lsp requests and responses in g:go_lsp_log.
+  lsp                Echo communication between vim-go and `gopls`. All
+                     communication is shown in a dedicated window.
 >
       let g:go_debug = []
 <
