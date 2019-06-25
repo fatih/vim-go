@@ -165,6 +165,13 @@ if err != nil {
 ${0}
 endsnippet
 
+snippet errnwf "Error return wrapf" !b
+if err != nil {
+	return errors.Wrapf(err, "${1:message %s}", ${2:err})
+}
+${0}
+endsnippet
+
 # error log snippet
 snippet errl "Error with log.Fatal(err)" !b
 if err != nil {
@@ -184,6 +191,13 @@ endsnippet
 snippet errn,w "Error return wrap with two return values" !b
 if err != nil {
 	return nil, errors.Wrap(err, "${1:message}")
+}
+${0}
+endsnippet
+
+snippet errn,wf "Error return wrapf with two return values" !b
+if err != nil {
+	return nil, errors.Wrapf(err, "${1:message %s}", ${2:err})
 }
 ${0}
 endsnippet
@@ -272,12 +286,12 @@ endsnippet
 
 # Fmt Printf debug
 snippet ff "fmt.Printf(...)"
-fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
+fmt.Printf("$1 = %+v\n", ${1:${VISUAL}})
 endsnippet
 
 # Fmt Printf debug with hash
 snippet ffh "fmt.Printf(#...) hash"
-fmt.Printf("${1:${VISUAL}} = %#v\n", $1)
+fmt.Printf("$1 = %#v\n", ${1:${VISUAL}})
 endsnippet
 
 # Fmt Println debug
