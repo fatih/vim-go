@@ -157,6 +157,7 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.handleInitializeResult(result) dict abort
+    call go#util#EchoProgress("initialized gopls")
     let self.ready = 1
     " TODO(bc): send initialized message to the server?
 
@@ -178,7 +179,7 @@ function! s:newlsp() abort
     endwhile
 
     if !self.last_request_id
-      call go#util#EchoProgress("initialize gopls")
+      call go#util#EchoProgress("initializing gopls")
       " TODO(bc): run a server per module and one per GOPATH? (may need to
       " keep track of servers by rootUri).
       let l:wd = go#util#ModuleRoot()
