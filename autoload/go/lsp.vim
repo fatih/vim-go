@@ -642,10 +642,17 @@ function! s:infoFromHoverContent(content) abort
   let l:content = a:content[0]
 
   " strip godoc summary
-  let l:content = substitute(l:content, '^[^\n]\+\n', '', '')
+  " Hover content with godoc summary will have the godoc summary in the first
+  " line, and the second line will not have leading whitespace. When there is
+  " leading whitespace on the second line, then the hover content is for a
+  " struct or interface without godoc.
+  let l:lines = split(l:content, '\n')
+  if len(l:lines) > 1 && (l:lines[1] !~# '^\s')
+    let l:content = substitute(l:content, '^[^\n]\+\n', '', '')
+  endif
 
   " strip off the method set and fields of structs and interfaces.
-  if l:content =~# '^type [^ ]\+ \(struct\|interface\)'
+  if l:content =~# '^\(type \)\?[^ ]\+ \(struct\|interface\)'
     let l:content = substitute(l:content, '{.*', '', '')
   endif
 
