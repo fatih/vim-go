@@ -79,6 +79,8 @@ BUG FIXES:
   [[GH-2339]](https://github.com/fatih/vim-go/pull/2339)
 * Fix tab completion of package names on the cmdline in null modules.
   [[GH-2342]](https://github.com/fatih/vim-go/pull/2342)
+* Display identifier info correctly when the identifier has no godoc.
+  [[GH-2373]](https://github.com/fatih/vim-go/pull/2373)
 
 ## 1.20 - (April 22, 2019)
 
