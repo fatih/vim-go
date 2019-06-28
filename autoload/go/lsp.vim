@@ -216,24 +216,6 @@ function! s:newlsp() abort
         let l:wd = getcwd()
       endif
 
-      " check whether l:wd is a null module asynchronously so Vim is blocked
-      " while go list reaches out to the internet.
-      "
-      " Isn't it fun that go list can just reach out to the internet and get
-      " modules? </snark>.
-      let self.checkingmodule = 1
-      call timer_start(1, function('s:checkmodule', [l:wd], self))
-
-      while get(self, 'checkingmodule', 0)
-        sleep 50 m
-      endwhile
-
-      " do not attempt to send a message to gopls when using a null module in
-      " module mode.
-      if self.isnullmodule
-        return -1
-      endif
-
       let self.workspaceDirectories = add(self.workspaceDirectories, l:wd)
       let l:msg = self.newMessage(go#lsp#message#Initialize(l:wd))
 
@@ -407,28 +389,6 @@ function! s:start() abort dict
         \ }
 
   call go#statusline#Update(self.jobdir, status)
-endfunction
-
-function! s:checkmodule(wd, timer) dict
-  let self.isnullmodule = 0
-  let l:importpath = go#package#FromPath(a:wd)
-  if l:importpath == -2 || (type(l:importpath) == type('') && l:importpath[0] == '.')
-    if go#config#NullModuleWarning() && !get(self, 'warned', 0)
-      let l:oldshortmess=&shortmess
-      if has('nvim')
-        set shortmess-=F
-      endif
-      call go#util#EchoWarning('Features that rely on gopls will not work correctly in a null module.')
-      let self.warned = 1
-      " Sleep one second to make sure people see the message. Otherwise it is
-      " often immediately overwritten by an async message.
-      sleep 1
-      let &shortmess=l:oldshortmess
-    endif
-
-    let self.isnullmodule = 1
-  endif
-  unlet self.checkingmodule
 endfunction
 
 " go#lsp#Definition calls gopls to get the definition of the identifier at
