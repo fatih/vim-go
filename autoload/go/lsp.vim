@@ -54,6 +54,7 @@ function! s:newlsp() abort
         \ 'last_request_id': 0,
         \ 'buf': '',
         \ 'handlers': {},
+        \ 'workspaceDirectories': [],
         \ }
 
   function! l:lsp.readMessage(data) dict abort
@@ -110,50 +111,73 @@ function! s:newlsp() abort
   function! l:lsp.handleMessage(ch, data) dict abort
       let self.buf .= a:data
 
-      let [self.buf, l:responses] = self.readMessage(self.buf)
+      let [self.buf, l:messages] = self.readMessage(self.buf)
 
-      " TODO(bc): handle notifications (e.g. window/showMessage).
-
-      for l:response in l:responses
-        if has_key(l:response, 'id') && has_key(self.handlers, l:response.id)
-          try
-            let l:handler = self.handlers[l:response.id]
-
-            let l:winid = win_getid(winnr())
-            " Always set the active window to the window that was active when
-            " the request was sent. Among other things, this makes sure that
-            " the correct window's location list will be populated when the
-            " list type is 'location' and the user has moved windows since
-            " sending the reques.
-            call win_gotoid(l:handler.winid)
-
-            if has_key(l:response, 'error')
-              call l:handler.requestComplete(0)
-              if has_key(l:handler, 'error')
-                call call(l:handler.error, [l:response.error.message])
-              else
-                call go#util#EchoError(l:response.error.message)
-              endif
-              call win_gotoid(l:winid)
-              return
-            endif
-            call l:handler.requestComplete(1)
-
-            let l:winidBeforeHandler = l:handler.winid
-            call call(l:handler.handleResult, [l:response.result])
-
-            " change the window back to the window that was active when
-            " starting to handle the response _only_ if the handler didn't
-            " update the winid, so that handlers can set the winid if needed
-            " (e.g. :GoDef).
-            if l:handler.winid == l:winidBeforeHandler
-              call win_gotoid(l:winid)
-            endif
-          finally
-            call remove(self.handlers, l:response.id)
-          endtry
+      for l:message in l:messages
+        if has_key(l:message, 'method')
+          if has_key(l:message, 'id')
+            call self.handleRequest(l:message)
+          else
+            call self.handleNotification(l:message)
+          endif
+        elseif has_key(l:message, 'result') ||  has_key(l:message, 'error')
+          call self.handleResponse(l:message)
         endif
       endfor
+  endfunction
+
+  function! l:lsp.handleRequest(req) dict abort
+    if a:req.method == 'workspace/workspaceFolders'
+      let l:resp = go#lsp#message#workspaceFolders(self.workspaceDirectories)
+    endif
+
+    let l:msg = self.newResponse(l:resp)
+    call self.write(l:msg)
+  endfunction
+
+  function! l:lsp.handleNotification(req) dict abort
+      " TODO(bc): handle notifications (e.g. window/showMessage).
+  endfunction
+
+  function! l:lsp.handleResponse(resp) dict abort
+    if has_key(a:resp, 'id') && has_key(self.handlers, a:resp.id)
+      try
+        let l:handler = self.handlers[a:resp.id]
+
+        let l:winid = win_getid(winnr())
+        " Always set the active window to the window that was active when
+        " the request was sent. Among other things, this makes sure that
+        " the correct window's location list will be populated when the
+        " list type is 'location' and the user has moved windows since
+        " sending the request.
+        call win_gotoid(l:handler.winid)
+
+        if has_key(a:resp, 'error')
+          call l:handler.requestComplete(0)
+          if has_key(l:handler, 'error')
+            call call(l:handler.error, [a:resp.error.message])
+          else
+            call go#util#EchoError(a:resp.error.message)
+          endif
+          call win_gotoid(l:winid)
+          return
+        endif
+        call l:handler.requestComplete(1)
+
+        let l:winidBeforeHandler = l:handler.winid
+        call call(l:handler.handleResult, [a:resp.result])
+
+        " change the window back to the window that was active when
+        " starting to handle the message _only_ if the handler didn't
+        " update the winid, so that handlers can set the winid if needed
+        " (e.g. :GoDef).
+        if l:handler.winid == l:winidBeforeHandler
+          call win_gotoid(l:winid)
+        endif
+      finally
+        call remove(self.handlers, a:resp.id)
+      endtry
+    endif
   endfunction
 
   function! l:lsp.handleInitializeResult(result) dict abort
@@ -209,6 +233,7 @@ function! s:newlsp() abort
         return -1
       endif
 
+      let self.workspaceDirectories = add(self.workspaceDirectories, l:wd)
       let l:msg = self.newMessage(go#lsp#message#Initialize(l:wd))
 
       let l:state = s:newHandlerState('')
@@ -239,7 +264,7 @@ function! s:newlsp() abort
     let l:msg = {
           \ 'method': a:data.method,
           \ 'jsonrpc': '2.0',
-          \ }
+        \ }
 
     if !a:data.notification
       let self.last_request_id += 1
@@ -251,6 +276,14 @@ function! s:newlsp() abort
     endif
 
     return l:msg
+  endfunction
+
+  function l:lsp.newResponse(id, result) dict abort
+    let l:msg = {
+          \ 'jsonrpc': '2.0',
+          \ 'id': a:id,
+          \ 'result': a:result,
+        \ }
   endfunction
 
   function! l:lsp.write(msg) dict abort
@@ -656,6 +689,31 @@ function! s:infoFromHoverContent(content) abort
   endif
 
   return l:content
+endfunction
+
+function! go#lsp#AddWorkspace(...) abort
+  if a:0 == 0
+    return
+  endif
+
+  let l:workspaces = []
+  for l:dir in a:000
+    let l:dir = fnamemodify(l:dir, ':p')
+    if !isdirectory(l:dir)
+      continue
+    endif
+
+    let l:workspaces = add(l:workspaces, l:dir)
+  endfor
+
+  let l:lsp = s:lspfactory.get()
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  let l:lsp.workspaceDirectories = extend(l:lsp.workspaceDirectories, l:workspaces)
+  let l:msg = go#lsp#message#AddWorkspaces(l:workspaces)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return 0
 endfunction
 
 function! s:debug(event, data) abort

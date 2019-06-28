@@ -536,7 +536,7 @@ CTRL-t
 
 
                                                                 *:GoGuruScope*
-:GoGuruScope [pattern] [pattern2] ... [patternN]
+:GoGuruScope [pattern] ...
 
     Changes the custom |'g:go_guru_scope'| setting and overrides it with the
     given package patterns. The custom scope is cleared (unset) if `""` is
@@ -905,6 +905,11 @@ CTRL-t
     Filter the current go.mod buffer through "go mod edit -fmt" command.  It
     tries to preserve cursor position and avoids replacing the buffer with
     stderr output.
+
+                                                           *:GoAddWorkspace*
+:GoAddWorkspace [dir] ...
+
+    Add directories to the `gopls` workspace.
 
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
