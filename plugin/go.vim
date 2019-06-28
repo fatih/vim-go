@@ -20,19 +20,19 @@ function! s:checkVersion() abort
   let l:unsupported = 0
   if go#config#VersionWarning() != 0
     if has('nvim')
-      let l:unsupported = !has('nvim-0.3.1')
+      let l:unsupported = !has('nvim-0.3.2')
     else
       let l:unsupported = (v:version < 704 || (v:version == 704 && !has('patch2009')))
     endif
 
     if l:unsupported == 1
       echohl Error
-      echom "vim-go requires Vim 7.4.2009 or Neovim 0.3.1, but you're using an older version."
+      echom "vim-go requires Vim 7.4.2009 or Neovim 0.3.2, but you're using an older version."
       echom "Please update your Vim for the best vim-go experience."
       echom "If you really want to continue you can set this to make the error go away:"
       echom "    let g:go_version_warning = 0"
       echom "Note that some features may error out or behave incorrectly."
-      echom "Please do not report bugs unless you're using Vim 7.4.2009 or newer or Neovim 0.3.1."
+      echom "Please do not report bugs unless you're using Vim 7.4.2009 or newer or Neovim 0.3.2."
       echohl None
 
       " Make sure people see this.
