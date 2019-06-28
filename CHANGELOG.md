@@ -30,6 +30,16 @@ IMPROVEMENTS:
   [[GH-2347]](https://github.com/fatih/vim-go/pull/2347)
 * Check for null modules in the background when initializing gopls.
   [[GH-2351]](https://github.com/fatih/vim-go/pull/2351)
+* Add `:GoAddWorkspace` function to support multiple workspaces with gopls.
+  [[GH-2356]](https://github.com/fatih/vim-go/pull/2356)
+* Rename `errn` Ultisnip snippet to `err`.
+  [[GH-2358]](https://github.com/fatih/vim-go/pull/2358)
+* Install gopls from its stable package.
+  [[GH-2360]](https://github.com/fatih/vim-go/pull/2360)
+* Disambiguate progress message when initializing gopls.
+  [[GH-2369]](https://github.com/fatih/vim-go/pull/2369)
+* Remove warnings and lsp short-circuiting when using a null module.
+  [[GH-2371]](https://github.com/fatih/vim-go/pull/2371)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
