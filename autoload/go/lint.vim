@@ -22,10 +22,6 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     for linter in linters
       let cmd += ["--enable=".linter]
     endfor
-
-    for linter in go#config#MetalinterDisabled()
-      let cmd += ["--disable=".linter]
-    endfor
   else
     " the user wants something else, let us use it.
     let cmd = split(go#config#MetalinterCommand(), " ")
