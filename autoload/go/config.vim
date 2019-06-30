@@ -271,10 +271,6 @@ function! go#config#MetalinterEnabled() abort
   return get(g:, "go_metalinter_enabled", default_enabled)
 endfunction
 
-function! go#config#MetalinterDisabled() abort
-  return get(g:, "go_metalinter_disabled", [])
-endfunction
-
 function! go#config#GolintBin() abort
   return get(g:, "go_golint_bin", "golint")
 endfunction
