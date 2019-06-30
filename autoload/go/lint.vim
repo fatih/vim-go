@@ -40,7 +40,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
       endif
       let cmd += include
     elseif l:metalinter == "golangci-lint"
-      let goargs[0] = expand('%:p')
+      let goargs[0] = expand('%:p:h')
     endif
   endif
 
