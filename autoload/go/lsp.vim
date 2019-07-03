@@ -522,7 +522,17 @@ function! s:completionHandler(next, msg) abort dict
     if has_key(l:item, 'detail')
         let l:match.info = l:item.detail
         if go#lsp#completionitemkind#IsFunction(l:item.kind) || go#lsp#completionitemkind#IsMethod(l:item.kind)
-          let l:match.info = printf('func %s %s', l:item.label, l:item.detail)
+          let l:match.info = printf('%s %s', l:item.label, l:item.detail)
+
+          " The detail provided by gopls hasn't always provided the the full
+          " signature including the return value. The label used to be the
+          " function signature and the detail was the return value. Handle
+          " that case for backward compatibility. This can be removed in the
+          " future once it's likely that the majority of users are on a recent
+          " version of gopls.
+          if l:item.detail !~ '^func'
+            let l:match.info = printf('func %s %s', l:item.label, l:item.detail)
+          endif
         endif
     endif
 
