@@ -571,5 +571,16 @@ snippet rew "return errors.Wrap"
 return errors.Wrap(${2:err}, "${3:someMessage}")
 endsnippet
 
+snippet first "first nonempty string" !b
+func first(ss ...string) string {
+	for _, s := range ss {
+		if s != "" {
+			return s
+		}
+	}
+	return ""
+}
+endsnippet
+
 # vim:ft=snippets:
 
