@@ -14,10 +14,6 @@ function! go#config#VersionWarning() abort
   return get(g:, 'go_version_warning', 1)
 endfunction
 
-function! go#config#NullModuleWarning() abort
-  return get(g:, 'go_null_module_warning', 1)
-endfunction
-
 function! go#config#BuildTags() abort
   return get(g:, 'go_build_tags', '')
 endfunction
@@ -273,10 +269,6 @@ function! go#config#MetalinterEnabled() abort
   endif
 
   return get(g:, "go_metalinter_enabled", default_enabled)
-endfunction
-
-function! go#config#MetalinterDisabled() abort
-  return get(g:, "go_metalinter_disabled", [])
 endfunction
 
 function! go#config#GolintBin() abort

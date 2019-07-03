@@ -54,6 +54,7 @@ function! s:newlsp() abort
         \ 'last_request_id': 0,
         \ 'buf': '',
         \ 'handlers': {},
+        \ 'workspaceDirectories': [],
         \ }
 
   function! l:lsp.readMessage(data) dict abort
@@ -110,53 +111,77 @@ function! s:newlsp() abort
   function! l:lsp.handleMessage(ch, data) dict abort
       let self.buf .= a:data
 
-      let [self.buf, l:responses] = self.readMessage(self.buf)
+      let [self.buf, l:messages] = self.readMessage(self.buf)
 
-      " TODO(bc): handle notifications (e.g. window/showMessage).
-
-      for l:response in l:responses
-        if has_key(l:response, 'id') && has_key(self.handlers, l:response.id)
-          try
-            let l:handler = self.handlers[l:response.id]
-
-            let l:winid = win_getid(winnr())
-            " Always set the active window to the window that was active when
-            " the request was sent. Among other things, this makes sure that
-            " the correct window's location list will be populated when the
-            " list type is 'location' and the user has moved windows since
-            " sending the reques.
-            call win_gotoid(l:handler.winid)
-
-            if has_key(l:response, 'error')
-              call l:handler.requestComplete(0)
-              if has_key(l:handler, 'error')
-                call call(l:handler.error, [l:response.error.message])
-              else
-                call go#util#EchoError(l:response.error.message)
-              endif
-              call win_gotoid(l:winid)
-              return
-            endif
-            call l:handler.requestComplete(1)
-
-            let l:winidBeforeHandler = l:handler.winid
-            call call(l:handler.handleResult, [l:response.result])
-
-            " change the window back to the window that was active when
-            " starting to handle the response _only_ if the handler didn't
-            " update the winid, so that handlers can set the winid if needed
-            " (e.g. :GoDef).
-            if l:handler.winid == l:winidBeforeHandler
-              call win_gotoid(l:winid)
-            endif
-          finally
-            call remove(self.handlers, l:response.id)
-          endtry
+      for l:message in l:messages
+        if has_key(l:message, 'method')
+          if has_key(l:message, 'id')
+            call self.handleRequest(l:message)
+          else
+            call self.handleNotification(l:message)
+          endif
+        elseif has_key(l:message, 'result') ||  has_key(l:message, 'error')
+          call self.handleResponse(l:message)
         endif
       endfor
   endfunction
 
+  function! l:lsp.handleRequest(req) dict abort
+    if a:req.method == 'workspace/workspaceFolders'
+      let l:resp = go#lsp#message#workspaceFolders(self.workspaceDirectories)
+    endif
+
+    let l:msg = self.newResponse(l:resp)
+    call self.write(l:msg)
+  endfunction
+
+  function! l:lsp.handleNotification(req) dict abort
+      " TODO(bc): handle notifications (e.g. window/showMessage).
+  endfunction
+
+  function! l:lsp.handleResponse(resp) dict abort
+    if has_key(a:resp, 'id') && has_key(self.handlers, a:resp.id)
+      try
+        let l:handler = self.handlers[a:resp.id]
+
+        let l:winid = win_getid(winnr())
+        " Always set the active window to the window that was active when
+        " the request was sent. Among other things, this makes sure that
+        " the correct window's location list will be populated when the
+        " list type is 'location' and the user has moved windows since
+        " sending the request.
+        call win_gotoid(l:handler.winid)
+
+        if has_key(a:resp, 'error')
+          call l:handler.requestComplete(0)
+          if has_key(l:handler, 'error')
+            call call(l:handler.error, [a:resp.error.message])
+          else
+            call go#util#EchoError(a:resp.error.message)
+          endif
+          call win_gotoid(l:winid)
+          return
+        endif
+        call l:handler.requestComplete(1)
+
+        let l:winidBeforeHandler = l:handler.winid
+        call call(l:handler.handleResult, [a:resp.result])
+
+        " change the window back to the window that was active when
+        " starting to handle the message _only_ if the handler didn't
+        " update the winid, so that handlers can set the winid if needed
+        " (e.g. :GoDef).
+        if l:handler.winid == l:winidBeforeHandler
+          call win_gotoid(l:winid)
+        endif
+      finally
+        call remove(self.handlers, a:resp.id)
+      endtry
+    endif
+  endfunction
+
   function! l:lsp.handleInitializeResult(result) dict abort
+    call go#util#EchoProgress("initialized gopls")
     let self.ready = 1
     " TODO(bc): send initialized message to the server?
 
@@ -178,7 +203,7 @@ function! s:newlsp() abort
     endwhile
 
     if !self.last_request_id
-      call go#util#EchoProgress("initialize gopls")
+      call go#util#EchoProgress("initializing gopls")
       " TODO(bc): run a server per module and one per GOPATH? (may need to
       " keep track of servers by rootUri).
       let l:wd = go#util#ModuleRoot()
@@ -191,24 +216,7 @@ function! s:newlsp() abort
         let l:wd = getcwd()
       endif
 
-      " check whether l:wd is a null module asynchronously so Vim is blocked
-      " while go list reaches out to the internet.
-      "
-      " Isn't it fun that go list can just reach out to the internet and get
-      " modules? </snark>.
-      let self.checkingmodule = 1
-      call timer_start(1, function('s:checkmodule', [l:wd], self))
-
-      while get(self, 'checkingmodule', 0)
-        sleep 50 m
-      endwhile
-
-      " do not attempt to send a message to gopls when using a null module in
-      " module mode.
-      if self.isnullmodule
-        return -1
-      endif
-
+      let self.workspaceDirectories = add(self.workspaceDirectories, l:wd)
       let l:msg = self.newMessage(go#lsp#message#Initialize(l:wd))
 
       let l:state = s:newHandlerState('')
@@ -239,7 +247,7 @@ function! s:newlsp() abort
     let l:msg = {
           \ 'method': a:data.method,
           \ 'jsonrpc': '2.0',
-          \ }
+        \ }
 
     if !a:data.notification
       let self.last_request_id += 1
@@ -251,6 +259,14 @@ function! s:newlsp() abort
     endif
 
     return l:msg
+  endfunction
+
+  function l:lsp.newResponse(id, result) dict abort
+    let l:msg = {
+          \ 'jsonrpc': '2.0',
+          \ 'id': a:id,
+          \ 'result': a:result,
+        \ }
   endfunction
 
   function! l:lsp.write(msg) dict abort
@@ -373,28 +389,6 @@ function! s:start() abort dict
         \ }
 
   call go#statusline#Update(self.jobdir, status)
-endfunction
-
-function! s:checkmodule(wd, timer) dict
-  let self.isnullmodule = 0
-  let l:importpath = go#package#FromPath(a:wd)
-  if l:importpath == -2 || (type(l:importpath) == type('') && l:importpath[0] == '.')
-    if go#config#NullModuleWarning() && !get(self, 'warned', 0)
-      let l:oldshortmess=&shortmess
-      if has('nvim')
-        set shortmess-=F
-      endif
-      call go#util#EchoWarning('Features that rely on gopls will not work correctly in a null module.')
-      let self.warned = 1
-      " Sleep one second to make sure people see the message. Otherwise it is
-      " often immediately overwritten by an async message.
-      sleep 1
-      let &shortmess=l:oldshortmess
-    endif
-
-    let self.isnullmodule = 1
-  endif
-  unlet self.checkingmodule
 endfunction
 
 " go#lsp#Definition calls gopls to get the definition of the identifier at
@@ -648,14 +642,46 @@ function! s:infoFromHoverContent(content) abort
   let l:content = a:content[0]
 
   " strip godoc summary
-  let l:content = substitute(l:content, '^[^\n]\+\n', '', '')
+  " Hover content with godoc summary will have the godoc summary in the first
+  " line, and the second line will not have leading whitespace. When there is
+  " leading whitespace on the second line, then the hover content is for a
+  " struct or interface without godoc.
+  let l:lines = split(l:content, '\n')
+  if len(l:lines) > 1 && (l:lines[1] !~# '^\s')
+    let l:content = substitute(l:content, '^[^\n]\+\n', '', '')
+  endif
 
   " strip off the method set and fields of structs and interfaces.
-  if l:content =~# '^type [^ ]\+ \(struct\|interface\)'
+  if l:content =~# '^\(type \)\?[^ ]\+ \(struct\|interface\)'
     let l:content = substitute(l:content, '{.*', '', '')
   endif
 
   return l:content
+endfunction
+
+function! go#lsp#AddWorkspace(...) abort
+  if a:0 == 0
+    return
+  endif
+
+  let l:workspaces = []
+  for l:dir in a:000
+    let l:dir = fnamemodify(l:dir, ':p')
+    if !isdirectory(l:dir)
+      continue
+    endif
+
+    let l:workspaces = add(l:workspaces, l:dir)
+  endfor
+
+  let l:lsp = s:lspfactory.get()
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  let l:lsp.workspaceDirectories = extend(l:lsp.workspaceDirectories, l:workspaces)
+  let l:msg = go#lsp#message#AddWorkspaces(l:workspaces)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return 0
 endfunction
 
 function! s:debug(event, data) abort

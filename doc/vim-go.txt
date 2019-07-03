@@ -536,7 +536,7 @@ CTRL-t
 
 
                                                                 *:GoGuruScope*
-:GoGuruScope [pattern] [pattern2] ... [patternN]
+:GoGuruScope [pattern] ...
 
     Changes the custom |'g:go_guru_scope'| setting and overrides it with the
     given package patterns. The custom scope is cleared (unset) if `""` is
@@ -906,6 +906,11 @@ CTRL-t
     tries to preserve cursor position and avoids replacing the buffer with
     stderr output.
 
+                                                           *:GoAddWorkspace*
+:GoAddWorkspace [dir] ...
+
+    Add directories to the `gopls` workspace.
+
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
@@ -1210,14 +1215,6 @@ Enable warning when using an unsupported version of Vim. By default it is
 enabled.
 >
   let g:go_version_warning = 1
-<
-
-                                                  *'g:go_null_module_warning'*
-
-Enable warning when trying to use lsp features in a null module. By default it
-is enabled.
->
-  let g:go_null_module_warning = 1
 <
 
                                               *'g:go_code_completion_enabled'*
