@@ -94,26 +94,26 @@ For Pathogen or Vim |packages|, just clone the repo. For other plugin managers
 you may also need to add the lines to your vimrc to execute the plugin
 manager's install command.
 
-*  Vim 8 |packages|
->
+*  Vim 8 |packages| >
+
     git clone https://github.com/fatih/vim-go.git \
       ~/.vim/pack/plugins/start/vim-go
-
+<
 *  https://github.com/tpope/vim-pathogen >
 
     git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
 <
 *  https://github.com/junegunn/vim-plug >
 
-    Plug 'fatih/vim-go'
-
+    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+<
 *  https://github.com/Shougo/neobundle.vim >
 
     NeoBundle 'fatih/vim-go'
 <
 *  https://github.com/gmarik/vundle >
 
-    Plugin 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+    Plugin 'fatih/vim-go'
 <
 *  Manual (not recommended) >
 
