@@ -146,7 +146,7 @@ function s:workspaceFolderToAddURI(key, val) abort
 endfunction
 
 function! s:position(line, col) abort
-  return {'line': a:line - 1, 'character': a:col-1}
+  return {'line': a:line, 'character': a:col}
 endfunction
 
 " restore Vi compatibility settings
