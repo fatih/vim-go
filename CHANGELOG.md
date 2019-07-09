@@ -44,6 +44,9 @@ IMPROVEMENTS:
   [[GH-2369]](https://github.com/fatih/vim-go/pull/2369)
 * Remove warnings and lsp short-circuiting when using a null module.
   [[GH-2371]](https://github.com/fatih/vim-go/pull/2371)
+* Calculate LSP position correctly when on a line that contains multi-byte
+  characters before the position.
+  [[GH-2389]](https://github.com/fatih/vim-go/pull/2389)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
