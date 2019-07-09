@@ -576,7 +576,7 @@ function! go#debug#Start(is_test, ...) abort
     return s:state['job']
   endif
 
-  let s:start_args = a:000
+  let s:start_args = [a:is_test] + a:000
 
   if go#util#HasDebug('debugger-state')
     call go#config#SetDebugDiag(s:state)
