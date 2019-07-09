@@ -520,7 +520,7 @@ function! s:completionHandler(next, msg) abort dict
 
     let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
     if has_key(l:item, 'detail')
-        let l:match.info = l:item.detail
+        let l:match.menu = l:item.detail
         if go#lsp#completionitemkind#IsFunction(l:item.kind) || go#lsp#completionitemkind#IsMethod(l:item.kind)
           let l:match.info = printf('%s %s', l:item.label, l:item.detail)
 
@@ -575,7 +575,7 @@ endfunction
 
 function! go#lsp#Info(showstatus)
   let l:fname = expand('%:p')
-  let [l:line, l:col] = getpos('.')[1:2]
+  let [l:line, l:col] = go#lsp#lsp#Position()
 
   call go#lsp#DidChange(l:fname)
 
@@ -595,7 +595,7 @@ endfunction
 
 function! go#lsp#GetInfo()
   let l:fname = expand('%:p')
-  let [l:line, l:col] = getpos('.')[1:2]
+  let [l:line, l:col] = go#lsp#lsp#Position()
 
   call go#lsp#DidChange(l:fname)
 
@@ -617,8 +617,8 @@ function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
   let l:msg = a:msg[0]
 
   let l:fname = go#path#FromURI(l:msg.uri)
-  let l:line = l:msg.range.start.line+1
-  let l:col = l:msg.range.start.character+1
+  let l:line = l:msg.range.start.line
+  let l:col = l:msg.range.start.character
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#Hover(l:fname, l:line, l:col)
