@@ -47,6 +47,8 @@ IMPROVEMENTS:
 * Calculate LSP position correctly when on a line that contains multi-byte
   characters before the position.
   [[GH-2389]](https://github.com/fatih/vim-go/pull/2389)
+* Calculate LSP position without using an external binary.
+  [[GH-2394]](https://github.com/fatih/vim-go/pull/2394)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
