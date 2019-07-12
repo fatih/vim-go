@@ -195,13 +195,6 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.sendMessage(data, handler) dict abort
-    " block while waiting on any in flight initializations to avoid race
-    " conditions initializing gopls.
-    while get(self, 'checkingmodule', 0)
-      sleep 50 m
-      redraw
-    endwhile
-
     if !self.last_request_id
       call go#util#EchoProgress("initializing gopls")
       " TODO(bc): run a server per module and one per GOPATH? (may need to
