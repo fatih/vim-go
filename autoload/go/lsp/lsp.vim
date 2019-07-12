@@ -27,6 +27,30 @@ function! s:character(line, col) abort
   return s:strlen(getline(a:line)[:col([a:line, a:col - 1])])
 endfunction
 
+" go#lsp#PositionOf returns len(content[0:units]) where units is utf-16 code
+" units. This is mostly useful for converting LSP text position to vim
+" position.
+function! go#lsp#lsp#PositionOf(content, units) abort
+  if a:units == 0
+    return 1
+  endif
+
+  let l:remaining = a:units
+  let l:str = ""
+  for l:rune in split(a:content, '\zs')
+    if l:remaining < 0
+      break
+    endif
+    let l:remaining -= 1
+    if char2nr(l:rune) >= 0x10000
+      let l:remaining -= 1
+    endif
+    let l:str = l:str . l:rune
+  endfor
+
+  return len(l:str)
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

@@ -4,19 +4,19 @@ set cpo&vim
 
 scriptencoding utf-8
 
-func! Test_GetSimpleTextPosition()
+function! Test_GetSimpleTextPosition()
     call s:getinfo('lsp text position should align with cursor position after ascii only')
 endfunction
 
-func! Test_GetMultiByteTextPosition()
+function! Test_GetMultiByteTextPosition()
     call s:getinfo('lsp text position should align with cursor position after two place of interest symbols ⌘⌘')
 endfunction
 
-func! Test_GetMultipleCodeUnitTextPosition()
+function! Test_GetMultipleCodeUnitTextPosition()
     call s:getinfo('lsp text position should align with cursor position after Deseret Capital Letter Long I 𐐀')
 endfunction
 
-func! s:getinfo(str)
+function! s:getinfo(str)
   if !go#util#has_job()
     return
   endif
