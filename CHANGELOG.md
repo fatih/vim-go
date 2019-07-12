@@ -49,6 +49,8 @@ IMPROVEMENTS:
   [[GH-2389]](https://github.com/fatih/vim-go/pull/2389)
 * Calculate LSP position without using an external binary.
   [[GH-2394]](https://github.com/fatih/vim-go/pull/2394)
+* Calculate Vim position correctly from LSP text position.
+  [[GH-2395]](https://github.com/fatih/vim-go/pull/2395)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
