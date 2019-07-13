@@ -97,6 +97,8 @@ BUG FIXES:
   [[GH-2367]](https://github.com/fatih/vim-go/pull/2367)
 * Fix `:GoDebugRestart`.
   [[GH-2390]](https://github.com/fatih/vim-go/pull/2390)
+* Do not execute tests twice in terminal mode.
+  [[GH-2397]](https://github.com/fatih/vim-go/pull/2397)
 
 
 ## 1.20 - (April 22, 2019)
