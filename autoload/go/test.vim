@@ -32,6 +32,7 @@ function! go#test#Test(bang, compile, ...) abort
 
   if go#config#TermEnabled()
     call go#term#new(a:bang, ["go"] + args, s:errorformat())
+    return
   endif
 
   if go#util#has_job()
