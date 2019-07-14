@@ -96,6 +96,12 @@ function! s:on_stdout(job_id, data, event) dict abort
 endfunction
 
 function! s:on_exit(job_id, exit_status, event) dict abort
+  " change to directory where test were run. if we do not do this
+  " and the commands are ran from root of the codebase the quickfix location will be wrong
+  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let l:dir = getcwd()
+  execute l:cd . fnameescape(expand("%:p:h"))
+
   let l:winid = win_getid(winnr())
   call win_gotoid(self.winid)
   let l:listtype = go#list#Type("_term")
@@ -140,6 +146,9 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   call win_gotoid(self.winid)
   call go#list#JumpToFirst(l:listtype)
+
+  " change back to original working directory before this method start
+  execute l:cd l:dir
 endfunction
 
 " restore Vi compatibility settings
