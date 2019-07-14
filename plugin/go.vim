@@ -67,6 +67,7 @@ let s:packages = {
       \ 'keyify':        ['honnef.co/go/tools/cmd/keyify'],
       \ 'motion':        ['github.com/fatih/motion'],
       \ 'iferr':         ['github.com/koron/iferr'],
+      \ 'goreturn':      ['github.com/110y/goreturn'],
 \ }
 
 " These commands are available on any filetypes

@@ -899,6 +899,25 @@ CTRL-t
           }
       }
 <
+
+                                                                    *:GoReturn
+:GoReturn
+
+    Generate return statement automatically which infer the type of return
+    values and the numbers.
+
+    For example:
+>
+      func doSomething() (string, error) {
+      }
+<
+    Becomes:
+>
+      func doSomething() (string, error) {
+          return "", nil
+      }
+
+<
                                                                   *:GoModFmt*
 :GoModFmt
 
@@ -1127,6 +1146,10 @@ Calls `:GoImport` for the current package
 
 Generate if err != nil { return ... } automatically which infer the type of
 return values and the numbers.
+                                                                 *(go-return)*
+
+Generate return statement automatically which infer the type of return
+values and the numbers.
 
                                                                 *(go-mod-fmt)*
 
