@@ -99,6 +99,9 @@ BUG FIXES:
   [[GH-2390]](https://github.com/fatih/vim-go/pull/2390)
 * Do not execute tests twice in terminal mode.
   [[GH-2397]](https://github.com/fatih/vim-go/pull/2397)
+* Do not open a new buffer in Neovim when there are compilation errors and
+  terminal moded is enabled.
+  [[GH-2401]](https://github.com/fatih/vim-go/pull/2401)
 
 
 ## 1.20 - (April 22, 2019)
