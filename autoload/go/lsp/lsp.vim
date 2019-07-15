@@ -38,7 +38,7 @@ function! go#lsp#lsp#PositionOf(content, units) abort
   let l:remaining = a:units
   let l:str = ""
   for l:rune in split(a:content, '\zs')
-    if l:remaining < 0
+    if l:remaining <= 0
       break
     endif
     let l:remaining -= 1
