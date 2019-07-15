@@ -97,7 +97,8 @@ endfunction
 
 function! s:on_exit(job_id, exit_status, event) dict abort
   " change to directory where test were run. if we do not do this
-  " and the commands are ran from root of the codebase the quickfix location will be wrong
+  " the quickfix items will have the incorrect paths. 
+  " see: https://github.com/fatih/vim-go/issues/2400
   let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let l:dir = getcwd()
   execute l:cd . fnameescape(expand("%:p:h"))
@@ -147,7 +148,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
   call win_gotoid(self.winid)
   call go#list#JumpToFirst(l:listtype)
 
-  " change back to original working directory before this method start
+  " change back to original working directory 
   execute l:cd l:dir
 endfunction
 
