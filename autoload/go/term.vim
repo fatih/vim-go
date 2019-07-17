@@ -137,8 +137,10 @@ function! s:on_exit(job_id, exit_status, event) dict abort
   endif
 
   " close terminal; we don't need it anymore
-  call win_gotoid(self.termwinid)
-  close!
+  if go#config#TermExit() ==  1
+    call win_gotoid(self.termwinid)
+    close!
+  endif
 
   if self.bang
     call win_gotoid(l:winid)
