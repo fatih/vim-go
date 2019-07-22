@@ -195,13 +195,6 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.sendMessage(data, handler) dict abort
-    " block while waiting on any in flight initializations to avoid race
-    " conditions initializing gopls.
-    while get(self, 'checkingmodule', 0)
-      sleep 50 m
-      redraw
-    endwhile
-
     if !self.last_request_id
       call go#util#EchoProgress("initializing gopls")
       " TODO(bc): run a server per module and one per GOPATH? (may need to
@@ -409,7 +402,7 @@ endfunction
 function! s:definitionHandler(next, msg) abort dict
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
-  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, l:msg.range.start.character+1, 'lsp does not supply a description')]]
+  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(getline(l:msg.range.start.line+1), l:msg.range.start.character), 'lsp does not supply a description')]]
   call call(a:next, l:args)
 endfunction
 
@@ -431,7 +424,7 @@ endfunction
 function! s:typeDefinitionHandler(next, msg) abort dict
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
-  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, l:msg.range.start.character+1, 'lsp does not supply a description')]]
+  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(getline(l:msg.range.start.line+1), l:msg.range.start.character), 'lsp does not supply a description')]]
   call call(a:next, l:args)
 endfunction
 
@@ -520,9 +513,19 @@ function! s:completionHandler(next, msg) abort dict
 
     let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
     if has_key(l:item, 'detail')
-        let l:match.info = l:item.detail
+        let l:match.menu = l:item.detail
         if go#lsp#completionitemkind#IsFunction(l:item.kind) || go#lsp#completionitemkind#IsMethod(l:item.kind)
-          let l:match.info = printf('func %s %s', l:item.label, l:item.detail)
+          let l:match.info = printf('%s %s', l:item.label, l:item.detail)
+
+          " The detail provided by gopls hasn't always provided the the full
+          " signature including the return value. The label used to be the
+          " function signature and the detail was the return value. Handle
+          " that case for backward compatibility. This can be removed in the
+          " future once it's likely that the majority of users are on a recent
+          " version of gopls.
+          if l:item.detail !~ '^func'
+            let l:match.info = printf('func %s %s', l:item.label, l:item.detail)
+          endif
         endif
     endif
 
@@ -565,7 +568,7 @@ endfunction
 
 function! go#lsp#Info(showstatus)
   let l:fname = expand('%:p')
-  let [l:line, l:col] = getpos('.')[1:2]
+  let [l:line, l:col] = go#lsp#lsp#Position()
 
   call go#lsp#DidChange(l:fname)
 
@@ -585,7 +588,7 @@ endfunction
 
 function! go#lsp#GetInfo()
   let l:fname = expand('%:p')
-  let [l:line, l:col] = getpos('.')[1:2]
+  let [l:line, l:col] = go#lsp#lsp#Position()
 
   call go#lsp#DidChange(l:fname)
 
@@ -607,8 +610,8 @@ function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
   let l:msg = a:msg[0]
 
   let l:fname = go#path#FromURI(l:msg.uri)
-  let l:line = l:msg.range.start.line+1
-  let l:col = l:msg.range.start.character+1
+  let l:line = l:msg.range.start.line
+  let l:col = l:msg.range.start.character
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#Hover(l:fname, l:line, l:col)
