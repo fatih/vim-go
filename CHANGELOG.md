@@ -102,6 +102,8 @@ BUG FIXES:
 * Do not open a new buffer in Neovim when there are compilation errors and
   terminal moded is enabled.
   [[GH-2401]](https://github.com/fatih/vim-go/pull/2401)
+* Fix error due to typo in implementation of `:GoAddWorkspace`.
+  [[GH-2415]](https://github.com/fatih/vim-go/pull/2401)
 
 
 ## 1.20 - (April 22, 2019)
