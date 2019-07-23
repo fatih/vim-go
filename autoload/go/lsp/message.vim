@@ -127,7 +127,7 @@ function! go#lsp#message#Hover(file, line, col) abort
 endfunction
 
 function! go#lsp#message#AddWorkspaces(dirs) abort
-  let l:dirs = map(copy(a:dirs), function('s:workspaceFodlerToAddURI', []))
+  let l:dirs = map(copy(a:dirs), function('s:workspaceFolderToAddURI', []))
 
   return {
           \ 'notification': 1,
