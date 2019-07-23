@@ -19,7 +19,11 @@ fun! gotest#write_file(path, contents) abort
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
   call writefile(a:contents, l:full_path)
   exe 'cd ' . l:dir . '/src'
-  call go#lsp#AddWorkspace(fnamemodify(l:full_path, ':p:h'))
+
+  if go#util#has_job()
+    call go#lsp#AddWorkspace(fnamemodify(l:full_path, ':p:h'))
+  endif
+
   silent exe 'e! ' . a:path
 
   " Set cursor.
@@ -55,7 +59,9 @@ fun! gotest#load_fixture(path) abort
   silent exe 'noautocmd e ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
-  call go#lsp#AddWorkspace(fnamemodify(l:full_path, ':p:h'))
+  if go#util#has_job()
+    call go#lsp#AddWorkspace(fnamemodify(l:full_path, ':p:h'))
+  endif
 
   return l:dir
 endfun
