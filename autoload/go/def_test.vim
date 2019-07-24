@@ -2,6 +2,8 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
+scriptencoding utf-8
+
 func! Test_jump_to_declaration_guru() abort
   try
     let l:filename = 'def/jump.go'
@@ -72,6 +74,75 @@ func! Test_Jump_leaves_lists() abort
     call gotest#assert_quickfix(l:actual, l:expected)
   finally
     call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
+func! Test_DefJump_gopls_simple() abort
+  if !go#util#has_job()
+    return
+  endif
+
+  try
+    let g:go_def_mode = 'gopls'
+
+    let l:tmp = gotest#write_file('simple/position/position.go', [
+          \ 'package position',
+          \ '',
+          \ 'func Example() {',
+          \ "\tid := " . '"foo"',
+          \ "\tprintln(" . '"id:", id)',
+          \ '}',
+          \ ] )
+
+    let l:expected = [0, 4, 2, 0]
+
+    call assert_notequal(l:expected, getpos('.'))
+
+    call go#def#Jump('', 0)
+
+    let l:start = reltime()
+    while getpos('.') != l:expected && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+
+    call assert_equal(l:expected, getpos('.'))
+  finally
+    call delete(l:tmp, 'rf')
+    unlet g:go_def_mode
+  endtry
+endfunc
+
+func! Test_DefJump_gopls_MultipleCodeUnit() abort
+  if !go#util#has_job()
+    return
+  endif
+
+  try
+    let g:go_def_mode = 'gopls'
+
+    let l:tmp = gotest#write_file('multiplecodeunit/position/position.go', [
+          \ 'package position',
+          \ '',
+          \ 'func Example() {',
+          \ "\t𐐀, id := " . '"foo", "bar"',
+          \ "\tprintln(" . '"(𐐀, id):", 𐐀, id)',
+          \ '}',
+          \ ] )
+
+    let l:expected = [0, 4, 8, 0]
+    call assert_notequal(l:expected, getpos('.'))
+
+    call go#def#Jump('', 0)
+
+    let l:start = reltime()
+    while getpos('.') != l:expected && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+
+    call assert_equal(l:expected, getpos('.'))
+  finally
+    call delete(l:tmp, 'rf')
+    unlet g:go_def_mode
   endtry
 endfunc
 
