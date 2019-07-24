@@ -30,6 +30,8 @@ fun! gotest#write_file(path, contents) abort
       let l:byte = line2byte(l:lnum) + l:m
       exe 'goto '. l:byte
       call setline('.', substitute(getline('.'), "\x1f", '', ''))
+      silent noautocmd w!
+
       break
     endif
 
