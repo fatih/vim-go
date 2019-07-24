@@ -376,8 +376,8 @@ CTRL-t
 :GoInfo
     Show type information about the identifier under the cursor. For example
     putting it above a function call is going to show the full function
-    signature. By default it uses `gocode` to get the type informations. To
-    change the underlying tool from `gocode` to another tool, see
+    signature. By default it uses `gopls` to get the type informations. To
+    change the underlying tool from `gopls` to another tool, see
     |'g:go_info_mode'|.
 
 
