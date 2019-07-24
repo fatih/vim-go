@@ -477,11 +477,11 @@ function! go#lsp#DidChange(fname) abort
     return
   endif
 
-  call go#lsp#DidOpen(a:fname)
-
   if !filereadable(a:fname)
     return
   endif
+
+  call go#lsp#DidOpen(a:fname)
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#DidChange(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
