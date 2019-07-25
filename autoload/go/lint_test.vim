@@ -93,31 +93,33 @@ func! s:gometaautosave(metalinter) abort
 endfunc
 
 func! Test_Vet() abort
-  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/vet/vet.go'
-  compiler go
+  let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
 
-  let expected = [
-        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
-        \ 'text': 'Printf format %d has arg str of wrong type string'}
-      \ ]
+  try
 
-  let winnr = winnr()
+    let expected = [
+          \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
+          \ 'text': 'Printf format %d has arg str of wrong type string'}
+        \ ]
 
-  " clear the location lists
-  call setqflist([], 'r')
+    let winnr = winnr()
 
-  call go#lint#Vet(1)
+    " clear the location lists
+    call setqflist([], 'r')
 
-  let actual = getqflist()
-  let start = reltime()
-  while len(actual) == 0 && reltimefloat(reltime(start)) < 10
-    sleep 100m
+    call go#lint#Vet(1)
+
     let actual = getqflist()
-  endwhile
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getqflist()
+    endwhile
 
-  call gotest#assert_quickfix(actual, expected)
-  call call(RestoreGOPATH, [])
+    call gotest#assert_quickfix(actual, expected)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
 endfunc
 
 func! Test_Lint_GOPATH() abort
