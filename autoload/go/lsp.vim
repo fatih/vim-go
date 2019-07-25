@@ -55,6 +55,7 @@ function! s:newlsp() abort
         \ 'buf': '',
         \ 'handlers': {},
         \ 'workspaceDirectories': [],
+        \ 'wd' : '',
         \ }
 
   function! l:lsp.readMessage(data) dict abort
@@ -120,7 +121,7 @@ function! s:newlsp() abort
           else
             call self.handleNotification(l:message)
           endif
-        elseif has_key(l:message, 'result') ||  has_key(l:message, 'error')
+        elseif has_key(l:message, 'result') || has_key(l:message, 'error')
           call self.handleResponse(l:message)
         endif
       endfor
@@ -181,7 +182,16 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.handleInitializeResult(result) dict abort
-    call go#util#EchoProgress("initialized gopls")
+    if go#config#EchoCommandInfo()
+      call go#util#EchoProgress("initialized gopls")
+    endif
+    let status = {
+          \ 'desc': '',
+          \ 'type': 'gopls',
+          \ 'state': 'initialized',
+        \ }
+    call go#statusline#Update(self.wd, status)
+
     let self.ready = 1
     " TODO(bc): send initialized message to the server?
 
@@ -196,9 +206,6 @@ function! s:newlsp() abort
 
   function! l:lsp.sendMessage(data, handler) dict abort
     if !self.last_request_id
-      call go#util#EchoProgress("initializing gopls")
-      " TODO(bc): run a server per module and one per GOPATH? (may need to
-      " keep track of servers by rootUri).
       let l:wd = go#util#ModuleRoot()
       if l:wd == -1
         call go#util#EchoError('could not determine appropriate working directory for gopls')
@@ -208,6 +215,18 @@ function! s:newlsp() abort
       if l:wd == ''
         let l:wd = getcwd()
       endif
+      let self.wd = l:wd
+
+      if go#config#EchoCommandInfo()
+        call go#util#EchoProgress("initializing gopls")
+      endif
+
+      let l:status = {
+            \ 'desc': '',
+            \ 'type': 'gopls',
+            \ 'state': 'initializing',
+          \ }
+      call go#statusline#Update(l:wd, l:status)
 
       let self.workspaceDirectories = add(self.workspaceDirectories, l:wd)
       let l:msg = self.newMessage(go#lsp#message#Initialize(l:wd))
@@ -458,11 +477,11 @@ function! go#lsp#DidChange(fname) abort
     return
   endif
 
-  call go#lsp#DidOpen(a:fname)
-
   if !filereadable(a:fname)
     return
   endif
+
+  call go#lsp#DidOpen(a:fname)
 
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#DidChange(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
