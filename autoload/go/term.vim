@@ -137,7 +137,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
   endif
 
   " close terminal; we don't need it anymore
-  if go#config#TermExit() ==  1
+  if go#config#TermCloseOnExit()
     call win_gotoid(self.termwinid)
     close!
   endif
@@ -152,6 +152,18 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   " change back to original working directory 
   execute l:cd l:dir
+endfunction
+
+function! go#term#ToggleCloseOnExit() abort
+  if go#config#TermCloseOnExit()
+    call go#config#SetTermCloseOnExit(0)
+    call go#util#EchoProgress("term close on exit disabled")
+    return
+  endif
+
+  call go#config#SetTermCloseOnExit(1)
+  call go#util#EchoProgress("term close on exit enabled")
+  return
 endfunction
 
 " restore Vi compatibility settings

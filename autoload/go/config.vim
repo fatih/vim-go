@@ -47,19 +47,12 @@ function! go#config#TermMode() abort
   return get(g:, 'go_term_mode', 'vsplit')
 endfunction
 
-function! go#config#TermExit() abort
-  return get(g:, 'go_term_exit', 1)
+function! go#config#TermCloseOnExit() abort
+  return get(g:, 'go_term_close_on_exit', 1)
 endfunction
 
-function! go#config#ToggleTermExit() abort 
-  let l:cur = get(g:, 'go_term_exit', 0)
-  if l:cur == 0
-    silent! unlet g:go_term_exit
-    let g:go_term_exit = 1
-  else 
-    silent! unlet g:go_term_exit
-    let g:go_term_exit = 0
-  endif
+function! go#config#SetTermCloseOnExit(value) abort
+  let g:go_term_close_on_exit = a:value
 endfunction
 
 function! go#config#TermEnabled() abort

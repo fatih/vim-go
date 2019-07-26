@@ -1636,6 +1636,13 @@ just like `:GoBuild`. By default it is disabled.
 >
   let g:go_term_enabled = 0
 <
+                                                   *'g:go_term_close_on_exit'*
+
+This option is Neovim only. If set to 1 it closes the terminal after the
+command run in it exits. By default it is enabled.
+>
+  let g:go_term_close_on_exit = 1
+<
                                                        *'g:go_alternate_mode'*
 
 Specifies the command that |:GoAlternate| uses to open the alternate file.

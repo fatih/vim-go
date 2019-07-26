@@ -120,6 +120,6 @@ command! -nargs=0 GoIfErr call go#iferr#Generate()
 command! -nargs=+ -complete=dir GoAddWorkspace call go#lsp#AddWorkspace(<f-args>)
 
 " -- term
-command! GoToggleTermExit call go#config#ToggleTermExit()
+command! GoToggleTermCloseOnExit call go#term#ToggleCloseOnExit()
 
 " vim: sw=2 ts=2 et
