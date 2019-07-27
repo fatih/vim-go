@@ -29,7 +29,7 @@ function! s:getinfo(str, name)
           \ '',
           \ 'func Example() {',
           \ "\tid := " . '"foo"',
-          \ "\tprintln(" .'"' . a:str . '", id)',
+          \ "\tprintln(" .'"' . a:str . '", id)',
           \ '}',
           \ ] )
 

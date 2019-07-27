@@ -77,7 +77,7 @@ func! Test_Jump_leaves_lists() abort
   endtry
 endfunc
 
-func! Test_DefJump_gopls_simple() abort
+func! Test_DefJump_gopls_simple_first() abort
   if !go#util#has_job()
     return
   endif
@@ -112,7 +112,42 @@ func! Test_DefJump_gopls_simple() abort
   endtry
 endfunc
 
-func! Test_DefJump_gopls_MultipleCodeUnit() abort
+func! Test_DefJump_gopls_simple_last() abort
+  if !go#util#has_job()
+    return
+  endif
+
+  try
+    let g:go_def_mode = 'gopls'
+
+    let l:tmp = gotest#write_file('simple/position/position.go', [
+          \ 'package position',
+          \ '',
+          \ 'func Example() {',
+          \ "\tid := " . '"foo"',
+          \ "\tprintln(" . '"id:", id)',
+          \ '}',
+          \ ] )
+
+    let l:expected = [0, 4, 2, 0]
+
+    call assert_notequal(l:expected, getpos('.'))
+
+    call go#def#Jump('', 0)
+
+    let l:start = reltime()
+    while getpos('.') != l:expected && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+
+    call assert_equal(l:expected, getpos('.'))
+  finally
+    call delete(l:tmp, 'rf')
+    unlet g:go_def_mode
+  endtry
+endfunc
+
+func! Test_DefJump_gopls_MultipleCodeUnit_first() abort
   if !go#util#has_job()
     return
   endif
@@ -126,6 +161,41 @@ func! Test_DefJump_gopls_MultipleCodeUnit() abort
           \ 'func Example() {',
           \ "\t𐐀, id := " . '"foo", "bar"',
           \ "\tprintln(" . '"(𐐀, id):", 𐐀, id)',
+          \ '}',
+          \ ] )
+
+    let l:expected = [0, 4, 8, 0]
+    call assert_notequal(l:expected, getpos('.'))
+
+    call go#def#Jump('', 0)
+
+    let l:start = reltime()
+    while getpos('.') != l:expected && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+
+    call assert_equal(l:expected, getpos('.'))
+  finally
+    call delete(l:tmp, 'rf')
+    unlet g:go_def_mode
+  endtry
+endfunc
+
+
+func! Test_DefJump_gopls_MultipleCodeUnit_last() abort
+  if !go#util#has_job()
+    return
+  endif
+
+  try
+    let g:go_def_mode = 'gopls'
+
+    let l:tmp = gotest#write_file('multiplecodeunit/position/position.go', [
+          \ 'package position',
+          \ '',
+          \ 'func Example() {',
+          \ "\t𐐀, id := " . '"foo", "bar"',
+          \ "\tprintln(" . '"(𐐀, id):", 𐐀, id)',
           \ '}',
           \ ] )
 
