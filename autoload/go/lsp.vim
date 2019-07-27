@@ -193,7 +193,8 @@ function! s:newlsp() abort
     call go#statusline#Update(self.wd, status)
 
     let self.ready = 1
-    " TODO(bc): send initialized message to the server?
+    let  l:msg = self.newMessage(go#lsp#message#Initialized())
+    call self.write(l:msg)
 
     " send messages queued while waiting for ready.
     for l:item in self.queue
@@ -233,6 +234,7 @@ function! s:newlsp() abort
 
       let l:state = s:newHandlerState('')
       let l:state.handleResult = funcref('self.handleInitializeResult', [], l:self)
+
       let self.handlers[l:msg.id] = l:state
 
       call l:state.start()
