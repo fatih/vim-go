@@ -23,6 +23,14 @@ function! go#lsp#message#Initialize(wd) abort
        \ }
 endfunction
 
+function! go#lsp#message#Initialized() abort
+  return {
+          \ 'notification': 1,
+          \ 'method': 'initialized',
+          \ 'params': {},
+       \ }
+endfunction
+
 function! go#lsp#message#workspaceFolders(dirs) abort
   return map(copy(a:dirs), function('s:workspaceFolderToURI', []))
 endfunction
