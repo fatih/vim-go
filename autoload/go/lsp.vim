@@ -740,6 +740,23 @@ function! go#lsp#CleanWorkspaces() abort
   return 0
 endfunction
 
+" go#lsp#ResetWorkspaceDiretories removes and then re-adds all workspace
+" folders to cause gopls to send configuration requests for all of them again.
+" This is useful, for instance, when build tags have been added and gopls
+" needs to use them.
+function! go#lsp#ResetWorkspaceDirectories() abort
+  call go#lsp#CleanWorkspaces()
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:lsp.workspaceDirectories, l:lsp.workspaceDirectories)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return 0
+endfunction
+
 function! s:debug(event, data) abort
   if !go#util#HasDebug('lsp')
     return
