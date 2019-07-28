@@ -12,6 +12,7 @@ function! go#lsp#message#Initialize(wd) abort
             \ 'capabilities': {
               \ 'workspace': {
                 \ 'workspaceFolders': v:true,
+                \ 'configuration': v:true,
               \ },
               \ 'textDocument': {
                 \ 'hover': {
@@ -145,6 +146,26 @@ function! go#lsp#message#ChangeWorkspaceFolders(add, remove) abort
           \ }
        \ }
 
+endfunction
+
+function! go#lsp#message#ConfigurationResult(items) abort
+  let l:result = []
+
+  " results must be in the same order as the items
+  for l:item in a:items
+    let l:config = {
+          \ 'buildFlags': [],
+          \ 'hoverKind': 'NoDocumentation',
+          \ }
+    let l:buildtags = go#config#BuildTags()
+    if buildtags isnot ''
+      let l:config.buildFlags = extend(l:config.buildFlags, ['-tags', go#config#BuildTags()])
+    endif
+
+    let l:result = add(l:result, l:config)
+  endfor
+
+  return l:result
 endfunction
 
 function s:workspaceFolder(key, val) abort

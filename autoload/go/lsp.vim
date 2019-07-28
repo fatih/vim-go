@@ -130,6 +130,8 @@ function! s:newlsp() abort
   function! l:lsp.handleRequest(req) dict abort
     if a:req.method == 'workspace/workspaceFolders'
       let l:resp = go#lsp#message#WorkspaceFoldersResult(self.workspaceDirectories)
+    elseif a:req.method == 'workspace/configuration' && has_key(a:req, 'params') && has_key(a:req.params, 'items')
+      let l:resp = go#lsp#message#ConfigurationResult(a:req.params.items)
     else
       return
     endif
