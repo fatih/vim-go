@@ -132,7 +132,7 @@ function! s:newlsp() abort
       let l:resp = go#lsp#message#workspaceFolders(self.workspaceDirectories)
     endif
 
-    let l:msg = self.newResponse(l:resp)
+    let l:msg = self.newResponse(a:req.id, l:resp)
     call self.write(l:msg)
   endfunction
 
@@ -281,6 +281,8 @@ function! s:newlsp() abort
           \ 'id': a:id,
           \ 'result': a:result,
         \ }
+
+    return l:msg
   endfunction
 
   function! l:lsp.write(msg) dict abort
