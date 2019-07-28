@@ -129,7 +129,9 @@ function! s:newlsp() abort
 
   function! l:lsp.handleRequest(req) dict abort
     if a:req.method == 'workspace/workspaceFolders'
-      let l:resp = go#lsp#message#workspaceFolders(self.workspaceDirectories)
+      let l:resp = go#lsp#message#WorkspaceFoldersResult(self.workspaceDirectories)
+    else
+      return
     endif
 
     let l:msg = self.newResponse(a:req.id, l:resp)
@@ -685,10 +687,12 @@ function! s:infoFromHoverContent(content) abort
   return l:content
 endfunction
 
-function! go#lsp#AddWorkspace(...) abort
+function! go#lsp#AddWorkspaceDirectory(...) abort
   if a:0 == 0
     return
   endif
+
+  call go#lsp#CleanWorkspaces()
 
   let l:workspaces = []
   for l:dir in a:000
@@ -704,7 +708,31 @@ function! go#lsp#AddWorkspace(...) abort
   let l:state = s:newHandlerState('')
   let l:state.handleResult = funcref('s:noop')
   let l:lsp.workspaceDirectories = extend(l:lsp.workspaceDirectories, l:workspaces)
-  let l:msg = go#lsp#message#AddWorkspaces(l:workspaces)
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:workspaces, [])
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return 0
+endfunction
+
+function! go#lsp#CleanWorkspaces() abort
+  let l:workspaces = []
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:i = 0
+  let l:missing = []
+  for l:dir in l:lsp.workspaceDirectories
+    if !isdirectory(l:dir)
+      let l:dir = add(l:missing, l:dir)
+      call remove(l:lsp.workspaceDirectories, l:i)
+      continue
+    endif
+    let l:i += 1
+  endfor
+
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders([], l:missing)
   call l:lsp.sendMessage(l:msg, l:state)
 
   return 0
