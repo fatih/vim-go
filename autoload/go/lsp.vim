@@ -129,10 +129,14 @@ function! s:newlsp() abort
 
   function! l:lsp.handleRequest(req) dict abort
     if a:req.method == 'workspace/workspaceFolders'
-      let l:resp = go#lsp#message#workspaceFolders(self.workspaceDirectories)
+      let l:resp = go#lsp#message#WorkspaceFoldersResult(self.workspaceDirectories)
+    elseif a:req.method == 'workspace/configuration' && has_key(a:req, 'params') && has_key(a:req.params, 'items')
+      let l:resp = go#lsp#message#ConfigurationResult(a:req.params.items)
+    else
+      return
     endif
 
-    let l:msg = self.newResponse(l:resp)
+    let l:msg = self.newResponse(a:req.id, l:resp)
     call self.write(l:msg)
   endfunction
 
@@ -281,6 +285,8 @@ function! s:newlsp() abort
           \ 'id': a:id,
           \ 'result': a:result,
         \ }
+
+    return l:msg
   endfunction
 
   function! l:lsp.write(msg) dict abort
@@ -683,10 +689,12 @@ function! s:infoFromHoverContent(content) abort
   return l:content
 endfunction
 
-function! go#lsp#AddWorkspace(...) abort
+function! go#lsp#AddWorkspaceDirectory(...) abort
   if a:0 == 0
     return
   endif
+
+  call go#lsp#CleanWorkspaces()
 
   let l:workspaces = []
   for l:dir in a:000
@@ -702,7 +710,48 @@ function! go#lsp#AddWorkspace(...) abort
   let l:state = s:newHandlerState('')
   let l:state.handleResult = funcref('s:noop')
   let l:lsp.workspaceDirectories = extend(l:lsp.workspaceDirectories, l:workspaces)
-  let l:msg = go#lsp#message#AddWorkspaces(l:workspaces)
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:workspaces, [])
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return 0
+endfunction
+
+function! go#lsp#CleanWorkspaces() abort
+  let l:workspaces = []
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:i = 0
+  let l:missing = []
+  for l:dir in l:lsp.workspaceDirectories
+    if !isdirectory(l:dir)
+      let l:dir = add(l:missing, l:dir)
+      call remove(l:lsp.workspaceDirectories, l:i)
+      continue
+    endif
+    let l:i += 1
+  endfor
+
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders([], l:missing)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return 0
+endfunction
+
+" go#lsp#ResetWorkspaceDiretories removes and then re-adds all workspace
+" folders to cause gopls to send configuration requests for all of them again.
+" This is useful, for instance, when build tags have been added and gopls
+" needs to use them.
+function! go#lsp#ResetWorkspaceDirectories() abort
+  call go#lsp#CleanWorkspaces()
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('')
+  let l:state.handleResult = funcref('s:noop')
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:lsp.workspaceDirectories, l:lsp.workspaceDirectories)
   call l:lsp.sendMessage(l:msg, l:state)
 
   return 0
