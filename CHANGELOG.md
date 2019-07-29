@@ -54,6 +54,9 @@ IMPROVEMENTS:
 * Use the statusline to display gopls initialization status messages and only
   echo the statuses when `g:go_echo_command_info` is set.
   [[GH-2422]](https://github.com/fatih/vim-go/pull/2422)
+* Send configuration to gopls so that build tags will be considered and hover
+  content won't have documentation.
+  [[GH-2429]](https://github.com/fatih/vim-go/pull/2429)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
