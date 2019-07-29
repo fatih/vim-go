@@ -85,8 +85,8 @@ func! Test_DefJump_gopls_simple_first() abort
   try
     let g:go_def_mode = 'gopls'
 
-    let l:tmp = gotest#write_file('simple/firstposition/position.go', [
-          \ 'package position',
+    let l:tmp = gotest#write_file('simple/firstposition/firstposition.go', [
+          \ 'package firstposition',
           \ '',
           \ 'func Example() {',
           \ "\tid := " . '"foo"',
@@ -120,8 +120,8 @@ func! Test_DefJump_gopls_simple_last() abort
   try
     let g:go_def_mode = 'gopls'
 
-    let l:tmp = gotest#write_file('simple/lastposition/position.go', [
-          \ 'package position',
+    let l:tmp = gotest#write_file('simple/lastposition/lastposition.go', [
+          \ 'package lastposition',
           \ '',
           \ 'func Example() {',
           \ "\tid := " . '"foo"',
@@ -155,8 +155,8 @@ func! Test_DefJump_gopls_MultipleCodeUnit_first() abort
   try
     let g:go_def_mode = 'gopls'
 
-    let l:tmp = gotest#write_file('multiplecodeunit/firstposition/position.go', [
-          \ 'package position',
+    let l:tmp = gotest#write_file('multiplecodeunit/firstposition/firstposition.go', [
+          \ 'package firstposition',
           \ '',
           \ 'func Example() {',
           \ "\t𐐀, id := " . '"foo", "bar"',
@@ -190,8 +190,8 @@ func! Test_DefJump_gopls_MultipleCodeUnit_last() abort
   try
     let g:go_def_mode = 'gopls'
 
-    let l:tmp = gotest#write_file('multiplecodeunit/lastposition/position.go', [
-          \ 'package position',
+    let l:tmp = gotest#write_file('multiplecodeunit/lastposition/lastposition.go', [
+          \ 'package lastposition',
           \ '',
           \ 'func Example() {',
           \ "\t𐐀, id := " . '"foo", "bar"',
