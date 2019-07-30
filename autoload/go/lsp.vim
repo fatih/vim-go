@@ -132,6 +132,8 @@ function! s:newlsp() abort
       let l:resp = go#lsp#message#WorkspaceFoldersResult(self.workspaceDirectories)
     elseif a:req.method == 'workspace/configuration' && has_key(a:req, 'params') && has_key(a:req.params, 'items')
       let l:resp = go#lsp#message#ConfigurationResult(a:req.params.items)
+    elseif a:req.method == 'client/registerCapability' && has_key(a:req, 'params') && has_key(a:req.params, 'registrations')
+      let l:resp = v:null
     else
       return
     endif
