@@ -12,6 +12,9 @@ function! go#lsp#message#Initialize(wd) abort
             \ 'capabilities': {
               \ 'workspace': {
                 \ 'workspaceFolders': v:true,
+                \ 'didChangeConfiguration': {
+                  \ 'dynamicRegistration': v:true,
+                \ },
                 \ 'configuration': v:true,
               \ },
               \ 'textDocument': {
@@ -19,7 +22,8 @@ function! go#lsp#message#Initialize(wd) abort
                   \ 'contentFormat': ['plaintext'],
                 \ },
               \ }
-            \ }
+            \ },
+            \ 'workspaceFolders': [s:workspaceFolder(0, a:wd)],
           \ }
        \ }
 endfunction
