@@ -36,15 +36,9 @@ function! go#util#Join(...) abort
 endfunction
 
 " IsWin returns 1 if current OS is Windows or 0 otherwise
+" Note that has('win32') is always 1 when has('win64') is 1, so has('win32') is enough.
 function! go#util#IsWin() abort
-  let win = ['win16', 'win32', 'win64', 'win95']
-  for w in win
-    if (has(w))
-      return 1
-    endif
-  endfor
-
-  return 0
+  return has('win32')
 endfunction
 
 " IsMac returns 1 if current OS is macOS or 0 otherwise.
