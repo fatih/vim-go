@@ -57,6 +57,9 @@ IMPROVEMENTS:
 * Send configuration to gopls so that build tags will be considered and hover
   content won't have documentation.
   [[GH-2429]](https://github.com/fatih/vim-go/pull/2429)
+* Add a new option, `g:go_term_close_on_exit`, to control whether jobs run in a
+  terminal window will close the terminal window when the job exits.
+  [[GH-2409]](https://github.com/fatih/vim-go/pull/2409)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
