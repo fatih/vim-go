@@ -1823,7 +1823,7 @@ Currently accepted values:
                      responses are recorded in `g:go_debug_commands`.
   lsp                Echo communication between vim-go and `gopls`. All
                      communication is shown in a dedicated window. When
-                     enabled before gopls is started, `:GoLSPDebugBrowser` can
+                     enabled before gopls is started, |:GoLSPDebugBrowser| can
                      be used to open a browser window to help debug gopls.
 >
       let g:go_debug = []

@@ -63,6 +63,9 @@ IMPROVEMENTS:
 * Allow `g:go_template_file` and `g:go_template_test_files` to reside outside
   of vim-go's template directory.
   [[GH-2434]](https://github.com/fatih/vim-go/pull/2434)
+* Add a new command, `:GoDebugBrowser`, to open a browser to gopls debugging
+  view.
+  [[GH-2436]](https://github.com/fatih/vim-go/pull/2436)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
