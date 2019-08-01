@@ -137,6 +137,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   endif
 
   for [binary, pkg] in items(l:packages)
+    redraw
     let l:importPath = pkg[0]
 
     " TODO(bc): how to support this with modules? Do we have to clone and then
@@ -221,6 +222,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     set shellslash
   endif
 
+  redraw
   if a:updateBinaries == 1
     call go#util#EchoInfo('updating finished!')
   else
