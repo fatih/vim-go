@@ -906,10 +906,15 @@ CTRL-t
     tries to preserve cursor position and avoids replacing the buffer with
     stderr output.
 
-                                                           *:GoAddWorkspace*
+                                                            *:GoAddWorkspace*
 :GoAddWorkspace [dir] ...
 
     Add directories to the `gopls` workspace.
+
+                                                         *:GoLSPDebugBrowser*
+:GoLSPDebugBrowser
+
+    Open a browser to see gopls debugging information.
 
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -1241,9 +1246,9 @@ set to 10 seconds . >
 <
                                                  *'g:go_play_browser_command'*
 
-Browser to use for |:GoPlay| or |:GoDocBrowser|. The url must be added with
-`%URL%`, and it's advisable to include `&` to make sure the shell returns. For
-example:
+Browser to use for |:GoPlay|, |:GoDocBrowser|, and |:GoLSPDebugBrowser|. The
+url must be added with `%URL%`, and it's advisable to include `&` to make sure
+the shell returns. For example:
 >
   let g:go_play_browser_command = 'firefox-developer %URL% &'
 <
@@ -1817,7 +1822,9 @@ Currently accepted values:
   debugger-commands  Echo communication between vim-go and `dlv`; requests and
                      responses are recorded in `g:go_debug_commands`.
   lsp                Echo communication between vim-go and `gopls`. All
-                     communication is shown in a dedicated window.
+                     communication is shown in a dedicated window. When
+                     enabled before gopls is started, `:GoLSPDebugBrowser` can
+                     be used to open a browser window to help debug gopls.
 >
       let g:go_debug = []
 <
