@@ -43,20 +43,6 @@ func! Test_TemplateCreate_UsePkg() abort
   endtry
 endfunc
 
-func! Test_TemplateCreate_TestSuffix() abort
-  try
-    let l:tmp = gotest#write_file('foo/empty.txt', [''])
-
-    let g:go_template_test_suffix = 1
-    edit foo/bar_test.go
-
-    call gotest#assert_buffer(0, ['package foo_test'])
-  finally
-    unlet g:go_template_test_suffix
-    call delete(l:tmp, 'rf')
-  endtry
-endfunc
-
 func! Test_TemplateCreate_PackageExists() abort
   try
     let l:tmp = gotest#write_file('quux/quux.go', ['package foo'])

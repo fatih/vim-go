@@ -9,7 +9,6 @@ function! go#template#create() abort
   let l:root_dir = fnamemodify(s:current_file, ':h:h:h')
 
   let l:package_name = go#tool#PackageName()
-  let l:filename = expand('%:t')
 
   " if we can't figure out any package name (i.e. no Go files in the directory)
   " from the directory create the template or use the directory as the name.
@@ -19,27 +18,22 @@ function! go#template#create() abort
       let l:content = printf("package %s", l:path)
       call append(0, l:content)
     else
+      let l:filename = expand('%:t')
       if l:filename =~ "_test.go$"
         let l:template_file = go#config#TemplateTestFile()
       else
         let l:template_file = go#config#TemplateFile()
       endif
-
       " If template_file is an absolute path, use it as-is. This is to support
       " overrides pointing to templates outside of the vim-go plugin dir
       if fnamemodify(l:template_file, ':p') != l:template_file
-        let l:template_path = go#util#Join(l:root_dir, "templates", l:template_file)
+        let l:template_file = go#util#Join(l:root_dir, "templates", l:template_file)
       endif
 
-      silent exe 'keepalt 0r ' . fnameescape(l:template_path)
+      silent exe 'keepalt 0r ' . fnameescape(l:template_file)
     endif
   else
-    let l:go_test_suffix = go#config#TemplateTestSuffix()
-    if l:filename =~ "_test.go$" && l:go_test_suffix == 1
-      let l:content = printf("package %s_test", l:package_name)
-    else
-      let l:content = printf("package %s", l:package_name)
-    endif
+    let l:content = printf("package %s", l:package_name)
     call append(0, l:content)
   endif
   " checking that the last line is empty shouldn't be necessary, but for some
