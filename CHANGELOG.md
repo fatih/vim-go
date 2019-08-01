@@ -60,6 +60,9 @@ IMPROVEMENTS:
 * Add a new option, `g:go_term_close_on_exit`, to control whether jobs run in a
   terminal window will close the terminal window when the job exits.
   [[GH-2409]](https://github.com/fatih/vim-go/pull/2409)
+* Allow `g:go_template_file` and `g:go_template_test_files` to reside outside
+  of vim-go's template directory.
+  [[GH-2434]](https://github.com/fatih/vim-go/pull/2434)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
