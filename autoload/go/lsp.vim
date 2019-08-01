@@ -315,6 +315,10 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.err_cb(ch, msg) dict abort
+    if a:msg =~ '^\tPort = \d\+$' && !get(self, 'debugport', 0)
+      let self.debugport = substitute(a:msg, '^\tPort = \(\d\+\).*$', '\1', '')
+    endif
+
     call s:debug('stderr', a:msg)
   endfunction
 
@@ -337,9 +341,12 @@ function! s:newlsp() abort
     return
   endif
 
-  " TODO(bc): output a message indicating which directory lsp is going to
-  " start in.
-  let l:lsp.job = go#job#Start([l:bin_path], l:opts)
+  let l:cmd = [l:bin_path]
+  if go#util#HasDebug('lsp')
+    let l:cmd = extend(l:cmd, ['-debug', 'localhost:0'])
+  endif
+
+  let l:lsp.job = go#job#Start(l:cmd, l:opts)
 
   return l:lsp
 endfunction
@@ -757,6 +764,17 @@ function! go#lsp#ResetWorkspaceDirectories() abort
   call l:lsp.sendMessage(l:msg, l:state)
 
   return 0
+endfunction
+
+function! go#lsp#DebugBrowser() abort
+  let l:lsp = s:lspfactory.get()
+  let l:port = get(l:lsp, 'debugport', 0)
+  if !l:port
+    call go#util#EchoError("gopls was not started with debugging enabled. See :help g:go_debug.")
+    return
+  endif
+
+  call go#util#OpenBrowser(printf('http://localhost:%d', l:port))
 endfunction
 
 function! s:debug(event, data) abort
