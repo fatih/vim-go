@@ -36,8 +36,6 @@ IMPROVEMENTS:
   [[GH-2351]](https://github.com/fatih/vim-go/pull/2351)
 * Add `:GoAddWorkspace` function to support multiple workspaces with gopls.
   [[GH-2356]](https://github.com/fatih/vim-go/pull/2356)
-* Rename `errn` Ultisnip snippet to `err`.
-  [[GH-2358]](https://github.com/fatih/vim-go/pull/2358)
 * Install gopls from its stable package.
   [[GH-2360]](https://github.com/fatih/vim-go/pull/2360)
 * Disambiguate progress message when initializing gopls.
