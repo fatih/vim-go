@@ -510,6 +510,15 @@ CTRL-t
 
     Set |'g:go_get_update'| to disable updating dependencies.
 
+                                                      *GoAddBinaryToInstall()*
+    You can add extra binaries to install using 'GoAddBinaryToInstall()', e.g.
+    to install 'gotype' and 'goimports' for use by Syntastic:
+    >
+        :call GoAddBinaryToInstall('gotype', 'golang.org/x/tools/cmd/gotype')
+        :call GoAddBinaryToInstall('goimports', 'golang.org/x/tools/cmd/goimports')
+        :GoInstallBinaries
+<
+
                                                            *:GoUpdateBinaries*
 :GoUpdateBinaries [binaries]
 

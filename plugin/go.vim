@@ -242,6 +242,19 @@ function! s:CheckBinaries()
   endif
 endfunction
 
+" GoAddBinaryToInstall adds another binary to s:packages so it can be installed
+" using GoInstallBinaries.
+fun! GoAddBinaryToInstall(name, url)
+  if exists("s:packages[a:name]")
+    echohl Error
+    echomsg "GoAddBinaryToInstall: " . a:name . " already exists: "
+      \ . string(s:packages[a:name])
+    echohl None
+    return -1
+  endif
+  let s:packages[a:name] = [a:url]
+endfunction
+
 " Autocommands
 " ============================================================================
 "
