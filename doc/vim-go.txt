@@ -515,7 +515,8 @@ CTRL-t
     to install gotype and goimports for use by Syntastic:
     >
         :call GoAddBinaryToInstall('gotype', 'golang.org/x/tools/cmd/gotype')
-        :call GoAddBinaryToInstall('goimports', 'golang.org/x/tools/cmd/goimports')
+        :call GoAddBinaryToInstall('goimports',
+          \ 'golang.org/x/tools/cmd/goimports')
         :GoInstallBinaries
 <
 
