@@ -51,7 +51,7 @@ function! go#auto#auto_sameids()
 endfunction
 
 function! go#auto#fmt_autosave()
-  if !go#config#FmtAutosave() || !isdirectory(expand('%:p:h'))
+  if !(go#config#FmtAutosave() && isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
     return
   endif
 
@@ -69,7 +69,7 @@ function! go#auto#metalinter_autosave()
 endfunction
 
 function! go#auto#modfmt_autosave()
-  if !go#config#ModFmtAutosave() || !isdirectory(expand('%:p:h'))
+  if !(go#config#ModFmtAutosave() && isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
     return
   endif
 
@@ -78,7 +78,7 @@ function! go#auto#modfmt_autosave()
 endfunction
 
 function! go#auto#asmfmt_autosave()
-  if !go#config#AsmfmtAutosave() || !isdirectory(expand('%:p:h'))
+  if !(go#config#AsmfmtAutosave() && isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
     return
   endif
 
