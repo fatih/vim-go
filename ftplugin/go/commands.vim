@@ -117,6 +117,10 @@ command! -nargs=0 GoReportGitHubIssue call go#issue#New()
 command! -nargs=0 GoIfErr call go#iferr#Generate()
 
 " -- lsp
-command! -nargs=+ -complete=dir GoAddWorkspace call go#lsp#AddWorkspace(<f-args>)
+command! -nargs=+ -complete=dir GoAddWorkspace call go#lsp#AddWorkspaceDirectory(<f-args>)
+command! -nargs=0 GoLSPDebugBrowser call go#lsp#DebugBrowser()
+
+" -- term
+command! GoToggleTermCloseOnExit call go#term#ToggleCloseOnExit()
 
 " vim: sw=2 ts=2 et

@@ -36,8 +36,6 @@ IMPROVEMENTS:
   [[GH-2351]](https://github.com/fatih/vim-go/pull/2351)
 * Add `:GoAddWorkspace` function to support multiple workspaces with gopls.
   [[GH-2356]](https://github.com/fatih/vim-go/pull/2356)
-* Rename `errn` Ultisnip snippet to `err`.
-  [[GH-2358]](https://github.com/fatih/vim-go/pull/2358)
 * Install gopls from its stable package.
   [[GH-2360]](https://github.com/fatih/vim-go/pull/2360)
 * Disambiguate progress message when initializing gopls.
@@ -51,6 +49,21 @@ IMPROVEMENTS:
   [[GH-2394]](https://github.com/fatih/vim-go/pull/2394)
 * Calculate Vim position correctly from LSP text position.
   [[GH-2395]](https://github.com/fatih/vim-go/pull/2395)
+* Use the statusline to display gopls initialization status messages and only
+  echo the statuses when `g:go_echo_command_info` is set.
+  [[GH-2422]](https://github.com/fatih/vim-go/pull/2422)
+* Send configuration to gopls so that build tags will be considered and hover
+  content won't have documentation.
+  [[GH-2429]](https://github.com/fatih/vim-go/pull/2429)
+* Add a new option, `g:go_term_close_on_exit`, to control whether jobs run in a
+  terminal window will close the terminal window when the job exits.
+  [[GH-2409]](https://github.com/fatih/vim-go/pull/2409)
+* Allow `g:go_template_file` and `g:go_template_test_files` to reside outside
+  of vim-go's template directory.
+  [[GH-2434]](https://github.com/fatih/vim-go/pull/2434)
+* Add a new command, `:GoDebugBrowser`, to open a browser to gopls debugging
+  view.
+  [[GH-2436]](https://github.com/fatih/vim-go/pull/2436)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
@@ -102,6 +115,8 @@ BUG FIXES:
 * Do not open a new buffer in Neovim when there are compilation errors and
   terminal moded is enabled.
   [[GH-2401]](https://github.com/fatih/vim-go/pull/2401)
+* Fix error due to typo in implementation of `:GoAddWorkspace`.
+  [[GH-2415]](https://github.com/fatih/vim-go/pull/2401)
 
 
 ## 1.20 - (April 22, 2019)

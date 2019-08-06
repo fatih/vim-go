@@ -5,18 +5,18 @@ set cpo&vim
 scriptencoding utf-8
 
 function! Test_GetSimpleTextPosition()
-    call s:getinfo('lsp text position should align with cursor position after ascii only')
+    call s:getinfo('lsp text position should align with cursor position after ascii only', 'ascii')
 endfunction
 
 function! Test_GetMultiByteTextPosition()
-    call s:getinfo('lsp text position should align with cursor position after two place of interest symbols ⌘⌘')
+    call s:getinfo('lsp text position should align with cursor position after two place of interest symbols ⌘⌘', 'multi-byte')
 endfunction
 
 function! Test_GetMultipleCodeUnitTextPosition()
-    call s:getinfo('lsp text position should align with cursor position after Deseret Capital Letter Long I 𐐀')
+    call s:getinfo('lsp text position should align with cursor position after Deseret Capital Letter Long I 𐐀', 'multi-code-units')
 endfunction
 
-function! s:getinfo(str)
+function! s:getinfo(str, name)
   if !go#util#has_job()
     return
   endif
@@ -24,12 +24,12 @@ function! s:getinfo(str)
   try
     let g:go_info_mode = 'gopls'
 
-    let l:tmp = gotest#write_file('position/position.go', [
+    let l:tmp = gotest#write_file(a:name . '/position/position.go', [
           \ 'package position',
           \ '',
           \ 'func Example() {',
           \ "\tid := " . '"foo"',
-          \ "\tprintln(" .'"' . a:str . '", id)',
+          \ "\tprintln(" .'"' . a:str . '", id)',
           \ '}',
           \ ] )
 

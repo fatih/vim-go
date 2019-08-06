@@ -376,8 +376,8 @@ CTRL-t
 :GoInfo
     Show type information about the identifier under the cursor. For example
     putting it above a function call is going to show the full function
-    signature. By default it uses `gocode` to get the type informations. To
-    change the underlying tool from `gocode` to another tool, see
+    signature. By default it uses `gopls` to get the type informations. To
+    change the underlying tool from `gopls` to another tool, see
     |'g:go_info_mode'|.
 
 
@@ -906,10 +906,15 @@ CTRL-t
     tries to preserve cursor position and avoids replacing the buffer with
     stderr output.
 
-                                                           *:GoAddWorkspace*
+                                                            *:GoAddWorkspace*
 :GoAddWorkspace [dir] ...
 
     Add directories to the `gopls` workspace.
+
+                                                         *:GoLSPDebugBrowser*
+:GoLSPDebugBrowser
+
+    Open a browser to see gopls debugging information.
 
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -1241,9 +1246,9 @@ set to 10 seconds . >
 <
                                                  *'g:go_play_browser_command'*
 
-Browser to use for |:GoPlay| or |:GoDocBrowser|. The url must be added with
-`%URL%`, and it's advisable to include `&` to make sure the shell returns. For
-example:
+Browser to use for |:GoPlay|, |:GoDocBrowser|, and |:GoLSPDebugBrowser|. The
+url must be added with `%URL%`, and it's advisable to include `&` to make sure
+the shell returns. For example:
 >
   let g:go_play_browser_command = 'firefox-developer %URL% &'
 <
@@ -1636,6 +1641,13 @@ just like `:GoBuild`. By default it is disabled.
 >
   let g:go_term_enabled = 0
 <
+                                                   *'g:go_term_close_on_exit'*
+
+This option is Neovim only. If set to 1 it closes the terminal after the
+command run in it exits. By default it is enabled.
+>
+  let g:go_term_close_on_exit = 1
+<
                                                        *'g:go_alternate_mode'*
 
 Specifies the command that |:GoAlternate| uses to open the alternate file.
@@ -1690,7 +1702,8 @@ Specifies whether `gocode` should use a different socket type. By default
 When a new Go file is created, vim-go automatically fills the buffer content
 with a Go code template. By default, the templates under the `templates`
 folder are used.  This can be changed with the |'g:go_template_file'| and
-|'g:go_template_test_file'| settings.
+|'g:go_template_test_file'| settings to either use a different file in the
+same `templates` folder, or to use a file stored elsewhere.
 
 If the new file is created in an already prepopulated package (with other Go
 files), in this case a Go code template with only the Go package declaration
@@ -1705,17 +1718,23 @@ By default it is enabled.
 <
                                                         *'g:go_template_file'*
 
-Specifies the file under the `templates` folder that is used if a new Go file
-is created. Checkout |'g:go_template_autocreate'| for more info. By default
-the `hello_world.go` file is used.
+Specifies either the file under the `templates` folder that is used if a new
+Go file is created. Checkout |'g:go_template_autocreate'| for more info. By
+default the `hello_world.go` file is used.
+
+This variable can be set to an absolute path, so the template files don't have
+to be stored inside the vim-go directory structure. Useful when you want to
+use different templates for different projects.
 >
   let g:go_template_file = "hello_world.go"
 <
                                                    *'g:go_template_test_file'*
 
-Specifies the file under the `templates` folder that is used if a new Go test
-file is created. Checkout |'g:go_template_autocreate'| for more info. By
-default the `hello_world_test.go` file is used.
+Like with |'g:go_template_file'|, this specifies the file to use for test
+tempaltes. The template file should be under the `templates` folder,
+alternatively absolute paths can be used, too. Checkout
+|'g:go_template_autocreate'| for more info. By default, the
+`hello_world_test.go` file is used.
 >
   let g:go_template_test_file = "hello_world_test.go"
 <
@@ -1803,7 +1822,9 @@ Currently accepted values:
   debugger-commands  Echo communication between vim-go and `dlv`; requests and
                      responses are recorded in `g:go_debug_commands`.
   lsp                Echo communication between vim-go and `gopls`. All
-                     communication is shown in a dedicated window.
+                     communication is shown in a dedicated window. When
+                     enabled before gopls is started, |:GoLSPDebugBrowser| can
+                     be used to open a browser window to help debug gopls.
 >
       let g:go_debug = []
 <

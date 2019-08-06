@@ -15,7 +15,7 @@ function! go#lsp#lsp#Position(...)
   let l:content = getline(l:line)
 
   " LSP uses 0-based lines.
-  return [l:line - 1, s:character(l:line, l:col)]
+  return [l:line - 1, s:character(l:line, l:col-1)]
 endfunction
 
 function! s:strlen(str) abort
