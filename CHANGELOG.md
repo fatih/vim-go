@@ -117,7 +117,9 @@ BUG FIXES:
   [[GH-2401]](https://github.com/fatih/vim-go/pull/2401)
 * Fix error due to typo in implementation of `:GoAddWorkspace`.
   [[GH-2415]](https://github.com/fatih/vim-go/pull/2401)
-
+* Do not format the file automatically when `g:go_format_autosave` is set and
+  the file being written is not the current file.
+  [[GH-2442]](https://github.com/fatih/vim-go/pull/2401)
 
 ## 1.20 - (April 22, 2019)
 
