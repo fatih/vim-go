@@ -288,7 +288,7 @@ hi def link     goFunction          Function
 if go#config#HighlightFunctionCalls()
   syn match goFunctionCall      /\w\+\ze(/ contains=goBuiltins,goDeclaration
 endif
-hi def link     goFunctionCall      Type
+hi def link     goFunctionCall      Function
 
 " Fields;
 if go#config#HighlightFields()
