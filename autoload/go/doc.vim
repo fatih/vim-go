@@ -86,7 +86,7 @@ function! s:GodocView(newposition, position, content) abort
             \ 'borderchars': ['-','|','-','|','+','+','+','+'],
             \ "border": [1, 1, 1, 1],
             \ })
-    elseif has('nvim') && exists('*nvim_win_set_config')
+    elseif has('nvim') && exists('*nvim_open_win')
       let lines = split(a:content, '\n')
       let height = 0
       let width = 0
