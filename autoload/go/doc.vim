@@ -77,7 +77,7 @@ endfunction
 
 function! s:GodocView(newposition, position, content) abort
   " popup window
-  if go#config#DocPopupWindow() && has("patch-8.1.1513")
+  if go#config#DocPopupWindow() && exists('*popup_atcursor') && exists('*popup_clear')
     call popup_clear()
 
     call popup_atcursor(split(a:content, '\n'), {

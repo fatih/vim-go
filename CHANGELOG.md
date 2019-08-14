@@ -18,9 +18,6 @@ IMPROVEMENTS:
   [[GH-2289]](https://github.com/fatih/vim-go/pull/2289)
 * Improve the user experience when using null modules.
   [[GH-2300]](https://github.com/fatih/vim-go/pull/2300)
-* Add a new option, `g:go_null_module_warning` to silence the warning when
-  trying to use gopls with a null module.
-  [[GH-2309]](https://github.com/fatih/vim-go/pull/2309)
 * Modify `:GoReportGitHubIssue` to include vim-go configuration values
   [[GH-2323]](https://github.com/fatih/vim-go/pull/2323)
 * Respect `g:go_info_mode='gopls'` in go#complete#GetInfo.
@@ -32,21 +29,15 @@ IMPROVEMENTS:
 * Add a new option, `g:go_doc_popup_window` to optionally use a popup window
   for godoc in Vim 8.1.1513 and later.
   [[GH-2347]](https://github.com/fatih/vim-go/pull/2347)
-* Check for null modules in the background when initializing gopls.
-  [[GH-2351]](https://github.com/fatih/vim-go/pull/2351)
 * Add `:GoAddWorkspace` function to support multiple workspaces with gopls.
   [[GH-2356]](https://github.com/fatih/vim-go/pull/2356)
 * Install gopls from its stable package.
   [[GH-2360]](https://github.com/fatih/vim-go/pull/2360)
 * Disambiguate progress message when initializing gopls.
   [[GH-2369]](https://github.com/fatih/vim-go/pull/2369)
-* Remove warnings and lsp short-circuiting when using a null module.
-  [[GH-2371]](https://github.com/fatih/vim-go/pull/2371)
 * Calculate LSP position correctly when on a line that contains multi-byte
   characters before the position.
   [[GH-2389]](https://github.com/fatih/vim-go/pull/2389)
-* Calculate LSP position without using an external binary.
-  [[GH-2394]](https://github.com/fatih/vim-go/pull/2394)
 * Calculate Vim position correctly from LSP text position.
   [[GH-2395]](https://github.com/fatih/vim-go/pull/2395)
 * Use the statusline to display gopls initialization status messages and only
@@ -61,7 +52,7 @@ IMPROVEMENTS:
 * Allow `g:go_template_file` and `g:go_template_test_files` to reside outside
   of vim-go's template directory.
   [[GH-2434]](https://github.com/fatih/vim-go/pull/2434)
-* Add a new command, `:GoDebugBrowser`, to open a browser to gopls debugging
+* Add a new command, `:GoLSPDebugBrowser`, to open a browser to gopls debugging
   view.
   [[GH-2436]](https://github.com/fatih/vim-go/pull/2436)
 
@@ -113,11 +104,13 @@ BUG FIXES:
 * Do not execute tests twice in terminal mode.
   [[GH-2397]](https://github.com/fatih/vim-go/pull/2397)
 * Do not open a new buffer in Neovim when there are compilation errors and
-  terminal moded is enabled.
+  terminal mode is enabled.
   [[GH-2401]](https://github.com/fatih/vim-go/pull/2401)
 * Fix error due to typo in implementation of `:GoAddWorkspace`.
   [[GH-2415]](https://github.com/fatih/vim-go/pull/2401)
-
+* Do not format the file automatically when `g:go_format_autosave` is set and
+  the file being written is not the current file.
+  [[GH-2442]](https://github.com/fatih/vim-go/pull/2401)
 
 ## 1.20 - (April 22, 2019)
 
