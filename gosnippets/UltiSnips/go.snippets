@@ -385,6 +385,12 @@ case ${2:value1}:
 }
 endsnippet
 
+snippet tswitch "type switch x { ... }"
+switch ${2:$1 := }${1:v}.(type) {
+	${0}
+}
+endsnippet
+
 # sprintf
 snippet sp "fmt.Sprintf(...)"
 fmt.Sprintf("%${1:s}", ${2:var})
@@ -557,6 +563,12 @@ endsnippet
 snippet lwf "logrus with field" !b
 ${1:logrus}.WithField("${2:foo}", ${3:"bar"}).${4:Info}("${5:something happened}")
 $0
+endsnippet
+
+snippet lwfs "logrus with fields"
+${1:logrus}.WithFields(logrus.Fields{
+	"${2:foo}", ${3:"bar"}
+})$0
 endsnippet
 
 snippet ew "errors.Wrap"
