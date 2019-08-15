@@ -506,10 +506,6 @@ if !reflect.DeepEqual(${1:expected}, ${2:actual}) {
 }
 endsnippet
 
-snippet ew "errors.Wrap"
-errors.Wrap(${1:err}, "${2:message}")
-endsnippet
-
 global !p
 
 import re
@@ -559,6 +555,20 @@ endsnippet
 
 snippet rew "return errors.Wrap"
 return errors.Wrap(${2:err}, "${3:someMessage}")
+endsnippet
+
+snippet sifc "Single-method interface with func implementation" !b
+type ${1:somethinger} interface {
+  ${2:$1}(${3:param int}) ${4:bool}
+}
+
+type $1Func func($3) $4
+
+func (f $1Func) $2($3) $4 {
+  return f($3)
+}
+
+var _ $1 = ($1Func)(nil)
 endsnippet
 
 # vim:ft=snippets:
