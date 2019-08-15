@@ -165,6 +165,13 @@ if err != nil {
 ${0}
 endsnippet
 
+snippet errnwf "Error return wrapf" !b
+if err != nil {
+	return errors.Wrapf(err, "${1:message %s}", ${2:err})
+}
+${0}
+endsnippet
+
 # error log snippet
 snippet errl "Error with log.Fatal(err)" !b
 if err != nil {
@@ -184,6 +191,13 @@ endsnippet
 snippet errn,w "Error return wrap with two return values" !b
 if err != nil {
 	return nil, errors.Wrap(err, "${1:message}")
+}
+${0}
+endsnippet
+
+snippet errn,wf "Error return wrapf with two return values" !b
+if err != nil {
+	return nil, errors.Wrapf(err, "${1:message %s}", ${2:err})
 }
 ${0}
 endsnippet
@@ -272,12 +286,12 @@ endsnippet
 
 # Fmt Printf debug
 snippet ff "fmt.Printf(...)"
-fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
+fmt.Printf("$1 = %+v\n", ${1:${VISUAL}})
 endsnippet
 
 # Fmt Printf debug with hash
 snippet ffh "fmt.Printf(#...) hash"
-fmt.Printf("${1:${VISUAL}} = %#v\n", $1)
+fmt.Printf("$1 = %#v\n", ${1:${VISUAL}})
 endsnippet
 
 # Fmt Println debug
@@ -367,6 +381,12 @@ endsnippet
 snippet switch "switch x { ... }"
 switch ${1:var} {
 case ${2:value1}:
+	${0}
+}
+endsnippet
+
+snippet tswitch "type switch x { ... }"
+switch ${2:$1 := }${1:v}.(type) {
 	${0}
 }
 endsnippet
@@ -545,6 +565,12 @@ ${1:logrus}.WithField("${2:foo}", ${3:"bar"}).${4:Info}("${5:something happened}
 $0
 endsnippet
 
+snippet lwfs "logrus with fields"
+${1:logrus}.WithFields(logrus.Fields{
+	"${2:foo}", ${3:"bar"}
+})$0
+endsnippet
+
 snippet ew "errors.Wrap"
 errors.Wrap(${2:err}, "${3:someMessage}")
 endsnippet
@@ -569,6 +595,17 @@ func (f $1Func) $2($3) $4 {
 }
 
 var _ $1 = ($1Func)(nil)
+endsnippet
+
+snippet first "first nonempty string" !b
+func first(ss ...string) string {
+	for _, s := range ss {
+		if s != "" {
+			return s
+		}
+	}
+	return ""
+}
 endsnippet
 
 # vim:ft=snippets:
