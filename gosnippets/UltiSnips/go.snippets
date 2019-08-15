@@ -567,7 +567,7 @@ endsnippet
 
 snippet lwfs "logrus with fields"
 ${1:logrus}.WithFields(logrus.Fields{
-	"${2:foo}", ${3:"bar"}
+	"${2:foo}": ${3:"bar"},
 })$0
 endsnippet
 
@@ -585,13 +585,13 @@ endsnippet
 
 snippet sifc "Single-method interface with func implementation" !b
 type ${1:somethinger} interface {
-  ${2:$1}(${3:param int}) ${4:bool}
+	${2:$1}(${3:param int}) ${4:bool}
 }
 
 type $1Func func($3) $4
 
 func (f $1Func) $2($3) $4 {
-  return f($3)
+	return f($3)
 }
 
 var _ $1 = ($1Func)(nil)
