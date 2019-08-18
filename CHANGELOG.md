@@ -55,6 +55,8 @@ IMPROVEMENTS:
 * Add a new command, `:GoLSPDebugBrowser`, to open a browser to gopls debugging
   view.
   [[GH-2436]](https://github.com/fatih/vim-go/pull/2436)
+* Restart gopls automatically when it is updated via `:GoUpdateBinaries`.
+  [[GH-2453]](https://github.com/fatih/vim-go/pull/2453)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
