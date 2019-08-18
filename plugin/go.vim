@@ -136,6 +136,9 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     let l:platform = 'windows'
   endif
 
+  let l:oldmore = &more
+  let &more = 0
+
   for [l:binary, l:pkg] in items(l:packages)
     let l:importPath = l:pkg[0]
 
@@ -230,6 +233,8 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   else
     call go#util#EchoInfo('installing finished!')
   endif
+
+  let &more = l:oldmore
 endfunction
 
 " CheckBinaries checks if the necessary binaries to install the Go tool
