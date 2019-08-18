@@ -57,6 +57,8 @@ IMPROVEMENTS:
   [[GH-2436]](https://github.com/fatih/vim-go/pull/2436)
 * Restart gopls automatically when it is updated via `:GoUpdateBinaries`.
   [[GH-2453]](https://github.com/fatih/vim-go/pull/2453)
+* Reset `'more'` while installing binaries to avoid unnecessary more prompts.
+  [[GH-2457]](https://github.com/fatih/vim-go/pull/2457)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
