@@ -148,9 +148,11 @@ function! go#cmd#Run(bang, ...) abort
     endif
 
     if v:shell_error
-      redraws! | echon "vim-go: [run] " | echohl ErrorMsg | echon "FAILED"| echohl None
+      redraws!
+      call go#util#EchoError('[run] FAILED')
     else
-      redraws! | echon "vim-go: [run] " | echohl Function | echon "SUCCESS"| echohl None
+      redraws!
+      call go#util#EchoSuccess('[run] SUCCESS')
     endif
 
     return
@@ -257,7 +259,9 @@ function! go#cmd#Generate(bang, ...) abort
 
   let l:listtype = go#list#Type("GoGenerate")
 
-  echon "vim-go: " | echohl Identifier | echon "generating ..."| echohl None
+  if go#config#EchoCommandInfo()
+    call go#util#EchoProgress('generating ...')
+  endif
 
   try
     if l:listtype == "locationlist"
@@ -277,7 +281,8 @@ function! go#cmd#Generate(bang, ...) abort
       call go#list#JumpToFirst(l:listtype)
     endif
   else
-    redraws! | echon "vim-go: " | echohl Function | echon "[generate] SUCCESS"| echohl None
+    redraws!
+    call go#util#EchoSuccess('[generate] SUCCESS')
   endif
 
 endfunction
