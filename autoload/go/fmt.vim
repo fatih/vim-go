@@ -196,7 +196,6 @@ function! s:show_errors(errors) abort
   let l:listtype = go#list#Type("GoFmt")
   if !empty(a:errors)
     call go#list#Populate(l:listtype, a:errors, 'Format')
-    echohl Error | echomsg "Gofmt returned error" | echohl None
   endif
 
   " this closes the window if there are no errors or it opens
