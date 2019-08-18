@@ -82,7 +82,7 @@ endfunction
 
 function! s:call_jsonrpc(method, ...) abort
   if go#util#HasDebug('debugger-commands')
-    echom 'sending to dlv ' . a:method
+    call go#util#EchoInfo('sending to dlv ' . a:method)
   endif
 
   let l:args = a:000
