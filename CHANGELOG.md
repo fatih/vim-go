@@ -59,6 +59,8 @@ IMPROVEMENTS:
   [[GH-2453]](https://github.com/fatih/vim-go/pull/2453)
 * Reset `'more'` while installing binaries to avoid unnecessary more prompts.
   [[GH-2457]](https://github.com/fatih/vim-go/pull/2457)
+* Highlight `%w` as a format specifier (for Go 1.13).
+  [[GH-2433]](https://github.com/fatih/vim-go/pull/2433)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
