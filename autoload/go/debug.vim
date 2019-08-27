@@ -947,7 +947,7 @@ function! go#debug#Goroutine(goroutineId) abort
   try
     let l:res = s:call_jsonrpc('RPCServer.Command', {'Name': 'switchGoroutine', 'GoroutineID': str2nr(l:goroutineId)})
     call s:stack_cb(l:res)
-    echom "Switched Goroutine to:" . a:1
+    echom "Switched Goroutine to: " . l:goroutineId
   catch
     call go#util#EchoError(v:exception)
   endtry
