@@ -455,6 +455,8 @@ function! s:start_cb() abort
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
   command! -nargs=1 GoDebugPrint      call go#debug#Print(<q-args>)
+  command! -nargs=0 GoDebugGoroutines      call go#debug#Goroutines()
+  command! -nargs=1 GoDebugGoroutine      call go#debug#Goroutine(<f-args>)
 
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
@@ -861,8 +863,17 @@ function! go#debug#Stack(name) abort
     endif
     let s:stack_name = l:name
     try
-      let res =  s:call_jsonrpc('RPCServer.Command', {'name': l:name})
-      call s:stack_cb(res)
+      let l:res =  s:call_jsonrpc('RPCServer.Command', {'name': l:name})
+      if l:name is# 'next'
+          for i in range(99999)
+            if l:res.result.State.NextInProgress == v:true
+              let l:res = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
+            else
+              break
+            endif
+          endfor
+      endif
+      call s:stack_cb(l:res)
     catch
       call go#util#EchoError(v:exception)
       call s:clearState()
@@ -897,6 +908,49 @@ endfunction
 " Report if debugger mode is active.
 function! s:isActive()
   return len(s:state['message']) > 0
+endfunction
+
+" List All Goroutines Running
+function! go#debug#Goroutines(...) abort
+  try
+    let l:currentGoroutineId = 0
+    try
+      let l:currentGoroutineId = s:groutineID()
+    catch 
+      echom "current goroutineId not found..."
+    endtry
+
+    let l:res = s:call_jsonrpc('RPCServer.ListGoroutines')
+    let l:goroutines = l:res.result.Goroutines
+    if len(l:goroutines) == 0
+      echom "No Goroutines Running Now..."
+      return
+    endif
+
+    for l:idx in range(len(l:goroutines))
+      let l:goroutine = l:goroutines[l:idx]
+      if l:goroutine.id == l:currentGoroutineId
+        echom "* Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")"
+      else
+        echom "  Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")"
+      endif
+    endfor
+
+    catch
+      call go#util#EchoError(v:exception)
+    endtry
+endfunction
+
+" Change Goroutine
+function! go#debug#Goroutine(goroutineId) abort
+  let l:goroutineId = a:goroutineId
+  try
+    let l:res = s:call_jsonrpc('RPCServer.Command', {'Name': 'switchGoroutine', 'GoroutineID': str2nr(l:goroutineId)})
+    call s:stack_cb(l:res)
+    echom "Switched Goroutine to:" . a:1
+  catch
+    call go#util#EchoError(v:exception)
+  endtry
 endfunction
 
 " Toggle breakpoint. Returns 0 on success and 1 on failure.
