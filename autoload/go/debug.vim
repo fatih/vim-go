@@ -865,13 +865,14 @@ function! go#debug#Stack(name) abort
     try
       let l:res =  s:call_jsonrpc('RPCServer.Command', {'name': l:name})
       if l:name is# 'next'
-          for i in range(99999)
+          let l:w = 0
+          while l:w < 1
             if l:res.result.State.NextInProgress == v:true
               let l:res = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
             else
               break
             endif
-          endfor
+          endwhile
       endif
       call s:stack_cb(l:res)
     catch
