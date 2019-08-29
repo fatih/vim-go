@@ -82,3 +82,4 @@ of the information needed when creating a new issue.
 ## License
 
 The BSD 3-Clause License - see [`LICENSE`](LICENSE) for more details
+
