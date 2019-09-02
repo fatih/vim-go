@@ -107,9 +107,9 @@ function! s:GodocView(newposition, position, content) abort
             \ 'col': 0,
             \ 'width': width,
             \ 'height': height,
-            \ 'style': 'minimal'
             \ }
       call nvim_open_win(buf, v:true, opts)
+      setlocal nonumber norelativenumber nomodified nomodifiable syntax=go
 
       " close easily with CR, Esc and q
       noremap <buffer> <silent> <CR> :<C-U>close<CR>
