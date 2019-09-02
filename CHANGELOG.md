@@ -116,7 +116,9 @@ BUG FIXES:
   [[GH-2415]](https://github.com/fatih/vim-go/pull/2401)
 * Do not format the file automatically when `g:go_format_autosave` is set and
   the file being written is not the current file.
-  [[GH-2442]](https://github.com/fatih/vim-go/pull/2401)
+  [[GH-2442]](https://github.com/fatih/vim-go/pull/2442)
+* Fix `go-debug-stepout` mapping.
+  [[GH-2464]](https://github.com/fatih/vim-go/pull/2464)
 
 ## 1.20 - (April 22, 2019)
 
