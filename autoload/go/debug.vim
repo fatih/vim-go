@@ -455,8 +455,8 @@ function! s:start_cb() abort
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
   command! -nargs=1 GoDebugPrint      call go#debug#Print(<q-args>)
-  command! -nargs=0 GoDebugGoroutines      call go#debug#Goroutines()
-  command! -nargs=1 GoDebugGoroutine      call go#debug#Goroutine(<f-args>)
+  command! -nargs=0 GoDebugGoroutines call go#debug#Goroutines()
+  command! -nargs=1 GoDebugGoroutine  call go#debug#Goroutine(<f-args>)
 
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
@@ -912,28 +912,28 @@ function! s:isActive()
 endfunction
 
 " List All Goroutines Running
-function! go#debug#Goroutines(...) abort
+function! go#debug#Goroutines() abort
   try
     let l:currentGoroutineId = 0
     try
       let l:currentGoroutineId = s:groutineID()
     catch 
-      echom "current goroutineId not found..."
+      call go#util#EchoWarning("current goroutineId not found...")
     endtry
 
     let l:res = s:call_jsonrpc('RPCServer.ListGoroutines')
     let l:goroutines = l:res.result.Goroutines
     if len(l:goroutines) == 0
-      echom "No Goroutines Running Now..."
+      call go#util#EchoWarning("No Goroutines Running Now...")
       return
     endif
 
     for l:idx in range(len(l:goroutines))
       let l:goroutine = l:goroutines[l:idx]
       if l:goroutine.id == l:currentGoroutineId
-        echom "* Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")"
+        call go#util#EchoInfo("* Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " . l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")")
       else
-        echom "  Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")"
+        call go#util#EchoInfo("  Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " . l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")")
       endif
     endfor
 
@@ -948,7 +948,7 @@ function! go#debug#Goroutine(goroutineId) abort
   try
     let l:res = s:call_jsonrpc('RPCServer.Command', {'Name': 'switchGoroutine', 'GoroutineID': str2nr(l:goroutineId)})
     call s:stack_cb(l:res)
-    echom "Switched Goroutine to: " . l:goroutineId
+    call go#util#EchoInfo("Switched Goroutine to: " . l:goroutineId)
   catch
     call go#util#EchoError(v:exception)
   endtry
