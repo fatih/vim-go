@@ -410,6 +410,7 @@ endfunction
 
 function! s:start_cb() abort
   let l:winid = win_getid()
+  let l:goroutine_win_id=0
   silent! only!
 
   let winnum = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
@@ -435,6 +436,15 @@ function! s:start_cb() abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
+  if has_key(debugwindows, "goroutines") && debugwindows['goroutines'] != ''
+    exe 'silent ' . debugwindows['goroutines']
+    let l:goroutine_win_id = win_getid()
+    silent file `='__GODEBUG_GOROUTINES__'`
+    setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
+    setlocal filetype=godebugvariables
+    call append(0, ["# Goroutines"])
+    nmap <buffer> <silent> <cr> :<c-u>call go#debug#Goroutine()<cr>
+  endif
   if has_key(debugwindows, "vars") && debugwindows['vars'] != ''
     exe 'silent ' . debugwindows['vars']
     silent file `='__GODEBUG_VARIABLES__'`
@@ -443,6 +453,13 @@ function! s:start_cb() abort
     call append(0, ["# Local Variables", "", "# Function Arguments"])
     nmap <buffer> <silent> <cr> :<c-u>call <SID>expand_var()<cr>
     nmap <buffer> q <Plug>(go-debug-stop)
+  endif
+
+  call win_gotoid(l:winid)
+  exe "resize +12"
+  if l:goroutine_win_id != 0
+    call  win_gotoid(l:goroutine_win_id)
+    exe "resize +6"
   endif
 
   silent! delcommand GoDebugStart
@@ -455,8 +472,6 @@ function! s:start_cb() abort
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
   command! -nargs=1 GoDebugPrint      call go#debug#Print(<q-args>)
-  command! -nargs=0 GoDebugGoroutines call go#debug#Goroutines()
-  command! -nargs=1 GoDebugGoroutine  call go#debug#Goroutine(<f-args>)
 
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
@@ -773,6 +788,68 @@ function! go#debug#Print(arg) abort
   endtry
 endfunction
 
+function! s:update_goroutines() abort
+  let l:var_win = bufwinnr(bufnr('__GODEBUG_GOROUTINES__'))
+  if l:var_win == -1
+    return
+  endif
+
+  let l:cur_win = bufwinnr('')
+  exe l:var_win 'wincmd w'
+
+  try
+    setlocal modifiable
+    silent %delete _
+
+    let v = []
+    let v += ['# Goroutines']
+    let l:res = s:call_jsonrpc('RPCServer.State')
+    let l:currentGoroutineId = 0
+    try
+      let l:currentGoroutineId = l:res["result"]["State"]["currentGoroutine"]["id"]
+    catch 
+      call go#util#EchoInfo("current goroutineId not found...")
+    endtry
+    let l:res = s:call_jsonrpc('RPCServer.ListGoroutines')
+    let l:goroutines = l:res["result"]["Goroutines"]
+    if len(l:goroutines) == 0
+      call go#util#EchoError("No Goroutines Running Now...")
+      return
+    endif
+    for l:idx in range(len(l:goroutines))
+      let l:goroutine = l:goroutines[l:idx]
+      let l:goroutineType=""
+      let l:loc=0
+      if l:goroutine.startLoc.file != ""
+          let l:loc=l:goroutine.startLoc
+          let l:goroutineType = "Start"
+      endif
+      if l:goroutine.goStatementLoc.file != ""
+          let l:loc=l:goroutine.goStatementLoc
+          let l:goroutineType = "Go"
+      endif
+      if l:goroutine.currentLoc.file != ""
+          let l:loc=l:goroutine.currentLoc
+          let l:goroutineType = "Runtime"
+      endif
+      if l:goroutine.userCurrentLoc.file != ""
+          let l:loc=l:goroutine.userCurrentLoc
+          let l:goroutineType = "User"
+      endif
+      if l:goroutine.id == l:currentGoroutineId
+        let l:g = "* Goroutine " . l:goroutine.id . " - " . l:goroutineType . ": " . l:loc.file . ":" . l:loc.line .  " " . l:loc.function.name . " " . " (thread: " . l:goroutine.threadID . ")"
+      else
+        let l:g = "  Goroutine " . l:goroutine.id . " - " . l:goroutineType . ": " . l:loc.file . ":" . l:loc.line .  " " . l:loc.function.name . " " . " (thread: " . l:goroutine.threadID . ")"
+      endif
+      let v += [l:g]
+    endfor
+
+    call setline(1, v)
+  finally
+    setlocal nomodifiable
+    exe l:cur_win 'wincmd w'
+  endtry
+endfunction
 function! s:update_variables() abort
   " FollowPointers requests pointers to be automatically dereferenced.
   " MaxVariableRecurse is how far to recurse when evaluating nested types.
@@ -834,6 +911,7 @@ function! s:stack_cb(res) abort
   call s:update_breakpoint(a:res)
   call s:update_stacktrace()
   call s:update_variables()
+  call s:update_goroutines()
 endfunction
 
 " Send a command to change the cursor location to Delve.
@@ -911,40 +989,9 @@ function! s:isActive()
   return len(s:state['message']) > 0
 endfunction
 
-" List All Goroutines Running
-function! go#debug#Goroutines() abort
-  try
-    let l:currentGoroutineId = 0
-    try
-      let l:currentGoroutineId = s:groutineID()
-    catch 
-      call go#util#EchoWarning("current goroutineId not found...")
-    endtry
-
-    let l:res = s:call_jsonrpc('RPCServer.ListGoroutines')
-    let l:goroutines = l:res.result.Goroutines
-    if len(l:goroutines) == 0
-      call go#util#EchoWarning("No Goroutines Running Now...")
-      return
-    endif
-
-    for l:idx in range(len(l:goroutines))
-      let l:goroutine = l:goroutines[l:idx]
-      if l:goroutine.id == l:currentGoroutineId
-        call go#util#EchoInfo("* Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " . l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")")
-      else
-        call go#util#EchoInfo("  Goroutine " . l:goroutine.id . " - " . l:goroutine.userCurrentLoc.file . ":" . l:goroutine.userCurrentLoc.line .  " " . l:goroutine.userCurrentLoc.function.name . " " . " (thread: " . l:goroutine.threadID . ")")
-      endif
-    endfor
-
-    catch
-      call go#util#EchoError(v:exception)
-    endtry
-endfunction
-
 " Change Goroutine
-function! go#debug#Goroutine(goroutineId) abort
-  let l:goroutineId = a:goroutineId
+function! go#debug#Goroutine() abort
+  let l:goroutineId = split(getline('.'), " ")[1]
   try
     let l:res = s:call_jsonrpc('RPCServer.Command', {'Name': 'switchGoroutine', 'GoroutineID': str2nr(l:goroutineId)})
     call s:stack_cb(l:res)
