@@ -119,6 +119,8 @@ BUG FIXES:
   [[GH-2442]](https://github.com/fatih/vim-go/pull/2442)
 * Fix `go-debug-stepout` mapping.
   [[GH-2464]](https://github.com/fatih/vim-go/pull/2464)
+* Handle paths with spaces correctly when executing jobs.
+  [[GH-2472]](https://github.com/fatih/vim-go/pull/2472)
 
 ## 1.20 - (April 22, 2019)
 
