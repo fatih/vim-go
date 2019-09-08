@@ -61,6 +61,8 @@ IMPROVEMENTS:
   [[GH-2457]](https://github.com/fatih/vim-go/pull/2457)
 * Highlight `%w` as a format specifier (for Go 1.13).
   [[GH-2433]](https://github.com/fatih/vim-go/pull/2433)
+* Handle changes to Go 1.13's go vet output that gometalinter isn't expecting.
+  [[GH-2475]](https://github.com/fatih/vim-go/pull/2475)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
