@@ -36,7 +36,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
       " Include only messages for the active buffer for autosave.
       let include = [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
       if go#util#has_job()
-        let include = [printf('--include=^%s:.*$', expand('%:p:t'))]
+        let include = [printf('--include=^(vet: \.[\\/])?%s:.*$', expand('%:p:t'))]
       endif
       let cmd += include
     elseif l:metalinter == "golangci-lint"
@@ -232,6 +232,9 @@ function! s:lint_job(args, bang, autosave)
 
   if a:autosave
     let l:opts.for = "GoMetaLinterAutoSave"
+    " s:metalinterautosavecomplete is really only needed for golangci-lint,
+    " but s:lint_job doesn't know whether golangci-lint is being called or
+    " whether gometalinter is being called, so hook it up in either case.
     let l:opts.complete = funcref('s:metalinterautosavecomplete', [expand('%:p:t')])
   endif
 
@@ -287,10 +290,14 @@ function! s:metalinterautosavecomplete(filepath, job, exit_code, messages)
     return
   endif
 
-  let l:file = expand('%:p:t')
   let l:idx = len(a:messages) - 1
   while l:idx >= 0
-    if a:messages[l:idx] !~# '^' . a:filepath . ':'
+    " Go 1.13 changed how go vet output is formatted by prepending a leading
+    " 'vet :', so account for that, too. This function is really needed for
+    " gometalinter at all, so the check for Go 1.13's go vet output shouldn't
+    " be neeeded, but s:lint_job hooks this up even when the
+    " g:go_metalinter_command is golangci-lint.
+    if a:messages[l:idx] !~# '^' . a:filepath . ':' && a:messages[l:idx] !~# '^vet: \.[\\/]' . a:filepath . ':'
       call remove(a:messages, l:idx)
     endif
     let l:idx -= 1
