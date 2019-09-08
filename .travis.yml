@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.12.1
+  - 1.13
 notifications:
   email: false
 matrix:
