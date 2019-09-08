@@ -125,6 +125,9 @@ BUG FIXES:
   [[GH-2464]](https://github.com/fatih/vim-go/pull/2464)
 * Handle paths with spaces correctly when executing jobs.
   [[GH-2472]](https://github.com/fatih/vim-go/pull/2472)
+* Remove a space in the default value for `g:go_debug_log_output`, so that
+  Delve will start on Windows.
+  [[GH-2480]](https://github.com/fatih/vim-go/pull/2480)
 
 ## 1.20 - (April 22, 2019)
 
