@@ -65,6 +65,8 @@ IMPROVEMENTS:
   [[GH-2475]](https://github.com/fatih/vim-go/pull/2475)
 * Make `golangci-lint` the default value for `g:go_metalinter_command`.
   [[GH-2478]](https://github.com/fatih/vim-go/pull/2478)
+* Parse compiler errors from Go 1.13 `go vet` correctly.
+  [[GH-2485]](https://github.com/fatih/vim-go/pull/2485)
 
 BUG FIXES:
 * display info about function and function types whose parameters are
