@@ -149,11 +149,11 @@ function! go#lint#Vet(bang, ...) abort
   let l:listtype = go#list#Type("GoVet")
   if l:err != 0
     let l:winid = win_getid(winnr())
-    let errorformat = "%-Gexit status %\\d%\\+," . &errorformat
+    let l:errorformat = "%-Gexit status %\\d%\\+," . &errorformat
     call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet")
-    let errors = go#list#Get(l:listtype)
-    call go#list#Window(l:listtype, len(errors))
-    if !empty(errors) && !a:bang
+    let l:errors = go#list#Get(l:listtype)
+    call go#list#Window(l:listtype, len(l:errors))
+    if !empty(l:errors) && !a:bang
       call go#list#JumpToFirst(l:listtype)
     else
       call win_gotoid(l:winid)
