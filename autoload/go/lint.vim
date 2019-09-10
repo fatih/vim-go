@@ -143,7 +143,7 @@ function! go#lint#Vet(bang, ...) abort
   if a:0 == 0
     let [l:out, l:err] = go#util#Exec(['go', 'vet', go#package#ImportPath()])
   else
-    let [l:out, l:err] = go#util#ExecInDir(['go', 'tool', 'vet'] + a:000)
+    let [l:out, l:err] = go#util#Exec(['go', 'vet'] + a:000 + [go#package#ImportPath()])
   endif
 
   let l:listtype = go#list#Type("GoVet")
