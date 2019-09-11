@@ -61,7 +61,7 @@ function! go#job#Options(args)
   let state = {
         \ 'winid': win_getid(winnr()),
         \ 'dir': getcwd(),
-        \ 'jobdir': fnameescape(expand("%:p:h")),
+        \ 'jobdir': expand("%:p:h"),
         \ 'messages': [],
         \ 'bang': 0,
         \ 'for': "_job",
@@ -195,7 +195,7 @@ function! go#job#Options(args)
     let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
     try
       " parse the errors relative to self.jobdir
-      execute l:cd self.jobdir
+      execute l:cd fnameescape(self.jobdir)
       call go#list#ParseFormat(l:listtype, self.errorformat, out, self.for)
       let errors = go#list#Get(l:listtype)
     finally

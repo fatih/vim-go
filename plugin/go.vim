@@ -56,7 +56,7 @@ let s:packages = {
       \ 'gogetdoc':      ['github.com/zmb3/gogetdoc'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports'],
       \ 'golint':        ['golang.org/x/lint/golint'],
-      \ 'gopls':         ['golang.org/x/tools/gopls@latest'],
+      \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
       \ 'gometalinter':  ['github.com/alecthomas/gometalinter'],
       \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags'],
@@ -136,29 +136,32 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     let l:platform = 'windows'
   endif
 
-  for [binary, pkg] in items(l:packages)
-    let l:importPath = pkg[0]
+  let l:oldmore = &more
+  let &more = 0
+
+  for [l:binary, l:pkg] in items(l:packages)
+    let l:importPath = l:pkg[0]
 
     " TODO(bc): how to support this with modules? Do we have to clone and then
     " install manually? Probably not. I suspect that we can just use GOPATH
     " mode and then do the legacy method.
-    let bin_setting_name = "go_" . binary . "_bin"
+    let bin_setting_name = "go_" . l:binary . "_bin"
 
     if exists("g:{bin_setting_name}")
       let bin = g:{bin_setting_name}
     else
       if go#util#IsWin()
-        let bin = binary . '.exe'
+        let bin = l:binary . '.exe'
       else
-        let bin = binary
+        let bin = l:binary
       endif
     endif
 
     if !executable(bin) || a:updateBinaries == 1
       if a:updateBinaries == 1
-        echo "vim-go: Updating " . binary . ". Reinstalling ". importPath . " to folder " . go_bin_path
+        echo "vim-go: Updating " . l:binary . ". Reinstalling ". importPath . " to folder " . go_bin_path
       else
-        echo "vim-go: ". binary ." not found. Installing ". importPath . " to folder " . go_bin_path
+        echo "vim-go: ". l:binary ." not found. Installing ". importPath . " to folder " . go_bin_path
       endif
 
       if l:importPath =~ "@"
@@ -208,9 +211,13 @@ function! s:GoInstallBinaries(updateBinaries, ...)
           echom "Error installing " . l:importPath . ": " . l:out
         endif
 
+
         call call(Restore_modules, [])
       endif
 
+      if len(l:pkg) > 2
+        call call(get(l:pkg[2], 'after', function('s:noop', [])), [])
+      endif
     endif
   endfor
 
@@ -226,6 +233,8 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   else
     call go#util#EchoInfo('installing finished!')
   endif
+
+  let &more = l:oldmore
 endfunction
 
 " CheckBinaries checks if the necessary binaries to install the Go tool

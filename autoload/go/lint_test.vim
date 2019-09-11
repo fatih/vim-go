@@ -122,6 +122,35 @@ func! Test_Vet() abort
   endtry
 endfunc
 
+func! Test_Vet_compilererror() abort
+  let l:tmp = gotest#load_fixture('lint/src/vet/compilererror/compilererror.go')
+
+  try
+
+    let expected = [
+          \ {'lnum': 6, 'bufnr': bufnr('%'), 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': "missing ',' before newline in argument list (and 1 more errors)"}
+        \ ]
+
+    let winnr = winnr()
+
+    " clear the location lists
+    call setqflist([], 'r')
+
+    call go#lint#Vet(1)
+
+    let actual = getqflist()
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getqflist()
+    endwhile
+
+    call gotest#assert_quickfix(actual, expected)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 func! Test_Lint_GOPATH() abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
 

@@ -7,7 +7,7 @@ scriptencoding utf-8
 let s:lspfactory = {}
 
 function! s:lspfactory.get() dict abort
-  if !has_key(self, 'current') || empty(self.current) || !has_key(self.current, 'job') || empty(self.current.job)
+  if empty(get(self, 'current', {})) || empty(get(self.current, 'job', {}))
     let self.current = s:newlsp()
   endif
 
@@ -135,6 +135,10 @@ function! s:newlsp() abort
     elseif a:req.method == 'client/registerCapability' && has_key(a:req, 'params') && has_key(a:req.params, 'registrations')
       let l:resp = v:null
     else
+      return
+    endif
+
+    if get(self, 'exited', 0)
       return
     endif
 
@@ -305,13 +309,31 @@ function! s:newlsp() abort
     call ch_sendraw(self.job, l:data)
   endfunction
 
-  function! l:lsp.exit_cb(job, exit_status) dict abort
+  function! l:lsp.exit_cb(job, exit_status) dict
+    let self.exited = 1
+    if !get(self, 'restarting', 0)
+      return
+    endif
+
+    let l:queue = self.queue
+
+    let l:workspaces = self.workspaceDirectories
+
     call s:lspfactory.reset()
+    let l:lsp = s:lspfactory.get()
+
+    " restore workspaces
+    call call('go#lsp#AddWorkspaceDirectory', l:workspaces)
+    " * send DidOpen messages for all buffers that have b:did_lsp_open set
+    " TODO(bc): check modifiable and filetype, too?
+    bufdo if get(b:, 'go_lsp_did_open', 0) | if &modified | call go#lsp#DidOpen(expand('%:p')) | else | call go#lsp#DidChange(expand('%:p')) | endif | endif
+    let l:lsp.queue = extend(l:lsp.queue, l:queue)
+    return
   endfunction
-  " explicitly bind close_cb to state so that within it, self will always refer
 
   function! l:lsp.close_cb(ch) dict abort
-    " TODO(bc): does anything need to be done here?
+    " TODO(bc): remove the buffer variables that indicate that gopls has been
+    " informed that the file is open
   endfunction
 
   function! l:lsp.err_cb(ch, msg) dict abort
@@ -765,6 +787,27 @@ function! go#lsp#DebugBrowser() abort
   endif
 
   call go#util#OpenBrowser(printf('http://localhost:%d', l:port))
+endfunction
+
+function! go#lsp#Restart() abort
+  if !go#util#has_job() || len(s:lspfactory) == 0 || !has_key(s:lspfactory, 'current')
+    return
+  endif
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:lsp.restarting = 1
+
+  let l:state = s:newHandlerState('exit')
+
+  let l:msg = go#lsp#message#Shutdown()
+  let l:state.handleResult = funcref('s:noop')
+  let l:retval = l:lsp.sendMessage(l:msg, l:state)
+
+  let l:msg = go#lsp#message#Exit()
+  let l:retval = l:lsp.sendMessage(l:msg, l:state)
+
+  return l:retval
 endfunction
 
 function! s:debug(event, data) abort

@@ -249,9 +249,7 @@ COMMANDS                                                         *go-commands*
     not guarantee all reports are genuine problems, but it can find errors not
     caught by the compilers.
 
-    You may optionally pass any valid go tool vet flags/options. In this case,
-    `go tool vet` is run in place of `go vet`. For a full list please see
-    `go tool vet -h`.
+    You may optionally pass any valid go vet flags/options.
 
     If [!] is not given the first error is jumped to.
 
@@ -2199,12 +2197,11 @@ Defaults to `127.0.0.1:8181`:
 
                                                      *'g:go_debug_log_output'*
 
-Specifies log output options for `dlv`. Value should be a single string
-of comma-separated options suitable for passing to `dlv`.  An empty string
-(`''`) will suppress logging entirely.
-Default: `'debugger, rpc'`:
+Specifies log output options for `dlv`. Value should be a single string of
+comma-separated options suitable for passing to `dlv`.  An empty string (`''`)
+will suppress logging entirely.  Default: `'debugger,rpc'`:
 >
-  let g:go_debug_log = 'debugger, rpc'
+  let g:go_debug_log = 'debugger,rpc'
 <
 
                                                      *'g:go_highlight_debug'*
