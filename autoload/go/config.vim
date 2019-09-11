@@ -205,10 +205,10 @@ endfunction
 
 function! go#config#DebugWindows() abort
   return get(g:, 'go_debug_windows', {
-            \ 'goroutines':  'split 60vnew',
-            \ 'out':   'botright 100new',
-            \ 'vars':  'leftabove 40vnew',
-            \ 'stack': 'leftabove 40vnew',
+            \ 'vars':  'leftabove 30vnew',
+            \ 'stack': 'leftabove 20new',
+            \ 'goroutines': 'botright 10new',
+            \ 'out':        'botright 5new',
             \ }
          \ )
 
