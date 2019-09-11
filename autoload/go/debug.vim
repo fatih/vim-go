@@ -504,7 +504,7 @@ endfunction
 
 function! s:err_cb(ch, msg) abort
   if get(s:state, 'ready', 0) != 0
-    call call('s:logger', ['ERR: ', a:ch, a:msg])
+    call s:logger('ERR: ', a:ch, a:msg)
     return
   endif
 
@@ -513,7 +513,7 @@ endfunction
 
 function! s:out_cb(ch, msg) abort
   if get(s:state, 'ready', 0) != 0
-    call call('s:logger', ['OUT: ', a:ch, a:msg])
+    call s:logger('OUT: ', a:ch, a:msg)
     return
   endif
 
