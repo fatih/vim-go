@@ -1,5 +1,7 @@
 ## unplanned
 
+## v1.21
+
 BACKWARDS INCOMPATABILITIES:
 * `g:go_metalinter_disabled` has been removed.
   [[GH-2375]](https://github.com/fatih/vim-go/pull/2117)
