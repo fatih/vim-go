@@ -1,6 +1,6 @@
 ## unplanned
 
-## v1.21
+## v1.21 - (September 11, 2019)
 
 BACKWARDS INCOMPATABILITIES:
 * `g:go_metalinter_disabled` has been removed.
