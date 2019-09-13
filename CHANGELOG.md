@@ -4,7 +4,7 @@
 
 BACKWARDS INCOMPATABILITIES:
 * `g:go_metalinter_disabled` has been removed.
-  [[GH-2375]](https://github.com/fatih/vim-go/pull/2117)
+  [[GH-2375]](https://github.com/fatih/vim-go/pull/2375)
 
 IMPROVEMENTS:
 * Add a new option, `g:go_code_completion_enabled`, to control whether omnifunc
