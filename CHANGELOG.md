@@ -1,5 +1,9 @@
 ## unplanned
 
+IMPROVEMENTS:
+* Highlight the `go` keyword in go.mod files.
+  [[GH-2473]](https://github.com/fatih/vim-go/pull/2473)
+
 ## v1.21 - (September 11, 2019)
 
 BACKWARDS INCOMPATABILITIES:
