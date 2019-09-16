@@ -2,10 +2,6 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-func! Test_Gometa() abort
-  call s:gometa('gometalinter')
-endfunc
-
 func! Test_GometaGolangciLint() abort
   call s:gometa('golangci-lint')
 endfunc
@@ -44,10 +40,6 @@ func! s:gometa(metalinter) abort
       call call(RestoreGOPATH, [])
       unlet g:go_metalinter_enabled
   endtry
-endfunc
-
-func! Test_GometaAutoSave() abort
-  call s:gometaautosave('gometalinter')
 endfunc
 
 func! Test_GometaAutoSaveGolangciLint() abort

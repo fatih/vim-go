@@ -57,7 +57,6 @@ let s:packages = {
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports'],
       \ 'golint':        ['golang.org/x/lint/golint'],
       \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
-      \ 'gometalinter':  ['github.com/alecthomas/gometalinter'],
       \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename'],
@@ -192,6 +191,8 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         endif
 
         " GO111MODULE must be off to install gometalinter.
+        " TODO: determine if this line is still needed now that gometalinter
+        " has been depreciated
         let Restore_modules = go#util#SetEnv('GO111MODULE', 'off')
 
         " first download the binary
