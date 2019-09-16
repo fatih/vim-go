@@ -232,14 +232,6 @@ function! go#guru#Describe(selected) abort
 endfunction
 
 function! go#guru#DescribeInfo(showstatus) abort
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131
-  if !exists("*json_decode")
-    call go#util#EchoError("requires 'json_decode'. Update your Vim/Neovim version.")
-    return
-  endif
-
   let args = {
         \ 'mode': 'describe',
         \ 'format': 'json',
@@ -416,21 +408,6 @@ function! go#guru#Referrers(selected) abort
 endfunction
 
 function! go#guru#SameIds(showstatus) abort
-  " we use matchaddpos() which was introduce with 7.4.330, be sure we have
-  " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
-  if !exists("*matchaddpos")
-    call go#util#EchoError("GoSameIds requires 'matchaddpos'. Update your Vim/Neovim version.")
-    return
-  endif
-
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131
-  if !exists("*json_decode")
-    call go#util#EchoError("GoSameIds requires 'json_decode'. Update your Vim/Neovim version.")
-    return
-  endif
-
   let args = {
         \ 'mode': 'what',
         \ 'format': 'json',
@@ -599,14 +576,6 @@ endfunction
 function! go#guru#DescribeBalloon() abort
   " don't even try if async isn't available.
   if !go#util#has_job()
-    return
-  endif
-
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131
-  if !exists("*json_decode")
-    call go#util#EchoError("requires 'json_decode'. Update your Vim/Neovim version.")
     return
   endif
 

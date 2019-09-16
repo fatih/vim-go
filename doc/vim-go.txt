@@ -77,7 +77,7 @@ experience.
 ==============================================================================
 INSTALL                                                           *go-install*
 
-vim-go requires at least Vim 7.4.2009 or Neovim 0.3.1. On macOS, if you are
+vim-go requires at least Vim 8.0.1542 or Neovim 0.3.2. On macOS, if you are
 still using your system version of vim, you can use homebrew to keep your
 version of Vim up-to-date with the following terminal command:
 >
@@ -1202,7 +1202,7 @@ for Vim8 and Neovim.
                                                 *go#complete#GocodeComplete()*
 
 Uses `gocode` for autocompletion. By default, it is hooked up to |'omnifunc'|
-for Vim 7.4.
+for Vim 8+.
 
                                                    *go#tool#DescribeBalloon()*
 
@@ -2427,7 +2427,7 @@ To run tests vim-go comes with three small helper scripts:
   `scripts/test`          Run all tests with a Vim from `/tmp/vim-go-test/`.
 
 All scripts accept a Vim version as the first argument, which can be
-`vim-7.4`, `vim-8.0`, or `nvim`. You will need to install a Vim version with
+`vim-8.0` or `nvim`. You will need to install a Vim version with
 `install-vim` before you can use `run-vim` or `test`.
 
 You can install and test all Vim versions by running `make`.
