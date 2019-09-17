@@ -65,7 +65,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   if l:err == 0
     call go#list#Clean(l:listtype)
-    echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
+    call go#util#EchoSuccess('[metalinter] PASS')
   else
     let l:winid = win_getid(winnr())
     " Parse and populate our location list

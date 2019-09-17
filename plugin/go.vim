@@ -81,9 +81,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   endif
 
   if go#path#Default() == ""
-    echohl Error
-    echomsg "vim.go: $GOPATH is not set and 'go env GOPATH' returns empty"
-    echohl None
+    call go#util#EchoError('$GOPATH is not set and `go env GOPATH` returns empty')
     return
   endif
 
@@ -167,7 +165,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
           " first download the binary
           let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
           if l:err
-            echom "Error installing " . l:importPath . ": " . l:out
+            call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
           endif
 
           call call(Restore_modules, [])
@@ -187,7 +185,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         " first download the binary
         let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
         if l:err
-          echom "Error downloading " . l:importPath . ": " . l:out
+          call go#util#EchoError(printf('Error downloading %s: %s', l:importPath, l:out))
         endif
 
         " and then build and install it
@@ -198,7 +196,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
         let [l:out, l:err] = go#util#Exec(l:build_cmd)
         if l:err
-          echom "Error installing " . l:importPath . ": " . l:out
+          call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
         endif
 
 
@@ -231,12 +229,12 @@ endfunction
 " commands are available.
 function! s:CheckBinaries()
   if !executable('go')
-    echohl Error | echomsg "vim-go: go executable not found." | echohl None
+    call go#util#EchoError('go executable not found.')
     return -1
   endif
 
   if !executable('git')
-    echohl Error | echomsg "vim-go: git executable not found." | echohl None
+    call go#util#EchoError('git executable not found.')
     return -1
   endif
 endfunction
