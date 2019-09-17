@@ -1,8 +1,18 @@
 ## unplanned
 
+BACKWARDS INCOMPATABILITIES:
+* Drop support for Vim 7.4
+  [[GH-2495]](https://github.com/fatih/vim-go/pull/2495)
+* Drop support for `gometalinter`
+  [[GH-2494]](https://github.com/fatih/vim-go/pull/2494)
+
 IMPROVEMENTS:
 * Highlight the `go` keyword in go.mod files.
   [[GH-2473]](https://github.com/fatih/vim-go/pull/2473)
+* Use echo functions consistently.
+  [[GH-2458]](https://github.com/fatih/vim-go/pull/2458)
+* Add support for managing goroutines in debugger.
+  [[GH-2463]](https://github.com/fatih/vim-go/pull/2463)
 
 ## v1.21 - (September 11, 2019)
 
