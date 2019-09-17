@@ -232,6 +232,13 @@ function! go#guru#Describe(selected) abort
 endfunction
 
 function! go#guru#DescribeInfo(showstatus) abort
+
+  " check if the version of Vim being tested supports json_decode()
+  if !exists("*json_decode")
+    call go#util#EchoError("GoDescribeInfo requires 'json_decode'. Update your Vim/Neovim version.")
+    return
+  endif
+
   let args = {
         \ 'mode': 'describe',
         \ 'format': 'json',
@@ -408,6 +415,19 @@ function! go#guru#Referrers(selected) abort
 endfunction
 
 function! go#guru#SameIds(showstatus) abort
+
+  " check if the version of Vim being tested supports matchaddpos()
+  if !exists("*matchaddpos")
+    call go#util#EchoError("GoSameIds requires 'matchaddpos'. Update your Vim/Neovim version.")
+    return
+  endif
+
+  " check if the version of Vim being tested supports json_decode()
+  if !exists("*json_decode")
+    call go#util#EchoError("GoSameIds requires 'json_decode'. Update your Vim/Neovim version.")
+    return
+  endif
+
   let args = {
         \ 'mode': 'what',
         \ 'format': 'json',
@@ -576,6 +596,12 @@ endfunction
 function! go#guru#DescribeBalloon() abort
   " don't even try if async isn't available.
   if !go#util#has_job()
+    return
+  endif
+
+  " check if the version of Vim being tested supports json_decode()
+  if !exists("*json_decode")
+    call go#util#EchoError("GoDescribeBalloon requires 'json_decode'. Update your Vim/Neovim version.")
     return
   endif
 

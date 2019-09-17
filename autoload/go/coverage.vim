@@ -26,6 +26,12 @@ endfunction
 " coverage.
 function! go#coverage#Buffer(bang, ...) abort
 
+  " check if the version of Vim being tested supports matchaddpos()
+  if !exists("*matchaddpos")
+    call go#util#EchoError("GoCoverage is not supported by your version of Vim.")
+    return -1
+  endif
+
   " check if there is any test file, if not we just return
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
