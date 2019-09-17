@@ -51,7 +51,7 @@ experience.
   * Precise type-safe renaming of identifiers with |:GoRename|.
   * See which code is covered by tests with |:GoCoverage|.
   * Add or remove tags on struct fields with |:GoAddTags| and |:GoRemoveTags|.
-  * Call `gometalinter` with |:GoMetaLinter| to invoke all possible linters
+  * Call `golangci-lint` with |:GoMetaLinter| to invoke all possible linters
     (`golint`, `vet`, `errcheck`, `deadcode`, etc.) and put the result in the
     quickfix or location list.
   * Lint your code with |:GoLint|, run your code through |:GoVet| to catch
@@ -652,7 +652,7 @@ CTRL-t
                                                                *:GoMetaLinter*
 :GoMetaLinter! [path]
 
-    Calls the underlying `gometalinter` tool and displays all warnings and
+    Calls the underlying `golangci-lint` tool and displays all warnings and
     errors in the |quickfix| window. By default the following linters are
     enabled: `vet`, `golint`, and `errcheck`. This can be changed with the
     |'g:go_metalinter_enabled'| variable. To override the command completely
@@ -833,7 +833,7 @@ CTRL-t
 
     Toggles |'g:go_metalinter_autosave'|.
 
-    By default, `gometalinter` messages will be shown in the |location-list|
+    By default, `golangci-lint` messages will be shown in the |location-list|
     window. The list to use can be set using |'g:go_list_type_commands'|.
 
                                                  *:GoTemplateAutoCreateToggle*
@@ -1512,7 +1512,7 @@ function when using the `af` text object. By default it's enabled. >
 Use this option to auto |:GoMetaLinter| on save. Only linter messages for
 the active buffer will be shown.
 
-By default, `gometalinter` messages will be shown in the |location-list|
+By default, `golangci-lint` messages will be shown in the |location-list|
 window. The list to use can be set using |'g:go_list_type_commands'|.
 
  By default it's disabled >
@@ -1541,12 +1541,11 @@ it's empty
 <
                                                    *'g:go_metalinter_command'*
 
-Overrides the command to be executed when |:GoMetaLinter| is called.  By
-default it's `gometalinter`. `golangci-lint` is also supported. It can also be
-used as an advanced setting for users who want to have more control over
-the metalinter.
+Overrides the command to be executed when |:GoMetaLinter| is called. By
+default it's `golangci-lint`. It can also be used as an advanced setting
+for users who want to have more control over the metalinter.
 >
-  let g:go_metalinter_command = "gometalinter"
+  let g:go_metalinter_command = "golangci-lint"
 <
                                                   *'g:go_metalinter_deadline'*
 
@@ -2351,9 +2350,9 @@ while saving and opening files. The following fixes this:
  let g:syntastic_go_checkers = ['golint', 'govet']
  let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 <
-If you want to add errcheck you can use gometalinter as a wrapper
+If you want to add errcheck you can use golangci-lint as a wrapper:
 >
- let g:syntastic_go_checkers = ['golint', 'govet', 'gometalinter']
+ let g:syntastic_go_checkers = ['golint', 'govet', 'golangci-lint']
  let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
  let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 <

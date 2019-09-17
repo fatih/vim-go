@@ -2,10 +2,6 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-func! Test_Gometa() abort
-  call s:gometa('gometalinter')
-endfunc
-
 func! Test_GometaGolangciLint() abort
   call s:gometa('golangci-lint')
 endfunc
@@ -21,7 +17,7 @@ func! s:gometa(metalinter) abort
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
-            \ {'lnum': 5, 'bufnr': bufnr('%')+1, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
+            \ {'lnum': 5, 'bufnr': bufnr('%')+2, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
           \ ]
     endif
 
@@ -44,10 +40,6 @@ func! s:gometa(metalinter) abort
       call call(RestoreGOPATH, [])
       unlet g:go_metalinter_enabled
   endtry
-endfunc
-
-func! Test_GometaAutoSave() abort
-  call s:gometaautosave('gometalinter')
 endfunc
 
 func! Test_GometaAutoSaveGolangciLint() abort
