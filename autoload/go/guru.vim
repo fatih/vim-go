@@ -232,11 +232,10 @@ function! go#guru#Describe(selected) abort
 endfunction
 
 function! go#guru#DescribeInfo(showstatus) abort
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131
+
+  " check if the version of Vim being tested supports json_decode()
   if !exists("*json_decode")
-    call go#util#EchoError("requires 'json_decode'. Update your Vim/Neovim version.")
+    call go#util#EchoError("GoDescribeInfo requires 'json_decode'. Update your Vim/Neovim version.")
     return
   endif
 
@@ -416,16 +415,14 @@ function! go#guru#Referrers(selected) abort
 endfunction
 
 function! go#guru#SameIds(showstatus) abort
-  " we use matchaddpos() which was introduce with 7.4.330, be sure we have
-  " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
+
+  " check if the version of Vim being tested supports matchaddpos()
   if !exists("*matchaddpos")
     call go#util#EchoError("GoSameIds requires 'matchaddpos'. Update your Vim/Neovim version.")
     return
   endif
 
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131
+  " check if the version of Vim being tested supports json_decode()
   if !exists("*json_decode")
     call go#util#EchoError("GoSameIds requires 'json_decode'. Update your Vim/Neovim version.")
     return
@@ -602,11 +599,9 @@ function! go#guru#DescribeBalloon() abort
     return
   endif
 
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131
+  " check if the version of Vim being tested supports json_decode()
   if !exists("*json_decode")
-    call go#util#EchoError("requires 'json_decode'. Update your Vim/Neovim version.")
+    call go#util#EchoError("GoDescribeBalloon requires 'json_decode'. Update your Vim/Neovim version.")
     return
   endif
 

@@ -32,7 +32,7 @@ function! go#cmd#Build(bang, ...) abort
         \ map(copy(a:000), "expand(v:val)") +
         \ [".", "errors"]
 
-  " Vim and Neovim async.
+  " Vim and Neovim async
   if go#util#has_job()
     call s:cmd_job({
           \ 'cmd': ['go'] + args,
@@ -41,7 +41,7 @@ function! go#cmd#Build(bang, ...) abort
           \ 'statustype': 'build'
           \})
 
-  " Vim 7.4 without async
+  " Vim without async
   else
     let default_makeprg = &makeprg
     let &makeprg = "go " . join(go#util#Shelllist(args), ' ')
@@ -72,6 +72,7 @@ function! go#cmd#Build(bang, ...) abort
       call go#util#EchoSuccess("[build] SUCCESS")
     endif
   endif
+
 endfunction
 
 
