@@ -190,9 +190,6 @@ function! s:GoInstallBinaries(updateBinaries, ...)
           let l:get_cmd += ['-u']
         endif
 
-        " GO111MODULE must be off to install gometalinter.
-        " TODO: determine if this line is still needed now that gometalinter
-        " has been depreciated
         let Restore_modules = go#util#SetEnv('GO111MODULE', 'off')
 
         " first download the binary
