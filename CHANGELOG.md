@@ -1,8 +1,9 @@
 ## unplanned
 
 BACKWARDS INCOMPATABILITIES:
-* Drop support for Vim 7.4
+* Drop support for Vim 7.4. The minimu required version of Vim is now 8.0.1453.
   [[GH-2495]](https://github.com/fatih/vim-go/pull/2495)
+  [[GH-2497]](https://github.com/fatih/vim-go/pull/2497)
 * Drop support for `gometalinter`
   [[GH-2494]](https://github.com/fatih/vim-go/pull/2494)
 
