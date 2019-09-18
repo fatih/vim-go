@@ -72,9 +72,7 @@ function! go#job#Options(args)
         \ 'statustype' : ''
       \ }
 
-  if has("patch-8.0.0902") || has('nvim')
-    let cbs.cwd = state.jobdir
-  endif
+  let cbs.cwd = state.jobdir
 
   if has_key(a:args, 'bang')
     let state.bang = a:args.bang
@@ -295,11 +293,6 @@ function! go#job#Start(cmd, options)
     let l:manualcd = 1
     let dir = getcwd()
     execute l:cd fnameescape(filedir)
-  elseif !(has("patch-8.0.0902") || has('nvim'))
-    let l:manualcd = 1
-    let l:dir = l:options.cwd
-    execute l:cd fnameescape(l:dir)
-    call remove(l:options, 'cwd')
   endif
 
   if has_key(l:options, '_start')

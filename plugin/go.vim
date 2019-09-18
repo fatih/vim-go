@@ -14,17 +14,17 @@ function! s:checkVersion() abort
     if has('nvim')
       let l:unsupported = !has('nvim-0.3.2')
     else
-      let l:unsupported = v:version < 800
+      let l:unsupported = !has('patch-8.0.1453')
     endif
 
     if l:unsupported == 1
       echohl Error
-      echom "vim-go requires Vim 8+ or Neovim 0.3.2, but you're using an older version."
+      echom "vim-go requires at least Vim 8.0.1453 or Neovim 0.3.2, but you're using an older version."
       echom "Please update your Vim for the best vim-go experience."
       echom "If you really want to continue you can set this to make the error go away:"
       echom "    let g:go_version_warning = 0"
       echom "Note that some features may error out or behave incorrectly."
-      echom "Please do not report bugs unless you're using Vim 8+ or Neovim 0.3.2."
+      echom "Please do not report bugs unless you're using at least Vim 8.0.1453 or Neovim 0.3.2."
       echohl None
 
       " Make sure people see this.
