@@ -50,6 +50,23 @@ func! Test_goimports() abort
   call assert_equal(expected, actual)
 endfunc
 
+func! Test_run_gopls() abort
+  " unlike gofmt or goimports, in gopls the temporary file used here in
+  " must end with a .go suffix otherwise it will throw an error message
+  let actual_file = tempname() . ".go"
+  call writefile(readfile("test-fixtures/fmt/gopls/gopls.go"), actual_file)
+
+  let expected = join(readfile("test-fixtures/fmt/gopls/gopls_golden.go"), "\n")
+
+  " run our code
+  call go#fmt#run("gopls", actual_file, "test-fixtures/fmt/gopls/gopls.go")
+
+  " this should now contain the formatted code
+  let actual = join(readfile(actual_file), "\n")
+
+  call assert_equal(expected, actual)
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

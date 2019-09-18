@@ -3,7 +3,7 @@
 " license that can be found in the LICENSE file.
 "
 " fmt.vim: Vim command to format Go files with gofmt (and gofmt compatible
-" toorls, such as goimports).
+" tools, such as goimports).
 
 " don't spam the user when Vim is started in Vi compatibility mode
 let s:cpo_save = &cpo
@@ -144,7 +144,14 @@ endfunction
 
 " fmt_cmd returns the command to run as a list.
 function! s:fmt_cmd(bin_name, source, target)
-  let l:cmd = [a:bin_name, '-w']
+
+  " if gopls then syntax is: gopls format -w /path/to/file.go,
+  " else for gofmt and goimports, simply add a -w flag
+  if a:bin_name is# 'gopls'
+    let l:cmd = [a:bin_name, 'format', '-w']
+  else
+    let l:cmd = [a:bin_name, '-w']
+  endif
 
   " add the options for binary (if any). go_fmt_options was by default of type
   " string, however to allow customization it's now a dictionary of binary
