@@ -1388,6 +1388,14 @@ a private internal service. Default is 'https://godoc.org'.
   let g:go_doc_url = 'https://godoc.org'
 <
 
+                                                     *'g:go_doc_popup_window'*
+
+Use this option to use the popup-window for |K| and |:GoDoc|, rather than the
+|preview-window|. Default is disabled.
+>
+  let g:go_doc_popup_window = 0
+<
+
                                                              *'g:go_def_mode'*
 
 Use this option to define the command to be used for |:GoDef|. By default
