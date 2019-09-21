@@ -74,6 +74,7 @@ func! Test_SetBuildTags() abort
     let l:lsplog = getbufline('__GOLSP_LOG__', 1, '$')
 
   finally
+    call go#config#SetBuildTags('')
     unlet g:go_def_mode
   endtry
 endfunc
