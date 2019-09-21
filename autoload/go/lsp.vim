@@ -746,12 +746,16 @@ function! go#lsp#CleanWorkspaces() abort
   let l:missing = []
   for l:dir in l:lsp.workspaceDirectories
     if !isdirectory(l:dir)
-      let l:dir = add(l:missing, l:dir)
+      let l:missing = add(l:missing, l:dir)
       call remove(l:lsp.workspaceDirectories, l:i)
       continue
     endif
     let l:i += 1
   endfor
+
+  if len(l:missing) == 0
+    return 0
+  endif
 
   let l:state = s:newHandlerState('')
   let l:state.handleResult = funcref('s:noop')
