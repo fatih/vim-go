@@ -15,6 +15,10 @@ IMPROVEMENTS:
 * Add support for managing goroutines in debugger.
   [[GH-2463]](https://github.com/fatih/vim-go/pull/2463)
 
+BUG FIXES:
+* Fix removal of missing directories from gopls workspaces.
+  [[GH-2507]](https://github.com/fatih/vim-go/pull/2507)
+
 ## v1.21 - (September 11, 2019)
 
 BACKWARDS INCOMPATABILITIES:
