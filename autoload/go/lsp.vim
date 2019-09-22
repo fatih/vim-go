@@ -746,12 +746,16 @@ function! go#lsp#CleanWorkspaces() abort
   let l:missing = []
   for l:dir in l:lsp.workspaceDirectories
     if !isdirectory(l:dir)
-      let l:dir = add(l:missing, l:dir)
+      let l:missing = add(l:missing, l:dir)
       call remove(l:lsp.workspaceDirectories, l:i)
       continue
     endif
     let l:i += 1
   endfor
+
+  if len(l:missing) == 0
+    return 0
+  endif
 
   let l:state = s:newHandlerState('')
   let l:state.handleResult = funcref('s:noop')
@@ -789,14 +793,26 @@ function! go#lsp#DebugBrowser() abort
   call go#util#OpenBrowser(printf('http://localhost:%d', l:port))
 endfunction
 
+function! go#lsp#Exit() abort
+  call s:exit(0)
+endfunction
+
 function! go#lsp#Restart() abort
+  call s:exit(1)
+endfunction
+
+function! s:exit(restart) abort
   if !go#util#has_job() || len(s:lspfactory) == 0 || !has_key(s:lspfactory, 'current')
     return
   endif
 
   let l:lsp = s:lspfactory.get()
 
-  let l:lsp.restarting = 1
+  " reset the factory so that future requests don't use the same instance of
+  " gopls.
+  call s:lspfactory.reset()
+
+  let l:lsp.restarting = a:restart
 
   let l:state = s:newHandlerState('exit')
 
