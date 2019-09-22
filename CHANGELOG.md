@@ -18,6 +18,9 @@ IMPROVEMENTS:
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
   [[GH-2507]](https://github.com/fatih/vim-go/pull/2507)
+* Change to original window before trying to change directories when term job
+  ends.
+  [[GH-2508]](https://github.com/fatih/vim-go/pull/2508)
 
 ## v1.21 - (September 11, 2019)
 
