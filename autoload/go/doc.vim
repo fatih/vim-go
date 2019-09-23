@@ -98,6 +98,10 @@ function! s:GodocView(newposition, position, content) abort
         let height += 1
       endfor
       let width += 1 " right margin
+      let max_height = go#config#DocMaxHeight()
+      if height > max_height
+        let height = max_height
+      endif
 
       let buf = nvim_create_buf(v:false, v:true)
       call nvim_buf_set_lines(buf, 0, -1, v:true, lines)
