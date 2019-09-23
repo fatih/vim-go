@@ -14,6 +14,8 @@ IMPROVEMENTS:
   [[GH-2458]](https://github.com/fatih/vim-go/pull/2458)
 * Add support for managing goroutines in debugger.
   [[GH-2463]](https://github.com/fatih/vim-go/pull/2463)
+* Document `g:go_doc_popup_window`.
+  [[GH-2506]](https://github.com/fatih/vim-go/pull/2506)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
