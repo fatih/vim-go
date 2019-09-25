@@ -16,6 +16,8 @@ IMPROVEMENTS:
   [[GH-2463]](https://github.com/fatih/vim-go/pull/2463)
 * Document `g:go_doc_popup_window`.
   [[GH-2506]](https://github.com/fatih/vim-go/pull/2506)
+* Make `g:go_doc_window_popup_window=1` work for Neovim, too.
+  [[GH-2451]](https://github.com/fatih/vim-go/pull/2451)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
