@@ -25,6 +25,8 @@ BUG FIXES:
 * Change to original window before trying to change directories when term job
   ends.
   [[GH-2508]](https://github.com/fatih/vim-go/pull/2508)
+* swallow errors when the hover info cannot be determined
+  [[GH-2515]](https://github.com/fatih/vim-go/pull/2515)
 
 ## v1.21 - (September 11, 2019)
 
