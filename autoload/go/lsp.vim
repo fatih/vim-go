@@ -613,15 +613,19 @@ function! go#lsp#Hover(fname, line, col, handler) abort
 endfunction
 
 function! s:hoverHandler(next, msg) abort dict
-  let l:content = split(a:msg.contents.value, '; ')
-  if len(l:content) > 1
-    let l:curly = stridx(l:content[0], '{')
-    let l:content = extend([l:content[0][0:l:curly]], map(extend([l:content[0][l:curly+1:]], l:content[1:]), '"\t" . v:val'))
-    let l:content[len(l:content)-1] = '}'
-  endif
+  try
+    let l:content = split(a:msg.contents.value, '; ')
+    if len(l:content) > 1
+      let l:curly = stridx(l:content[0], '{')
+      let l:content = extend([l:content[0][0:l:curly]], map(extend([l:content[0][l:curly+1:]], l:content[1:]), '"\t" . v:val'))
+      let l:content[len(l:content)-1] = '}'
+    endif
 
-  let l:args = [l:content]
-  call call(a:next, l:args)
+    let l:args = [l:content]
+    call call(a:next, l:args)
+  catch
+    " TODO(bc): log the message and/or show an error message.
+  endtry
 endfunction
 
 function! go#lsp#Info(showstatus)
