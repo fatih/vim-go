@@ -830,7 +830,7 @@ function! s:exit(restart) abort
   return l:retval
 endfunction
 
-function! s:debug(event, data) abort
+function! s:debugasync(event, data, timer) abort
   if !go#util#HasDebug('lsp')
     return
   endif
@@ -860,6 +860,10 @@ function! s:debug(event, data) abort
   finally
     call win_gotoid(l:winid)
   endtry
+endfunction
+
+function! s:debug(event, data, ...) abort
+  call timer_start(10, function('s:debugasync', [a:event, a:data]))
 endfunction
 
 " restore Vi compatibility settings
