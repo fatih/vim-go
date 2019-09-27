@@ -18,6 +18,7 @@ IMPROVEMENTS:
   [[GH-2506]](https://github.com/fatih/vim-go/pull/2506)
 * Make `g:go_doc_popup_window=1` work for Neovim, too.
   [[GH-2451]](https://github.com/fatih/vim-go/pull/2451)
+  [[GH-2512]](https://github.com/fatih/vim-go/pull/2512)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
@@ -25,8 +26,10 @@ BUG FIXES:
 * Change to original window before trying to change directories when term job
   ends.
   [[GH-2508]](https://github.com/fatih/vim-go/pull/2508)
-* swallow errors when the hover info cannot be determined
+* Swallow errors when the hover info cannot be determined.
   [[GH-2515]](https://github.com/fatih/vim-go/pull/2515)
+* Fix errors when trying to debug lsp and hover.
+  [[GH-2516]](https://github.com/fatih/vim-go/pull/2516)
 
 ## v1.21 - (September 11, 2019)
 
