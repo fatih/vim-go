@@ -546,7 +546,11 @@ function! go#util#SetEnv(name, value) abort
 
   if l:remove
     function! s:remove(name) abort
-      call execute('unlet $' . a:name)
+      try
+        call execute('unlet $' . a:name)
+      catch
+        call go#util#EchoError(printf('could not unset $%s: %s', a:name, v:exception))
+      endtry
     endfunction
     return function('s:remove', [a:name], l:state)
   endif
