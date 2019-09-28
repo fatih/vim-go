@@ -545,13 +545,27 @@ function! go#util#SetEnv(name, value) abort
   call execute('let $' . a:name . " = '" . a:value . "'")
 
   if l:remove
-    function! s:remove(name) abort
-      call execute('unlet $' . a:name)
-    endfunction
-    return function('s:remove', [a:name], l:state)
+    return function('s:unset', [a:name], l:state)
   endif
 
   return function('go#util#SetEnv', [a:name, l:oldvalue], l:state)
+endfunction
+
+function! s:unset(name) abort
+  try
+    " unlet $VAR was introducted in Vim 8.0.1832, which is newer than the
+    " minimal version that vim-go supports. Set the environment variable to
+    " the empty string in that case. It's not perfect, but it will work fine
+    " for most things, and is really the best alternative that's available.
+    if !has('patch-8.0.1832')
+      call go#util#SetEnv(a:name, '')
+      return
+    endif
+
+    call execute('unlet $' . a:name)
+  catch
+    call go#util#EchoError(printf('could not unset $%s: %s', a:name, v:exception))
+  endtry
 endfunction
 
 function! s:noop(...) abort dict
