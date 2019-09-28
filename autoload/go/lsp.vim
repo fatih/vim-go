@@ -601,6 +601,55 @@ function! s:completionErrorHandler(next, error) abort dict
   call call(a:next, [-1, []])
 endfunction
 
+" go#lsp#Type calls gopls to get the type definition of the identifier at
+" line and col in fname. handler should be a dictionary function that takes a
+" list of strings in the form 'file:line:col: message'. handler will be
+" attached to a dictionary that manages state (statuslines, sets the winid,
+" etc.)
+function! go#lsp#SameIDs(showstatus, fname, line, col, handler) abort
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#References(a:fname, a:line, a:col)
+
+  if a:showstatus
+    let l:state = s:newHandlerState('same ids')
+  else
+    let l:state = s:newHandlerState('')
+  endif
+
+  let l:state.handleResult = funcref('s:sameIDsHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:noop')
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:sameIDsHandler(next, msg) abort dict
+  let l:furi = go#path#ToURI(expand('%:p'))
+
+  let l:result = {
+        \ 'sameids': [],
+        \ 'enclosing': [],
+      \ }
+
+  for l:loc in a:msg
+    if l:loc.uri !=# l:furi
+      continue
+    endif
+
+    if len(l:result.enclosing) == 0
+      let l:result.enclosing = [{
+            \ 'desc': 'identifier',
+            \ 'start': l:loc.range.start.character+1,
+            \ 'end': l:loc.range.end.character+1,
+          \ }]
+    endif
+
+    let l:result.sameids = add(l:result.sameids, printf('%s:%s:%s', go#path#FromURI(l:loc.uri), l:loc.range.start.line+1, l:loc.range.start.character+1))
+  endfor
+
+  call call(a:next, [0, json_encode(l:result), ''])
+endfunction
+
 function! go#lsp#Hover(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 

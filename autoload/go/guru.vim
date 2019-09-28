@@ -428,18 +428,9 @@ function! go#guru#SameIds(showstatus) abort
     return
   endif
 
-  let args = {
-        \ 'mode': 'what',
-        \ 'format': 'json',
-        \ 'selected': -1,
-        \ 'needs_scope': 0,
-        \ 'custom_parse': function('s:same_ids_highlight'),
-        \ }
-  if !a:showstatus
-    let args.disable_progress = 1
-  endif
-
-  call s:run_guru(args)
+  let [l:line, l:col] = getpos('.')[1:2]
+  let [l:line, l:col] = go#lsp#lsp#Position(l:line, l:col)
+  call go#lsp#SameIDs(0, expand('%:p'), l:line, l:col, funcref('s:same_ids_highlight'))
 endfunction
 
 function! s:same_ids_highlight(exit_val, output, mode) abort

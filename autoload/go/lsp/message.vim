@@ -136,6 +136,22 @@ function! go#lsp#message#Completion(file, line, col) abort
        \ }
 endfunction
 
+function! go#lsp#message#References(file, line, col) abort
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/references',
+          \ 'params': {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:file)
+          \   },
+          \   'position': s:position(a:line, a:col),
+          \   'context': {
+          \       'includeDeclaration': v:true,
+          \   },
+          \ }
+       \ }
+endfunction
+
 function! go#lsp#message#Hover(file, line, col) abort
   return {
           \ 'notification': 0,
