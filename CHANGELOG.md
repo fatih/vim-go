@@ -19,6 +19,9 @@ IMPROVEMENTS:
 * Make `g:go_doc_popup_window=1` work for Neovim, too.
   [[GH-2451]](https://github.com/fatih/vim-go/pull/2451)
   [[GH-2512]](https://github.com/fatih/vim-go/pull/2512)
+* Handle errors jumping to a definition in a file open in another Vim process
+  better.
+  [[GH-2518]](https://github.com/fatih/vim-go/pull/2518)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
