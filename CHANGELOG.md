@@ -22,6 +22,8 @@ IMPROVEMENTS:
 * Handle errors jumping to a definition in a file open in another Vim process
   better.
   [[GH-2518]](https://github.com/fatih/vim-go/pull/2518)
+* Improve the UX when the gopls binary is missing.
+  [[GH-2522]](https://github.com/fatih/vim-go/pull/2522)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
