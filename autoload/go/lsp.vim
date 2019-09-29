@@ -296,6 +296,10 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.write(msg) dict abort
+    if empty(get(self, 'job', {}))
+      return
+    endif
+
     let l:body = json_encode(a:msg)
     let l:data = 'Content-Length: ' . strlen(l:body) . "\r\n\r\n" . l:body
 
@@ -360,7 +364,7 @@ function! s:newlsp() abort
 
   let l:bin_path = go#path#CheckBinPath("gopls")
   if empty(l:bin_path)
-    return
+    return l:lsp
   endif
 
   let l:cmd = [l:bin_path]
