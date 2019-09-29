@@ -24,6 +24,8 @@ IMPROVEMENTS:
   [[GH-2518]](https://github.com/fatih/vim-go/pull/2518)
 * Improve the UX when the gopls binary is missing.
   [[GH-2522]](https://github.com/fatih/vim-go/pull/2522)
+* Use gopls instead of guru for `:GoSameIds`.
+  [[GH-2519]](https://github.com/fatih/vim-go/pull/2519)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
