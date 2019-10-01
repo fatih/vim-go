@@ -32,22 +32,45 @@ function! go#auto#echo_go_info()
   redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
 endfunction
 
-function! go#auto#auto_type_info()
-  if !go#config#AutoTypeInfo() || !isdirectory(expand('%:p:h'))
+let s:timer_id = 0
+
+function! go#auto#cursor_moved()
+  if (!go#config#AutoTypeInfo() && !go#config#AutoSameids()) || !isdirectory(expand('%:p:h'))
     return
   endif
 
-  " GoInfo automatic update
-  call go#tool#Info(0)
+  call s:timer_stop()
+  call s:timer_start()
 endfunction
 
-function! go#auto#auto_sameids()
-  if !go#config#AutoSameids() || !isdirectory(expand('%:p:h'))
-    return
-  endif
+function! go#auto#win_enter()
+  call s:timer_stop()
+endfunction
 
-  " GoSameId automatic update
-  call go#guru#SameIds(0)
+function! go#auto#win_leave()
+  call s:timer_stop()
+endfunction
+
+function! s:timer_stop()
+  if s:timer_id
+    call timer_stop(s:timer_id)
+    let s:timer_id = 0
+  endif
+endfunction
+
+function! s:timer_start()
+  let time = get(g:, 'go_updatetime', 800)
+  let s:timer_id = timer_start(time, function('s:handler'))
+endfunction
+
+function! s:handler(timer_id)
+  if go#config#AutoTypeInfo()
+    call go#tool#Info(0)
+  endif
+  if go#config#AutoSameids()
+    call go#guru#SameIds(0)
+  endif
+  let s:timer_id = 0
 endfunction
 
 function! go#auto#fmt_autosave()
