@@ -123,4 +123,7 @@ command! -nargs=0 GoLSPDebugBrowser call go#lsp#DebugBrowser()
 " -- term
 command! GoToggleTermCloseOnExit call go#term#ToggleCloseOnExit()
 
+" -- init
+command! -nargs=0 GoInit call go#template#create()
+
 " vim: sw=2 ts=2 et
