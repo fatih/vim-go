@@ -59,8 +59,7 @@ function! s:timer_stop()
 endfunction
 
 function! s:timer_start()
-  let time = get(g:, 'go_updatetime', 800)
-  let s:timer_id = timer_start(time, function('s:handler'))
+  let s:timer_id = timer_start(go#config#Updatetime(), function('s:handler'))
 endfunction
 
 function! s:handler(timer_id)
