@@ -40,6 +40,9 @@ BUG FIXES:
   [[GH-2516]](https://github.com/fatih/vim-go/pull/2516)
 * Reset environment variables on Vim <= 8.0.1831 .
   [[GH-2523]](https://github.com/fatih/vim-go/pull/2523)
+* Handle empty results from delve.
+  [[GH-2526]](https://github.com/fatih/vim-go/pull/2526)
+
 
 ## v1.21 - (September 11, 2019)
 
