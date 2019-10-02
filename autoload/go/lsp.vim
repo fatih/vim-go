@@ -605,11 +605,14 @@ function! s:completionErrorHandler(next, error) abort dict
   call call(a:next, [-1, []])
 endfunction
 
-" go#lsp#Type calls gopls to get the type definition of the identifier at
-" line and col in fname. handler should be a dictionary function that takes a
-" list of strings in the form 'file:line:col: message'. handler will be
-" attached to a dictionary that manages state (statuslines, sets the winid,
-" etc.)
+" go#lsp#SameIDs calls gopls to get the references to the identifier at line
+" and col in fname. handler should be a dictionary function that takes a list
+" of strings in the form 'file:line:col: message'. handler will be attached to
+" a dictionary that manages state (statuslines, sets the winid, etc.). handler
+" should take three arguments: an exit_code, a JSON object encoded to a string
+" that mimics guru's ouput for `what`, and third mode parameter that only
+" exists for compatibility with the guru implementation of SameIDs.
+" TODO(bc): refactor to not need the guru adapter.
 function! go#lsp#SameIDs(showstatus, fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
