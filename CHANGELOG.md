@@ -14,6 +14,7 @@ IMPROVEMENTS:
   [[GH-2458]](https://github.com/fatih/vim-go/pull/2458)
 * Add support for managing goroutines in debugger.
   [[GH-2463]](https://github.com/fatih/vim-go/pull/2463)
+  [[GH-2527]](https://github.com/fatih/vim-go/pull/2527)
 * Document `g:go_doc_popup_window`.
   [[GH-2506]](https://github.com/fatih/vim-go/pull/2506)
 * Make `g:go_doc_popup_window=1` work for Neovim, too.
