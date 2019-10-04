@@ -36,8 +36,10 @@ function! go#auto#update_autocmd()
   execute 'augroup vim-go-buffer-auto-' . bufnr('')
     autocmd! * <buffer>
     if go#config#AutoTypeInfo() || go#config#AutoSameids()
+      " vint: -ProhibitAutocmdWithNoGroup
       autocmd CursorMoved <buffer> call go#auto#timer_restart()
       autocmd BufLeave <buffer> call s:timer_stop()
+      " vint: +ProhibitAutocmdWithNoGroup
     else
       call s:timer_stop()
     endif
