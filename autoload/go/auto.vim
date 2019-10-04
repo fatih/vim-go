@@ -34,21 +34,23 @@ endfunction
 
 let s:timer_id = 0
 
-function! go#auto#cursor_moved()
-  if (!go#config#AutoTypeInfo() && !go#config#AutoSameids()) || !isdirectory(expand('%:p:h'))
-    return
+function! go#auto#update_autocmd()
+  execute 'augroup vim-go-buffer-auto-' . bufnr()
+    autocmd! * <buffer>
+    if go#config#AutoTypeInfo() || go#config#AutoSameids()
+      autocmd CursorMoved <buffer> call s:cursor_moved()
+      autocmd BufLeave <buffer> call s:timer_stop()
+    else
+      call s:timer_stop()
+    endif
+  augroup END
+endfunction
+
+function! s:cursor_moved()
+  if isdirectory(expand('%:p:h'))
+    call s:timer_stop()
+    call s:timer_start()
   endif
-
-  call s:timer_stop()
-  call s:timer_start()
-endfunction
-
-function! go#auto#win_enter()
-  call s:timer_stop()
-endfunction
-
-function! go#auto#win_leave()
-  call s:timer_stop()
 endfunction
 
 function! s:timer_stop()

@@ -74,6 +74,9 @@ if get(g:, "go_textobj_enabled", 1)
   xnoremap <buffer> <silent> [[ :<c-u>call go#textobj#FunctionJump('v', 'prev')<cr>
 endif
 
+" Set up autocmd to call :GoSameIds / :GoInfo automatically
+call go#auto#update_autocmd()
+
 " Autocommands
 " ============================================================================
 "
@@ -91,9 +94,7 @@ augroup vim-go-buffer
     autocmd BufDelete <buffer> call go#lsp#DidClose(expand('<afile>:p'))
   endif
 
-  autocmd CursorMoved <buffer> call go#auto#cursor_moved()
-  autocmd WinEnter <buffer> call go#auto#win_enter()
-  autocmd WinLeave <buffer> call go#auto#win_leave()
+  autocmd BufEnter,CursorHold <buffer> call go#auto#update_autocmd()
 
   " Echo the identifier information when completion is done. Useful to see
   " the signature of a function, etc...
