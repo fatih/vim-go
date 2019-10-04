@@ -33,7 +33,7 @@ function! go#auto#echo_go_info()
 endfunction
 
 function! go#auto#update_autocmd()
-  execute 'augroup vim-go-buffer-auto-' . bufnr()
+  execute 'augroup vim-go-buffer-auto-' . bufnr('')
     autocmd! * <buffer>
     if go#config#AutoTypeInfo() || go#config#AutoSameids()
       autocmd CursorMoved <buffer> call go#auto#timer_restart()
