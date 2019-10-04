@@ -36,7 +36,7 @@ function! go#auto#update_autocmd()
   execute 'augroup vim-go-buffer-auto-' . bufnr()
     autocmd! * <buffer>
     if go#config#AutoTypeInfo() || go#config#AutoSameids()
-      autocmd CursorMoved <buffer> call s:cursor_moved()
+      autocmd CursorMoved <buffer> call go#auto#timer_restart()
       autocmd BufLeave <buffer> call s:timer_stop()
     else
       call s:timer_stop()
@@ -44,7 +44,7 @@ function! go#auto#update_autocmd()
   augroup END
 endfunction
 
-function! s:cursor_moved()
+function! go#auto#timer_restart()
   if isdirectory(expand('%:p:h'))
     call s:timer_stop()
     call s:timer_start()

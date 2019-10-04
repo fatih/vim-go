@@ -295,6 +295,7 @@ function! go#complete#ToggleAutoTypeInfo() abort
   else
     call go#config#SetAutoTypeInfo(1)
     call go#util#EchoProgress("auto type info enabled")
+    call go#auto#timer_restart()
   endif
   call go#auto#update_autocmd()
 endfunction
