@@ -74,9 +74,6 @@ if get(g:, "go_textobj_enabled", 1)
   xnoremap <buffer> <silent> [[ :<c-u>call go#textobj#FunctionJump('v', 'prev')<cr>
 endif
 
-" Set up autocmd to call :GoSameIds / :GoInfo automatically
-call go#auto#update_autocmd()
-
 " Autocommands
 " ============================================================================
 "
