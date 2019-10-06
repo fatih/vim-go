@@ -32,6 +32,8 @@ function! go#auto#echo_go_info()
   redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
 endfunction
 
+let s:timer_id = 0
+
 function! go#auto#update_autocmd()
   augroup vim-go-buffer-auto
     autocmd! * <buffer>
@@ -52,14 +54,14 @@ function! go#auto#timer_restart()
 endfunction
 
 function! s:timer_stop()
-  if get(b:, 'go_auto_timer_id')
-    call timer_stop(b:go_auto_timer_id)
-    let b:go_auto_timer_id = 0
+  if s:timer_id
+    call timer_stop(s:timer_id)
+    let s:timer_id = 0
   endif
 endfunction
 
 function! s:timer_start()
-  let b:go_auto_timer_id = timer_start(go#config#Updatetime(), function('s:handler'))
+  let s:timer_id = timer_start(go#config#Updatetime(), function('s:handler'))
 endfunction
 
 function! s:handler(timer_id)
