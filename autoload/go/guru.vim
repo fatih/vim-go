@@ -525,7 +525,6 @@ function! go#guru#AutoToggleSameIds() abort
   else
     call go#util#EchoSuccess("sameids auto highlighting enabled")
     call go#config#SetAutoSameids(1)
-    call go#auto#timer_restart()
   endif
   call go#auto#update_autocmd()
 endfunction

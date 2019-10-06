@@ -61,14 +61,14 @@ function! go#auto#update_autocmd()
 
   augroup vim-go-buffer-auto
     autocmd! * <buffer>
-    autocmd CursorMoved <buffer> call go#auto#timer_restart()
+    autocmd CursorMoved <buffer> call s:timer_restart()
     autocmd BufLeave <buffer> call s:timer_stop()
   augroup END
   let b:has_timer = 1
   call s:timer_start()
 endfunction
 
-function! go#auto#timer_restart()
+function! s:timer_restart()
   if isdirectory(expand('%:p:h'))
     call s:timer_stop()
     call s:timer_start()
