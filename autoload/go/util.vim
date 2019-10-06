@@ -198,7 +198,13 @@ function! go#util#Exec(cmd, ...) abort
 
   " Finally execute the command using the full, resolved path. Do not pass the
   " unmodified command as the correct program might not exist in $PATH.
-  return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
+  try
+    return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
+  catch
+    " TODO(bc): return v:exception as the output here or write it with
+    " go#util#EchoError?
+    return ['', 1]
+  endtry
 endfunction
 
 function! go#util#ExecInDir(cmd, ...) abort
