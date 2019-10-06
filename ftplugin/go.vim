@@ -91,7 +91,6 @@ augroup vim-go-buffer
     autocmd BufDelete <buffer> call go#lsp#DidClose(expand('<afile>:p'))
   endif
 
-  autocmd BufEnter <buffer> call go#auto#timer_restart()
   autocmd BufEnter,CursorHold <buffer> call go#auto#update_autocmd()
 
   " Echo the identifier information when completion is done. Useful to see

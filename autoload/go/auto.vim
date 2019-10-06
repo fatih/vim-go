@@ -34,16 +34,38 @@ endfunction
 
 let s:timer_id = 0
 
+" go#auto#update_autocmd() will be called on BufEnter,CursorHold. This
+" configures the augroup according to conditions below.
+"
+" | # | has_timer | should_enable | do                                 |
+" |---|-----------|---------------|------------------------------------|
+" | 1 | false     | false         | return early                       |
+" | 2 | true      | true          | return early                       |
+" | 3 | true      | false         | clear the group and stop the timer |
+" | 4 | false     | true          | configure the group                |
 function! go#auto#update_autocmd()
+  let has_timer = get(b:, 'has_timer')
+  let should_enable = go#config#AutoTypeInfo() || go#config#AutoSameids()
+  if (!has_timer && !should_enable) || (has_timer && should_enable)
+    return
+  endif
+
+  if has_timer
+    augroup vim-go-buffer-auto
+      autocmd! * <buffer>
+    augroup END
+    let b:has_timer = 0
+    call s:timer_stop()
+    return
+  endif
+
   augroup vim-go-buffer-auto
     autocmd! * <buffer>
-    if go#config#AutoTypeInfo() || go#config#AutoSameids()
-      autocmd CursorMoved <buffer> call go#auto#timer_restart()
-      autocmd BufLeave <buffer> call s:timer_stop()
-    else
-      call s:timer_stop()
-    endif
+    autocmd CursorMoved <buffer> call go#auto#timer_restart()
+    autocmd BufLeave <buffer> call s:timer_stop()
   augroup END
+  let b:has_timer = 1
+  call s:timer_start()
 endfunction
 
 function! go#auto#timer_restart()
