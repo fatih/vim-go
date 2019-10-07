@@ -481,7 +481,8 @@ function! go#config#CodeCompletionEnabled() abort
 endfunction
 
 function! go#config#Updatetime() abort
-  return get(g:, 'go_updatetime', 800)
+  let go_updatetime = get(g:, 'go_updatetime', 800)
+  return go_updatetime == 0 ? &updatetime : go_updatetime
 endfunction
 
 " Set the default value. A value of "1" is a shortcut for this, for
