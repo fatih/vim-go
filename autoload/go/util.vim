@@ -193,7 +193,7 @@ function! go#util#Exec(cmd, ...) abort
   " CheckBinPath will show a warning for us.
   let l:bin = go#path#CheckBinPath(l:bin)
   if empty(l:bin)
-    return ['', 1]
+    return ['command not found', 1]
   endif
 
   " Finally execute the command using the full, resolved path. Do not pass the
@@ -201,15 +201,13 @@ function! go#util#Exec(cmd, ...) abort
   try
     return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
   catch
-    " TODO(bc): return v:exception as the output here or write it with
-    " go#util#EchoError?
-    return ['', 1]
+    return [v:exception, 1]
   endtry
 endfunction
 
 function! go#util#ExecInDir(cmd, ...) abort
   if !isdirectory(expand("%:p:h"))
-    return ['', 1]
+    return ['not a directory', 1]
   endif
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
