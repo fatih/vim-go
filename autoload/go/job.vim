@@ -56,6 +56,30 @@ endfunction
 "     The path to the directory which contains the current buffer. The
 "     callbacks are configured to expect this directory is the working
 "     directory for the job; it should not be modified by callers.
+
+fun! s:check_warning(exit_status, data)
+
+
+    let exit_status = a:exit_status
+
+    if exit_status == 0
+
+      let l:idx = len(a:data) - 1
+      let filepath = expand("%:p:t")
+
+      while l:idx >= 0
+        if a:data[l:idx] =~# 'level=warning'
+          let exit_status=1
+          let msg = matchstr(a:data[l:idx],'\v^.*\zs'.filepath.'.{-}\ze\]')
+          call remove(a:data, l:idx)
+          call add(a:data,msg)
+          break
+        endif
+        let l:idx -= 1
+      endwhile
+    endif
+  return exit_status
+endf
 function! go#job#Options(args)
   let cbs = {}
   let state = {
@@ -246,10 +270,11 @@ function! s:callback(chan, msg) dict
 endfunction
 
 function! s:exit_cb(job, exitval) dict
-  let self.exit_status = a:exitval
+  let exitval = s:check_warning(a:exitval, self.messages)
+  let self.exit_status = exitval
   let self.exited = 1
 
-  call self.show_status(a:job, a:exitval)
+  call self.show_status(a:job, exitval)
 
   if self.closed || has('nvim')
     call self.complete(a:job, self.exit_status, self.messages)
