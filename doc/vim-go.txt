@@ -1292,8 +1292,8 @@ configured with the |'g:go_updatetime'| setting.
                                                            *'g:go_updatetime'*
 
 Use this option to configure the delay until it starts some jobs (see
-|g:go_auto_type_info|, |g:go_auto_sameids|). If set to 0, it uses the value from
-'updatetime'. By default it's set to 800ms.
+|'g:go_auto_type_info'|, |'g:go_auto_sameids'|). If set to 0, it uses the
+value from 'updatetime'. By default it's set to 800ms.
 >
   let g:go_updatetime = 800
 <
