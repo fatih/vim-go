@@ -605,11 +605,14 @@ function! s:completionErrorHandler(next, error) abort dict
   call call(a:next, [-1, []])
 endfunction
 
-" go#lsp#Type calls gopls to get the type definition of the identifier at
-" line and col in fname. handler should be a dictionary function that takes a
-" list of strings in the form 'file:line:col: message'. handler will be
-" attached to a dictionary that manages state (statuslines, sets the winid,
-" etc.)
+" go#lsp#SameIDs calls gopls to get the references to the identifier at line
+" and col in fname. handler should be a dictionary function that takes a list
+" of strings in the form 'file:line:col: message'. handler will be attached to
+" a dictionary that manages state (statuslines, sets the winid, etc.). handler
+" should take three arguments: an exit_code, a JSON object encoded to a string
+" that mimics guru's ouput for `what`, and third mode parameter that only
+" exists for compatibility with the guru implementation of SameIDs.
+" TODO(bc): refactor to not need the guru adapter.
 function! go#lsp#SameIDs(showstatus, fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
@@ -652,6 +655,53 @@ function! s:sameIDsHandler(next, msg) abort dict
   endfor
 
   call call(a:next, [0, json_encode(l:result), ''])
+endfunction
+
+" go#lsp#Referrers calls gopls to get the references to the identifier at line
+" and col in fname. handler should be a dictionary function that takes a list
+" of strings in the form 'file:line:col: message'. handler will be attached to
+" a dictionary that manages state (statuslines, sets the winid, etc.). handler
+" should take three arguments: an exit_code, a JSON object encoded to a string
+" that mimics guru's ouput for `what`, and third mode parameter that only
+" exists for compatibility with the guru implementation of SameIDs.
+" TODO(bc): refactor to not need the guru adapter.
+function! go#lsp#Referrers(fname, line, col, handler) abort
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#References(a:fname, a:line, a:col)
+
+  let l:state = s:newHandlerState('referrers')
+
+  let l:state.handleResult = funcref('s:referencesHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:noop')
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:referencesHandler(next, msg) abort dict
+  let l:result = []
+
+  for l:loc in a:msg
+    let l:fname = go#path#FromURI(l:loc.uri)
+    let l:line = l:loc.range.start.line+1
+    let l:bufnr = bufnr(l:fname)
+
+    try
+      if l:bufnr == -1
+        let l:content = readfile(l:fname, '', l:line)[-1]
+      else
+        let l:content = getbufline(l:fname, l:line)[-1]
+      endif
+    catch
+      call go#util#EchoError(printf('%s (line %s): %s at %s', l:fname, l:line, v:exception, v:throwpoint))
+    endtry
+
+    let l:item = printf('%s:%s:%s: %s', go#path#FromURI(l:loc.uri), l:line, go#lsp#lsp#PositionOf(l:content, l:loc.range.start.character), l:content)
+
+    let l:result = add(l:result, l:item)
+  endfor
+
+  call call(a:next, [0, l:result, ''])
 endfunction
 
 function! go#lsp#Hover(fname, line, col, handler) abort

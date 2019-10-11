@@ -404,14 +404,10 @@ endfunction
 
 " Show all refs to entity denoted by selected identifier
 function! go#guru#Referrers(selected) abort
-  let args = {
-        \ 'mode': 'referrers',
-        \ 'format': 'plain',
-        \ 'selected': a:selected,
-        \ 'needs_scope': 0,
-        \ }
-
-  call s:run_guru(args)
+  let [l:line, l:col] = getpos('.')[1:2]
+  let [l:line, l:col] = go#lsp#lsp#Position(l:line, l:col)
+  let l:fname = expand('%:p')
+  call go#lsp#Referrers(l:fname, l:line, l:col, funcref('s:parse_guru_output'))
 endfunction
 
 function! go#guru#SameIds(showstatus) abort
