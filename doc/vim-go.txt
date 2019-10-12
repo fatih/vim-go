@@ -620,8 +620,7 @@ CTRL-t
 :GoReferrers
 
     The referrers query shows the set of identifiers that refer to the same
-    object as does the selected identifier, within any package in the analysis
-    scope.
+    object as does the selected identifier.
 
                                                                   *:GoSameIds*
 :GoSameIds
@@ -666,8 +665,8 @@ CTRL-t
 
     Changes the build tags for various commands. If you have any file that
     uses a custom build tag, such as `// +build integration` , this command
-    can be used to pass it to all tools that accepts tags, such as guru,
-    gorename, etc.
+    can be used to pass it to all tools that accepts tags, such as gopls,
+    guru, gorename, etc.
 
     The build tags is cleared (unset) if `""` is given. If no arguments are
     given it prints the current build tags.
@@ -1472,7 +1471,7 @@ pattern. An example input might be:
 
 Also see |go-guru-scope|.
 
-By default it's not set, so the relevant commands defaults are being used.
+By default it's not set, so the relevant commands' defaults are being used.
 >
   let g:go_guru_scope = []
 <
