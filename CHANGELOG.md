@@ -29,6 +29,8 @@ IMPROVEMENTS:
   [[GH-2519]](https://github.com/fatih/vim-go/pull/2519)
 * Use gopls instead of guru for `:GoReferrers`.
   [[GH-2535]](https://github.com/fatih/vim-go/pull/2535)
+* Update documentation for `g:go_addtags_transform`.
+  [[GH-2541]](https://github.com/fatih/vim-go/pull/2541)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
