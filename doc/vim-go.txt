@@ -1797,7 +1797,7 @@ default it's 60 seconds. Must be in milliseconds.
 
 Sets the `transform` option for `gomodifytags` when using |:GoAddTags| or if
 it's being used for snippet expansion of single fields.  Possible options are:
-`snakecase`, `camelcase`. For the following case, if `snakecase` is used the
+`snakecase`, `camelcase`, `lispcase`, `pascalcase`, `keep`. For the following case, if `snakecase` is used the
 field will be transformed to:
 >
   type T struct {
@@ -1812,7 +1812,7 @@ If "camelcase" is used:
   }
 <
 By default "snakecase" is used. Current values are: ["snakecase",
-"camelcase"].
+"camelcase", "lispcase", "pascalcase", "keep"].
 >
       let g:go_addtags_transform = 'snakecase'
 <
