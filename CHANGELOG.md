@@ -1,7 +1,7 @@
 ## unplanned
 
-BACKWARDS INCOMPATABILITIES:
-* Drop support for Vim 7.4. The minimu required version of Vim is now 8.0.1453.
+BACKWARDS INCOMPATIBILITIES:
+* Drop support for Vim 7.4. The minimum required version of Vim is now 8.0.1453.
   [[GH-2495]](https://github.com/fatih/vim-go/pull/2495)
   [[GH-2497]](https://github.com/fatih/vim-go/pull/2497)
 * Drop support for `gometalinter`
@@ -50,7 +50,7 @@ BUG FIXES:
 
 ## v1.21 - (September 11, 2019)
 
-BACKWARDS INCOMPATABILITIES:
+BACKWARDS INCOMPATIBILITIES:
 * `g:go_metalinter_disabled` has been removed.
   [[GH-2375]](https://github.com/fatih/vim-go/pull/2375)
 
@@ -194,7 +194,7 @@ FEATURES:
 * New `:GoDefType` command to jump to a type definition from an instance of the
   type.
 
-BACKWARDS INCOMPATABILITIES:
+BACKWARDS INCOMPATIBILITIES:
 * `g:go_highlight_function_arguments` is renamed to `g:go_highlight_function_parameters`
   [[GH-2117]](https://github.com/fatih/vim-go/pull/2117)
 
