@@ -88,7 +88,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   let go_bin_path = go#path#BinPath()
 
   " change $GOBIN so go get can automatically install to it
-  let $GOBIN = go_bin_path
+  let Restore_gobin = go#util#SetEnv('GOBIN', go_bin_path)
 
   " vim's executable path is looking in PATH so add our go_bin path to it
   let Restore_path = go#util#SetEnv('PATH', go_bin_path . go#util#PathListSep() . $PATH)
@@ -211,6 +211,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
   " restore back!
   call call(Restore_path, [])
+  call call(Restore_gobin, [])
 
   if resetshellslash
     set shellslash
