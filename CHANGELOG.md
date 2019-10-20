@@ -46,6 +46,9 @@ BUG FIXES:
   [[GH-2523]](https://github.com/fatih/vim-go/pull/2523)
 * Handle empty results from delve.
   [[GH-2526]](https://github.com/fatih/vim-go/pull/2526)
+* Do not overwrite `updatetime` when `g:go_auto_sameids` or
+  `g:go_auto_type_info` is set.
+  [[GH-2529]](https://github.com/fatih/vim-go/pull/2529)
 
 
 ## v1.21 - (September 11, 2019)
