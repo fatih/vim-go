@@ -292,11 +292,11 @@ function! go#complete#ToggleAutoTypeInfo() abort
   if go#config#AutoTypeInfo()
     call go#config#SetAutoTypeInfo(0)
     call go#util#EchoProgress("auto type info disabled")
-    return
-  end
-
-  call go#config#SetAutoTypeInfo(1)
-  call go#util#EchoProgress("auto type info enabled")
+  else
+    call go#config#SetAutoTypeInfo(1)
+    call go#util#EchoProgress("auto type info enabled")
+  endif
+  call go#auto#update_autocmd()
 endfunction
 
 " restore Vi compatibility settings

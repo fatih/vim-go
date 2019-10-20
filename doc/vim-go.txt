@@ -645,8 +645,8 @@ CTRL-t
     the cursor. This basically toggles the option |'g:go_auto_sameids'|
     on/off.
     If enabled it starts highlighting whenever your cursor is staying at the
-    same position for a configurable period of time (see 'updatetime'). If
-    disabled it clears and stops automatic highlighting.
+    same position for a configurable period of time (see |'g:go_updatetime'|).
+    If disabled it clears and stops automatic highlighting.
 
                                                                *:GoMetaLinter*
 :GoMetaLinter! [path]
@@ -1266,7 +1266,7 @@ with |:GoPlay|. By default it's enabled. >
 Use this option to show the type info (|:GoInfo|) for the word under the
 cursor automatically. Whenever the cursor changes the type info will be
 updated. By default it's disabled. The delay can be configured with the
-'g:go_updatetime' setting.
+|'g:go_updatetime'| setting.
 >
   let g:go_auto_type_info = 0
 <
@@ -1283,15 +1283,16 @@ Valid options are `gocode`, `gopls`, and `guru`.
                                                          *'g:go_auto_sameids'*
 
 Use this option to highlight all uses of the identifier under the cursor
-(:GoSameIds) automatically. By default it's disabled. The delay can be
-configured with the 'g:go_updatetime' setting.
+(|:GoSameIds|) automatically. By default it's disabled. The delay can be
+configured with the |'g:go_updatetime'| setting.
 >
   let g:go_auto_sameids = 0
 <
                                                            *'g:go_updatetime'*
 
-Use this option to configure the a custom 'updatetime' for Go source files. If
-set to 0, no custom time will be configured. By default it's set to 800ms.
+Use this option to configure the delay until it starts some jobs (see
+|'g:go_auto_type_info'|, |'g:go_auto_sameids'|). If set to 0, it uses the
+value from 'updatetime'. By default it's set to 800ms.
 >
   let g:go_updatetime = 800
 <
