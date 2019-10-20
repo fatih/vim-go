@@ -162,7 +162,14 @@ function! s:GoInstallBinaries(updateBinaries, ...)
           execute l:cd . fnameescape(l:tmpdir)
           let l:get_cmd = copy(l:get_base_cmd)
 
-          " first download the binary
+          if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
+            let l:get_cmd += get(l:pkg[1], l:platform, [])
+          endif
+
+          " TODO(bc): how to install the bin to a different name than the
+          " binary path? go get does not support -o
+          " let l:get_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin)]
+
           let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
           if l:err
             call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
@@ -189,16 +196,16 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         endif
 
         " and then build and install it
-        let l:build_cmd = ['go', 'build', '-o', go_bin_path . go#util#PathSep() . bin, l:importPath]
-        if len(l:pkg) > 1 && get(l:pkg[1], l:platform, '') isnot ''
-          let l:build_cmd += get(l:pkg[1], l:platform, '')
+        let l:build_cmd = ['go', 'build']
+        if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
+          let l:build_cmd += get(l:pkg[1], l:platform, [])
         endif
+        let l:build_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin), l:importPath]
 
         let [l:out, l:err] = go#util#Exec(l:build_cmd)
         if l:err
           call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
         endif
-
 
         call call(Restore_modules, [])
       endif
