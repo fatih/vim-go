@@ -2211,7 +2211,7 @@ Specifies log output options for `dlv`. Value should be a single string of
 comma-separated options suitable for passing to `dlv`.  An empty string (`''`)
 will suppress logging entirely.  Default: `'debugger,rpc'`:
 >
-  let g:go_debug_log = 'debugger,rpc'
+  let g:go_debug_log_output = 'debugger,rpc'
 <
 
                                                      *'g:go_highlight_debug'*
