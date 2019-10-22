@@ -49,7 +49,8 @@ BUG FIXES:
 * Do not overwrite `updatetime` when `g:go_auto_sameids` or
   `g:go_auto_type_info` is set.
   [[GH-2529]](https://github.com/fatih/vim-go/pull/2529)
-
+* Fix example for g:go_debug_log_output in docs.
+  [[GH-2547]](https://github.com/fatih/vim-go/pull/2547)
 
 ## v1.21 - (September 11, 2019)
 
