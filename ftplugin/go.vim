@@ -87,7 +87,7 @@ augroup vim-go-buffer
   " StdinReadPre, BufWritePost, TextChange, TextChangedI)
   if go#util#has_job()
     autocmd BufWritePost <buffer> call go#lsp#DidChange(expand('<afile>:p'))
-    autocmd FileChangedShell <buffer> call go#lsp#DidChange(expand('<afile>:p'))
+    autocmd FileChangedShellPost <buffer> call go#lsp#DidChange(expand('<afile>:p'))
     autocmd BufDelete <buffer> call go#lsp#DidClose(expand('<afile>:p'))
   endif
 
