@@ -296,6 +296,10 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.write(msg) dict abort
+    if empty(get(self, 'job', {}))
+      return
+    endif
+
     let l:body = json_encode(a:msg)
     let l:data = 'Content-Length: ' . strlen(l:body) . "\r\n\r\n" . l:body
 
@@ -360,7 +364,7 @@ function! s:newlsp() abort
 
   let l:bin_path = go#path#CheckBinPath("gopls")
   if empty(l:bin_path)
-    return
+    return l:lsp
   endif
 
   let l:cmd = [l:bin_path]
@@ -601,6 +605,105 @@ function! s:completionErrorHandler(next, error) abort dict
   call call(a:next, [-1, []])
 endfunction
 
+" go#lsp#SameIDs calls gopls to get the references to the identifier at line
+" and col in fname. handler should be a dictionary function that takes a list
+" of strings in the form 'file:line:col: message'. handler will be attached to
+" a dictionary that manages state (statuslines, sets the winid, etc.). handler
+" should take three arguments: an exit_code, a JSON object encoded to a string
+" that mimics guru's ouput for `what`, and third mode parameter that only
+" exists for compatibility with the guru implementation of SameIDs.
+" TODO(bc): refactor to not need the guru adapter.
+function! go#lsp#SameIDs(showstatus, fname, line, col, handler) abort
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#References(a:fname, a:line, a:col)
+
+  if a:showstatus
+    let l:state = s:newHandlerState('same ids')
+  else
+    let l:state = s:newHandlerState('')
+  endif
+
+  let l:state.handleResult = funcref('s:sameIDsHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:noop')
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:sameIDsHandler(next, msg) abort dict
+  let l:furi = go#path#ToURI(expand('%:p'))
+
+  let l:result = {
+        \ 'sameids': [],
+        \ 'enclosing': [],
+      \ }
+
+  for l:loc in a:msg
+    if l:loc.uri !=# l:furi
+      continue
+    endif
+
+    if len(l:result.enclosing) == 0
+      let l:result.enclosing = [{
+            \ 'desc': 'identifier',
+            \ 'start': l:loc.range.start.character+1,
+            \ 'end': l:loc.range.end.character+1,
+          \ }]
+    endif
+
+    let l:result.sameids = add(l:result.sameids, printf('%s:%s:%s', go#path#FromURI(l:loc.uri), l:loc.range.start.line+1, l:loc.range.start.character+1))
+  endfor
+
+  call call(a:next, [0, json_encode(l:result), ''])
+endfunction
+
+" go#lsp#Referrers calls gopls to get the references to the identifier at line
+" and col in fname. handler should be a dictionary function that takes a list
+" of strings in the form 'file:line:col: message'. handler will be attached to
+" a dictionary that manages state (statuslines, sets the winid, etc.). handler
+" should take three arguments: an exit_code, a JSON object encoded to a string
+" that mimics guru's ouput for `what`, and third mode parameter that only
+" exists for compatibility with the guru implementation of SameIDs.
+" TODO(bc): refactor to not need the guru adapter.
+function! go#lsp#Referrers(fname, line, col, handler) abort
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#References(a:fname, a:line, a:col)
+
+  let l:state = s:newHandlerState('referrers')
+
+  let l:state.handleResult = funcref('s:referencesHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:noop')
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:referencesHandler(next, msg) abort dict
+  let l:result = []
+
+  for l:loc in a:msg
+    let l:fname = go#path#FromURI(l:loc.uri)
+    let l:line = l:loc.range.start.line+1
+    let l:bufnr = bufnr(l:fname)
+
+    try
+      if l:bufnr == -1
+        let l:content = readfile(l:fname, '', l:line)[-1]
+      else
+        let l:content = getbufline(l:fname, l:line)[-1]
+      endif
+    catch
+      call go#util#EchoError(printf('%s (line %s): %s at %s', l:fname, l:line, v:exception, v:throwpoint))
+    endtry
+
+    let l:item = printf('%s:%s:%s: %s', go#path#FromURI(l:loc.uri), l:line, go#lsp#lsp#PositionOf(l:content, l:loc.range.start.character), l:content)
+
+    let l:result = add(l:result, l:item)
+  endfor
+
+  call call(a:next, [0, l:result, ''])
+endfunction
+
 function! go#lsp#Hover(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
@@ -613,15 +716,19 @@ function! go#lsp#Hover(fname, line, col, handler) abort
 endfunction
 
 function! s:hoverHandler(next, msg) abort dict
-  let l:content = split(a:msg.contents.value, '; ')
-  if len(l:content) > 1
-    let l:curly = stridx(l:content[0], '{')
-    let l:content = extend([l:content[0][0:l:curly]], map(extend([l:content[0][l:curly+1:]], l:content[1:]), '"\t" . v:val'))
-    let l:content[len(l:content)-1] = '}'
-  endif
+  try
+    let l:content = split(a:msg.contents.value, '; ')
+    if len(l:content) > 1
+      let l:curly = stridx(l:content[0], '{')
+      let l:content = extend([l:content[0][0:l:curly]], map(extend([l:content[0][l:curly+1:]], l:content[1:]), '"\t" . v:val'))
+      let l:content[len(l:content)-1] = '}'
+    endif
 
-  let l:args = [l:content]
-  call call(a:next, l:args)
+    let l:args = [l:content]
+    call call(a:next, l:args)
+  catch
+    " TODO(bc): log the message and/or show an error message.
+  endtry
 endfunction
 
 function! go#lsp#Info(showstatus)
@@ -746,12 +853,16 @@ function! go#lsp#CleanWorkspaces() abort
   let l:missing = []
   for l:dir in l:lsp.workspaceDirectories
     if !isdirectory(l:dir)
-      let l:dir = add(l:missing, l:dir)
+      let l:missing = add(l:missing, l:dir)
       call remove(l:lsp.workspaceDirectories, l:i)
       continue
     endif
     let l:i += 1
   endfor
+
+  if len(l:missing) == 0
+    return 0
+  endif
 
   let l:state = s:newHandlerState('')
   let l:state.handleResult = funcref('s:noop')
@@ -789,14 +900,26 @@ function! go#lsp#DebugBrowser() abort
   call go#util#OpenBrowser(printf('http://localhost:%d', l:port))
 endfunction
 
+function! go#lsp#Exit() abort
+  call s:exit(0)
+endfunction
+
 function! go#lsp#Restart() abort
+  call s:exit(1)
+endfunction
+
+function! s:exit(restart) abort
   if !go#util#has_job() || len(s:lspfactory) == 0 || !has_key(s:lspfactory, 'current')
     return
   endif
 
   let l:lsp = s:lspfactory.get()
 
-  let l:lsp.restarting = 1
+  " reset the factory so that future requests don't use the same instance of
+  " gopls.
+  call s:lspfactory.reset()
+
+  let l:lsp.restarting = a:restart
 
   let l:state = s:newHandlerState('exit')
 
@@ -810,7 +933,7 @@ function! go#lsp#Restart() abort
   return l:retval
 endfunction
 
-function! s:debug(event, data) abort
+function! s:debugasync(event, data, timer) abort
   if !go#util#HasDebug('lsp')
     return
   endif
@@ -840,6 +963,10 @@ function! s:debug(event, data) abort
   finally
     call win_gotoid(l:winid)
   endtry
+endfunction
+
+function! s:debug(event, data, ...) abort
+  call timer_start(10, function('s:debugasync', [a:event, a:data]))
 endfunction
 
 " restore Vi compatibility settings

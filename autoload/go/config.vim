@@ -205,9 +205,10 @@ endfunction
 
 function! go#config#DebugWindows() abort
   return get(g:, 'go_debug_windows', {
-            \ 'stack': 'leftabove 20vnew',
-            \ 'out':   'botright 10new',
             \ 'vars':  'leftabove 30vnew',
+            \ 'stack': 'leftabove 20new',
+            \ 'goroutines': 'botright 10new',
+            \ 'out':        'botright 5new',
             \ }
          \ )
 
@@ -477,6 +478,11 @@ endfunction
 
 function! go#config#CodeCompletionEnabled() abort
   return get(g:, "go_code_completion_enabled", 1)
+endfunction
+
+function! go#config#Updatetime() abort
+  let go_updatetime = get(g:, 'go_updatetime', 800)
+  return go_updatetime == 0 ? &updatetime : go_updatetime
 endfunction
 
 " Set the default value. A value of "1" is a shortcut for this, for

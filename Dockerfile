@@ -13,7 +13,6 @@ USER vim-go
 COPY . /vim-go/
 WORKDIR /vim-go
 
-RUN scripts/install-vim vim-7.4
 RUN scripts/install-vim vim-8.0
 RUN scripts/install-vim nvim
 

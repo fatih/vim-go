@@ -11,7 +11,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   let l:metalinter = go#config#MetalinterCommand()
 
-  if l:metalinter == 'gometalinter' || l:metalinter == 'golangci-lint'
+  if l:metalinter == 'golangci-lint'
     let cmd = s:metalintercmd(l:metalinter)
     if empty(cmd)
       return
@@ -32,14 +32,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     " will be cleared
     redraw
 
-    if l:metalinter == "gometalinter"
-      " Include only messages for the active buffer for autosave.
-      let include = [printf('--include=^%s:.*$', fnamemodify(expand('%:p'), ":."))]
-      if go#util#has_job()
-        let include = [printf('--include=^(vet: \.[\\/])?%s:.*$', expand('%:p:t'))]
-      endif
-      let cmd += include
-    elseif l:metalinter == "golangci-lint"
+    if l:metalinter == "golangci-lint"
       let goargs[0] = expand('%:p:h')
     endif
   endif
@@ -52,18 +45,10 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   let cmd += goargs
 
-  if l:metalinter == "gometalinter"
-    " Gometalinter can output one of the two, so we look for both:
-    "   <file>:<line>:<column>:<severity>: <message> (<linter>)
-    "   <file>:<line>::<severity>: <message> (<linter>)
-    " This can be defined by the following errorformat:
-    let errformat = "%f:%l:%c:%t%*[^:]:\ %m,%f:%l::%t%*[^:]:\ %m"
-  else
-    " Golangci-lint can output the following:
-    "   <file>:<line>:<column>: <message> (<linter>)
-    " This can be defined by the following errorformat:
-    let errformat = "%f:%l:%c:\ %m"
-  endif
+  " Golangci-lint can output the following:
+  "   <file>:<line>:<column>: <message> (<linter>)
+  " This can be defined by the following errorformat:
+  let errformat = "%f:%l:%c:\ %m"
 
   if go#util#has_job()
     call s:lint_job({'cmd': cmd, 'statustype': l:metalinter, 'errformat': errformat}, a:bang, a:autosave)
@@ -80,7 +65,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   if l:err == 0
     call go#list#Clean(l:listtype)
-    echon "vim-go: " | echohl Function | echon "[metalinter] PASS" | echohl None
+    call go#util#EchoSuccess('[metalinter] PASS')
   else
     let l:winid = win_getid(winnr())
     " Parse and populate our location list
@@ -232,9 +217,7 @@ function! s:lint_job(args, bang, autosave)
 
   if a:autosave
     let l:opts.for = "GoMetaLinterAutoSave"
-    " s:metalinterautosavecomplete is really only needed for golangci-lint,
-    " but s:lint_job doesn't know whether golangci-lint is being called or
-    " whether gometalinter is being called, so hook it up in either case.
+    " s:metalinterautosavecomplete is really only needed for golangci-lint
     let l:opts.complete = funcref('s:metalinterautosavecomplete', [expand('%:p:t')])
   endif
 
@@ -248,26 +231,11 @@ function! s:metalintercmd(metalinter)
   let l:cmd = []
   let bin_path = go#path#CheckBinPath(a:metalinter)
   if !empty(bin_path)
-    if a:metalinter == "gometalinter"
-      let l:cmd = s:gometalintercmd(bin_path)
-    elseif a:metalinter == "golangci-lint"
+    if a:metalinter == "golangci-lint"
       let l:cmd = s:golangcilintcmd(bin_path)
     endif
   endif
 
-  return cmd
-endfunction
-
-function! s:gometalintercmd(bin_path)
-  let cmd = [a:bin_path]
-  let cmd += ["--disable-all"]
-
-  " gometalinter has a --tests flag to tell its linters whether to run
-  " against tests. While not all of its linters respect this flag, for those
-  " that do, it means if we don't pass --tests, the linter won't run against
-  " test files. One example of a linter that will not run against tests if
-  " we do not specify this flag is errcheck.
-  let cmd += ["--tests"]
   return cmd
 endfunction
 
