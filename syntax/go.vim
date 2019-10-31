@@ -166,11 +166,15 @@ syn match       goDecimalInt        "\<-\=\d\+\%([Ee][-+]\=\d\+\)\=\>"
 syn match       goHexadecimalInt    "\<-\=0[xX]\x\+\>"
 syn match       goOctalInt          "\<-\=0\o\+\>"
 syn match       goOctalError        "\<-\=0\o*[89]\d*\>"
+syn match       goBinaryInt         "\<-\=0[bB][01]\+\>"
+syn match       goBinaryError       "\<-\=0[bB][01]*[2-9]\+[01]*\>"
 
 hi def link     goDecimalInt        Integer
 hi def link     goHexadecimalInt    Integer
 hi def link     goOctalInt          Integer
 hi def link     goOctalError        Error
+hi def link     goBinaryInt         Integer
+hi def link     goBinaryError       Error
 hi def link     Integer             Number
 
 " Floating point
