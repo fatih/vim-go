@@ -110,6 +110,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   if a:exit_status == 0
     call go#list#Clean(l:listtype)
+    execute l:cd l:dir
     call win_gotoid(l:winid)
     return
   endif
@@ -133,6 +134,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
 
   if empty(l:errors)
     call go#util#EchoError( '[' . l:title . '] ' . "FAIL")
+    execute l:cd l:dir
     call win_gotoid(l:winid)
     return
   endif
@@ -144,6 +146,7 @@ function! s:on_exit(job_id, exit_status, event) dict abort
   endif
 
   if self.bang
+    execute l:cd l:dir
     call win_gotoid(l:winid)
     return
   endif
