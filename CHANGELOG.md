@@ -31,6 +31,8 @@ IMPROVEMENTS:
   [[GH-2535]](https://github.com/fatih/vim-go/pull/2535)
 * Update documentation for `g:go_addtags_transform`.
   [[GH-2541]](https://github.com/fatih/vim-go/pull/2541)
+* Install most helper tools in module aware mode.
+  [[GH-2545]](https://github.com/fatih/vim-go/pull/2545)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
