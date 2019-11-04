@@ -37,27 +37,30 @@ call s:checkVersion()
 
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries.
+
+" NOTE(bc): varying the binary name and the tail of the import path (e.g.
+" gocode-gomod) does not yet work in module aware mode.
 let s:packages = {
-      \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt'],
-      \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv'],
-      \ 'errcheck':      ['github.com/kisielk/errcheck'],
-      \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct'],
-      \ 'gocode':        ['github.com/mdempsky/gocode', {'windows': ['-ldflags', '-H=windowsgui']}],
+      \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt@master'],
+      \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv@master'],
+      \ 'errcheck':      ['github.com/kisielk/errcheck@master'],
+      \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct@master'],
+      \ 'gocode':        ['github.com/mdempsky/gocode@master', {'windows': ['-ldflags', '-H=windowsgui']}],
       \ 'gocode-gomod':  ['github.com/stamblerre/gocode'],
-      \ 'godef':         ['github.com/rogpeppe/godef'],
-      \ 'gogetdoc':      ['github.com/zmb3/gogetdoc'],
-      \ 'goimports':     ['golang.org/x/tools/cmd/goimports'],
-      \ 'golint':        ['golang.org/x/lint/golint'],
+      \ 'godef':         ['github.com/rogpeppe/godef@master'],
+      \ 'gogetdoc':      ['github.com/zmb3/gogetdoc@master'],
+      \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
+      \ 'golint':        ['golang.org/x/lint/golint@master'],
       \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
-      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint'],
-      \ 'gomodifytags':  ['github.com/fatih/gomodifytags'],
-      \ 'gorename':      ['golang.org/x/tools/cmd/gorename'],
-      \ 'gotags':        ['github.com/jstemmer/gotags'],
-      \ 'guru':          ['golang.org/x/tools/cmd/guru'],
-      \ 'impl':          ['github.com/josharian/impl'],
-      \ 'keyify':        ['honnef.co/go/tools/cmd/keyify'],
-      \ 'motion':        ['github.com/fatih/motion'],
-      \ 'iferr':         ['github.com/koron/iferr'],
+      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@master'],
+      \ 'gomodifytags':  ['github.com/fatih/gomodifytags@master'],
+      \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
+      \ 'gotags':        ['github.com/jstemmer/gotags@master'],
+      \ 'guru':          ['golang.org/x/tools/cmd/guru@master'],
+      \ 'impl':          ['github.com/josharian/impl@master'],
+      \ 'keyify':        ['honnef.co/go/tools/cmd/keyify@master'],
+      \ 'motion':        ['github.com/fatih/motion@master'],
+      \ 'iferr':         ['github.com/koron/iferr@master'],
 \ }
 
 " These commands are available on any filetypes
@@ -88,7 +91,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   let go_bin_path = go#path#BinPath()
 
   " change $GOBIN so go get can automatically install to it
-  let $GOBIN = go_bin_path
+  let Restore_gobin = go#util#SetEnv('GOBIN', go_bin_path)
 
   " vim's executable path is looking in PATH so add our go_bin path to it
   let Restore_path = go#util#SetEnv('PATH', go_bin_path . go#util#PathListSep() . $PATH)
@@ -162,7 +165,14 @@ function! s:GoInstallBinaries(updateBinaries, ...)
           execute l:cd . fnameescape(l:tmpdir)
           let l:get_cmd = copy(l:get_base_cmd)
 
-          " first download the binary
+          if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
+            let l:get_cmd += get(l:pkg[1], l:platform, [])
+          endif
+
+          " TODO(bc): how to install the bin to a different name than the
+          " binary path? go get does not support -o
+          " let l:get_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin)]
+
           let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
           if l:err
             call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
@@ -189,16 +199,16 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         endif
 
         " and then build and install it
-        let l:build_cmd = ['go', 'build', '-o', go_bin_path . go#util#PathSep() . bin, l:importPath]
-        if len(l:pkg) > 1 && get(l:pkg[1], l:platform, '') isnot ''
-          let l:build_cmd += get(l:pkg[1], l:platform, '')
+        let l:build_cmd = ['go', 'build']
+        if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
+          let l:build_cmd += get(l:pkg[1], l:platform, [])
         endif
+        let l:build_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin), l:importPath]
 
         let [l:out, l:err] = go#util#Exec(l:build_cmd)
         if l:err
           call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
         endif
-
 
         call call(Restore_modules, [])
       endif
@@ -211,6 +221,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
   " restore back!
   call call(Restore_path, [])
+  call call(Restore_gobin, [])
 
   if resetshellslash
     set shellslash
