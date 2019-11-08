@@ -681,6 +681,8 @@ endfunction
 function! s:referencesHandler(next, msg) abort dict
   let l:result = []
 
+  call sort(a:msg, funcref('s:compareLocations'))
+
   for l:loc in a:msg
     let l:fname = go#path#FromURI(l:loc.uri)
     let l:line = l:loc.range.start.line+1
@@ -974,6 +976,26 @@ endfunction
 
 function! s:debug(event, data, ...) abort
   call timer_start(10, function('s:debugasync', [a:event, a:data]))
+endfunction
+
+function! s:compareLocations(left, right) abort
+  if a:left.uri < a:right.uri
+    return -1
+  endif
+
+  if a:left.uri == a:right.uri && a:left.range.start.line < a:right.range.start.line
+    return -1
+  endif
+
+  if a:left.uri == a:right.uri && a:left.range.start.line == a:right.range.start.line && a:left.range.start.character < a:right.range.start.character
+    return -1
+  endif
+
+  if a:left.uri == a:right.uri && a:left.range.start.line == a:right.range.start.line && a:left.range.start.character == a:right.range.start.character
+    return 0
+  endif
+
+  return 1
 endfunction
 
 " restore Vi compatibility settings
