@@ -685,13 +685,20 @@ function! s:referencesHandler(next, msg) abort dict
     let l:fname = go#path#FromURI(l:loc.uri)
     let l:line = l:loc.range.start.line+1
     let l:bufnr = bufnr(l:fname)
+    let l:bufinfo = getbufinfo(l:fname)
 
     try
-      if l:bufnr == -1
-        let l:content = readfile(l:fname, '', l:line)[-1]
+      if l:bufnr == -1 || len(l:bufinfo) == 0 || l:bufinfo[0].loaded == 0
+        let l:filecontents = readfile(l:fname, '', l:line)
       else
-        let l:content = getbufline(l:fname, l:line)[-1]
+        let l:filecontents = getbufline(l:fname, l:line)
       endif
+
+      if len(l:filecontents) == 0
+        continue
+      endif
+
+      let l:content = l:filecontents[-1]
     catch
       call go#util#EchoError(printf('%s (line %s): %s at %s', l:fname, l:line, v:exception, v:throwpoint))
     endtry
