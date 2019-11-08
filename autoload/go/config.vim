@@ -485,6 +485,10 @@ function! go#config#Updatetime() abort
   return go_updatetime == 0 ? &updatetime : go_updatetime
 endfunction
 
+function! go#config#ReferrersMode() abort
+  return get(g:, 'go_referrers_mode', 'gopls')
+endfunction
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
