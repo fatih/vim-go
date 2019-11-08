@@ -1405,6 +1405,16 @@ and `guru`.
 >
   let g:go_def_mode = 'gopls'
 <
+                                                       *'g:go_referrers_mode'*
+
+Use this option to define the command to be used for |:GoReferrers|. By
+default `gopls` is used, because it is the fastest and works with Go modules.
+One might also use `guru` for its ability to show references from other
+packages.  This option will be removed after `gopls` can show references from
+other packages. Valid options are `gopls` and `guru`.
+>
+  let g:go_referrers_mode = 'gopls'
+<
                                                   *'g:go_def_mapping_enabled'*
 
 Use this option to enable/disable the default mapping of CTRL-],

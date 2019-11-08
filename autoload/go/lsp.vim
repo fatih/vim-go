@@ -681,17 +681,26 @@ endfunction
 function! s:referencesHandler(next, msg) abort dict
   let l:result = []
 
+  call sort(a:msg, funcref('s:compareLocations'))
+
   for l:loc in a:msg
     let l:fname = go#path#FromURI(l:loc.uri)
     let l:line = l:loc.range.start.line+1
     let l:bufnr = bufnr(l:fname)
+    let l:bufinfo = getbufinfo(l:fname)
 
     try
-      if l:bufnr == -1
-        let l:content = readfile(l:fname, '', l:line)[-1]
+      if l:bufnr == -1 || len(l:bufinfo) == 0 || l:bufinfo[0].loaded == 0
+        let l:filecontents = readfile(l:fname, '', l:line)
       else
-        let l:content = getbufline(l:fname, l:line)[-1]
+        let l:filecontents = getbufline(l:fname, l:line)
       endif
+
+      if len(l:filecontents) == 0
+        continue
+      endif
+
+      let l:content = l:filecontents[-1]
     catch
       call go#util#EchoError(printf('%s (line %s): %s at %s', l:fname, l:line, v:exception, v:throwpoint))
     endtry
@@ -967,6 +976,26 @@ endfunction
 
 function! s:debug(event, data, ...) abort
   call timer_start(10, function('s:debugasync', [a:event, a:data]))
+endfunction
+
+function! s:compareLocations(left, right) abort
+  if a:left.uri < a:right.uri
+    return -1
+  endif
+
+  if a:left.uri == a:right.uri && a:left.range.start.line < a:right.range.start.line
+    return -1
+  endif
+
+  if a:left.uri == a:right.uri && a:left.range.start.line == a:right.range.start.line && a:left.range.start.character < a:right.range.start.character
+    return -1
+  endif
+
+  if a:left.uri == a:right.uri && a:left.range.start.line == a:right.range.start.line && a:left.range.start.character == a:right.range.start.character
+    return 0
+  endif
+
+  return 1
 endfunction
 
 " restore Vi compatibility settings
