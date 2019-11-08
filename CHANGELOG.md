@@ -33,6 +33,9 @@ IMPROVEMENTS:
   [[GH-2541]](https://github.com/fatih/vim-go/pull/2541)
 * Install most helper tools in module aware mode.
   [[GH-2545]](https://github.com/fatih/vim-go/pull/2545)
+* Add a new option, `g:go_referrers_mode` to allow the user to choose whether
+  to use gopls or guru for finding references.
+  [[GH-2566]](https://github.com/fatih/vim-go/pull/2566)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
