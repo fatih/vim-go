@@ -190,6 +190,10 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:config = {
           \ 'buildFlags': [],
           \ 'hoverKind': 'NoDocumentation',
+          \ 'deepCompletion': go#config#GoplsDeepCompletion(),
+          \ 'fuzzyMatching': go#config#GoplsFuzzyMatching(),
+          \ 'completeUnimported': go#config#GoplsCompleteUnimported(),
+          \ 'usePlaceholders': go#config#GoplsUsePlaceholders(),
           \ }
     let l:buildtags = go#config#BuildTags()
     if buildtags isnot ''
