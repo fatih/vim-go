@@ -38,6 +38,7 @@ IMPROVEMENTS:
   [[GH-2566]](https://github.com/fatih/vim-go/pull/2566)
 * Add options to control how gopls responds to completion requests.
   [[GH-2567]](https://github.com/fatih/vim-go/pull/2567)
+  [[GH-2568]](https://github.com/fatih/vim-go/pull/2568)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
