@@ -391,6 +391,11 @@ function! s:hi()
   hi def link goDiagnosticError SpellBad
   hi def link goDiagnosticWarning SpellRare
 
+  hi def link goDeclsFzfKeyword        Keyword
+  hi def link goDeclsFzfFunction       Function
+  hi def link goDeclsFzfSpecialComment SpecialComment
+  hi def link goDeclsFzfComment        Comment
+
   " :GoCoverage commands
   hi def      goCoverageCovered    ctermfg=green guifg=#A6E22E
   hi def      goCoverageUncover    ctermfg=red guifg=#F92672
