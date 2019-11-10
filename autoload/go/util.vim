@@ -551,6 +551,24 @@ function! go#util#SetEnv(name, value) abort
   return function('go#util#SetEnv', [a:name, l:oldvalue], l:state)
 endfunction
 
+function! go#util#ClearGroupFromMatches(group) abort
+  if !exists("*matchaddpos")
+    return 0
+  endif
+
+  let l:cleared = 0
+
+  let m = getmatches()
+  for item in m
+    if item['group'] == a:group
+      call matchdelete(item['id'])
+      let l:cleared = 1
+    endif
+  endfor
+
+  return l:cleared
+endfunction
+
 function! s:unset(name) abort
   try
     " unlet $VAR was introducted in Vim 8.0.1832, which is newer than the
