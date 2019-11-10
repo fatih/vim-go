@@ -482,11 +482,15 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
   endif
 
   let same_ids = result['sameids']
+
   " highlight the lines
+  let l:matches = []
   for item in same_ids
     let pos = split(item, ':')
-    call matchaddpos('goSameId', [[str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)]])
+    let l:matches = add(l:matches, [str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)])
   endfor
+
+  call matchaddpos('goSameId', l:matches)
 
   if go#config#AutoSameids()
     " re-apply SameIds at the current cursor position at the time the buffer
@@ -501,15 +505,7 @@ endfunction
 " ClearSameIds returns 0 when it removes goSameId groups and non-zero if no
 " goSameId groups are found.
 function! go#guru#ClearSameIds() abort
-  let l:cleared = 0
-
-  let m = getmatches()
-  for item in m
-    if item['group'] == 'goSameId'
-      call matchdelete(item['id'])
-      let l:cleared = 1
-    endif
-  endfor
+  let l:cleared = go#util#ClearGroupFromMatches('goSameId')
 
   if !l:cleared
     return 1

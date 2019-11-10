@@ -388,6 +388,8 @@ hi def link goCoverageNormalText Comment
 
 function! s:hi()
   hi def link goSameId Search
+  hi def link goDiagnosticError SpellBad
+  hi def link goDiagnosticWarning SpellRare
 
   " :GoCoverage commands
   hi def      goCoverageCovered    ctermfg=green guifg=#A6E22E

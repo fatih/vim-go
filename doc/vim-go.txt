@@ -2016,6 +2016,18 @@ Highlight variable names in variable assignments (`x` in `x =`).
 >
   let g:go_highlight_variable_assignments = 0
 <
+                                          *'g:go_highlight_diagnostic_errors'*
+
+Highlight diagnostic errors.
+>
+  let g:go_highlight_diagnostic_errors = 1
+<
+                                        *'g:go_highlight_diagnostic_warnings'*
+
+Highlight diagnostic warnings.
+>
+  let g:go_highlight_diagnostic_warnings = 1
+<
 
 ==============================================================================
                                            *gohtmltmpl* *ft-gohtmltmpl-syntax*
