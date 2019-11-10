@@ -383,6 +383,11 @@ hi def link goCoverageNormalText Comment
 function! s:hi()
   hi def link goSameId Search
 
+  hi def link goDeclsFzfKeyword        Keyword
+  hi def link goDeclsFzfFunction       Function
+  hi def link goDeclsFzfSpecialComment SpecialComment
+  hi def link goDeclsFzfComment        Comment
+
   " :GoCoverage commands
   hi def      goCoverageCovered    ctermfg=green guifg=#A6E22E
   hi def      goCoverageUncover    ctermfg=red guifg=#F92672
