@@ -41,6 +41,8 @@ IMPROVEMENTS:
   [[GH-2568]](https://github.com/fatih/vim-go/pull/2568)
 * Add syntax highlighting for binary literals.
   [[GH-2557]](https://github.com/fatih/vim-go/pull/2557)
+* Improve highlighting of invalid numeric literals.
+  [[GH-2571]](https://github.com/fatih/vim-go/pull/2571)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
