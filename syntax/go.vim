@@ -164,13 +164,15 @@ syn match       goSingleDecl        /\%(import\|var\|const\) [^(]\@=/ contains=g
 " Integers
 syn match       goDecimalInt        "\<-\=\d\+\%([Ee][-+]\=\d\+\)\=\>"
 syn match       goHexadecimalInt    "\<-\=0[xX]\x\+\>"
+syn match       goHexadecimalError  "\<-\=0[xX]\x*[^ \t0-9A-Fa-f]\S*\>"
 syn match       goOctalInt          "\<-\=0\o\+\>"
-syn match       goOctalError        "\<-\=0\o*[89]\d*\>"
+syn match       goOctalError        "\<-\=0[^XxBb]\o*[^ \t0-7]\S*\>"
 syn match       goBinaryInt         "\<-\=0[bB][01]\+\>"
-syn match       goBinaryError       "\<-\=0[bB][01]*[2-9]\+[01]*\>"
+syn match       goBinaryError       "\<-\=0[bB][01]*[^ \t01]\S*\>"
 
 hi def link     goDecimalInt        Integer
 hi def link     goHexadecimalInt    Integer
+hi def link     goHexadecimalError  Error
 hi def link     goOctalInt          Integer
 hi def link     goOctalError        Error
 hi def link     goBinaryInt         Integer
