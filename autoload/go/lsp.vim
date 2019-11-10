@@ -147,7 +147,10 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.handleNotification(req) dict abort
-      " TODO(bc): handle notifications (e.g. window/showMessage).
+      " TODO(bc): handle more notifications (e.g. window/showMessage).
+      if a:req.method == 'textDocument/publishDiagnostics'
+        call s:handleDiagnostics(a:req.params)
+      endif
   endfunction
 
   function! l:lsp.handleResponse(resp) dict abort
@@ -996,6 +999,54 @@ function! s:compareLocations(left, right) abort
   endif
 
   return 1
+endfunction
+
+function! s:handleDiagnostics(data) abort
+  if !exists("*matchaddpos")
+    return 0
+  endif
+
+  try
+    let l:fname = go#path#FromURI(a:data.uri)
+    if bufnr(l:fname) == bufnr('')
+      let l:errorMatches = []
+      let l:warningMatches = []
+      for l:diag in a:data.diagnostics
+        if !(l:diag.severity == 1 || l:diag.severity == 2)
+          continue
+        endif
+        let l:range = l:diag.range
+        if l:range.start.line != l:range.end.line
+          continue
+        endif
+
+        let l:line = l:range.start.line + 1
+        let l:col = go#lsp#lsp#PositionOf(getline(l:line), l:range.start.character)
+        let l:lastcol = go#lsp#lsp#PositionOf(getline(l:line), l:range.end.character)
+
+        let l:pos = [l:line, l:col, l:lastcol - l:col + 1]
+        if l:diag.severity == 1
+          let l:errorMatches = add(l:errorMatches, l:pos)
+        elseif l:diag.severity == 2
+          let l:warningMatches = add(l:warningMatches, l:pos)
+        endif
+      endfor
+
+      " clear the old matches just before adding the new ones to keep flicker
+      " to a minimum.
+      call go#util#ClearGroupFromMatches('goDiagnosticError')
+
+      if go#config#HighlightDiagnosticErrors()
+        call matchaddpos('goDiagnosticError', l:errorMatches)
+      endif
+      call go#util#ClearGroupFromMatches('goDiagnosticWarning')
+      if go#config#HighlightDiagnosticWarnings()
+        call matchaddpos('goDiagnosticWarning', l:warningMatches)
+      endif
+    endif
+  catch
+    call go#util#EchoError(v:exception)
+  endtry
 endfunction
 
 " restore Vi compatibility settings
