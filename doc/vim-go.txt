@@ -1195,13 +1195,12 @@ into the statusline.
 
                                                       *go#complete#Complete()*
 
-Uses `gopls` for autocompletion. By default, it is hooked up to |'omnifunc'|
-for Vim8 and Neovim.
+Uses `gopls` for autocompletion. By default, it is hooked up to |'omnifunc'|.
+
 
                                                 *go#complete#GocodeComplete()*
 
-Uses `gocode` for autocompletion. By default, it is hooked up to |'omnifunc'|
-for Vim 8+.
+Uses `gocode` for autocompletion.
 
                                                    *go#tool#DescribeBalloon()*
 
@@ -1316,7 +1315,8 @@ Use this option to auto |:GoFmt| on save. By default it's enabled >
                                                           *'g:go_fmt_command'*
 
 Use this option to define which tool is used to gofmt. By default `gofmt` is
-used >
+used.
+>
 
   let g:go_fmt_command = "gofmt"
 <
