@@ -1032,16 +1032,22 @@ function! s:handleDiagnostics(data) abort
         endif
       endfor
 
-      " clear the old matches just before adding the new ones to keep flicker
-      " to a minimum.
-      call go#util#ClearGroupFromMatches('goDiagnosticError')
-
-      if go#config#HighlightDiagnosticErrors()
-        call matchaddpos('goDiagnosticError', l:errorMatches)
+      if hlexists('goDiagnosticError')
+        " clear the old matches just before adding the new ones to keep flicker
+        " to a minimum.
+        call go#util#ClearGroupFromMatches('goDiagnosticError')
+        if go#config#HighlightDiagnosticErrors()
+          call matchaddpos('goDiagnosticError', l:errorMatches)
+        endif
       endif
-      call go#util#ClearGroupFromMatches('goDiagnosticWarning')
-      if go#config#HighlightDiagnosticWarnings()
-        call matchaddpos('goDiagnosticWarning', l:warningMatches)
+
+      if hlexists('goDiagnosticError')
+        " clear the old matches just before adding the new ones to keep flicker
+        " to a minimum.
+        call go#util#ClearGroupFromMatches('goDiagnosticWarning')
+        if go#config#HighlightDiagnosticWarnings()
+          call matchaddpos('goDiagnosticWarning', l:warningMatches)
+        endif
       endif
     endif
   catch
