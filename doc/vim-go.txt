@@ -1670,6 +1670,14 @@ By default it is set to edit.
 >
   let g:go_alternate_mode = "edit"
 <
+                                                     *'g:go_gorename_command'*
+
+Use this option to define which tool is used to rename. By default `gorename`
+is used. Valid options are `gorename` and `gopls`. Warning: as of `gopls`
+v0.2.0, it will only rename identifiers in the current package.
+>
+  let g:go_gorename_command = 'gorename'
+<
                                                      *'g:go_gorename_prefill'*
 
 Expression to prefill the new identifier when using |:GoRename| without any
