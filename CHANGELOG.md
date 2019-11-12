@@ -49,6 +49,8 @@ IMPROVEMENTS:
 * Make the highlighting of fzf decls configurable.
   [[GH-2572]](https://github.com/fatih/vim-go/pull/2572)
   [[GH-2579]](https://github.com/fatih/vim-go/pull/2579)
+* Support renaming with gopls.
+  [[GH-2577]](https://github.com/fatih/vim-go/pull/2577)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
