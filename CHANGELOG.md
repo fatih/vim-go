@@ -76,6 +76,8 @@ BUG FIXES:
   [[GH-2549]](https://github.com/fatih/vim-go/pull/2549)
 * Restore cwd after `:GoTest` when `g:go_term_enabled` is set.
   [[GH-2556]](https://github.com/fatih/vim-go/pull/2556)
+* Expand struct variable correctly in the variables debug window.
+  [[GH-2574]](https://github.com/fatih/vim-go/pull/2574)
 
 ## v1.21 - (September 11, 2019)
 
