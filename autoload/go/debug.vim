@@ -326,10 +326,10 @@ endfunction
 
 function! s:expand_var() abort
   " Get name from struct line.
-  let name = matchstr(getline('.'), '^[^:]\+\ze: [a-zA-Z0-9\.·]\+{\.\.\.}$')
+  let name = matchstr(getline('.'), '^[^:]\+\ze: \*\?[a-zA-Z0-9-_/\.]\+\({\.\.\.}\)\?$')
   " Anonymous struct
   if name == ''
-    let name = matchstr(getline('.'), '^[^:]\+\ze: struct {.\{-}}$')
+    let name = matchstr(getline('.'), '^[^:]\+\ze: \*\?struct {.\{-}}$')
   endif
 
   if name != ''
