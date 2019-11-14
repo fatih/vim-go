@@ -94,6 +94,8 @@ command! -nargs=? -complete=dir GoDeclsDir call go#decls#Decls(1, <q-args>)
 " -- impl
 command! -nargs=* -complete=customlist,go#impl#Complete GoImpl call go#impl#Impl(<f-args>)
 
+command! -nargs=1 GoInterFunc call go#inter#InterFunc(<f-args>)
+
 " -- template
 command! -nargs=0 GoTemplateAutoCreateToggle call go#template#ToggleAutoCreate()
 
