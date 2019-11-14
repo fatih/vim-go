@@ -102,6 +102,7 @@ function! Test_numeric_literal_highlight() abort
   syntax on
 
   let tests = {
+        \ 'lone zero': {'group': 'goDecimalInt', 'value': '0'},
         \ 'integer': {'group': 'goDecimalInt', 'value': '1234567890'},
         \ 'hexadecimal': {'group': 'goHexadecimalInt', 'value': '0x0123456789abdef'},
         \ 'hexadecimalErrorLeading': {'group': 'goHexadecimalError', 'value': '0xg0123456789abdef'},
