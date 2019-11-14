@@ -162,11 +162,11 @@ endif
 syn match       goSingleDecl        /\%(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
 
 " Integers
-syn match       goDecimalInt        "\<-\=\d\+\%([Ee][-+]\=\d\+\)\=\>"
+syn match       goDecimalInt        "\<-\=[1-9]\d*\%([Ee][-+]\=\d\+\)\=\>"
 syn match       goHexadecimalInt    "\<-\=0[xX]\x\+\>"
 syn match       goHexadecimalError  "\<-\=0[xX]\x*[^ \t0-9A-Fa-f]\S*\>"
 syn match       goOctalInt          "\<-\=0\o\+\>"
-syn match       goOctalError        "\<-\=0[^XxBb]\o*[^ \t0-7]\S*\>"
+syn match       goOctalError        "\<-\=0[XxBb]\@!\o*[^ \t0-7]\S*\>"
 syn match       goBinaryInt         "\<-\=0[bB][01]\+\>"
 syn match       goBinaryError       "\<-\=0[bB][01]*[^ \t01]\S*\>"
 
