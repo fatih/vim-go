@@ -43,6 +43,7 @@ IMPROVEMENTS:
   [[GH-2557]](https://github.com/fatih/vim-go/pull/2557)
 * Improve highlighting of invalid numeric literals.
   [[GH-2571]](https://github.com/fatih/vim-go/pull/2571)
+  [[GH-2587]](https://github.com/fatih/vim-go/pull/2587)
 * Add highlighting of sections reported by gopls diagnostics' errors
   and warnings.
   [[GH-2569]](https://github.com/fatih/vim-go/pull/2569)
