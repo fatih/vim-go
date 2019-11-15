@@ -163,7 +163,7 @@ syn match       goSingleDecl        /\%(import\|var\|const\) [^(]\@=/ contains=g
 
 " Integers
 syn match       goDecimalInt        "\<-\=\(0\|[1-9]_\?\(\d\+_\?\)*\)\%([Ee][-+]\=\d\+\)\=\>"
-syn match       goDecimalErrorInt   "\<-\=\(_\(\d\+_*\)\+\|\(\d\+_*\)\+_\{2,\}\(\d\+_*\)\+\|\(\d\+_*\)\+_\+\)\%([Ee][-+]\=\d\+\)\=\>"
+syn match       goDecimalErrorInt   "\<-\=\(_\(\d\+_*\)\+\|\([1-9]\d*_*\)\+_\{2,\}\(\d\+_*\)\+\|\([1-9]\d*_*\)\+_\+\)\%([Ee][-+]\=\d\+\)\=\>"
 syn match       goHexadecimalInt    "\<-\=0[xX]_\?\(\x\+_\?\)\+\>"
 syn match       goHexadecimalError  "\<-\=0[xX]_\?\(\x\+_\?\)*\(\([^ \t0-9A-Fa-f_]\|_\{2,\}\)\S*\|_\)\>"
 syn match       goOctalInt          "\<-\=0[oO]\?_\?\(\o\+_\?\)\+\>"
