@@ -167,7 +167,7 @@ syn match       goDecimalErrorInt   "\<-\=\(_\(\d\+_*\)\+\|\([1-9]\d*_*\)\+_\{2,
 syn match       goHexadecimalInt    "\<-\=0[xX]_\?\(\x\+_\?\)\+\>"
 syn match       goHexadecimalError  "\<-\=0[xX]_\?\(\x\+_\?\)*\(\([^ \t0-9A-Fa-f_]\|_\{2,\}\)\S*\|_\)\>"
 syn match       goOctalInt          "\<-\=0[oO]\?_\?\(\o\+_\?\)\+\>"
-syn match       goOctalError        "\<-\=0\([0-7oO_]*\([^ \t0-7oOxX\]\}\_]\+\|[oO]\{2,\}\|_\{2,\}\)[0-7oO_]*\)\+\S*\>"
+syn match       goOctalError        "\<-\=0[0-7oO_]*\(\([^ \t0-7oOxX_/]\|[oO]\{2,\}\|_\{2,\}\)\S*\|_\|[oO]\)\>"
 syn match       goBinaryInt         "\<-\=0[bB]_\?\([01]\+_\?\)\+\>"
 syn match       goBinaryError       "\<-\=0[bB]_\?\([01]\+_\?\)*\([^ \t01_]\S*\|_\{2,\}\S*\|_\)\>"
 
