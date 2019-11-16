@@ -128,6 +128,7 @@ function! Test_numeric_literal_highlight() abort
         \ 'octalErrorDoubleTrailingUnderscore': {'group': 'goOctalError', 'value': '0o_1234567__'},
         \ 'octalErrorTrailingUnderscore': {'group': 'goOctalError', 'value': '0o_123456_7_'},
         \ 'octalErrorTrailingO': {'group': 'goOctalError', 'value': '0o_123456_7o'},
+        \ 'octalErrorTrailingX': {'group': 'goOctalError', 'value': '0o_123456_7x'},
         \ 'OctalPrefix': {'group': 'goOctalInt', 'value': '0O1234567'},
         \ 'binaryInt': {'group': 'goBinaryInt', 'value': '0b0101'},
         \ 'binaryIntGrouped': {'group': 'goBinaryInt', 'value': '0b_01_01'},
