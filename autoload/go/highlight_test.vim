@@ -122,20 +122,72 @@ function! Test_numeric_literal_highlight() abort
         \ }
 
   for kv in items(tests)
-    let l:dir = gotest#write_file(printf('numeric/%s.go', kv[0]), [
-          \ 'package numeric',
-          \ '',
-          \ printf("var v = %s\x1f", kv[1].value),
-          \ ])
-
-    try
-      let l:pos = getcurpos()
-      let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
-      call assert_equal(kv[1].group, l:actual, kv[0])
-    finally
-      " call delete(l:dir, 'rf')
-    endtry
+    let l:actual = s:numericHighlightGroupInAssignment(kv[0], kv[1].value)
+    call assert_equal(kv[1].group, l:actual, kv[0])
   endfor
+endfunction
+
+function! TestZeroAsIndexElement() abort
+  syntax on
+
+  let l:actual = s:numericHighlightGroupInSliceElement('zero-element', '0')
+  call assert_equal('goDecimalInt', l:actual)
+endfunction
+
+function! TestZeroAsSliceIndex() abort
+  syntax on
+
+  let l:actual = s:numericHighlightGroupInSliceIndex('zero-index', '0')
+  call assert_equal('goDecimalInt', l:actual)
+endfunction
+
+function! s:numericHighlightGroupInAssignment(testname, value)
+  let l:dir = gotest#write_file(printf('numeric/%s.go', a:testname), [
+        \ 'package numeric',
+        \ '',
+        \ printf("var v = %s\x1f", a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunction
+
+function! s:numericHighlightGroupInSliceElement(testname, value)
+  let l:dir = gotest#write_file(printf('numeric/slice-element/%s.go', a:testname), [
+        \ 'package numeric',
+        \ '',
+        \ printf("v := []int{%s\x1f}", a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunction
+
+function! s:numericHighlightGroupInSliceIndex(testname, value)
+  let l:dir = gotest#write_file(printf('numeric/slice-index/%s.go', a:testname), [
+        \ 'package numeric',
+        \ '',
+        \ 'var sl []int',
+        \ printf("println(sl[{%s\x1f])", a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
 endfunction
 
 " restore Vi compatibility settings
