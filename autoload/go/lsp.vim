@@ -394,6 +394,7 @@ function! s:newHandlerState(statustype) abort
         \ 'winid': win_getid(winnr()),
         \ 'statustype': a:statustype,
         \ 'jobdir': getcwd(),
+        \ 'handleResult': funcref('s:noop'),
       \ }
 
   " explicitly bind requestComplete to state so that within it, self will
@@ -511,7 +512,6 @@ function! go#lsp#DidOpen(fname) abort
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#DidOpen(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
   let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:noop')
 
   " TODO(bc): setting a buffer level variable here assumes that a:fname is the
   " current buffer. Change to a:fname first before setting it and then change
@@ -538,7 +538,6 @@ function! go#lsp#DidChange(fname) abort
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#DidChange(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
   let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:noop')
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
@@ -554,7 +553,6 @@ function! go#lsp#DidClose(fname) abort
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#DidClose(fnamemodify(a:fname, ':p'))
   let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:noop')
   " TODO(bc): setting a buffer level variable here assumes that a:fname is the
   " current buffer. Change to a:fname first before setting it and then change
   " back to active buffer.
@@ -854,7 +852,6 @@ function! go#lsp#AddWorkspaceDirectory(...) abort
 
   let l:lsp = s:lspfactory.get()
   let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:noop')
   let l:lsp.workspaceDirectories = extend(l:lsp.workspaceDirectories, l:workspaces)
   let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:workspaces, [])
   call l:lsp.sendMessage(l:msg, l:state)
@@ -883,7 +880,6 @@ function! go#lsp#CleanWorkspaces() abort
   endif
 
   let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:noop')
   let l:msg = go#lsp#message#ChangeWorkspaceFolders([], l:missing)
   call l:lsp.sendMessage(l:msg, l:state)
 
@@ -900,7 +896,6 @@ function! go#lsp#ResetWorkspaceDirectories() abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:noop')
   let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:lsp.workspaceDirectories, l:lsp.workspaceDirectories)
   call l:lsp.sendMessage(l:msg, l:state)
 
@@ -942,7 +937,6 @@ function! s:exit(restart) abort
   let l:state = s:newHandlerState('exit')
 
   let l:msg = go#lsp#message#Shutdown()
-  let l:state.handleResult = funcref('s:noop')
   let l:retval = l:lsp.sendMessage(l:msg, l:state)
 
   let l:msg = go#lsp#message#Exit()
