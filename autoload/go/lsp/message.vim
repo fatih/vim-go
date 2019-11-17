@@ -198,6 +198,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
           \ 'deepCompletion': go#config#GoplsDeepCompletion() ? v:true : v:false,
           \ 'fuzzyMatching': go#config#GoplsFuzzyMatching() ? v:true : v:false,
           \ 'completeUnimported': go#config#GoplsCompleteUnimported() ? v:true : v:false,
+          \ 'staticcheck': go#config#GoplsStaticCheck() ? v:true : v:false,
           \ 'usePlaceholders': go#config#GoplsUsePlaceholders() ? v:true : v:false,
           \ }
     let l:buildtags = go#config#BuildTags()

@@ -1761,6 +1761,14 @@ By default it is enabled.
   let g:go_gopls_fuzzy_matching = 1
 <
 
+                                                   *'g:go_gopls_staticcheck'*
+
+Specifies whether `gopls` should run staticcheck checks. By default it is
+disabled.
+>
+  let g:go_gopls_staticcheck = 0
+<
+
                                                *'g:go_gopls_use_placeholders'*
 
 Specifies whether `gopls` can provide placeholders for function parameters and

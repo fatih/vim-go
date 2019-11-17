@@ -525,6 +525,10 @@ function! go#config#GoplsFuzzyMatching() abort
   return get(g:, 'go_gopls_fuzzy_matching', 1)
 endfunction
 
+function! go#config#GoplsStaticCheck() abort
+  return get(g:, 'go_gopls_staticcheck', 0)
+endfunction
+
 function! go#config#GoplsUsePlaceholders() abort
   return get(g:, 'go_gopls_use_placeholders', 0)
 endfunction
