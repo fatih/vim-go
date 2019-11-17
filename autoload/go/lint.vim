@@ -276,7 +276,7 @@ function! s:metalinterautosavecomplete(filepath, job, exit_code, messages)
   let l:idx = len(a:messages) - 1
   while l:idx >= 0
     " Go 1.13 changed how go vet output is formatted by prepending a leading
-    " 'vet :', so account for that, too. This function is really needed for
+    " 'vet :', so account for that, too. This function isn't really needed for
     " gometalinter at all, so the check for Go 1.13's go vet output shouldn't
     " be neeeded, but s:lint_job hooks this up even when the
     " g:go_metalinter_command is golangci-lint.
