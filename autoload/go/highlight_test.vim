@@ -146,7 +146,7 @@ function! Test_numeric_literal_highlight() abort
   endfor
 endfunction
 
-function! TestZeroAsIndexElement() abort
+function! Test_zero_as_index_element() abort
   syntax on
 
   let l:actual = s:numericHighlightGroupInSliceElement('zero-element', '0')
@@ -155,7 +155,7 @@ function! TestZeroAsIndexElement() abort
   call assert_equal('goDecimalInt', l:actual, 'multi-dimensional')
 endfunction
 
-function! TestZeroAsSliceIndex() abort
+function! Test_zero_as_slice_index() abort
   syntax on
 
   let l:actual = s:numericHighlightGroupInSliceIndex('zero-index', '0')
@@ -163,6 +163,13 @@ function! TestZeroAsSliceIndex() abort
   let l:actual = s:numericHighlightGroupInMultidimensionalSliceIndex('zero-index', '0', '0')
 
   call assert_equal('goDecimalInt', l:actual, 'multi-dimensional')
+endfunction
+
+function! Test_zero_as_start_slicing_slice() abort
+  syntax on
+
+  let l:actual = s:numericHighlightGroupInSliceSlicing('slice-slicing', '0', '1')
+  call assert_equal('goDecimalInt', l:actual)
 endfunction
 
 function! s:numericHighlightGroupInAssignment(testname, value)
@@ -185,7 +192,7 @@ function! s:numericHighlightGroupInSliceElement(testname, value)
   let l:dir = gotest#write_file(printf('numeric/slice-element/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
-        \ printf("v := []int{%s\x1f}", a:value),
+        \ printf("v := []int{\x1f%s}", a:value),
         \ ])
 
   try
@@ -201,7 +208,7 @@ function! s:numericHighlightGroupInMultidimensionalSliceElement(testname, value)
   let l:dir = gotest#write_file(printf('numeric/slice-multidimensional-element/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
-        \ printf("v := [][]int{{%s\x1f},{%s}}", a:value, a:value),
+        \ printf("v := [][]int{{\x1f%s},{%s}}", a:value, a:value),
         \ ])
 
   try
@@ -218,7 +225,7 @@ function! s:numericHighlightGroupInSliceIndex(testname, value)
         \ 'package numeric',
         \ '',
         \ 'var sl []int',
-        \ printf("println(sl[%s\x1f])", a:value),
+        \ printf("println(sl[\x1f%s])", a:value),
         \ ])
 
   try
@@ -230,14 +237,30 @@ function! s:numericHighlightGroupInSliceIndex(testname, value)
   endtry
 endfunction
 
-function! s:numericHighlightGroupInMultidimensionalSliceIndex(testname, value)
+function! s:numericHighlightGroupInMultidimensionalSliceIndex(testname, first, second)
   let l:dir = gotest#write_file(printf('numeric/slice-multidimensional-index/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
         \ 'var sl [][]int',
-        \ printf("println(sl[%s\x1f][%s])", a:value, a:value),
+        \ printf("println(sl[\x1f%s][%s])", a:first, a:second),
         \ ])
 
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunction
+
+function! s:numericHighlightGroupInSliceSlicing(testname, from, to)
+  let l:dir = gotest#write_file(printf('numeric/slice-slicing/%s.go', a:testname), [
+        \ 'package numeric',
+        \ '',
+        \ 'var sl = []int{1,2}',
+        \ printf("println(sl[\x1f%s:%s])", a:from, a:to),
+        \ ])
   try
     let l:pos = getcurpos()
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
