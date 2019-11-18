@@ -46,6 +46,7 @@ IMPROVEMENTS:
   [[GH-2587]](https://github.com/fatih/vim-go/pull/2587)
   [[GH-2589]](https://github.com/fatih/vim-go/pull/2589)
   [[GH-2584]](https://github.com/fatih/vim-go/pull/2584)
+  [[GH-2597]](https://github.com/fatih/vim-go/pull/2597)
 * Add highlighting of sections reported by gopls diagnostics' errors
   and warnings.
   [[GH-2569]](https://github.com/fatih/vim-go/pull/2569)
