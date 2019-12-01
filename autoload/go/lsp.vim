@@ -21,6 +21,12 @@ function! s:lspfactory.reset() dict abort
 endfunction
 
 function! s:newlsp() abort
+  let l:lsp = {'sendMessage': funcref('s:noop')}
+
+  if !go#config#GoplsEnabled()
+    return l:lsp
+  endif
+
   if !go#util#has_job()
     let l:oldshortmess=&shortmess
     if has('nvim')
@@ -31,7 +37,7 @@ function! s:newlsp() abort
     " often immediately overwritten by an async message.
     sleep 1
     let &shortmess=l:oldshortmess
-    return {'sendMessage': funcref('s:noop')}
+    return l:lsp
   endif
 
   " job is the job used to talk to the backing instance of gopls.

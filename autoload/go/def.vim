@@ -66,6 +66,11 @@ function! go#def#Jump(mode, type) abort
       let [l:out, l:err] = go#util#ExecInDir(l:cmd)
     endif
   elseif bin_name == 'gopls'
+    if !go#config#GoplsEnabled()
+      call go#util#EchoError("go_def_mode is 'gopls', but gopls is disabled")
+      return
+    endif
+
     let [l:line, l:col] = go#lsp#lsp#Position()
     " delegate to gopls, with an empty job object and an exit status of 0
     " (they're irrelevant for gopls).

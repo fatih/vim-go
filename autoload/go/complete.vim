@@ -252,6 +252,10 @@ function! go#complete#GocodeComplete(findstart, base) abort
 endfunction
 
 function! go#complete#Complete(findstart, base) abort
+  if !go#config#GoplsEnabled()
+    return -3
+  endif
+
   let l:state = {'done': 0, 'matches': [], 'start': -1}
 
   function! s:handler(state, start, matches) abort dict

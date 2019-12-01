@@ -12,7 +12,7 @@ command! -range=% GoCallers call go#guru#Callers(<count>)
 command! -range=% GoCallstack call go#guru#Callstack(<count>)
 command! -range=% GoFreevars call go#guru#Freevars(<count>)
 command! -range=% GoChannelPeers call go#guru#ChannelPeers(<count>)
-command! -range=% GoReferrers call go#guru#Referrers(<count>)
+command! -range=% GoReferrers call go#referrers#Referrers(<count>)
 
 command! -range=0 GoSameIds call go#guru#SameIds(1)
 command! -range=0 GoSameIdsClear call go#guru#ClearSameIds()
