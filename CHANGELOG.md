@@ -56,6 +56,9 @@ IMPROVEMENTS:
   [[GH-2579]](https://github.com/fatih/vim-go/pull/2579)
 * Support renaming with gopls.
   [[GH-2577]](https://github.com/fatih/vim-go/pull/2577)
+* Add an option, `g:go_gopls_enabled`, to allow gopls integration to be
+  disabled.
+  [[GH-2605]](https://github.com/fatih/vim-go/pull/2605)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
