@@ -12,7 +12,7 @@ func! Test_impl() abort
     call go#impl#Impl('r', 'reader', 'io.Reader')
     call gotest#assert_buffer(1, [
           \ 'func (r reader) Read(p []byte) (n int, err error) {',
-          \ '	panic("not implemented")',
+          \ '	panic("not implemented") // TODO: Implement',
           \ '}'])
   finally
     call delete(l:tmp, 'rf')
@@ -33,7 +33,7 @@ func! Test_impl_get() abort
           \ 'type reader struct {}',
           \ '',
           \ 'func (r *reader) Read(p []byte) (n int, err error) {',
-          \ '	panic("not implemented")',
+          \ '	panic("not implemented") // TODO: Implement',
           \ '}'])
   finally
     call delete(l:tmp, 'rf')
