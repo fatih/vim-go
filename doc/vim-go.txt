@@ -1721,6 +1721,16 @@ Specifies whether `gocode` should use a different socket type. By default
   let g:go_gocode_socket_type = 'unix'
 <
 
+                                                        *'g:go_gopls_enabled'*
+
+Specifies whether `gopls` can be used by vim-go. By default gopls is enabled.
+When gopls is disabled completion will not work and other configuration
+options may also need to be adjusted.
+
+>
+  let g:go_gopls_enabled = 1
+<
+
                                             *'g:go_gopls_complete_unimported'*
 
 Specifies whether `gopls` should include suggestions from unimported packages.

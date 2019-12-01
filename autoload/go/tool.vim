@@ -87,6 +87,10 @@ function! go#tool#Info(showstatus) abort
   elseif l:mode == 'guru'
     call go#guru#DescribeInfo(a:showstatus)
   elseif l:mode == 'gopls'
+    if !go#config#GoplsEnabled()
+      call go#util#EchoError("go_info_mode is 'gopls', but gopls is disabled")
+      return
+    endif
     call go#lsp#Info(a:showstatus)
   else
     call go#util#EchoError('go_info_mode value: '. l:mode .' is not valid. Valid values are: [gocode, guru, gopls]')
