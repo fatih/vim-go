@@ -149,6 +149,7 @@ let s:default_list_type_commands = {
       \ "GoRun":                "quickfix",
       \ "GoTest":               "quickfix",
       \ "GoVet":                "quickfix",
+      \ "GoReferrers":          "quickfix",
       \ "_guru":                "locationlist",
       \ "_term":                "locationlist",
       \ "_job":                 "locationlist",
