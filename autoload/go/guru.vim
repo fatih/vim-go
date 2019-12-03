@@ -553,7 +553,7 @@ function! s:parse_guru_output(exit_val, output, title) abort
 
   let errors = go#list#Get(l:listtype)
   call go#list#Window(l:listtype, len(errors))
-endfun
+endfunction
 
 function! go#guru#Scope(...) abort
   if a:0
