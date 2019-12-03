@@ -21,6 +21,11 @@ function! go#lsp#message#Initialize(wd) abort
                 \ 'hover': {
                   \ 'contentFormat': ['plaintext'],
                 \ },
+                \ 'completion': {
+                \   'completionItem': {
+                \     'snippetSupport': go#config#GoplsUsePlaceholders() ? v:true : v:false,
+                \   },
+                \ },
               \ }
             \ },
             \ 'workspaceFolders': [s:workspaceFolder(0, a:wd)],
