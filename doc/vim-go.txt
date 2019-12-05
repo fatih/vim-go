@@ -1550,13 +1550,6 @@ it's using `vet`, `golint` and `errcheck`.
 >
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
-                                                  *'g:go_metalinter_disabled'*
-
-Specifies the linters to disable for the |:GoMetaLinter| command. By default
-it's empty
->
-  let g:go_metalinter_disabled = []
-<
                                                    *'g:go_metalinter_command'*
 
 Overrides the command to be executed when |:GoMetaLinter| is called. By
