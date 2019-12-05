@@ -30,13 +30,13 @@ endfunction
 " go#lsp#PositionOf returns len(content[0:units]) where units is utf-16 code
 " units. This is mostly useful for converting LSP text position to vim
 " position.
-function! go#lsp#lsp#PositionOf(content, units) abort
+function! go#lsp#lsp#PositionOf(content, units, ...) abort
   if a:units == 0
     return 1
   endif
 
   let l:remaining = a:units
-  let l:str = ""
+  let l:str = ''
   for l:rune in split(a:content, '\zs')
     if l:remaining < 0
       break
@@ -49,6 +49,20 @@ function! go#lsp#lsp#PositionOf(content, units) abort
   endfor
 
   return len(l:str)
+endfunction
+
+function! go#lsp#lsp#SeverityToErrorType(severity) abort
+  if a:severity == 1
+    return 'E'
+  elseif a:severity == 2
+    return 'W'
+  elseif a:severity == 3
+    return 'I'
+  elseif a:severity == 4
+    return 'I'
+  endif
+
+  return ''
 endfunction
 
 " restore Vi compatibility settings

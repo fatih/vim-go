@@ -53,6 +53,18 @@ function! s:newlsp() abort
   "   * handleResult takes a single argument, the result message received from gopls
   "   * error takes a single argument, the error message received from gopls.
   "     The error method is optional.
+  " workspaceDirectories is an array of named workspaces.
+  " wd is the working directory for gopls
+  " diagnostics is a dictionary whose keys are filenames and each value is a
+  "   list of diagnostic messages for the file.
+  " diagnosticsQueue is a queue of diagnostics notifications that have been
+  "   received, but not yet processed.
+  " fileVersions is a dictionary of filenames to versions.
+  " notificationQueue is a dictionary of filenames to functions. For a given
+  "   filename, each notification will call the first function in the list of
+  "   function values and remove it from the list. The functions should accept
+  "   two arguments: an absolute path and a list of diagnotics messages for
+  "   the file.
   let l:lsp = {
         \ 'job':  '',
         \ 'ready': 0,
@@ -62,6 +74,10 @@ function! s:newlsp() abort
         \ 'handlers': {},
         \ 'workspaceDirectories': [],
         \ 'wd' : '',
+        \ 'diagnosticsQueue': [],
+        \ 'diagnostics': {},
+        \ 'fileVersions': {},
+        \ 'notificationQueue': {}
         \ }
 
   function! l:lsp.readMessage(data) dict abort
@@ -152,13 +168,6 @@ function! s:newlsp() abort
     call self.write(l:msg)
   endfunction
 
-  function! l:lsp.handleNotification(req) dict abort
-      " TODO(bc): handle more notifications (e.g. window/showMessage).
-      if a:req.method == 'textDocument/publishDiagnostics'
-        call s:handleDiagnostics(a:req.params)
-      endif
-  endfunction
-
   function! l:lsp.handleResponse(resp) dict abort
     if has_key(a:resp, 'id') && has_key(self.handlers, a:resp.id)
       try
@@ -198,6 +207,77 @@ function! s:newlsp() abort
         call remove(self.handlers, a:resp.id)
       endtry
     endif
+  endfunction
+
+  function! l:lsp.handleNotification(req) dict abort
+      " TODO(bc): handle more notifications (e.g. window/showMessage).
+      if a:req.method == 'textDocument/publishDiagnostics'
+        call self.handleDiagnostics(a:req.params)
+      endif
+  endfunction
+
+  function! l:lsp.handleDiagnostics(data) dict abort
+    let self.diagnosticsQueue = add(self.diagnosticsQueue, a:data)
+    call self.updateDiagnostics()
+  endfunction
+
+  " TODO(bc): process the queue asynchronously
+  function! l:lsp.updateDiagnostics() dict abort
+    for l:data in self.diagnosticsQueue
+      call remove(self.diagnosticsQueue, 0)
+      try
+        let l:diagnostics = []
+        let l:errorMatches = []
+        let l:warningMatches = []
+        let l:fname = go#path#FromURI(l:data.uri)
+        " get the buffer name relative to the current directory, because
+        " Vim says that a buffer name can't be an absolute path.
+        let l:bufname = fnamemodify(l:fname, ':.')
+
+        if len(l:data.diagnostics) > 0
+
+          " make sure the buffer is listed and loaded before calling getbufline() on it
+          if !bufexists(l:bufname)
+            "let l:starttime = reltime()
+            call bufadd(l:bufname)
+            "echom printf('added %s (%s)', l:bufname, reltimestr(reltime(l:startime)))
+          endif
+
+          if !bufloaded(l:bufname)
+            "let l:starttime = reltime()
+            call bufload(l:bufname)
+            "echom printf('loaded %s (%s)', l:bufname, reltimestr(reltime(l:starttime)))
+          endif
+
+          for l:diag in l:data.diagnostics
+            let [l:error, l:matchpos] = s:errorFromDiagnostic(l:diag, l:bufname, l:fname)
+            let l:diagnostics = add(l:diagnostics, l:error)
+
+            if empty(l:matchpos)
+              continue
+            endif
+
+            if l:diag.severity == 1
+              let l:errorMatches = add(l:errorMatches, l:matchpos)
+            elseif l:diag.severity == 2
+              let l:warningMatches = add(l:warningMatches, l:matchpos)
+            endif
+          endfor
+        endif
+
+        if bufnr(l:bufname) == bufnr('')
+          call s:highlightMatches(l:errorMatches, l:warningMatches)
+        endif
+
+        let self.diagnostics[l:fname] = l:diagnostics
+        if has_key(self.notificationQueue, l:fname) && len(self.notificationQueue[l:fname]) > 0
+          call call(self.notificationQueue[l:fname][0], copy(l:diagnostics))
+          call remove(self.notificationQueue[l:fname], 0)
+        endif
+      catch
+        call go#util#EchoError(printf('%s: %s', v:throwpoint, v:exception))
+      endtry
+    endfor
   endfunction
 
   function! l:lsp.handleInitializeResult(result) dict abort
@@ -510,7 +590,18 @@ function! go#lsp#DidOpen(fname) abort
   endif
 
   let l:lsp = s:lspfactory.get()
-  let l:msg = go#lsp#message#DidOpen(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
+  let l:fname = fnamemodify(a:fname, ':p')
+
+  if !has_key(l:lsp.notificationQueue, l:fname)
+    let l:lsp.notificationQueue[l:fname] = []
+  endif
+
+  if !has_key(l:lsp.fileVersions, l:fname)
+    let l:lsp.fileVersions[l:fname] = 0
+  endif
+  let l:lsp.fileVersions[l:fname] = l:lsp.fileVersions[l:fname] + 1
+
+  let l:msg = go#lsp#message#DidOpen(l:fname, join(go#util#GetLines(), "\n") . "\n", l:lsp.fileVersions[l:fname])
   let l:state = s:newHandlerState('')
 
   " TODO(bc): setting a buffer level variable here assumes that a:fname is the
@@ -536,7 +627,14 @@ function! go#lsp#DidChange(fname) abort
   call go#lsp#DidOpen(a:fname)
 
   let l:lsp = s:lspfactory.get()
-  let l:msg = go#lsp#message#DidChange(fnamemodify(a:fname, ':p'), join(go#util#GetLines(), "\n") . "\n")
+
+  let l:fname = fnamemodify(a:fname, ':p')
+  if !has_key(l:lsp.fileVersions, l:fname)
+    let l:lsp.fileVersions[l:fname] = 0
+  endif
+  let l:lsp.fileVersions[l:fname] = l:lsp.fileVersions[l:fname] + 1
+
+  let l:msg = go#lsp#message#DidChange(l:fname, join(go#util#GetLines(), "\n") . "\n", l:lsp.fileVersions[l:fname])
   let l:state = s:newHandlerState('')
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
@@ -1001,58 +1099,117 @@ function! s:compareLocations(left, right) abort
   return 1
 endfunction
 
-function! s:handleDiagnostics(data) abort
-  if !exists("*matchaddpos")
-    return 0
+function! go#lsp#Diagnostics(...) abort
+  if a:0 == 0
+    return []
   endif
 
-  try
-    let l:fname = go#path#FromURI(a:data.uri)
-    if bufnr(l:fname) == bufnr('')
-      let l:errorMatches = []
-      let l:warningMatches = []
-      for l:diag in a:data.diagnostics
-        if !(l:diag.severity == 1 || l:diag.severity == 2)
-          continue
-        endif
-        let l:range = l:diag.range
-        if l:range.start.line != l:range.end.line
-          continue
-        endif
+  let l:dirsToPackages = {}
 
-        let l:line = l:range.start.line + 1
-        let l:col = go#lsp#lsp#PositionOf(getline(l:line), l:range.start.character)
-        let l:lastcol = go#lsp#lsp#PositionOf(getline(l:line), l:range.end.character)
+  let l:lsp = s:lspfactory.get()
 
-        let l:pos = [l:line, l:col, l:lastcol - l:col + 1]
-        if l:diag.severity == 1
-          let l:errorMatches = add(l:errorMatches, l:pos)
-        elseif l:diag.severity == 2
-          let l:warningMatches = add(l:warningMatches, l:pos)
-        endif
-      endfor
+  let l:diagnostics = []
+  for [l:key, l:val] in items(l:lsp.diagnostics)
+    let l:dir = fnamemodify(l:key, ':h')
 
-      if hlexists('goDiagnosticError')
-        " clear the old matches just before adding the new ones to keep flicker
-        " to a minimum.
-        call go#util#ClearGroupFromMatches('goDiagnosticError')
-        if go#config#HighlightDiagnosticErrors()
-          call matchaddpos('goDiagnosticError', l:errorMatches)
-        endif
+    if !has_key(l:dirsToPackages, l:dir)
+      let l:pkg = go#package#FromPath(l:dir)
+      let l:dirsToPackages[l:dir] = l:pkg
+    else
+      let l:pkg = l:dirsToPackages[l:dir]
+    endif
+
+    if type(l:pkg) == type(0)
+      continue
+    endif
+
+    for l:arg in a:000
+      if l:arg == l:pkg || l:arg == 'all'
+        let l:diagnostics = extend(l:diagnostics, l:val)
       endif
+    endfor
+  endfor
 
-      if hlexists('goDiagnosticError')
-        " clear the old matches just before adding the new ones to keep flicker
-        " to a minimum.
-        call go#util#ClearGroupFromMatches('goDiagnosticWarning')
-        if go#config#HighlightDiagnosticWarnings()
-          call matchaddpos('goDiagnosticWarning', l:warningMatches)
-        endif
+  return sort(l:diagnostics)
+endfunction
+
+function! go#lsp#AnalyzeFile(fname) abort
+  if !filereadable(a:fname)
+    return []
+  endif
+
+  let l:lsp = s:lspfactory.get()
+  let l:fname = fnamemodify(a:fname, ':p')
+
+  let l:version = l:lsp.fileVersions[l:fname]
+
+  call go#lsp#DidChange(a:fname)
+
+  let l:diagnostics = go#promise#New(function('s:setDiagnostics', []), 10000, get(l:lsp.diagnostics, l:fname, []))
+  let l:lsp.notificationQueue[l:fname] = add(l:lsp.notificationQueue[l:fname], l:diagnostics.wrapper)
+  return l:diagnostics.await()
+endfunction
+
+function! s:setDiagnostics(...) abort
+  return a:000
+endfunction
+
+" s:processDiagnostic converts a diagnostic into an error string. It returns
+" the errors string and the match position described in the diagnostic. The
+" match position will be an empty list when bufname is not a valid name for
+" the current buffer.
+function! s:errorFromDiagnostic(diagnostic, bufname, fname) abort
+  let l:range = a:diagnostic.range
+
+  let l:line = l:range.start.line + 1
+  let l:col = go#lsp#lsp#PositionOf(getbufline(a:bufname, l:line)[0], l:range.start.character)
+  let l:error = printf('%s:%s:%s:%s: %s', a:fname, l:line, l:col, go#lsp#lsp#SeverityToErrorType(a:diagnostic.severity), a:diagnostic.message)
+
+  if !(a:diagnostic.severity == 1 || a:diagnostic.severity == 2)
+    return [l:error, []]
+  endif
+
+  " return when the diagnostic is not for the current buffer.
+  if bufnr(a:bufname) != bufnr('')
+    return [l:error, []]
+  end
+
+  let l:endline = l:range.end.line + 1
+  " don't bother trying to highlight errors or warnings that span
+  " the whole file (e.g when there's missing package documentation).
+  if l:line == 1 && (l:endline) == line('$')
+    return [l:error, []]
+  endif
+  let l:endcol = go#lsp#lsp#PositionOf(getline(l:endline), l:range.end.character)
+
+  " the length of the match is the number of bytes between the start of
+  " the match and the end of the match.
+  let l:matchLength = line2byte(l:endline) + l:endcol - (line2byte(l:line) + l:col)
+  let l:pos = [l:line, l:col, l:matchLength]
+
+  return [l:error, l:pos]
+endfunction
+
+function! s:highlightMatches(errorMatches, warningMatches) abort
+  if exists("*matchaddpos")
+    if hlexists('goDiagnosticError')
+      " clear the old matches just before adding the new ones to keep flicker
+      " to a minimum.
+      call go#util#ClearGroupFromMatches('goDiagnosticError')
+      if go#config#HighlightDiagnosticErrors()
+        call matchaddpos('goDiagnosticError', a:errorMatches)
       endif
     endif
-  catch
-    call go#util#EchoError(v:exception)
-  endtry
+
+    if hlexists('goDiagnosticWarning')
+      " clear the old matches just before adding the new ones to keep flicker
+      " to a minimum.
+      call go#util#ClearGroupFromMatches('goDiagnosticWarning')
+      if go#config#HighlightDiagnosticWarnings()
+        call matchaddpos('goDiagnosticWarning', a:warningMatches)
+      endif
+    endif
+  endif
 endfunction
 
 " restore Vi compatibility settings

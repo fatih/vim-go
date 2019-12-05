@@ -660,6 +660,16 @@ CTRL-t
 
     If [!] is not given the first error is jumped to.
 
+                                                              *:GoDiagnostics*
+:GoDiagnostics! [packages]
+
+    Displays the diagnostics from `gopls` for the given packages in a
+    |quickfix| window. The diagnostics for the current package are displayed
+    when no package is given. The diagnostics for all packages will be
+    displayed when `all` is as an argument.
+
+    If [!] is not given the first error is jumped to.
+
                                                                 *:GoBuildTags*
 :GoBuildTags [tags]
 
@@ -1566,8 +1576,10 @@ it's using `vet`, `golint` and `errcheck`.
                                                    *'g:go_metalinter_command'*
 
 Overrides the command to be executed when |:GoMetaLinter| is called. By
-default it's `golangci-lint`. It can also be used as an advanced setting
-for users who want to have more control over the metalinter.
+default it's `golangci-lint`. Valid options are `golangci-lint` and `gopls`.
+When the value is `gopls`, users may want to consider setting
+`g:go_gopls_staticcheck`.  It can also be used as an advanced setting for
+users who want to have more control over the metalinter.
 >
   let g:go_metalinter_command = "golangci-lint"
 <

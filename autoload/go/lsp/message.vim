@@ -85,7 +85,7 @@ function! go#lsp#message#TypeDefinition(file, line, col) abort
        \ }
 endfunction
 
-function! go#lsp#message#DidOpen(file, content) abort
+function! go#lsp#message#DidOpen(file, content, version) abort
   return {
           \ 'notification': 1,
           \ 'method': 'textDocument/didOpen',
@@ -94,18 +94,20 @@ function! go#lsp#message#DidOpen(file, content) abort
           \         'uri': go#path#ToURI(a:file),
           \         'languageId': 'go',
           \         'text': a:content,
+          \         'version': a:version,
           \     }
           \ }
        \ }
 endfunction
 
-function! go#lsp#message#DidChange(file, content) abort
+function! go#lsp#message#DidChange(file, content, version) abort
   return {
           \ 'notification': 1,
           \ 'method': 'textDocument/didChange',
           \ 'params': {
           \     'textDocument': {
           \         'uri': go#path#ToURI(a:file),
+          \         'version': a:version,
           \     },
           \     'contentChanges': [
           \       {
