@@ -351,7 +351,7 @@ function! go#config#FmtCommand() abort
 endfunction
 
 function! go#config#FmtOptions() abort
-  return get(g:, "go_fmt_options", {})
+  return get(b:, "go_fmt_options", get(g:, "go_fmt_options", {}))
 endfunction
 
 function! go#config#FmtFailSilently() abort
