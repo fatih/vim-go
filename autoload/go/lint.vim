@@ -126,9 +126,13 @@ function! go#lint#Vet(bang, ...) abort
   endif
 
   if a:0 == 0
-    let [l:out, l:err] = go#util#Exec(['go', 'vet', go#package#ImportPath()])
+    let [l:out, l:err] = go#util#Exec(['go', 'vet', '-tags', go#config#BuildTags(), go#package#ImportPath()])
   else
-    let [l:out, l:err] = go#util#Exec(['go', 'vet'] + a:000 + [go#package#ImportPath()])
+    if empty(go#config#BuildTags())
+      let [l:out, l:err] = go#util#Exec(['go', 'vet'] + a:000 + [go#package#ImportPath()])
+    else
+      let [l:out, l:err] = go#util#Exec(['go', 'vet', '-tags', go#config#BuildTags()] + a:000 + [go#package#ImportPath()])
+    endif
   endif
 
   let l:listtype = go#list#Type("GoVet")
@@ -137,6 +141,12 @@ function! go#lint#Vet(bang, ...) abort
     let l:errorformat = "%-Gexit status %\\d%\\+," . &errorformat
     call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet")
     let l:errors = go#list#Get(l:listtype)
+
+    if empty(l:errors)
+      call go#util#EchoError(l:out)
+      return
+    endif
+
     call go#list#Window(l:listtype, len(l:errors))
     if !empty(l:errors) && !a:bang
       call go#list#JumpToFirst(l:listtype)
