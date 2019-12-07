@@ -125,15 +125,20 @@ function! go#lint#Vet(bang, ...) abort
     call go#util#EchoProgress('calling vet...')
   endif
 
-  if a:0 == 0
-    let [l:out, l:err] = go#util#Exec(['go', 'vet', '-tags', go#config#BuildTags(), go#package#ImportPath()])
-  else
-    if empty(go#config#BuildTags())
-      let [l:out, l:err] = go#util#Exec(['go', 'vet'] + a:000 + [go#package#ImportPath()])
-    else
-      let [l:out, l:err] = go#util#Exec(['go', 'vet', '-tags', go#config#BuildTags()] + a:000 + [go#package#ImportPath()])
-    endif
+  let l:cmd = ['go', 'vet']
+
+  let buildtags = go#config#BuildTags()
+  if buildtags isnot ''
+    let cmd += ['-tags', buildtags]
   endif
+
+  if a:0 != 0
+    call extend(cmd, a:000)
+  endif
+
+  let cmd += [go#package#ImportPath()]
+
+  let [l:out, l:err] = go#util#Exec(l:cmd)
 
   let l:listtype = go#list#Type("GoVet")
   if l:err != 0
