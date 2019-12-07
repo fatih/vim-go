@@ -60,7 +60,9 @@ IMPROVEMENTS:
   disabled.
   [[GH-2605]](https://github.com/fatih/vim-go/pull/2605)
   [[GH-2609]](https://github.com/fatih/vim-go/pull/2609)
-
+* Add a buffer level option, `b:go_fmt_options`, to control formatting options
+  per buffer.
+  [[GH-2613]](https://github.com/fatih/vim-go/pull/2613)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
