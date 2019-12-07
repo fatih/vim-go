@@ -1195,7 +1195,7 @@ into the statusline.
 
                                                       *go#complete#Complete()*
 
-Uses `gopls` for autocompletion. By default, it is hooked up to |'omnifunc'|.
+Uses `gopls` for autocompletion. By default, it is hooked up to 'omnifunc'.
 
 
                                                 *go#complete#GocodeComplete()*
@@ -1220,7 +1220,7 @@ enabled.
 
                                               *'g:go_code_completion_enabled'*
 
-Enable code completion with |'omnifunc'|. By default it is enabled.
+Enable code completion with 'omnifunc'. By default it is enabled.
 >
   let g:go_code_completion_enabled = 1
 <
@@ -1381,7 +1381,7 @@ Use this option to auto |:GoModFmt| on save. By default it's enabled >
 
 Use this option to run `godoc` on words under the cursor with |K|; this will
 normally run the `man` program, but for Go using `godoc` is more idiomatic. It
-will not override the |'keywordprg'| setting, but will run |:GoDoc|. Default
+will not override the 'keywordprg' setting, but will run |:GoDoc|. Default
 is enabled. >
 
   let g:go_doc_keywordprg_enabled = 1
@@ -2315,7 +2315,7 @@ Completion and other functions that use `gopls` don't work~
 Vim-go is heavily reliant on `gopls` for completion and other functionality.
 Many of the features that use `gopls` (e.g. completion, jumping to
 definitions, showing identifier information, et al.) can be configured to
-delegate to other tools. e.g.  completion via |'omnifunc'|, |'g:go_info_mode'|
+delegate to other tools. e.g.  completion via 'omnifunc', |'g:go_info_mode'|
 and |'g:go_def_mode'| can be set to use other tools for now (though some of
 the alternatives to `gopls` are effectively at their end of life and support
 for them from within vim-go may be removed soon).
