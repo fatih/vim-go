@@ -1343,9 +1343,12 @@ The dictionary version allows you to define options for multiple binaries:
                                                           *'b:go_fmt_options'*
 
 This option is identical to |'g:go_fmt_options'|, but a buffer-level setting.
-If present, it's used instead of the global setting.  >
+If present, it's used instead of the global setting. By default it is not set.
 
-  au BufRead,BufNewFile *.go let b:go_fmt_options = {
+As an example, the following autocmd will configure goimports to put imports
+of packages from the current module in their own group:
+>
+  autocmd FileType go let b:go_fmt_options = {
     \ 'goimports': '-local ' .
       \ trim(system('{cd '. shellescape(expand('%:h')) .' && go list -m;}')),
     \ }
