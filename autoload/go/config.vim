@@ -366,9 +366,9 @@ function! go#config#PlayOpenBrowser() abort
   return get(g:, "go_play_open_browser", 1)
 endfunction
 
-function! go#config#GorenameCommand() abort
+function! go#config#RenameCommand() abort
   " delegate to go#config#GorenameBin for backwards compatability.
-  return get(g:, "go_gorename_command", go#config#GorenameBin())
+  return get(g:, "go_rename_command", go#config#GorenameBin())
 endfunction
 
 function! go#config#GorenameBin() abort
