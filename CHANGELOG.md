@@ -64,6 +64,8 @@ IMPROVEMENTS:
 * Add a buffer level option, `b:go_fmt_options`, to control formatting options
   per buffer.
   [[GH-2613]](https://github.com/fatih/vim-go/pull/2613)
+* Use build tags when running `:GoVet`.
+  [[GH-2615]](https://github.com/fatih/vim-go/pull/2615)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
