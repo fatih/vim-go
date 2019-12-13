@@ -113,7 +113,7 @@ function! go#fmt#update_file(source, target)
   endif
 
   " reload buffer to reflect latest changes
-  silent edit!
+  noautocmd silent edit!
 
   let &fileformat = old_fileformat
   let &syntax = &syntax
