@@ -82,7 +82,18 @@ function! go#config#StatuslineDuration() abort
 endfunction
 
 function! go#config#SnippetEngine() abort
-  return get(g:, 'go_snippet_engine', 'automatic')
+  let l:engine = get(g:, 'go_snippet_engine', 'automatic')
+  if l:engine is? "automatic"
+    if get(g:, 'did_plugin_ultisnips') is 1
+      let l:engine = 'ultisnips'
+    elseif get(g:, 'loaded_neosnippet') is 1
+      let l:engine = 'neosnippet'
+    elseif get(g:, 'loaded_minisnip') is 1
+      let l:engine = 'minisnip'
+    endif
+  endif
+
+  return l:engine
 endfunction
 
 function! go#config#PlayBrowserCommand() abort
