@@ -14,9 +14,9 @@ install:
   - ./scripts/install-vim $VIM_VERSION
   - |
     if [ "$ENV" = "vimlint" ]; then
-      pip install vim-vint covimerage==0.1.6 codecov pathlib
+      pip install vim-vint covimerage==0.2.1 codecov pathlib
     else
-      pip install --user vim-vint covimerage==0.1.6 codecov pathlib
+      pip install --user vim-vint covimerage==0.2.1 codecov pathlib
     fi
 script:
   - ./scripts/$SCRIPT $VIM_VERSION
