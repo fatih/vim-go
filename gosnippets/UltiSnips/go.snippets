@@ -158,11 +158,6 @@ snippet ewf "errors.Wrapf"
 errors.Wrapf(${1:err}, "${2:message %v}", ${3:args...})
 endsnippet
 
-snippet rew "return errors.Wrap" b!
-return errors.Wrap(${1:err}, "${2:message}")
-endsnippet
-
-
 # error snippet
 snippet errn "Error return" !b
 if err != nil {
@@ -451,7 +446,7 @@ for _, tt := range tests {
 endsnippet
 
 
-snippet hf "http.HandlerFunc" !b
+snippet hf "http.HandlerFunc"
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 }
