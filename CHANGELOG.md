@@ -68,6 +68,8 @@ IMPROVEMENTS:
   [[GH-2615]](https://github.com/fatih/vim-go/pull/2615)
 * Add new snippets for UltiSnips.
   [[GH-2623]](https://github.com/fatih/vim-go/pull/2623)
+* Expand completions as snippets when `g:go_gopls_use_placeholders` is set.
+  [[GH-2624]](https://github.com/fatih/vim-go/pull/2624)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
@@ -86,7 +88,7 @@ BUG FIXES:
 * Do not overwrite `updatetime` when `g:go_auto_sameids` or
   `g:go_auto_type_info` is set.
   [[GH-2529]](https://github.com/fatih/vim-go/pull/2529)
-* Fix example for g:go_debug_log_output in docs.
+* Fix example for `g:go_debug_log_output` in docs.
   [[GH-2547]](https://github.com/fatih/vim-go/pull/2547)
 * Use FileChangedShellPost instead of FileChangedShell so that reload messages
   are not hidden.
