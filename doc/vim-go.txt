@@ -1764,7 +1764,9 @@ By default it is enabled.
                                                *'g:go_gopls_use_placeholders'*
 
 Specifies whether `gopls` can provide placeholders for function parameters and
-struct fields. By default it is disabled.
+struct fields. When set, completion items will be treated as anonymous
+snippets if UltiSnips is installed and configured to be used as
+|'g:go_snippet_engine'|. By default it is disabled.
 >
   let g:go_gopls_use_placeholders = 0
 <

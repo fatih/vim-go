@@ -11,7 +11,43 @@ function! go#auto#template_autocreate()
   call go#template#create()
 endfunction
 
-function! go#auto#echo_go_info()
+function! go#auto#complete_done()
+  call s:echo_go_info()
+  call s:ExpandSnippet()
+endfunction
+
+function! s:ExpandSnippet() abort
+  if !exists('v:completed_item') || empty(v:completed_item) || !go#config#GoplsUsePlaceholders()
+    return
+  endif
+
+
+  let l:engine = go#config#SnippetEngine()
+
+  if l:engine is 'ultisnips'
+    if !get(g:, 'did_plugin_ultisnips', 0)
+      return
+    endif
+    " the snippet may have a '{\}' in it. For UltiSnips, that should be spelled
+    " \{}. fmt.Printf is such a snippet that can be used to demonstrate.
+    let l:snippet = substitute(v:completed_item.word, '{\\}', '\{}', 'g')
+    call UltiSnips#Anon(l:snippet, v:completed_item.word, '', 'i')
+"  elseif l:engine is 'neosnippet'
+"    " TODO(bc): make the anonymous expansion for neosnippet work
+"
+"    if !get(g:, 'loaded_neosnippet') is 1
+"      return
+"    endif
+"
+"    " neosnippet#anonymous doesn't need a trigger, so replace the
+"    " completed_item.word with an empty string before calling neosnippet#anonymous
+"    let l:snippet = substitute(v:completed_item.word, '{\\}', '\{\}', 'g')
+"    call setline('.', substitute(getline('.'), substitute(v:completed_item.word, '\', '\\', 'g'), '', ''))
+"    call neosnippet#anonymous(l:snippet)
+  endif
+endfunction
+
+function! s:echo_go_info()
   if !go#config#EchoGoInfo()
     return
   endif

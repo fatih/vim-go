@@ -52,19 +52,11 @@ endfunction
 
 
 let s:engine = go#config#SnippetEngine()
-if s:engine is? "automatic"
-  if get(g:, 'did_plugin_ultisnips') is 1
-    call s:GoUltiSnips()
-  elseif get(g:, 'loaded_neosnippet') is 1
-    call s:GoNeosnippet()
-  elseif get(g:, 'loaded_minisnip') is 1
-    call s:GoMinisnip()
-  endif
-elseif s:engine is? "ultisnips"
+if s:engine is? 'ultisnips'
   call s:GoUltiSnips()
-elseif s:engine is? "neosnippet"
+elseif s:engine is? 'neosnippet'
   call s:GoNeosnippet()
-elseif s:engine is? "minisnip"
+elseif s:engine is? 'minisnip'
   call s:GoMinisnip()
 endif
 
