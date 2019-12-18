@@ -70,6 +70,11 @@ IMPROVEMENTS:
   [[GH-2623]](https://github.com/fatih/vim-go/pull/2623)
 * Expand completions as snippets when `g:go_gopls_use_placeholders` is set.
   [[GH-2624]](https://github.com/fatih/vim-go/pull/2624)
+* Add a new function, `:GoDiagnostics` and an associated mapping for seeing
+  `gopls` diagnostics. Because of the performance implications on large
+  projects, `g:go_diagnostics_enabled` controls whether all diagnostics are
+  processed or only the diagnostics for the current buffer.
+  [[GH-2612]](https://github.com/fatih/vim-go/pull/2612)
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
