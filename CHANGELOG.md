@@ -68,6 +68,7 @@ IMPROVEMENTS:
   [[GH-2615]](https://github.com/fatih/vim-go/pull/2615)
 * Add new snippets for UltiSnips.
   [[GH-2623]](https://github.com/fatih/vim-go/pull/2623)
+  [[GH-2627]](https://github.com/fatih/vim-go/pull/2627)
 * Expand completions as snippets when `g:go_gopls_use_placeholders` is set.
   [[GH-2624]](https://github.com/fatih/vim-go/pull/2624)
 * Add a new function, `:GoDiagnostics` and an associated mapping for seeing
