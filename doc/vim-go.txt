@@ -668,6 +668,8 @@ CTRL-t
     when no package is given. The diagnostics for all packages will be
     displayed when `all` is as an argument.
 
+    Disabled when |'g:go_diagnostics_enabled'| is not set.
+
     If [!] is not given the first error is jumped to.
 
                                                                 *:GoBuildTags*
@@ -1789,6 +1791,15 @@ snippets if UltiSnips is installed and configured to be used as
 |'g:go_snippet_engine'|. By default it is disabled.
 >
   let g:go_gopls_use_placeholders = 0
+<
+
+                                                 *'g:go_diagnostics_enabled'*
+
+Specifies whether `gopls` diagnostics are enabled. Only the diagnostics for
+the current buffer will be processed when it is not set; all others will be
+ignored. By default it is disabled.
+>
+  let g:go_diagnostics_enabled = 0
 <
 
                                                   *'g:go_template_autocreate'*
