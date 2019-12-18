@@ -83,4 +83,6 @@ nnoremap <silent> <Plug>(go-alternate-split) :<C-u>call go#alternate#Switch(0, "
 
 nnoremap <silent> <Plug>(go-iferr) :<C-u>call go#iferr#Generate()<CR>
 
+nnoremap <silent> <Plug>(go-diagnostics) :<C-u>call go#lint#Diagnostics(!g:go_jump_to_error)<CR>
+
 " vim: sw=2 ts=2 et

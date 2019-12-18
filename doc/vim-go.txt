@@ -660,6 +660,18 @@ CTRL-t
 
     If [!] is not given the first error is jumped to.
 
+                                                              *:GoDiagnostics*
+:GoDiagnostics! [packages]
+
+    Displays the diagnostics from `gopls` for the given packages in a
+    |quickfix| window. The diagnostics for the current package are displayed
+    when no package is given. The diagnostics for all packages will be
+    displayed when `all` is as an argument.
+
+    Disabled when |'g:go_diagnostics_enabled'| is not set.
+
+    If [!] is not given the first error is jumped to.
+
                                                                 *:GoBuildTags*
 :GoBuildTags [tags]
 
@@ -1566,8 +1578,10 @@ it's using `vet`, `golint` and `errcheck`.
                                                    *'g:go_metalinter_command'*
 
 Overrides the command to be executed when |:GoMetaLinter| is called. By
-default it's `golangci-lint`. It can also be used as an advanced setting
-for users who want to have more control over the metalinter.
+default it's `golangci-lint`. Valid options are `golangci-lint` and `gopls`.
+When the value is `gopls`, users may want to consider setting
+`g:go_gopls_staticcheck`.  It can also be used as an advanced setting for
+users who want to have more control over the metalinter.
 >
   let g:go_metalinter_command = "golangci-lint"
 <
@@ -1761,6 +1775,14 @@ By default it is enabled.
   let g:go_gopls_fuzzy_matching = 1
 <
 
+                                                   *'g:go_gopls_staticcheck'*
+
+Specifies whether `gopls` should run staticcheck checks. By default it is
+disabled.
+>
+  let g:go_gopls_staticcheck = 0
+<
+
                                                *'g:go_gopls_use_placeholders'*
 
 Specifies whether `gopls` can provide placeholders for function parameters and
@@ -1769,6 +1791,15 @@ snippets if UltiSnips is installed and configured to be used as
 |'g:go_snippet_engine'|. By default it is disabled.
 >
   let g:go_gopls_use_placeholders = 0
+<
+
+                                                 *'g:go_diagnostics_enabled'*
+
+Specifies whether `gopls` diagnostics are enabled. Only the diagnostics for
+the current buffer will be processed when it is not set; all others will be
+ignored. By default it is disabled.
+>
+  let g:go_diagnostics_enabled = 0
 <
 
                                                   *'g:go_template_autocreate'*

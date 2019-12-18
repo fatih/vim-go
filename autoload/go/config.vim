@@ -525,12 +525,20 @@ function! go#config#GoplsFuzzyMatching() abort
   return get(g:, 'go_gopls_fuzzy_matching', 1)
 endfunction
 
+function! go#config#GoplsStaticCheck() abort
+  return get(g:, 'go_gopls_staticcheck', 0)
+endfunction
+
 function! go#config#GoplsUsePlaceholders() abort
   return get(g:, 'go_gopls_use_placeholders', 0)
 endfunction
 
 function! go#config#GoplsEnabled() abort
   return get(g:, 'go_gopls_enabled', 1)
+endfunction
+
+function! go#config#DiagnosticsEnabled() abort
+  return get(g:, 'go_diagnostics_enabled', 0)
 endfunction
 
 " Set the default value. A value of "1" is a shortcut for this, for

@@ -11,6 +11,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   let l:metalinter = go#config#MetalinterCommand()
 
+  let cmd = []
   if l:metalinter == 'golangci-lint'
     let cmd = s:metalintercmd(l:metalinter)
     if empty(cmd)
@@ -22,7 +23,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     for linter in linters
       let cmd += ["--enable=".linter]
     endfor
-  else
+  elseif l:metalinter != 'gopls'
     " the user wants something else, let us use it.
     let cmd = split(go#config#MetalinterCommand(), " ")
   endif
@@ -45,17 +46,35 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   let cmd += goargs
 
-  " Golangci-lint can output the following:
-  "   <file>:<line>:<column>: <message> (<linter>)
-  " This can be defined by the following errorformat:
-  let errformat = "%f:%l:%c:\ %m"
+  let errformat = s:errorformat(l:metalinter)
 
-  if go#util#has_job()
-    call s:lint_job({'cmd': cmd, 'statustype': l:metalinter, 'errformat': errformat}, a:bang, a:autosave)
-    return
+  if l:metalinter == 'gopls'
+    if a:autosave
+      let l:messages = go#lsp#AnalyzeFile(expand('%:p'))
+    else
+      let l:import_paths = l:goargs
+      if len(l:import_paths) == 0
+        let l:pkg = go#package#ImportPath()
+        if l:pkg == -1
+          call go#util#EchoError('could not determine package name')
+          return
+        endif
+
+        let l:import_paths = [l:pkg]
+      endif
+      let l:messages = call('go#lsp#Diagnostics', l:import_paths)
+    endif
+
+    let l:err = len(l:messages)
+  else
+    if go#util#has_job()
+      call s:lint_job({'cmd': cmd, 'statustype': l:metalinter, 'errformat': errformat}, a:bang, a:autosave)
+      return
+    endif
+
+    let [l:out, l:err] = go#util#Exec(cmd)
+    let l:messages = split(out, "\n")
   endif
-
-  let [l:out, l:err] = go#util#Exec(cmd)
 
   if a:autosave
     let l:listtype = go#list#Type("GoMetaLinterAutoSave")
@@ -70,9 +89,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let l:winid = win_getid(winnr())
     " Parse and populate our location list
 
-    let l:messages = split(out, "\n")
-
-    if a:autosave
+    if a:autosave && l:metalinter != 'gopls'
       call s:metalinterautosavecomplete(fnamemodify(expand('%:p'), ":."), 0, 1, l:messages)
     endif
     call go#list#ParseFormat(l:listtype, errformat, l:messages, 'GoMetaLinter')
@@ -81,6 +98,44 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     call go#list#Window(l:listtype, len(errors))
 
     if a:autosave || a:bang
+      call win_gotoid(l:winid)
+      return
+    endif
+    call go#list#JumpToFirst(l:listtype)
+  endif
+endfunction
+
+function! go#lint#Diagnostics(bang, ...) abort
+  if a:0 == 0
+    let l:pkg = go#package#ImportPath()
+    if l:pkg == -1
+      call go#util#EchoError('could not determine package name')
+      return
+    endif
+
+    let l:import_paths = [l:pkg]
+  else
+    let l:import_paths = a:000
+  endif
+
+  let errformat = s:errorformat('gopls')
+
+  let l:messages = call('go#lsp#Diagnostics', l:import_paths)
+
+  let l:listtype = go#list#Type("GoDiagnostics")
+
+  if len(l:messages) == 0
+    call go#list#Clean(l:listtype)
+    call go#util#EchoSuccess('[diagnostics] PASS')
+  else
+    " Parse and populate the quickfix list
+    let l:winid = win_getid(winnr())
+    call go#list#ParseFormat(l:listtype, errformat, l:messages, 'GoDiagnostics')
+
+    let errors = go#list#Get(l:listtype)
+    call go#list#Window(l:listtype, len(errors))
+
+    if a:bang
       call win_gotoid(l:winid)
       return
     endif
@@ -275,16 +330,23 @@ function! s:metalinterautosavecomplete(filepath, job, exit_code, messages)
 
   let l:idx = len(a:messages) - 1
   while l:idx >= 0
-    " Go 1.13 changed how go vet output is formatted by prepending a leading
-    " 'vet :', so account for that, too. This function is really needed for
-    " gometalinter at all, so the check for Go 1.13's go vet output shouldn't
-    " be neeeded, but s:lint_job hooks this up even when the
-    " g:go_metalinter_command is golangci-lint.
-    if a:messages[l:idx] !~# '^' . a:filepath . ':' && a:messages[l:idx] !~# '^vet: \.[\\/]' . a:filepath . ':'
+    if a:messages[l:idx] !~# '^' . a:filepath . ':'
       call remove(a:messages, l:idx)
     endif
     let l:idx -= 1
   endwhile
+endfunction
+
+function! s:errorformat(metalinter) abort
+  if a:metalinter == 'golangci-lint'
+    " Golangci-lint can output the following:
+    "   <file>:<line>:<column>: <message> (<linter>)
+    " This can be defined by the following errorformat:
+    return '%f:%l:%c:\ %m'
+  elseif a:metalinter == 'gopls'
+    return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m'
+  endif
+
 endfunction
 
 " restore Vi compatibility settings
