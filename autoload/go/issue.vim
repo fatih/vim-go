@@ -29,6 +29,9 @@ function! s:issuebody() abort
     elseif l =~ '^<!-- go env -->'
       let [out, err] = go#util#Exec(['go', 'env'])
       let body = add(body, substitute(l:out, rtrimpat, '', ''))
+    elseif l=~ '^<!-- gopls version -->'
+      let [out, err] = go#util#Exec(['gopls', 'version'])
+      let body = add(body, substitute(l:out, rtrimpat, '', ''))
     endif
   endfor
 
