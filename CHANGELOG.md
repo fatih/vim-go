@@ -78,6 +78,10 @@ IMPROVEMENTS:
   [[GH-2612]](https://github.com/fatih/vim-go/pull/2612)
 * Explain how to find and detect multiple copies of vim-go in the FAQ.
   [[GH-2632]](https://github.com/fatih/vim-go/pull/2632)
+* Update the issue template to ask for the gopls version and
+  `:GoReportGitHubIssue` to provide it.
+  [[GH-2630]](https://github.com/fatih/vim-go/pull/2630)
+
 
 
 BUG FIXES:
