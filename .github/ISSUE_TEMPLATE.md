@@ -28,3 +28,9 @@ If possible, please provide clear steps for reproducing the problem.
 <!-- go env -->
 
 </pre></details>
+
+#### gopls version
+<details><summary><code>gopls version</code> Output:</summary><br><pre>
+<!-- gopls version -->
+
+</pre></details>
