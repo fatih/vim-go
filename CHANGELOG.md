@@ -76,6 +76,9 @@ IMPROVEMENTS:
   projects, `g:go_diagnostics_enabled` controls whether all diagnostics are
   processed or only the diagnostics for the current buffer.
   [[GH-2612]](https://github.com/fatih/vim-go/pull/2612)
+* Explain how to find and detect multiple copies of vim-go in the FAQ.
+  [[GH-2632]](https://github.com/fatih/vim-go/pull/2632)
+
 
 BUG FIXES:
 * Fix removal of missing directories from gopls workspaces.
