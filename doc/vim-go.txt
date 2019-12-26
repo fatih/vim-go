@@ -2353,11 +2353,24 @@ and |'g:go_def_mode'| can be set to use other tools for now (though some of
 the alternatives to `gopls` are effectively at their end of life and support
 for them from within vim-go may be removed soon).
 
-I get "Unknown function: go#config#..." error when I open a Go file.~
+I get a "Unknown function: go#config#..." error~
 
 This often happens to vim-polyglot users when new config options are added to
 vim-go. Run vim-polyglot's `build` script or make sure that vim-go is loaded
 before vim-polyglot.
+
+It can also happen when multiple versions of vim-go are installed and the
+version loaded by Vim doesn't have a function introduced by a later version.
+To see where vim-go is being loaded from run
+>
+    :verbose function go#config#FmtAutosave
+<
+
+The output will show the path to the `autoload/go/config.vim` that was loaded
+by Vim. Make sure the root of the path to output by the command is the path
+from which vim-go is expected to sourced. If it is not rooted as expected,
+then there are multiple copies of vim-go installed; remove the unexpected
+copies.
 
 I get "not an editor command" error when I invoke :GoXXX~
 
