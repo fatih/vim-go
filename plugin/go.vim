@@ -301,7 +301,7 @@ augroup vim-go
   autocmd BufRead *.s call s:gofiletype_pre()
   autocmd BufReadPost *.s call s:gofiletype_post()
 
-  if go#util#has_job()
+  if go#util#has_job() && go#config#GoplsEnabled()
     autocmd FileType * call s:register()
   endif
 augroup end
