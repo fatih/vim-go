@@ -21,7 +21,11 @@ function! s:lspfactory.reset() dict abort
 endfunction
 
 function! s:newlsp() abort
-  let l:lsp = {'sendMessage': funcref('s:noop')}
+  let l:lsp = {
+        \ 'sendMessage': funcref('s:noop'),
+        \ 'notificationQueue': {},
+        \ 'fileVersions': {}
+        \ }
 
   if !go#config#GoplsEnabled()
     return l:lsp
