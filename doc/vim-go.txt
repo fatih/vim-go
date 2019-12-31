@@ -1693,8 +1693,7 @@ By default it is set to edit.
                                                        *'g:go_rename_command'*
 
 Use this option to define which tool is used to rename. By default `gorename`
-is used. Valid options are `gorename` and `gopls`. Warning: as of `gopls`
-v0.2.0, it will only rename identifiers in the current package.
+is used. Valid options are `gorename` and `gopls`.
 >
   let g:go_rename_command = 'gorename'
 <
