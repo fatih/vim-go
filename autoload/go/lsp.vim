@@ -24,7 +24,8 @@ function! s:newlsp() abort
   let l:lsp = {
         \ 'sendMessage': funcref('s:noop'),
         \ 'notificationQueue': {},
-        \ 'fileVersions': {}
+        \ 'fileVersions': {},
+        \ 'workspaceDirectories': [],
         \ }
 
   if !go#config#GoplsEnabled()
