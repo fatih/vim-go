@@ -58,7 +58,10 @@ function! go#config#SetTermCloseOnExit(value) abort
 endfunction
 
 function! go#config#TermEnabled() abort
-  return has('nvim') && get(g:, 'go_term_enabled', 0)
+  " nvim always support
+  " vim will support if terminal feature exists
+  let l:support = has('nvim') || has('terminal')
+  return support && get(g:, 'go_term_enabled', 0)
 endfunction
 
 function! go#config#SetTermEnabled(value) abort
