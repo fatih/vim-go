@@ -61,6 +61,7 @@ IMPROVEMENTS:
   disabled.
   [[GH-2605]](https://github.com/fatih/vim-go/pull/2605)
   [[GH-2609]](https://github.com/fatih/vim-go/pull/2609)
+  [[GH-2638]](https://github.com/fatih/vim-go/pull/2638)
 * Add a buffer level option, `b:go_fmt_options`, to control formatting options
   per buffer.
   [[GH-2613]](https://github.com/fatih/vim-go/pull/2613)
@@ -81,7 +82,6 @@ IMPROVEMENTS:
 * Update the issue template to ask for the gopls version and
   `:GoReportGitHubIssue` to provide it.
   [[GH-2630]](https://github.com/fatih/vim-go/pull/2630)
-
 
 
 BUG FIXES:
