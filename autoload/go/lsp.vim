@@ -869,6 +869,26 @@ function! go#lsp#Info(showstatus)
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
+function! go#lsp#ShowContents(showstatus)
+  let l:fname = expand('%:p')
+  let [l:line, l:col] = go#lsp#lsp#Position()
+
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+
+  if a:showstatus
+    let l:state = s:newHandlerState('info')
+  else
+    let l:state = s:newHandlerState('')
+  endif
+
+  let l:state.handleResult = funcref('s:infoDefinitionHandler', [function('s:showContents', [1], l:state), a:showstatus], l:state)
+  let l:state.error = funcref('s:noop')
+  let l:msg = go#lsp#message#Definition(l:fname, l:line, l:col)
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
 function! go#lsp#GetInfo()
   let l:fname = expand('%:p')
   let [l:line, l:col] = go#lsp#lsp#Position()
@@ -915,6 +935,16 @@ function! s:info(show, content) abort dict
 
   if a:show
     call go#util#ShowInfo(l:content)
+  endif
+
+  return l:content
+endfunction
+
+function! s:showContents(show, content) abort dict
+  let l:content = s:infoFromHoverContent(a:content)
+
+  if a:show
+    call go#util#ShowContents('', '', l:content)
   endif
 
   return l:content
