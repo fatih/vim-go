@@ -589,6 +589,26 @@ endfunction
 function! s:noop(...) abort dict
 endfunction
 
+" go#util#MatchAddPos works around matchaddpos()'s limit of only 8 positions
+" per call by calling matchaddpos() with no more than 8 positions per call.
+function! go#util#MatchAddPos(group, pos)
+  let l:partitions = []
+  let l:partitionsIdx = 0
+  let l:posIdx = 0
+  for l:pos in a:pos
+    if l:posIdx % 8 == 0
+      let l:partitions = add(l:partitions, [])
+      let l:partitionsIdx = len(l:partitions) - 1
+    endif
+    let l:partitions[l:partitionsIdx] = add(l:partitions[l:partitionsIdx], l:pos)
+    let l:posIdx = l:posIdx + 1
+  endfor
+
+  for l:positions in l:partitions
+    call matchaddpos(a:group, l:positions)
+  endfor
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
