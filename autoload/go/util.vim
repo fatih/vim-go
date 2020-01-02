@@ -524,6 +524,10 @@ function! go#util#ShowInfo(info)
   echo "vim-go: " | echohl Function | echon a:info | echohl None
 endfunction
 
+function! go#util#CloseFloatingWin()
+  call nvim_win_close(g:vim_go_floating_winnr, v:true)
+endfunction
+
 function! go#util#ShowContents(newposition, position, content) abort
   " popup window
   if go#config#DocPopupWindow()
@@ -562,13 +566,14 @@ function! go#util#ShowContents(newposition, position, content) abort
             \ 'height': height,
             \ 'style': 'minimal',
             \ }
-      call nvim_open_win(buf, v:true, opts)
-      setlocal nomodified nomodifiable filetype=godoc
 
-      " close easily with CR, Esc and q
-      noremap <buffer> <silent> <CR> :<C-U>close<CR>
-      noremap <buffer> <silent> <Esc> :<C-U>close<CR>
-      noremap <buffer> <silent> q :<C-U>close<CR>
+      let g:vim_go_floating_winnr = nvim_open_win(buf, v:false, opts)
+
+      call nvim_buf_set_option(buf, 'filetype', 'godoc')
+      call nvim_buf_set_option(buf, 'modifiable', v:false)
+      call nvim_buf_set_option(buf, 'modified', v:false)
+
+      autocmd CursorMoved,BufHidden,InsertCharPre <buffer> ++once call go#util#CloseFloatingWin()
     endif
     return
   endif
