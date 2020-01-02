@@ -21,30 +21,6 @@ function! s:lspfactory.reset() dict abort
 endfunction
 
 function! s:newlsp() abort
-  let l:lsp = {
-        \ 'sendMessage': funcref('s:noop'),
-        \ 'notificationQueue': {},
-        \ 'fileVersions': {},
-        \ 'workspaceDirectories': [],
-        \ }
-
-  if !go#config#GoplsEnabled()
-    return l:lsp
-  endif
-
-  if !go#util#has_job()
-    let l:oldshortmess=&shortmess
-    if has('nvim')
-      set shortmess-=F
-    endif
-    call go#util#EchoWarning('Features that rely on gopls will not work without either Vim 8.0.0087 or newer with +job or Neovim')
-    " Sleep one second to make sure people see the message. Otherwise it is
-    " often immediately overwritten by an async message.
-    sleep 1
-    let &shortmess=l:oldshortmess
-    return l:lsp
-  endif
-
   " job is the job used to talk to the backing instance of gopls.
   " ready is 0 until the initialize response has been received. 1 afterwards.
   " queue is messages to send after initialization
@@ -82,8 +58,26 @@ function! s:newlsp() abort
         \ 'diagnosticsQueue': [],
         \ 'diagnostics': {},
         \ 'fileVersions': {},
-        \ 'notificationQueue': {}
+        \ 'notificationQueue': {},
         \ }
+
+  if !go#config#GoplsEnabled()
+    let l:lsp.sendMessage = funcref('s:noop')
+    return l:lsp
+  endif
+
+  if !go#util#has_job()
+    let l:oldshortmess=&shortmess
+    if has('nvim')
+      set shortmess-=F
+    endif
+    call go#util#EchoWarning('Features that rely on gopls will not work without either Vim 8.0.0087 or newer with +job or Neovim')
+    " Sleep one second to make sure people see the message. Otherwise it is
+    " often immediately overwritten by an async message.
+    sleep 1
+    let &shortmess=l:oldshortmess
+    return l:lsp
+  endif
 
   function! l:lsp.readMessage(data) dict abort
     let l:responses = []
