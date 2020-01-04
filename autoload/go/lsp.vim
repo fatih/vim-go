@@ -21,30 +21,6 @@ function! s:lspfactory.reset() dict abort
 endfunction
 
 function! s:newlsp() abort
-  let l:lsp = {
-        \ 'sendMessage': funcref('s:noop'),
-        \ 'notificationQueue': {},
-        \ 'fileVersions': {},
-        \ 'workspaceDirectories': [],
-        \ }
-
-  if !go#config#GoplsEnabled()
-    return l:lsp
-  endif
-
-  if !go#util#has_job()
-    let l:oldshortmess=&shortmess
-    if has('nvim')
-      set shortmess-=F
-    endif
-    call go#util#EchoWarning('Features that rely on gopls will not work without either Vim 8.0.0087 or newer with +job or Neovim')
-    " Sleep one second to make sure people see the message. Otherwise it is
-    " often immediately overwritten by an async message.
-    sleep 1
-    let &shortmess=l:oldshortmess
-    return l:lsp
-  endif
-
   " job is the job used to talk to the backing instance of gopls.
   " ready is 0 until the initialize response has been received. 1 afterwards.
   " queue is messages to send after initialization
@@ -82,8 +58,26 @@ function! s:newlsp() abort
         \ 'diagnosticsQueue': [],
         \ 'diagnostics': {},
         \ 'fileVersions': {},
-        \ 'notificationQueue': {}
+        \ 'notificationQueue': {},
         \ }
+
+  if !go#config#GoplsEnabled()
+    let l:lsp.sendMessage = funcref('s:noop')
+    return l:lsp
+  endif
+
+  if !go#util#has_job()
+    let l:oldshortmess=&shortmess
+    if has('nvim')
+      set shortmess-=F
+    endif
+    call go#util#EchoWarning('Features that rely on gopls will not work without either Vim 8.0.0087 or newer with +job or Neovim')
+    " Sleep one second to make sure people see the message. Otherwise it is
+    " often immediately overwritten by an async message.
+    sleep 1
+    let &shortmess=l:oldshortmess
+    return l:lsp
+  endif
 
   function! l:lsp.readMessage(data) dict abort
     let l:responses = []
@@ -1225,13 +1219,18 @@ function! s:errorFromDiagnostic(diagnostic, bufname, fname) abort
 endfunction
 
 function! s:highlightMatches(errorMatches, warningMatches) abort
+  " TODO(bc): use text properties instead of matchaddpos
   if exists("*matchaddpos")
+    " set buffer variables for errors and warnings to zero values
+    let b:go_diagnostic_matches = {'errors': [], 'warnings': []}
+
     if hlexists('goDiagnosticError')
       " clear the old matches just before adding the new ones to keep flicker
       " to a minimum.
       call go#util#ClearGroupFromMatches('goDiagnosticError')
       if go#config#HighlightDiagnosticErrors()
-        call matchaddpos('goDiagnosticError', a:errorMatches)
+        let b:go_diagnostic_matches.errors = copy(a:errorMatches)
+        call go#util#MatchAddPos('goDiagnosticError', a:errorMatches)
       endif
     endif
 
@@ -1240,10 +1239,25 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
       " to a minimum.
       call go#util#ClearGroupFromMatches('goDiagnosticWarning')
       if go#config#HighlightDiagnosticWarnings()
-        call matchaddpos('goDiagnosticWarning', a:warningMatches)
+        let b:go_diagnostic_matches.warnings = copy(a:warningMatches)
+        call go#util#MatchAddPos('goDiagnosticWarning', a:warningMatches)
       endif
     endif
+
+    " re-apply matches at the time the buffer is displayed in a new window or
+    " redisplayed in an existing window: e.g. :edit,
+    augroup vim-go-diagnostics
+      autocmd! * <buffer>
+      autocmd BufWinEnter <buffer> nested call s:highlightMatches(b:go_diagnostic_matches.errors, b:go_diagnostic_matches.warnings)
+    augroup end
   endif
+endfunction
+
+" ClearDiagnosticsMatches removes all goDiagnosticError and
+" goDiagnosticWarning matches.
+function! go#lsp#ClearDiagnosticMatches() abort
+  call go#util#ClearGroupFromMatches('goDiagnosticError')
+  call go#util#ClearGroupFromMatches('goDiagnosticWarning')
 endfunction
 
 " restore Vi compatibility settings

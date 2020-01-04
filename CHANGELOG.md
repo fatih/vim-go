@@ -51,6 +51,7 @@ IMPROVEMENTS:
 * Add highlighting of sections reported by gopls diagnostics' errors
   and warnings.
   [[GH-2569]](https://github.com/fatih/vim-go/pull/2569)
+  [[GH-2643]](https://github.com/fatih/vim-go/pull/2643)
 * Make the highlighting of fzf decls configurable.
   [[GH-2572]](https://github.com/fatih/vim-go/pull/2572)
   [[GH-2579]](https://github.com/fatih/vim-go/pull/2579)
