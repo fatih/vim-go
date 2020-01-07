@@ -118,9 +118,8 @@ endfunction
 " Run runs the current file (and their dependencies if any) in a new terminal.
 function! go#cmd#RunTerm(bang, mode, files) abort
   let cmd = ["go", "run"]
-  let tags = go#config#BuildTags()
-  if go#config#BuildTags() > 0
-    call extend(cmd, ["-tags", tags])
+  if len(go#config#BuildTags()) > 0
+    call extend(cmd, ["-tags", go#config#BuildTags()])
   endif
 
   if empty(a:files)

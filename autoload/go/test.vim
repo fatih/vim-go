@@ -7,8 +7,8 @@ set cpo&vim
 " test files). Any other argument is appended to the final `go test` command.
 function! go#test#Test(bang, compile, ...) abort
   let args = ["test"]
-  if go#config#BuildTags() > 0
-    call extend(args, ["-tags", go#config#BuildTags()]
+  if len(go#config#BuildTags()) > 0
+    call extend(args, ["-tags", go#config#BuildTags()])
   endif
 
   " don't run the test, only compile it. Useful to capture and fix errors.
