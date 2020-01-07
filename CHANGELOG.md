@@ -84,6 +84,9 @@ IMPROVEMENTS:
 * Update the issue template to ask for the gopls version and
   `:GoReportGitHubIssue` to provide it.
   [[GH-2630]](https://github.com/fatih/vim-go/pull/2630)
+* Show failure messages for code quality tools.
+  [[GH-2646]](https://github.com/fatih/vim-go/pull/2646)
+  
 
 
 BUG FIXES:
