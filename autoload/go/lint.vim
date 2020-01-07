@@ -97,11 +97,13 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
 
+
     if a:autosave || a:bang
       call win_gotoid(l:winid)
-      return
+    else
+      call go#list#JumpToFirst(l:listtype)
     endif
-    call go#list#JumpToFirst(l:listtype)
+    call go#util#EchoError('[metalinter] FAIL')
   endif
 endfunction
 
@@ -137,9 +139,10 @@ function! go#lint#Diagnostics(bang, ...) abort
 
     if a:bang
       call win_gotoid(l:winid)
-      return
+    else
+      call go#list#JumpToFirst(l:listtype)
     endif
-    call go#list#JumpToFirst(l:listtype)
+    call go#util#EchoError('[diagnostics] FAIL')
   endif
 endfunction
 
@@ -165,10 +168,10 @@ function! go#lint#Golint(bang, ...) abort
 
   if a:bang
     call win_gotoid(l:winid)
-    return
+  else
+    call go#list#JumpToFirst(l:listtype)
   endif
-
-  call go#list#JumpToFirst(l:listtype)
+  call go#util#EchoError('[lint] FAIL')
 endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
@@ -213,6 +216,7 @@ function! go#lint#Vet(bang, ...) abort
     else
       call win_gotoid(l:winid)
     endif
+    call go#util#EchoError('[vet] FAIL')
   else
     call go#list#Clean(l:listtype)
     call go#util#EchoSuccess('[vet] PASS')
@@ -260,6 +264,7 @@ function! go#lint#Errcheck(bang, ...) abort
         call win_gotoid(l:winid)
       endif
     endif
+    call go#util#EchoError('[errcheck] FAIL')
   else
     call go#list#Clean(l:listtype)
     call go#util#EchoSuccess('[errcheck] PASS')
