@@ -1,6 +1,8 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestHelloWorld(t *testing.T) {
 	// t.Fatal("not implemented")
