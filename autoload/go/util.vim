@@ -589,9 +589,63 @@ endfunction
 function! s:noop(...) abort dict
 endfunction
 
-" go#util#MatchAddPos works around matchaddpos()'s limit of only 8 positions
-" per call by calling matchaddpos() with no more than 8 positions per call.
-function! go#util#MatchAddPos(group, pos)
+" go#util#HighlightPositions highlights using text properties if possible and
+" falls back to matchaddpos() if necessary. It works around matchaddpos()'s
+" limit of only 8 positions per call by calling matchaddpos() with no more
+" than 8 positions per call.
+"
+" pos should be a list of 3 element lists. The lists should be [line, col,
+" length] as used by matchaddpos().
+function! go#util#HighlightPositions(group, pos) abort
+  if exists('*prop_add')
+    for l:pos in a:pos
+      " use a single line prop by default
+      let l:prop = {'type': a:group, 'length': l:pos[2]}
+
+      " specify end line and column if needed.
+      let l:line = getline(l:pos[0])
+
+      " TODO(bc): use line2byte and byte2line to get the end position more
+      " efficiently once https://github.com/vim/vim/issues/5334 is resolved.
+      " e.g.:
+      "    " l:max is the 1-based index within the buffer of the first character after l:pos.
+      "    let l:max = line2byte(l:pos[0]) + l:pos[1] + l:pos[2] - 1
+      "    let l:end_lnum = byte2line(l:max)
+
+      "    "echom printf('processing (%s)', string(l:pos))
+      "    if l:pos[0] != l:end_lnum
+      "      let l:end_col = l:max - line2byte(l:end_lnum)
+      "      "echom string(l:pos)
+      "      "echom printf('l:end_col = %d - %d = %d', l:max, line2byte(l:end_lnum), l:end_col)
+      "      "echom printf('line2byte(l:pos[0]) = %d, l:pos[0] = %d, l:end_col = %d, l:end_lnum = %d', line2byte(l:pos[0]), l:pos[0], l:end_col, l:end_lnum)
+      "      let l:prop = {'type': a:group, 'end_lnum': l:end_lnum, 'end_col': l:end_col}
+      if l:pos[1] + l:pos[2] - 1 > len(l:line)
+        " l:max is the 1-based index within the buffer of the first character
+        " after l:pos.
+        let l:max = line2byte(l:pos[0]) + l:pos[1] + l:pos[2] - 1
+
+        let l:end_lnum = l:pos[0]
+        let l:end_col = l:pos[1] + l:pos[2] - 1
+        while line2byte(l:end_lnum+1) < l:max
+          let l:end_lnum += 1
+          let l:end_col -= line2byte(l:end_lnum)
+        endwhile
+        let l:prop = {'type': a:group, 'end_lnum': l:end_lnum, 'end_col': l:end_col}
+      endif
+      call prop_add(l:pos[0], l:pos[1], l:prop)
+    endfor
+    return
+  endif
+
+  if exists('*matchaddpos')
+    return s:matchaddpos(a:group, a:pos)
+  endif
+endfunction
+
+
+" s:matchaddpos works around matchaddpos()'s limit of only 8 positions per
+" call by calling matchaddpos() with no more than 8 positions per call.
+function! s:matchaddpos(group, pos) abort
   let l:partitions = []
   let l:partitionsIdx = 0
   let l:posIdx = 0

@@ -248,6 +248,9 @@ function! s:newlsp() abort
           endif
 
           for l:diag in l:data.diagnostics
+            " TODO(bc): cache the raw diagnostics when they're not for the
+            " current buffer so that they can be processed when it is the
+            " current buffer and highlight the areas of concern.
             let [l:error, l:matchpos] = s:errorFromDiagnostic(l:diag, l:bufname, l:fname)
             let l:diagnostics = add(l:diagnostics, l:error)
 
@@ -1189,38 +1192,35 @@ function! s:errorFromDiagnostic(diagnostic, bufname, fname) abort
 endfunction
 
 function! s:highlightMatches(errorMatches, warningMatches) abort
-  " TODO(bc): use text properties instead of matchaddpos
-  if exists("*matchaddpos")
-    " set buffer variables for errors and warnings to zero values
-    let b:go_diagnostic_matches = {'errors': [], 'warnings': []}
+  " set buffer variables for errors and warnings to zero values
+  let b:go_diagnostic_matches = {'errors': [], 'warnings': []}
 
-    if hlexists('goDiagnosticError')
-      " clear the old matches just before adding the new ones to keep flicker
-      " to a minimum.
-      call go#util#ClearGroupFromMatches('goDiagnosticError')
-      if go#config#HighlightDiagnosticErrors()
-        let b:go_diagnostic_matches.errors = copy(a:errorMatches)
-        call go#util#MatchAddPos('goDiagnosticError', a:errorMatches)
-      endif
+  if hlexists('goDiagnosticError')
+    " clear the old matches just before adding the new ones to keep flicker
+    " to a minimum.
+    call go#util#ClearGroupFromMatches('goDiagnosticError')
+    if go#config#HighlightDiagnosticErrors()
+      let b:go_diagnostic_matches.errors = copy(a:errorMatches)
+      call go#util#HighlightPositions('goDiagnosticError', a:errorMatches)
     endif
-
-    if hlexists('goDiagnosticWarning')
-      " clear the old matches just before adding the new ones to keep flicker
-      " to a minimum.
-      call go#util#ClearGroupFromMatches('goDiagnosticWarning')
-      if go#config#HighlightDiagnosticWarnings()
-        let b:go_diagnostic_matches.warnings = copy(a:warningMatches)
-        call go#util#MatchAddPos('goDiagnosticWarning', a:warningMatches)
-      endif
-    endif
-
-    " re-apply matches at the time the buffer is displayed in a new window or
-    " redisplayed in an existing window: e.g. :edit,
-    augroup vim-go-diagnostics
-      autocmd! * <buffer>
-      autocmd BufWinEnter <buffer> nested call s:highlightMatches(b:go_diagnostic_matches.errors, b:go_diagnostic_matches.warnings)
-    augroup end
   endif
+
+  if hlexists('goDiagnosticWarning')
+    " clear the old matches just before adding the new ones to keep flicker
+    " to a minimum.
+    call go#util#ClearGroupFromMatches('goDiagnosticWarning')
+    if go#config#HighlightDiagnosticWarnings()
+      let b:go_diagnostic_matches.warnings = copy(a:warningMatches)
+      call go#util#HighlightPositions('goDiagnosticWarning', a:warningMatches)
+    endif
+  endif
+
+  " re-apply matches at the time the buffer is displayed in a new window or
+  " redisplayed in an existing window: e.g. :edit,
+  augroup vim-go-diagnostics
+    autocmd! * <buffer>
+    autocmd BufWinEnter <buffer> nested call s:highlightMatches(b:go_diagnostic_matches.errors, b:go_diagnostic_matches.warnings)
+  augroup end
 endfunction
 
 " ClearDiagnosticsMatches removes all goDiagnosticError and
