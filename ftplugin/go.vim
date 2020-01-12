@@ -74,6 +74,18 @@ if get(g:, "go_textobj_enabled", 1)
   xnoremap <buffer> <silent> [[ :<c-u>call go#textobj#FunctionJump('v', 'prev')<cr>
 endif
 
+if exists('*prop_type_add')
+  if empty(prop_type_get('goSameId'))
+    call prop_type_add('goSameId', {'highlight': 'goSameId'})
+  endif
+  if empty(prop_type_get('goDiagnosticError'))
+    call prop_type_add('goDiagnosticError', {'highlight': 'goDiagnosticError'})
+  endif
+  if empty(prop_type_get('goDiagnosticWarning'))
+    call prop_type_add('goDiagnosticWarning', {'highlight': 'goDiagnosticWarning'})
+  endif
+endif
+
 " Autocommands
 " ============================================================================
 "
