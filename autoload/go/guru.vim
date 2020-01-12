@@ -492,7 +492,7 @@ endfunction
 " ClearSameIds returns 0 when it removes goSameId groups and non-zero if no
 " goSameId groups are found.
 function! go#guru#ClearSameIds() abort
-  let l:cleared = go#util#ClearGroupFromMatches('goSameId')
+  let l:cleared = go#util#ClearHighlights('goSameId')
 
   if !l:cleared
     return 1

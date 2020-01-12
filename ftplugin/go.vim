@@ -129,10 +129,10 @@ augroup vim-go-buffer
   " clear diagnostics when the buffer is unloaded from its last window so that
   " loading another buffer (especially of a different filetype) in the same
   " window doesn't highlight th previously loaded buffer's diagnostics.
-  autocmd BufWinLeave <buffer> call go#lsp#ClearDiagnosticMatches()
+  autocmd BufWinLeave <buffer> call go#lsp#ClearDiagnosticHighlights()
   " clear diagnostics when a new buffer is loaded in the window so that the
   " previous buffer's diagnostcs aren't used.
-  autocmd BufWinEnter <buffer> call go#lsp#ClearDiagnosticMatches()
+  autocmd BufWinEnter <buffer> call go#lsp#ClearDiagnosticHighlights()
 
   autocmd BufEnter <buffer>
         \  if go#config#AutodetectGopath() && !exists('b:old_gopath')

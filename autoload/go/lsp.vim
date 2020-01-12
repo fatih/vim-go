@@ -1198,7 +1198,7 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
   if hlexists('goDiagnosticError')
     " clear the old matches just before adding the new ones to keep flicker
     " to a minimum.
-    call go#util#ClearGroupFromMatches('goDiagnosticError')
+    call go#util#ClearHighlights('goDiagnosticError')
     if go#config#HighlightDiagnosticErrors()
       let b:go_diagnostic_matches.errors = copy(a:errorMatches)
       call go#util#HighlightPositions('goDiagnosticError', a:errorMatches)
@@ -1208,7 +1208,7 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
   if hlexists('goDiagnosticWarning')
     " clear the old matches just before adding the new ones to keep flicker
     " to a minimum.
-    call go#util#ClearGroupFromMatches('goDiagnosticWarning')
+    call go#util#ClearHighlights('goDiagnosticWarning')
     if go#config#HighlightDiagnosticWarnings()
       let b:go_diagnostic_matches.warnings = copy(a:warningMatches)
       call go#util#HighlightPositions('goDiagnosticWarning', a:warningMatches)
@@ -1223,11 +1223,11 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
   augroup end
 endfunction
 
-" ClearDiagnosticsMatches removes all goDiagnosticError and
+" ClearDiagnosticsHighlights removes all goDiagnosticError and
 " goDiagnosticWarning matches.
-function! go#lsp#ClearDiagnosticMatches() abort
-  call go#util#ClearGroupFromMatches('goDiagnosticError')
-  call go#util#ClearGroupFromMatches('goDiagnosticWarning')
+function! go#lsp#ClearDiagnosticHighlights() abort
+  call go#util#ClearHighlights('goDiagnosticError')
+  call go#util#ClearHighlights('goDiagnosticWarning')
 endfunction
 
 " restore Vi compatibility settings

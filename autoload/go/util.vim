@@ -551,11 +551,17 @@ function! go#util#SetEnv(name, value) abort
   return function('go#util#SetEnv', [a:name, l:oldvalue], l:state)
 endfunction
 
-function! go#util#ClearGroupFromMatches(group) abort
-  if !exists("*matchaddpos")
-    return 0
+function! go#util#ClearHighlights(group) abort
+  if exists('*prop_remove')
+    return prop_remove({'type': a:group, 'all': 1})
   endif
 
+  if exists("*matchaddpos")
+    return s:clear_group_from_matches(a:group)
+  endif
+endfunction
+
+function! s:clear_group_from_matches(group) abort
   let l:cleared = 0
 
   let m = getmatches()
