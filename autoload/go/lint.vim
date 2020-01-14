@@ -99,9 +99,9 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
     if a:autosave || a:bang
       call win_gotoid(l:winid)
-      return
+    else
+      call go#list#JumpToFirst(l:listtype)
     endif
-    call go#list#JumpToFirst(l:listtype)
   endif
 endfunction
 
@@ -137,9 +137,9 @@ function! go#lint#Diagnostics(bang, ...) abort
 
     if a:bang
       call win_gotoid(l:winid)
-      return
+    else
+      call go#list#JumpToFirst(l:listtype)
     endif
-    call go#list#JumpToFirst(l:listtype)
   endif
 endfunction
 
@@ -165,10 +165,9 @@ function! go#lint#Golint(bang, ...) abort
 
   if a:bang
     call win_gotoid(l:winid)
-    return
+  else
+    call go#list#JumpToFirst(l:listtype)
   endif
-
-  call go#list#JumpToFirst(l:listtype)
 endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
