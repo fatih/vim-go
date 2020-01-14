@@ -260,11 +260,19 @@ function! go#config#MetalinterCommand() abort
   return get(g:, "go_metalinter_command", "golangci-lint")
 endfunction
 
+function! go#config#MetalinterUseLocalConfig() abort
+  return get(g:, "go_metalinter_use_local_config", 0)
+endfunction
+
 function! go#config#MetalinterAutosaveEnabled() abort
   let l:default_enabled = ["vet", "golint"]
 
   if go#config#MetalinterCommand() == "golangci-lint"
-    let l:default_enabled = ["govet", "golint"]
+    if go#config#MetalinterUseLocalConfig() == 0
+      let l:default_enabled = ["govet", "golint"]
+    else
+      let l:default_enabled = []
+    endif
   endif
 
   return get(g:, "go_metalinter_autosave_enabled", default_enabled)
@@ -274,7 +282,11 @@ function! go#config#MetalinterEnabled() abort
   let l:default_enabled = ["vet", "golint", "errcheck"]
 
   if go#config#MetalinterCommand() == "golangci-lint"
-    let l:default_enabled = ["govet", "golint"]
+    if go#config#MetalinterUseLocalConfig() == 0
+      let l:default_enabled = ["govet", "golint"]
+    else
+      let l:default_enabled = []
+    endif
   endif
 
   return get(g:, "go_metalinter_enabled", default_enabled)
