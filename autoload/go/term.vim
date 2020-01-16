@@ -74,8 +74,8 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
           \ 'exit_cb' : function('s:exit_cb', [], state),
         \ }
 
-    if !(l:mode =~ "split") || !(l:mode =~ "new")
-      let l:term["vertical"] = l:mode
+    if l:mode =~ "vertical" || l:mode =~ "vsplit" || l:mode =~ "vnew"
+          let l:term["vertical"] = l:mode
     endif
 
     let l:id = term_start(a:cmd, l:term)
