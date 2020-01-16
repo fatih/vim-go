@@ -611,25 +611,19 @@ function! go#util#HighlightPositions(group, pos) abort
       " specify end line and column if needed.
       let l:line = getline(l:pos[0])
 
-      " TODO(bc): use line2byte and byte2line to get the end position more
-      " efficiently once https://github.com/vim/vim/issues/5334 is resolved.
-      " e.g.:
-      "    " l:max is the 1-based index within the buffer of the first character after l:pos.
-      "    let l:max = line2byte(l:pos[0]) + l:pos[1] + l:pos[2] - 1
-      "    let l:end_lnum = byte2line(l:max)
+      " l:max is the 1-based index within the buffer of the first character after l:pos.
+      let l:max = line2byte(l:pos[0]) + l:pos[1] + l:pos[2] - 1
 
-      "    "echom printf('processing (%s)', string(l:pos))
-      "    if l:pos[0] != l:end_lnum
-      "      let l:end_col = l:max - line2byte(l:end_lnum)
-      "      "echom string(l:pos)
-      "      "echom printf('l:end_col = %d - %d = %d', l:max, line2byte(l:end_lnum), l:end_col)
-      "      "echom printf('line2byte(l:pos[0]) = %d, l:pos[0] = %d, l:end_col = %d, l:end_lnum = %d', line2byte(l:pos[0]), l:pos[0], l:end_col, l:end_lnum)
-      "      let l:prop = {'type': a:group, 'end_lnum': l:end_lnum, 'end_col': l:end_col}
-      if l:pos[1] + l:pos[2] - 1 > len(l:line)
-        " l:max is the 1-based index within the buffer of the first character
-        " after l:pos.
-        let l:max = line2byte(l:pos[0]) + l:pos[1] + l:pos[2] - 1
+      if has('patch-8.2.115')
+        " Use byte2line as long as 8.2.115 (which resolved
+        " https://github.com/vim/vim/issues/5334) is available.
+       let l:end_lnum = byte2line(l:max)
 
+       if l:pos[0] != l:end_lnum
+         let l:end_col = l:max - line2byte(l:end_lnum)
+         let l:prop = {'type': a:group, 'end_lnum': l:end_lnum, 'end_col': l:end_col}
+       endif
+      elseif l:pos[1] + l:pos[2] - 1 > len(l:line)
         let l:end_lnum = l:pos[0]
         let l:end_col = l:pos[1] + l:pos[2] - 1
         while line2byte(l:end_lnum+1) < l:max
