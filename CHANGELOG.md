@@ -84,6 +84,8 @@ IMPROVEMENTS:
 * Update the issue template to ask for the gopls version and
   `:GoReportGitHubIssue` to provide it.
   [[GH-2630]](https://github.com/fatih/vim-go/pull/2630)
+* Use text properties when possible for some highlighting cases.
+  [[GH-2652]](https://github.com/fatih/vim-go/pull/2652)
 
 
 BUG FIXES:
