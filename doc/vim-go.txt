@@ -1900,14 +1900,14 @@ it's being used for snippet expansion of single fields.  Possible options are:
 case, if `snakecase` is used the field will be transformed to:
 >
   type T struct {
-    FooBarQuz string `json:"foo_bar_quz"
+    FooBarQuz string `json:"foo_bar_quz"`
   }
 <
 
 If "camelcase" is used:
 >
   type T struct {
-    FooBarQuz string `json:"fooBarQuz"
+    FooBarQuz string `json:"fooBarQuz"`
   }
 <
 By default "snakecase" is used. Current values are: ["snakecase",
