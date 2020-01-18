@@ -657,8 +657,6 @@ CTRL-t
     |'g:go_metalinter_enabled'| variable. To override the command completely
     use the variable |'g:go_metalinter_command'|. To override the maximum
     linters execution time use |'g:go_metalinter_deadline'| variable.
-    To use a custom `golangci-lint` config on a per project basis, set
-    |'g:go_metalinter_use_local_config'| to 1.
 
     If [!] is not given the first error is jumped to.
 
@@ -1582,14 +1580,16 @@ window. The list to use can be set using |'g:go_list_type_commands'|.
                                           *'g:go_metalinter_autosave_enabled'*
 
 Specifies the enabled linters for auto |:GoMetaLinter| on save. By
-default it's using `vet` and `golint`.
+default it's using `vet` and `golint`. If any are enabled, `--disable-all`
+will be sent to the metalinter.
 >
   let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 <
                                                    *'g:go_metalinter_enabled'*
 
 Specifies the linters to enable for the |:GoMetaLinter| command. By default
-it's using `vet`, `golint` and `errcheck`.
+it's using `vet`, `golint` and `errcheck`. If any are enabled, `--disable-all`
+will be sent to the metalinter.
 >
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
@@ -1602,16 +1602,6 @@ When the value is `gopls`, users may want to consider setting
 users who want to have more control over the metalinter.
 >
   let g:go_metalinter_command = "golangci-lint"
-<
-                                          *'g:go_metalinter_use_local_config'*
-
-Set to 1 to override the linters enabled by default and the `--disable-all`
-option to `golangci-lint` so you can use a more flexible configuration file
-on a per project basis. Even with this option enabled, `print-issued-lines`
-and `exclude-use-default` are still set to `false`  so we can properly
-parse the linter output.
->
-  let g:go_metalinter_use_local_config = 0
 <
                                                   *'g:go_metalinter_deadline'*
 

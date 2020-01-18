@@ -13,13 +13,13 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   let cmd = []
   if l:metalinter == 'golangci-lint'
-    let cmd = s:metalintercmd(l:metalinter)
+    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
+    let cmd = s:metalintercmd(l:metalinter, len(linters) != 0)
     if empty(cmd)
       return
     endif
 
-    " linters
-    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
+    " add linters to cmd
     for linter in linters
       let cmd += ["--enable=".linter]
     endfor
@@ -298,19 +298,19 @@ function! s:lint_job(metalinter, args, bang, autosave)
   call go#job#Spawn(a:args.cmd, l:opts)
 endfunction
 
-function! s:metalintercmd(metalinter)
+function! s:metalintercmd(metalinter, haslinter)
   let l:cmd = []
   let bin_path = go#path#CheckBinPath(a:metalinter)
   if !empty(bin_path)
     if a:metalinter == "golangci-lint"
-      let l:cmd = s:golangcilintcmd(bin_path)
+      let l:cmd = s:golangcilintcmd(bin_path, a:haslinter)
     endif
   endif
 
   return cmd
 endfunction
 
-function! s:golangcilintcmd(bin_path)
+function! s:golangcilintcmd(bin_path, haslinter)
   let cmd = [a:bin_path]
   let cmd += ["run"]
   let cmd += ["--print-issued-lines=false"]
@@ -320,7 +320,7 @@ function! s:golangcilintcmd(bin_path)
   " golint identifies.
   let cmd += ["--exclude-use-default=false"]
 
-  if go#config#MetalinterUseLocalConfig() == 0
+  if a:haslinter
     let cmd += ["--disable-all"]
   endif
 
