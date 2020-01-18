@@ -1880,6 +1880,16 @@ By default "snakecase" is used. Current values are: ["snakecase",
 >
       let g:go_addtags_transform = 'snakecase'
 <
+                                                 *'g:go_addtags_skip_private'*
+
+Sets the `skip-private` option for `gomodifytags` when using |:GoAddTags|.
+If set it will prevent from adding tags to private fields:
+>
+  type T struct {
+    FooBar string `json:"foo_bar"`
+    quz    string
+  }
+<
                                                                 *'g:go_debug'*
 
 A list of options to debug; useful for development and/or reporting bugs.
