@@ -87,6 +87,7 @@ IMPROVEMENTS:
 * Use text properties when possible for some highlighting cases.
   [[GH-2652]](https://github.com/fatih/vim-go/pull/2652)
   [[GH-2662]](https://github.com/fatih/vim-go/pull/2662)
+  [[GH-2663]](https://github.com/fatih/vim-go/pull/2663)
 
 
 BUG FIXES:
