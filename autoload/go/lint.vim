@@ -239,10 +239,12 @@ function! go#lint#Errcheck(bang, ...) abort
   let l:listtype = go#list#Type("GoErrCheck")
   if l:err != 0
     let l:winid = win_getid(winnr())
-    let errformat = "%f:%l:%c:\ %m, %f:%l:%c\ %#%m"
+    " the first entry in l:errformat is to get messages related to syntax
+    " errors.
+    let l:errformat = "%.%#[%f:%l:%c:\ %m],%f:%l:%c:\ %m,%f:%l:%c\ %#%m"
 
     " Parse and populate our location list
-    call go#list#ParseFormat(l:listtype, errformat, split(out, "\n"), 'Errcheck')
+    call go#list#ParseFormat(l:listtype, l:errformat, split(out, "\n"), 'Errcheck')
 
     let l:errors = go#list#Get(l:listtype)
     if empty(l:errors)
