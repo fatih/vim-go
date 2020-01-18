@@ -47,7 +47,7 @@ func! Test_Jump_leaves_lists() abort
 
     let l:expected = [{'lnum': 10, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'quux'}]
 
-    call setloclist(winnr(), copy(l:expected), 'r' )
+    call setloclist(0, copy(l:expected), 'r' )
     call setqflist(copy(l:expected), 'r' )
 
     let l:bufnr = bufnr('%')
@@ -67,7 +67,7 @@ func! Test_Jump_leaves_lists() abort
       sleep 100m
     endwhile
 
-    let l:actual = getloclist(winnr())
+    let l:actual = getloclist(0)
     call gotest#assert_quickfix(l:actual, l:expected)
 
     let l:actual = getqflist()
