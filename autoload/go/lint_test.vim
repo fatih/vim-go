@@ -197,6 +197,25 @@ func! Test_Lint_NullModule() abort
   call gotest#assert_quickfix(actual, expected)
 endfunc
 
+func! Test_Errcheck_compilererror() abort
+  let l:tmp = gotest#load_fixture('lint/src/errcheck/compilererror/compilererror.go')
+
+  try
+    let l:bufnr = bufnr('')
+    let expected = []
+
+    " clear the location lists
+    call setqflist([], 'r')
+
+    call go#lint#Errcheck(1)
+
+    call gotest#assert_quickfix(getqflist(), expected)
+    call assert_equal(l:bufnr, bufnr(''))
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
