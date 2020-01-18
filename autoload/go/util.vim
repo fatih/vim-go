@@ -553,6 +553,10 @@ endfunction
 
 function! go#util#ClearHighlights(group) abort
   if exists('*prop_remove')
+    " the property type may not exist when syntax highlighting is not enabled.
+    if empty(prop_type_get(a:group))
+      return
+    endif
     if !has('patch-8.1.1035')
       return prop_remove({'type': a:group, 'all': 1}, 1, line('$'))
     endif

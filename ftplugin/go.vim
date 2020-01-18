@@ -74,18 +74,6 @@ if get(g:, "go_textobj_enabled", 1)
   xnoremap <buffer> <silent> [[ :<c-u>call go#textobj#FunctionJump('v', 'prev')<cr>
 endif
 
-if exists('*prop_type_add')
-  if empty(prop_type_get('goSameId'))
-    call prop_type_add('goSameId', {'highlight': 'goSameId'})
-  endif
-  if empty(prop_type_get('goDiagnosticError'))
-    call prop_type_add('goDiagnosticError', {'highlight': 'goDiagnosticError'})
-  endif
-  if empty(prop_type_get('goDiagnosticWarning'))
-    call prop_type_add('goDiagnosticWarning', {'highlight': 'goDiagnosticWarning'})
-  endif
-endif
-
 " Autocommands
 " ============================================================================
 "
@@ -131,7 +119,7 @@ augroup vim-go-buffer
   " window doesn't highlight th previously loaded buffer's diagnostics.
   autocmd BufWinLeave <buffer> call go#lsp#ClearDiagnosticHighlights()
   " clear diagnostics when a new buffer is loaded in the window so that the
-  " previous buffer's diagnostcs aren't used.
+  " previous buffer's diagnostics aren't used.
   autocmd BufWinEnter <buffer> call go#lsp#ClearDiagnosticHighlights()
 
   autocmd BufEnter <buffer>
