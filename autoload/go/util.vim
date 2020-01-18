@@ -553,6 +553,9 @@ endfunction
 
 function! go#util#ClearHighlights(group) abort
   if exists('*prop_remove')
+    if !has('patch-8.1.1035')
+      return prop_remove({'type': a:group, 'all': 1}, 1, line('$'))
+    endif
     return prop_remove({'type': a:group, 'all': 1})
   endif
 
