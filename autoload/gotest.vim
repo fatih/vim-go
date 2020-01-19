@@ -39,6 +39,9 @@ fun! gotest#write_file(path, contents) abort
       call setline('.', substitute(getline('.'), "\x1f", '', ''))
       silent noautocmd w!
 
+      call go#lsp#DidClose(expand('%:p'))
+      call go#lsp#DidOpen(expand('%:p'))
+
       break
     endif
 
