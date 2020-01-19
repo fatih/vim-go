@@ -116,6 +116,9 @@ BUG FIXES:
   [[GH-2556]](https://github.com/fatih/vim-go/pull/2556)
 * Expand struct variable correctly in the variables debug window.
   [[GH-2574]](https://github.com/fatih/vim-go/pull/2574)
+* Show output from errcheck when there are failures other than problems it can
+  report.
+  [[GH-2667]](https://github.com/fatih/vim-go/pull/2667)
 
 ## v1.21 - (September 11, 2019)
 
