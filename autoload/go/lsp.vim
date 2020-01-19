@@ -1219,6 +1219,7 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
   " redisplayed in an existing window: e.g. :edit,
   augroup vim-go-diagnostics
     autocmd! * <buffer>
+    autocmd BufDelete <buffer> autocmd! vim-go-diagnostics * <buffer=abuf>
     autocmd BufWinEnter <buffer> nested call s:highlightMatches(b:go_diagnostic_matches.errors, b:go_diagnostic_matches.warnings)
   augroup end
 endfunction
