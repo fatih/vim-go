@@ -399,7 +399,7 @@ CTRL-t
     You may optionally pass any valid go test flags/options. For a full list
     please see `go help test`.
 
-    GoTest timesout automatically after 10 seconds. To customize the timeout
+    GoTest times out automatically after 10 seconds. To customize the timeout
     use |'g:go_test_timeout'|. This feature is disabled if any arguments are
     passed to the `:GoTest` command.
 
