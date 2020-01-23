@@ -88,6 +88,8 @@ IMPROVEMENTS:
   [[GH-2652]](https://github.com/fatih/vim-go/pull/2652)
   [[GH-2662]](https://github.com/fatih/vim-go/pull/2662)
   [[GH-2663]](https://github.com/fatih/vim-go/pull/2663)
+  [[GH-2672]](https://github.com/fatih/vim-go/pull/2672)
+  [[GH-2678]](https://github.com/fatih/vim-go/pull/2678)
 
 
 BUG FIXES:
