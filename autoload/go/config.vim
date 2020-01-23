@@ -490,7 +490,7 @@ function! go#config#HighlightDebug() abort
 endfunction
 
 function! go#config#DebugBreakpointSymbol() abort
-  return get( g:, 'go_debug_breakpoint_symbol', '>' )
+  return get(g:, 'go_debug_breakpoint_symbol', '>')
 endfunction
 
 function! go#config#FoldEnable(...) abort
