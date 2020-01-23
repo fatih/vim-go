@@ -2335,7 +2335,7 @@ Highlight the current line and breakpoints in the debugger.
 
                                             *'go:go_debug_breakpoint_symbol'*
 
-change default symbol for breakpoints in the debugger.
+Set the symbol used for breakpints in the debugger. By default it's '>'.
 
 >
   let g:go_debug_breakpoint_symbol = '>'
