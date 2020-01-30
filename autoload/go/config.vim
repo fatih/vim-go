@@ -160,23 +160,6 @@ function! go#config#SetGuruScope(scope) abort
   endif
 endfunction
 
-function! go#config#GocodeUnimportedPackages() abort
-  return get(g:, 'go_gocode_unimported_packages', 0)
-endfunction
-
-let s:sock_type = (has('win32') || has('win64')) ? 'tcp' : 'unix'
-function! go#config#GocodeSocketType() abort
-  return get(g:, 'go_gocode_socket_type', s:sock_type)
-endfunction
-
-function! go#config#GocodeProposeBuiltins() abort
-  return get(g:, 'go_gocode_propose_builtins', 1)
-endfunction
-
-function! go#config#GocodeProposeSource() abort
-  return get(g:, 'go_gocode_propose_source', 0)
-endfunction
-
 function! go#config#EchoCommandInfo() abort
   return get(g:, 'go_echo_command_info', 1)
 endfunction

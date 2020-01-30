@@ -45,8 +45,6 @@ let s:packages = {
       \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv@master'],
       \ 'errcheck':      ['github.com/kisielk/errcheck@master'],
       \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct@master'],
-      \ 'gocode':        ['github.com/mdempsky/gocode@master', {'windows': ['-ldflags', '-H=windowsgui']}],
-      \ 'gocode-gomod':  ['github.com/stamblerre/gocode'],
       \ 'godef':         ['github.com/rogpeppe/godef@master'],
       \ 'gogetdoc':      ['github.com/zmb3/gogetdoc@master'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
