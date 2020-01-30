@@ -51,7 +51,7 @@ let s:packages = {
       \ 'gogetdoc':      ['github.com/zmb3/gogetdoc@master'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
       \ 'golint':        ['golang.org/x/lint/golint@master'],
-      \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
+      \ 'gopls':         ['golang.org/x/tools/gopls@v0.2.2', {}, {'after': function('go#lsp#Restart', [])}],
       \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@master'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags@master'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
