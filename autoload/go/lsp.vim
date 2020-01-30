@@ -431,8 +431,8 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.err_cb(ch, msg) dict abort
-    if a:msg =~ '^\tPort = \d\+$' && !get(self, 'debugport', 0)
-      let self.debugport = substitute(a:msg, 'debug server listening on port \(\d\+\).*$', '\1', '')
+    if a:msg =~ '^\d\{4}/\d\d/\d\d\ \d\d:\d\d:\d\d debug server listening on port \d\+$' && !get(self, 'debugport', 0)
+      let self.debugport = substitute(a:msg, '\d\{4}/\d\d/\d\d\ \d\d:\d\d:\d\d debug server listening on port \(\d\+\).*$', '\1', '')
     endif
 
     call s:debug('stderr', a:msg)
