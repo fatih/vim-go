@@ -21,7 +21,7 @@ This plugin adds Go language support for Vim, with the following main features:
 * Precise type-safe renaming of identifiers with `:GoRename`.
 * See which code is covered by tests with `:GoCoverage`.
 * Add or remove tags on struct fields with `:GoAddTags` and `:GoRemoveTags`.
-* Call `gometalinter` with `:GoMetaLinter` to invoke all possible linters
+* Call `golangci-lint` with `:GoMetaLinter` to invoke all possible linters
   (`golint`, `vet`, `errcheck`, `deadcode`, etc.) and put the result in the
   quickfix or location list.
 * Lint your code with `:GoLint`, run your code through `:GoVet` to catch static
