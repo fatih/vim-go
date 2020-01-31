@@ -1880,7 +1880,7 @@ By default "snakecase" is used. Current values are: ["snakecase",
 >
       let g:go_addtags_transform = 'snakecase'
 <
-                                                 *'g:go_addtags_skip_unexported'*
+                                              *'g:go_addtags_skip_unexported'*
 
 Sets the `skip-unexported` option for `gomodifytags` when using |:GoAddTags|.
 If set it will prevent from adding tags to private fields:
