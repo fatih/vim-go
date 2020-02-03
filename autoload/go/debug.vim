@@ -1116,7 +1116,7 @@ function! s:list_breakpoints()
   return l:signs
 endfunction
 
-sign define godebugbreakpoint text=> texthl=GoDebugBreakpoint
+exe 'sign define godebugbreakpoint text='.go#config#DebugBreakpointSymbol().' texthl=GoDebugBreakpoint'
 sign define godebugcurline    text== texthl=GoDebugCurrent    linehl=GoDebugCurrent
 
 " restore Vi compatibility settings
