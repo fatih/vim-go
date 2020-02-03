@@ -4,6 +4,9 @@ BACKWARDS INCOMPATIBILITIES:
 
 IMPROVEMENTS:
 
+* Make signs for breakpoints configurable
+  [[GH-2676]](https://github.com/fatih/vim-go/pull/2676)
+
 BUG FIXES:
 
 ## v1.22 - (January 30, 2020)
