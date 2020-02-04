@@ -5,12 +5,13 @@ BACKWARDS INCOMPATIBILITIES:
   [[GH-2686]](https://github.com/fatih/vim-go/pull/2686)
 
 IMPROVEMENTS:
-
 * Make signs for breakpoints configurable.
   [[GH-2676]](https://github.com/fatih/vim-go/pull/2676)
   [[GH-2690]](https://github.com/fatih/vim-go/pull/2690)
 
 BUG FIXES:
+* Use the discovered full path for gopls when renaming.
+  [[GH-2692]](https://github.com/fatih/vim-go/pull/2692)
 
 ## v1.22 - (January 30, 2020)
 
