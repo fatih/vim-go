@@ -82,9 +82,7 @@ endfunction
 
 function! go#tool#Info(showstatus) abort
   let l:mode = go#config#InfoMode()
-  if l:mode == 'gocode'
-    call go#complete#Info(a:showstatus)
-  elseif l:mode == 'guru'
+  if l:mode == 'guru'
     call go#guru#DescribeInfo(a:showstatus)
   elseif l:mode == 'gopls'
     if !go#config#GoplsEnabled()

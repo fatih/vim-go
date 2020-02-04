@@ -502,7 +502,7 @@ CTRL-t
 :GoInstallBinaries [binaries]
 
     Download and install all necessary Go tool binaries such as `godef`,
-    `goimports`, `gocode`, etc. under |'g:go_bin_path'|. If [binaries] is
+    `goimports`, `gopls`, etc. under |'g:go_bin_path'|. If [binaries] is
     supplied, then only the specified binaries will be installed. The default
     is to install everything.
 
@@ -512,7 +512,7 @@ CTRL-t
 :GoUpdateBinaries [binaries]
 
     Download and update previously installed Go tool binaries such as `godef`,
-    `goimports`, `gocode`, etc. under |'g:go_bin_path'|. If [binaries] is
+    `goimports`, `gopls`, etc. under |'g:go_bin_path'|. If [binaries] is
     supplied, then only the specified binaries will be updated. The default is
     to update everything.
 
@@ -1209,11 +1209,6 @@ into the statusline.
 
 Uses `gopls` for autocompletion. By default, it is hooked up to 'omnifunc'.
 
-
-                                                *go#complete#GocodeComplete()*
-
-Uses `gocode` for autocompletion.
-
                                                    *go#tool#DescribeBalloon()*
 
 Suitable to be used as an expression to show the evaluation balloon. See `help
@@ -1286,8 +1281,8 @@ updated. By default it's disabled. The delay can be configured with the
 
 Use this option to define the command to be used for |:GoInfo|. By default
 `gopls` is used, because it is the fastest and is known to be highly accurate.
-One might also use `guru` for its accuracy or `gocode` for its performance.
-Valid options are `gocode`, `gopls`, and `guru`.
+One might also use `guru` for its accuracy.
+Valid options are `gopls` and `guru`.
 >
   let g:go_info_mode = 'gopls'
 <
@@ -1708,36 +1703,6 @@ same.
   let g:go_gorename_prefill = 'expand("<cword>") =~# "^[A-Z]"' .
         \ '? go#util#pascalcase(expand("<cword>"))' .
         \ ': go#util#camelcase(expand("<cword>"))'
-<
-                                              *'g:go_gocode_propose_builtins'*
-
-Specifies whether `gocode` should add built-in types, functions and constants
-to code completion proposals. By default it is enabled.
->
-  let g:go_gocode_propose_builtins = 1
-<
-                                               *'g:go_gocode_propose_source'*
-
-Specifies whether `gocode` should use source files instead of binary packages
-for code completion proposals. When disabled, only identifiers from the
-current package and packages that have been installed will proposed.
->
-  let g:go_gocode_propose_source = 0
-<
-                                           *'g:go_gocode_unimported_packages'*
-
-Specifies whether `gocode` should include suggestions from unimported
-packages. By default it is disabled.
->
-  let g:go_gocode_unimported_packages = 0
-<
-
-                                                   *'g:go_gocode_socket_type'*
-
-Specifies whether `gocode` should use a different socket type. By default
-`unix` is enabled. Possible values: `unix`, `tcp`
->
-  let g:go_gocode_socket_type = 'unix'
 <
 
                                                         *'g:go_gopls_enabled'*
