@@ -42,7 +42,7 @@ function! go#rename#Rename(bang, ...) abort
     call go#util#EchoWarning('unexpected rename command')
   endif
 
-  let l:cmd = extend([l:bin], l:args)
+  let l:cmd = extend([l:bin_path], l:args)
 
   if go#util#has_job()
     call s:rename_job({
