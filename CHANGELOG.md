@@ -8,6 +8,8 @@ IMPROVEMENTS:
 * Make signs for breakpoints configurable.
   [[GH-2676]](https://github.com/fatih/vim-go/pull/2676)
   [[GH-2690]](https://github.com/fatih/vim-go/pull/2690)
+* Enable g:go_gopls_complete_unimported by default to stay aligned with gopls' defaults.
+  [[GH-2695]](https://github.com/fatih/vim-go/pull/2695)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
