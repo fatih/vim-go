@@ -501,7 +501,7 @@ function! go#config#ReferrersMode() abort
 endfunction
 
 function! go#config#GoplsCompleteUnimported() abort
-  return get(g:, 'go_gopls_complete_unimported', 0)
+  return get(g:, 'go_gopls_complete_unimported', 1)
 endfunction
 
 function! go#config#GoplsDeepCompletion() abort

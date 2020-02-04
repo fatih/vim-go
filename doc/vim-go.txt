@@ -1718,7 +1718,7 @@ options may also need to be adjusted.
                                             *'g:go_gopls_complete_unimported'*
 
 Specifies whether `gopls` should include suggestions from unimported packages.
-By default it is disabled.
+By default it is enabled.
 >
   let g:go_gopls_complete_unimported = 0
 <
