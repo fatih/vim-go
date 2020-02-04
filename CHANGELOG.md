@@ -6,6 +6,7 @@ IMPROVEMENTS:
 
 * Make signs for breakpoints configurable
   [[GH-2676]](https://github.com/fatih/vim-go/pull/2676)
+  [[GH-2690]](https://github.com/fatih/vim-go/pull/2690)
 
 BUG FIXES:
 
