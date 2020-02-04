@@ -1,10 +1,12 @@
 ## unplanned
 
 BACKWARDS INCOMPATIBILITIES:
+* Remove support for gocode.
+  [[GH-2686]](https://github.com/fatih/vim-go/pull/2686)
 
 IMPROVEMENTS:
 
-* Make signs for breakpoints configurable
+* Make signs for breakpoints configurable.
   [[GH-2676]](https://github.com/fatih/vim-go/pull/2676)
   [[GH-2690]](https://github.com/fatih/vim-go/pull/2690)
 
