@@ -501,23 +501,23 @@ function! go#config#ReferrersMode() abort
 endfunction
 
 function! go#config#GoplsCompleteUnimported() abort
-  return get(g:, 'go_gopls_complete_unimported', 1)
+  return get(g:, 'go_gopls_complete_unimported', v:null)
 endfunction
 
 function! go#config#GoplsDeepCompletion() abort
-  return get(g:, 'go_gopls_deep_completion', 1)
+  return get(g:, 'go_gopls_deep_completion', v:null)
 endfunction
 
 function! go#config#GoplsFuzzyMatching() abort
-  return get(g:, 'go_gopls_fuzzy_matching', 1)
+  return get(g:, 'go_gopls_fuzzy_matching', v:null)
 endfunction
 
 function! go#config#GoplsStaticCheck() abort
-  return get(g:, 'go_gopls_staticcheck', 0)
+  return get(g:, 'go_gopls_staticcheck', v:null)
 endfunction
 
 function! go#config#GoplsUsePlaceholders() abort
-  return get(g:, 'go_gopls_use_placeholders', 0)
+  return get(g:, 'go_gopls_use_placeholders', v:null)
 endfunction
 
 function! go#config#GoplsEnabled() abort

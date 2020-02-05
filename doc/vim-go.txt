@@ -1718,33 +1718,34 @@ options may also need to be adjusted.
                                             *'g:go_gopls_complete_unimported'*
 
 Specifies whether `gopls` should include suggestions from unimported packages.
-By default it is enabled.
+When it is v:null, `gopls`' defaults will be used. By default it is v:null.
 >
-  let g:go_gopls_complete_unimported = 0
+  let g:go_gopls_complete_unimported = v:null
 <
 
                                                 *'g:go_gopls_deep_completion'*
 
-Specifies whether `gopls` should use deep completion. By default it is
-enabled.
+Specifies whether `gopls` should use deep completion. When it is v:null,
+`gopls`' defaults will be used. By default it is v:null.
+
 >
-  let g:go_gopls_deep_completion = 1
+  let g:go_gopls_deep_completion = v:null
 <
 
                                                  *'g:go_gopls_fuzzy_matching'*
 
-Specifies whether `gopls` should use fuzzy matching for completions.
-By default it is enabled.
+Specifies whether `gopls` should use fuzzy matching for completions. When it
+is v:null, `gopls`' defaults will be used.
 >
-  let g:go_gopls_fuzzy_matching = 1
+  let g:go_gopls_fuzzy_matching = v:null
 <
 
                                                    *'g:go_gopls_staticcheck'*
 
-Specifies whether `gopls` should run staticcheck checks. By default it is
-disabled.
+Specifies whether `gopls` should run staticcheck checks. When it is v:null,
+`gopls`' defaults will be used.
 >
-  let g:go_gopls_staticcheck = 0
+  let g:go_gopls_staticcheck = v:null
 <
 
                                                *'g:go_gopls_use_placeholders'*
@@ -1752,9 +1753,10 @@ disabled.
 Specifies whether `gopls` can provide placeholders for function parameters and
 struct fields. When set, completion items will be treated as anonymous
 snippets if UltiSnips is installed and configured to be used as
-|'g:go_snippet_engine'|. By default it is disabled.
+|'g:go_snippet_engine'|. When it is v:null, `gopls`' defaults will be used. By
+default it is disabled.
 >
-  let g:go_gopls_use_placeholders = 0
+  let g:go_gopls_use_placeholders = v:null
 <
 
                                                  *'g:go_diagnostics_enabled'*
