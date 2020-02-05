@@ -1883,12 +1883,16 @@ By default "snakecase" is used. Current values are: ["snakecase",
                                               *'g:go_addtags_skip_unexported'*
 
 Sets the `skip-unexported` option for `gomodifytags` when using |:GoAddTags|.
-If set it will prevent from adding tags to private fields:
+If set it will prevent `gomodifytags` from adding tags to unexported fields:
 >
   type T struct {
     FooBar string `json:"foo_bar"`
     quz    string
   }
+<
+By default it is disabled.
+>
+      let g:go_addtags_skip_unexported = 0
 <
                                                                 *'g:go_debug'*
 

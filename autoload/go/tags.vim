@@ -132,7 +132,7 @@ func s:create_cmd(args) abort
   call extend(cmd, ["-file", a:args.fname])
   call extend(cmd, ["-transform", l:modifytags_transform])
 
-  if l:modifytags_skip_unexported != 0
+  if l:modifytags_skip_unexported
     call extend(cmd, ["-skip-unexported"])
   endif
 
