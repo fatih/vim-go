@@ -1048,7 +1048,7 @@ Show the relevant GoDoc for the word under in browser
 
                                                                     *(go-def)*
 
-Goto declaration/definition. Results are shown in the current buffer.
+Goto declaration/definition. Results are shown in the current window.
 
                                                               *(go-def-split)*
 
@@ -1063,6 +1063,24 @@ Jumps to an existing buffer if |'g:go_def_reuse_buffer'| is enabled.
                                                                 *(go-def-tab)*
 
 Goto declaration/definition. Results are shown in a tab window.
+Jumps to an existing buffer if |'g:go_def_reuse_buffer'| is enabled.
+
+                                                              *(go-def-type)*
+
+Goto type declaration/definition.  Results are shown in the current window.
+Jumps to an existing buffer if |'g:go_def_reuse_buffer'| is enabled.
+
+                                                     *(go-def-type-vertical)*
+Goto type declaration/definition. Results are shown in a vertical split
+window.
+Jumps to an existing buffer if |'g:go_def_reuse_buffer'| is enabled.
+
+                                                        *(go-def-type-split)*
+Goto type declaration/definition. Results are shown in a split window.
+Jumps to an existing buffer if |'g:go_def_reuse_buffer'| is enabled.
+
+                                                          *(go-def-type-tab)*
+Goto type declaration/definition. Results are shown in a tab window.
 Jumps to an existing buffer if |'g:go_def_reuse_buffer'| is enabled.
 
                                                               *(go-def-stack)*
@@ -1145,6 +1163,9 @@ return values and the numbers.
                                                                 *(go-mod-fmt)*
 
 Calls |:GoModFmt| for the current buffer
+
+                                                            *(go-diagnostics)*
+Calls `:GoDiagnostics`
 
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
