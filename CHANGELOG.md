@@ -14,6 +14,8 @@ IMPROVEMENTS:
   [[GH-2699]](https://github.com/fatih/vim-go/pull/2699)
 * Handle null arrays better in gopls responses.
   [[GH-2703]](https://github.com/fatih/vim-go/pull/2703)
+* Use `gopls` defaults by default when they're not otherwise specified in vim-go options.
+  [[GH-2696]](https://github.com/fatih/vim-go/pull/2696)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
