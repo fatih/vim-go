@@ -10,6 +10,8 @@ IMPROVEMENTS:
   [[GH-2690]](https://github.com/fatih/vim-go/pull/2690)
 * Enable g:go_gopls_complete_unimported by default to stay aligned with gopls' defaults.
   [[GH-2695]](https://github.com/fatih/vim-go/pull/2695)
+* Document mappings that were recently added.
+  [[GH-2699]](https://github.com/fatih/vim-go/pull/2699)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
