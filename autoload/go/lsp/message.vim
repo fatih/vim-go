@@ -197,15 +197,56 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:config = {
           \ 'buildFlags': [],
           \ 'hoverKind': 'NoDocumentation',
-          \ 'deepCompletion': go#config#GoplsDeepCompletion() ? v:true : v:false,
-          \ 'fuzzyMatching': go#config#GoplsFuzzyMatching() ? v:true : v:false,
-          \ 'completeUnimported': go#config#GoplsCompleteUnimported() ? v:true : v:false,
-          \ 'staticcheck': go#config#GoplsStaticCheck() ? v:true : v:false,
-          \ 'usePlaceholders': go#config#GoplsUsePlaceholders() ? v:true : v:false,
           \ }
     let l:buildtags = go#config#BuildTags()
     if buildtags isnot ''
       let l:config.buildFlags = extend(l:config.buildFlags, ['-tags', go#config#BuildTags()])
+    endif
+
+    let l:deepCompletion = go#config#GoplsDeepCompletion()
+    let l:fuzzyMatching = go#config#GoplsFuzzyMatching()
+    let l:completeUnimported = go#config#GoplsCompleteUnimported()
+    let l:staticcheck = go#config#GoplsStaticCheck()
+    let l:usePlaceholder = go#config#GoplsUsePlaceholders()
+
+    if l:deepCompletion isnot v:null
+      if l:deepCompletion
+        let l:config.deepCompletion = v:true
+      else
+        let l:config.deepCompletion = v:false
+      endif
+    endif
+
+    if l:fuzzyMatching isnot v:null
+      if l:fuzzyMatching
+        let l:config.fuzzyMatching = v:true
+      else
+        let l:config.fuzzyMatching = v:false
+      endif
+    endif
+
+    if l:completeUnimported isnot v:null
+      if l:completeUnimported
+        let l:config.completeUnimported = v:true
+      else
+        let l:config.completeUnimported = v:false
+      endif
+    endif
+
+    if l:staticcheck isnot v:null
+      if l:staticcheck
+        let l:config.staticcheck = v:true
+      else
+        let l:config.staticcheck = v:false
+      endif
+    endif
+
+    if l:usePlaceholder isnot v:null
+      if l:usePlaceholder
+        let l:config.usePlaceholders = v:true
+      else
+        let l:config.usePlaceholders = v:false
+      endif
     endif
 
     let l:result = add(l:result, l:config)
