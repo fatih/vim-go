@@ -744,7 +744,12 @@ function! s:sameIDsHandler(next, msg) abort dict
         \ 'enclosing': [],
       \ }
 
-  for l:loc in a:msg
+  let l:msg = a:msg
+  if a:msg is v:null
+    let l:msg = []
+  endif
+
+  for l:loc in l:msg
     if l:loc.uri !=# l:furi
       continue
     endif
@@ -787,9 +792,15 @@ endfunction
 function! s:referencesHandler(next, msg) abort dict
   let l:result = []
 
-  call sort(a:msg, funcref('s:compareLocations'))
+  let l:msg = a:msg
 
-  for l:loc in a:msg
+  if l:msg is v:null
+    let l:msg = []
+  endif
+
+  call sort(l:msg, funcref('s:compareLocations'))
+
+  for l:loc in l:msg
     let l:fname = go#path#FromURI(l:loc.uri)
     let l:line = l:loc.range.start.line+1
     let l:bufnr = bufnr(l:fname)
