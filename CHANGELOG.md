@@ -12,6 +12,8 @@ IMPROVEMENTS:
   [[GH-2695]](https://github.com/fatih/vim-go/pull/2695)
 * Document mappings that were recently added.
   [[GH-2699]](https://github.com/fatih/vim-go/pull/2699)
+* Handle null arrays better in gopls responses.
+  [[GH-2703]](https://github.com/fatih/vim-go/pull/2703)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
