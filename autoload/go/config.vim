@@ -244,6 +244,10 @@ function! go#config#AddtagsTransform() abort
   return get(g:, 'go_addtags_transform', "snakecase")
 endfunction
 
+function! go#config#AddtagsSkipUnexported() abort
+  return get(g:, 'go_addtags_skip_unexported', 0)
+endfunction
+
 function! go#config#TemplateAutocreate() abort
   return get(g:, "go_template_autocreate", 1)
 endfunction
