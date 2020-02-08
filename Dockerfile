@@ -14,6 +14,7 @@ COPY . /vim-go/
 WORKDIR /vim-go
 
 RUN scripts/install-vim vim-8.0
+RUN scripts/install-vim vim-8.2
 RUN scripts/install-vim nvim
 
 ENTRYPOINT ["make"]

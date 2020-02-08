@@ -23,6 +23,15 @@ case "$vim" in
     giturl="https://github.com/vim/vim"
     ;;
 
+  "vim-8.2")
+    # This is the version that's installed by homebrew currently. It doesn't
+    # have to stay up to date with homebrew, and is only chosen here because
+    # that's what homebrew was using at the the time and we need a version to
+    # vimlint with.
+    tag="v8.2.0200"
+    giturl="https://github.com/vim/vim"
+    ;;
+
   "nvim")
     # Use latest stable version.
     tag="v0.3.2"
@@ -31,7 +40,7 @@ case "$vim" in
 
   *)
     echo "unknown version: '${1:-}'"
-    echo "First argument must be 'vim-8.0' or 'nvim'."
+    echo "First argument must be 'vim-8.0', vim-8.2, or 'nvim'."
     exit 1
     ;;
 esac
