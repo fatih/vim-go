@@ -1643,21 +1643,20 @@ Use this option to auto |:AsmFmt| on save. By default it's disabled. >
 <
                                                             *'g:go_term_mode'*
 
-This option is Neovim and Vim with 'terminal' feature only.
-Use it to change the default command used to
-open a new terminal for go commands such as |:GoRun|.
-The default is vsplit.
+This option is Neovim and Vim with `terminal` feature only.  Use it to change
+the default command used to open a new terminal for go commands such as
+|:GoRun|.  The default is vsplit.
 >
   let g:go_term_mode = "vsplit"
 <
                                                           *'g:go_term_height'*
                                                            *'g:go_term_width'*
 
-These options are Neovim and Vim with 'terminal' feature only.
-Use them to control the height and width of
-a terminal split. By default these are not set, meaning that the height and
-width are set automatically by Neovim. The height only applies to a
-horizontal split and width only applies to a vertical split.
+These options are Neovim and Vim with `terminal` feature only.  Use them to
+control the height and width of a terminal split. By default these are not
+set, meaning that the height and width are set automatically by Neovim. The
+height only applies to a horizontal split and width only applies to a vertical
+split.
 
 For example here is how to set each to 30.
 >
@@ -1666,26 +1665,26 @@ For example here is how to set each to 30.
 <
                                                          *'g:go_term_enabled'*
 
-These options are Neovim and Vim with 'terminal' feature only.
-Use it to change the behavior of the test
-commands. If set to 1 it opens the test commands inside a new terminal
-according to |'g:go_term_mode'|, otherwise it will run them in the background
-just like `:GoBuild`. By default it is disabled.
+These options are Neovim and Vim with `terminal` feature only. Use it to
+change the behavior of the test commands. If set to 1 it opens the test
+commands inside a new terminal according to |'g:go_term_mode'|, otherwise it
+will run them in the background just like `:GoBuild`. By default it is
+disabled.
 >
   let g:go_term_enabled = 0
 <
                                                    *'g:go_term_close_on_exit'*
 
-These options are Neovim and Vim with 'terminal' feature only.
-If set to 1 it closes the terminal after the
-command run in it exits when the command fails. By default it is enabled.
+These options are Neovim and Vim with `terminal` feature only. If set to 1 it
+closes the terminal after the command run in it exits when the command fails.
+By default it is enabled.
 >
   let g:go_term_close_on_exit = 1
 <
                                                        *'g:go_alternate_mode'*
 
-Specifies the command that |:GoAlternate| uses to open the alternate file.
-By default it is set to edit.
+Specifies the command that |:GoAlternate| uses to open the alternate file.  By
+default it is set to edit.
 >
   let g:go_alternate_mode = "edit"
 <
