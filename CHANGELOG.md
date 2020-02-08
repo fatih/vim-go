@@ -16,6 +16,8 @@ IMPROVEMENTS:
   [[GH-2703]](https://github.com/fatih/vim-go/pull/2703)
 * Use `gopls` defaults by default when they're not otherwise specified in vim-go options.
   [[GH-2696]](https://github.com/fatih/vim-go/pull/2696)
+* Add support for `gomodifytags --skip-unexported`
+  [[GH-2660]](https://github.com/fatih/vim-go/pull/2660)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
