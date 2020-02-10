@@ -339,11 +339,12 @@ function! s:metalinterautosavecomplete(filepath, job, exit_code, messages)
 endfunction
 
 function! s:errorformat(metalinter) abort
-  if a:metalinter == 'golangci-lint'
+  let l:metalinter = split(a:metalinter, ' ')[0]
+  if l:metalinter == 'golangci-lint'
     " Golangci-lint can output the following:
     "   <file>:<line>:<column>: <message> (<linter>)
     " This can be defined by the following errorformat:
-    return '%f:%l:%c:\ %m'
+    return '%f:%l:%c:\ %m,%f:%l:\ %m'
   elseif a:metalinter == 'gopls'
     return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m'
   endif
