@@ -331,7 +331,10 @@ function! s:metalinterautosavecomplete(filepath, job, exit_code, messages)
 
   let l:idx = len(a:messages) - 1
   while l:idx >= 0
-    if a:messages[l:idx] !~# '^' . a:filepath . ':'
+    " leave in any messages that report errors about a:filepath or that report
+    " more general problems that prevent golangci-lint from linting
+    " a:filepath.
+    if a:messages[l:idx] !~# '^' . a:filepath . ':' && a:messages[l:idx] !~# '^level='
       call remove(a:messages, l:idx)
     endif
     let l:idx -= 1
@@ -343,7 +346,7 @@ function! s:errorformat(metalinter) abort
     " Golangci-lint can output the following:
     "   <file>:<line>:<column>: <message> (<linter>)
     " This can be defined by the following errorformat:
-    return '%f:%l:%c:\ %m'
+    return 'level=%tarning\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%trror\ msg="%m:\ [%f:%l:%c:\ %.%#]",%f:%l:%c:\ %m'
   elseif a:metalinter == 'gopls'
     return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m'
   endif
