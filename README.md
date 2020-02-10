@@ -79,6 +79,16 @@ issues](https://github.com/fatih/vim-go/issues), please open an issue with
 clear reproduction steps. `:GoReportGitHubIssue` can be used pre-populate a lot
 of the information needed when creating a new issue.
 
+## Contributing
+
+All PRs are welcome. If you are planning to contribute a large patch or to
+integrate a new tool, please create an issue first to get any upfront questions
+or design decisions out of the way first.
+
+You can run the tests locally by running `make`. It will lint the VimL for you,
+lint the documentation, and run the tests against the minimum required version
+of Vim, other versions of Vim that may be critical to support, and Neovim.
+
 ## License
 
 The BSD 3-Clause License - see [`LICENSE`](LICENSE) for more details

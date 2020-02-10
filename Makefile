@@ -1,4 +1,4 @@
-VIMS ?= vim-8.0 nvim
+VIMS ?= vim-8.0 vim-8.2 nvim
 
 all: install lint test
 
@@ -16,7 +16,7 @@ test:
 
 lint:
 	@echo "==> Running linting tools"
-	@./scripts/lint vim-8.0
+	@./scripts/lint vim-8.2
 
 docker:
 	@echo "==> Building/starting Docker container"
