@@ -263,6 +263,10 @@ function! go#config#MetalinterCommand() abort
   return get(g:, "go_metalinter_command", "golangci-lint")
 endfunction
 
+function! go#config#MetalinterCommandArgs() abort
+  return get(g:, "go_metalinter_command_args", [])
+endfunction
+
 function! go#config#MetalinterAutosaveEnabled() abort
   let l:default_enabled = ["vet", "golint"]
 

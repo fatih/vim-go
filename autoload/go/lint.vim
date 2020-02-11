@@ -15,6 +15,8 @@ function! go#lint#Gometa(bang, autosave, ...) abort
   if l:metalinter == 'golangci-lint'
     let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
     let cmd = s:metalintercmd(l:metalinter, len(linters) != 0)
+    let args = go#config#MetalinterCommandArgs()
+    let cmd += l:args
     if empty(cmd)
       return
     endif
