@@ -20,6 +20,10 @@ IMPROVEMENTS:
   [[GH-2660]](https://github.com/fatih/vim-go/pull/2660)
 * Show problems that prevent golangci-lint from running linters.
   [[GH-2706]](https://github.com/fatih/vim-go/pull/2706)
+* Support golangci-lint config file by not using `--disable-all` when
+  `g:go_metalinter_enable` or `g:go_metalinter_autosave_enabled` is set.
+  [[GH-2655]](https://github.com/fatih/vim-go/pull/2655)
+  [[GH-2715]](https://github.com/fatih/vim-go/pull/2715)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
