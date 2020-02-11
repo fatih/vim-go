@@ -22,6 +22,9 @@ IMPROVEMENTS:
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
   [[GH-2692]](https://github.com/fatih/vim-go/pull/2692)
+* Execute commands correctly on windows when `'shell'` is not cmd.exe
+  [[GH-2713]](https://github.com/fatih/vim-go/pull/2713)
+
 
 ## v1.22 - (January 30, 2020)
 
