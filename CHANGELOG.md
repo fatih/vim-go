@@ -18,6 +18,8 @@ IMPROVEMENTS:
   [[GH-2696]](https://github.com/fatih/vim-go/pull/2696)
 * Add support for `gomodifytags --skip-unexported`
   [[GH-2660]](https://github.com/fatih/vim-go/pull/2660)
+* Show problems that prevent golangci-lint from running linters.
+  [[GH-2706]](https://github.com/fatih/vim-go/pull/2706)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
