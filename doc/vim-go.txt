@@ -1580,14 +1580,16 @@ window. The list to use can be set using |'g:go_list_type_commands'|.
                                           *'g:go_metalinter_autosave_enabled'*
 
 Specifies the enabled linters for auto |:GoMetaLinter| on save. By
-default it's using `vet` and `golint`.
+default it's using `vet` and `golint`. If any are enabled, `--disable-all`
+will be sent to the metalinter.
 >
   let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 <
                                                    *'g:go_metalinter_enabled'*
 
 Specifies the linters to enable for the |:GoMetaLinter| command. By default
-it's using `vet`, `golint` and `errcheck`.
+it's using `vet`, `golint` and `errcheck`. If any are enabled, `--disable-all`
+will be sent to the metalinter.
 >
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
