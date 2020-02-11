@@ -117,16 +117,15 @@ endfunction
 
 " Run runs the current file (and their dependencies if any) in a new terminal.
 function! go#cmd#RunTerm(bang, mode, files) abort
-  let cmd = "go run "
-  let tags = go#config#BuildTags()
-  if len(tags) > 0
-    let cmd .= "-tags " . go#util#Shellescape(tags) . " "
+  let cmd = ["go", "run"]
+  if len(go#config#BuildTags()) > 0
+    call extend(cmd, ["-tags", go#config#BuildTags()])
   endif
 
   if empty(a:files)
-    let cmd .= go#util#Shelljoin(go#tool#Files())
+    call extend(cmd, go#tool#Files())
   else
-    let cmd .= go#util#Shelljoin(map(copy(a:files), "expand(v:val)"), 1)
+    call extend(cmd, map(copy(a:files), "expand(v:val)"))
   endif
   call go#term#newmode(a:bang, cmd, s:runerrorformat(), a:mode)
 endfunction
@@ -136,7 +135,7 @@ endfunction
 " suitable for long running apps, because vim is blocking by default and
 " calling long running apps will block the whole UI.
 function! go#cmd#Run(bang, ...) abort
-  if has('nvim')
+  if go#config#TermEnabled()
     call go#cmd#RunTerm(a:bang, '', a:000)
     return
   endif
