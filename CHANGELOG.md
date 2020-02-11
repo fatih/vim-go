@@ -24,6 +24,9 @@ IMPROVEMENTS:
   `g:go_metalinter_enable` or `g:go_metalinter_autosave_enabled` is set.
   [[GH-2655]](https://github.com/fatih/vim-go/pull/2655)
   [[GH-2715]](https://github.com/fatih/vim-go/pull/2715)
+* Add support for Vim8 terminals.
+  [[GH-2639]](https://github.com/fatih/vim-go/pull/2639)
+
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
