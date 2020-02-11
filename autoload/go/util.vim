@@ -162,6 +162,14 @@ function! s:system(cmd, ...) abort
       set shell=/bin/sh shellredir=>%s\ 2>&1 shellcmdflag=-c
   endif
 
+  if go#util#IsWin()
+    let l:cmdexe=go#util#Join($SYSTEMROOT, 'System32', 'cmd.exe')
+    if executable(l:cmdexe)
+      let &shell = l:cmdexe
+      set shellcmdflag=/C
+    endif
+  endif
+
   try
     return call('system', [a:cmd] + a:000)
   finally
