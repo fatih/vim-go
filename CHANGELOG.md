@@ -34,7 +34,7 @@ BUG FIXES:
   [[GH-2692]](https://github.com/fatih/vim-go/pull/2692)
 * Execute commands correctly on windows when `'shell'` is not cmd.exe
   [[GH-2713]](https://github.com/fatih/vim-go/pull/2713)
-
+  [[GH-2724]](https://github.com/fatih/vim-go/pull/2724)
 
 ## v1.22 - (January 30, 2020)
 
