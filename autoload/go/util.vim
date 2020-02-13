@@ -163,9 +163,8 @@ function! s:system(cmd, ...) abort
   endif
 
   if go#util#IsWin()
-    let l:cmdexe=go#util#Join($SYSTEMROOT, 'System32', 'cmd.exe')
-    if executable(l:cmdexe)
-      let &shell = l:cmdexe
+    if executable($COMSPEC)
+      let &shell = $COMSPEC
       set shellcmdflag=/C
     endif
   endif
