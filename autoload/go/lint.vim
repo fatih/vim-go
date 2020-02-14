@@ -223,18 +223,19 @@ endfunction
 function! go#lint#Errcheck(bang, ...) abort
   if a:0 == 0
     let l:import_path = go#package#ImportPath()
-    if import_path == -1
+    if l:import_path == -1
       call go#util#EchoError('package is not inside GOPATH src')
       return
     endif
+    let l:args = [l:import_path]
   else
-    let l:import_path = join(a:000, ' ')
+    let l:args = a:000
   endif
 
   call go#util#EchoProgress('[errcheck] analysing ...')
   redraw
 
-  let [l:out, l:err] = go#util#Exec([go#config#ErrcheckBin(), '-abspath', l:import_path])
+  let [l:out, l:err] = go#util#ExecInDir([go#config#ErrcheckBin(), '-abspath'] + l:args)
 
   let l:listtype = go#list#Type("GoErrCheck")
   if l:err != 0

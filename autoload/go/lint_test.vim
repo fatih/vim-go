@@ -221,7 +221,7 @@ func! Test_Lint_GOPATH() abort
 
   let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
-          \ {'lnum': 5, 'bufnr': bufnr('%')+6, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
+          \ {'lnum': 5, 'bufnr': bufnr('%')+5, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
 
   let winnr = winnr()
@@ -249,7 +249,7 @@ func! Test_Lint_NullModule() abort
 
   let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
-          \ {'lnum': 5, 'bufnr': bufnr('%')+6, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
+          \ {'lnum': 5, 'bufnr': bufnr('%')+5, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
 
   let winnr = winnr()
@@ -267,6 +267,51 @@ func! Test_Lint_NullModule() abort
   endwhile
 
   call gotest#assert_quickfix(actual, expected)
+endfunc
+
+func! Test_Errcheck() abort
+  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
+  silent exe 'e ' . $GOPATH . '/src/errcheck/errcheck.go'
+
+  try
+    let l:bufnr = bufnr('')
+    let expected = [
+          \ {'lnum': 9, 'bufnr': bufnr(''), 'col': 9, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ":\tio.Copy(os.Stdout, os.Stdin)"},
+          \ {'lnum': 10, 'bufnr': bufnr('')+1, 'col': 9, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ":\tio.Copy(os.Stdout, os.Stdin)"},
+        \ ]
+
+    " clear the location lists
+    call setqflist([], 'r')
+
+    call go#lint#Errcheck(1)
+
+    call gotest#assert_quickfix(getqflist(), expected)
+    call assert_equal(l:bufnr, bufnr(''))
+  finally
+    call call(RestoreGOPATH, [])
+  endtry
+endfunc
+
+func! Test_Errcheck_options() abort
+  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
+  silent exe 'e ' . $GOPATH . '/src/errcheck/errcheck.go'
+
+  try
+    let l:bufnr = bufnr('')
+    let expected = [
+          \ {'lnum': 9, 'bufnr': bufnr(''), 'col': 9, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ":\tio.Copy(os.Stdout, os.Stdin)"},
+        \ ]
+
+    " clear the location lists
+    call setqflist([], 'r')
+
+    call go#lint#Errcheck(1, '-ignoretests')
+
+    call gotest#assert_quickfix(getqflist(), expected)
+    call assert_equal(l:bufnr, bufnr(''))
+  finally
+    call call(RestoreGOPATH, [])
+  endtry
 endfunc
 
 func! Test_Errcheck_compilererror() abort
