@@ -35,6 +35,8 @@ BUG FIXES:
 * Execute commands correctly on windows when `'shell'` is not cmd.exe
   [[GH-2713]](https://github.com/fatih/vim-go/pull/2713)
   [[GH-2724]](https://github.com/fatih/vim-go/pull/2724)
+* Always execute `errcheck` in the current package's directory.
+  [[GH-2726]](https://github.com/fatih/vim-go/pull/2726)
 
 ## v1.22 - (January 30, 2020)
 
