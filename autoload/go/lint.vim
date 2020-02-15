@@ -175,24 +175,29 @@ endfunction
 function! go#lint#Vet(bang, ...) abort
   call go#cmd#autowrite()
 
-  if go#config#EchoCommandInfo()
-    call go#util#EchoProgress('calling vet...')
-  endif
-
   let l:cmd = ['go', 'vet']
 
   let buildtags = go#config#BuildTags()
   if buildtags isnot ''
-    let cmd += ['-tags', buildtags]
+    let l:cmd += ['-tags', buildtags]
   endif
 
-  if a:0 != 0
-    call extend(cmd, a:000)
+  if a:0 == 0
+    let l:import_path = go#package#ImportPath()
+    if l:import_path == -1
+      call go#util#EchoError('could not determine package')
+      return
+    endif
+    let l:cmd = add(l:cmd, l:import_path)
+  else
+    let l:cmd = extend(l:cmd, a:000)
   endif
 
-  let cmd += [go#package#ImportPath()]
+  if go#config#EchoCommandInfo()
+    call go#util#EchoProgress('[go vet] analyzing...')
+  endif
 
-  let [l:out, l:err] = go#util#Exec(l:cmd)
+  let [l:out, l:err] = go#util#ExecInDir(l:cmd)
 
   let l:listtype = go#list#Type("GoVet")
   if l:err != 0
@@ -221,21 +226,32 @@ endfunction
 " ErrCheck calls 'errcheck' for the given packages. Any warnings are populated in
 " the location list
 function! go#lint#Errcheck(bang, ...) abort
+  call go#cmd#autowrite()
+
+  let l:cmd = [go#config#ErrcheckBin(), '-abspath']
+
+  let buildtags = go#config#BuildTags()
+  if buildtags isnot ''
+    let l:cmd += ['-tags', buildtags]
+  endif
+
   if a:0 == 0
     let l:import_path = go#package#ImportPath()
     if l:import_path == -1
-      call go#util#EchoError('package is not inside GOPATH src')
+      call go#util#EchoError('could not determine package')
       return
     endif
-    let l:args = [l:import_path]
+    let l:cmd = add(l:cmd, l:import_path)
   else
-    let l:args = a:000
+    let l:cmd = extend(l:cmd, a:000)
   endif
 
-  call go#util#EchoProgress('[errcheck] analysing ...')
+  if go#config#EchoCommandInfo()
+    call go#util#EchoProgress('[errcheck] analysing...')
+  endif
   redraw
 
-  let [l:out, l:err] = go#util#ExecInDir([go#config#ErrcheckBin(), '-abspath'] + l:args)
+  let [l:out, l:err] = go#util#ExecInDir(l:cmd)
 
   let l:listtype = go#list#Type("GoErrCheck")
   if l:err != 0

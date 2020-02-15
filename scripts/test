@@ -69,6 +69,7 @@ find "$vimgodir" -name '*_test.vim' | while read test_file; do
   "$vimgodir/scripts/run-vim" $coverage $vim -e \
     +"silent e $test_file" \
     +"let g:test_verbose=$verbose" \
+    +"let g:go_echo_command_info=0" \
     -S ./scripts/runtest.vim < /dev/null || (
       # If Vim exits with non-0 it's almost certainly a bug in the test runner;
       # should very rarely happen in normal usage.
