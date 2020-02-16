@@ -64,8 +64,8 @@ function! go#fmt#Format(withGoimport) abort
   if l:err == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
   elseif !go#config#FmtFailSilently()
-    let errors = s:parse_errors(expand('%'), out)
-    call s:show_errors(errors)
+    let l:errors = s:replace_filename(expand('%'), out)
+    call s:show_errors(l:errors)
   endif
 
   " We didn't use the temp file, so clean up
@@ -162,38 +162,27 @@ function! s:fmt_cmd(bin_name, source, target)
   return cmd
 endfunction
 
-" parse_errors parses the given errors and returns a list of parsed errors
-function! s:parse_errors(filename, content) abort
-  let splitted = split(a:content, '\n')
+" replace_filename replaces the filename on each line of content with
+" a:filename.
+function! s:replace_filename(filename, content) abort
+  let l:errors = split(a:content, '\n')
 
-  " list of errors to be put into location list
-  let errors = []
-  for line in splitted
-    let tokens = matchlist(line, '^\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)')
-    if !empty(tokens)
-      call add(errors,{
-            \"filename": a:filename,
-            \"lnum":     tokens[2],
-            \"col":      tokens[3],
-            \"text":     tokens[4],
-            \ })
-    endif
-  endfor
-
-  return errors
+  let l:errors = map(l:errors, printf('substitute(v:val, ''^.\{-}:'', ''%s:'', '''')', a:filename))
+  return join(l:errors, "\n")
 endfunction
 
-" show_errors opens a location list and shows the given errors. If the given
-" errors is empty, it closes the the location list
+" show_errors opens a location list and shows the given errors. If errors is
+" empty, it closes the the location list.
 function! s:show_errors(errors) abort
+  let l:errorformat = '%f:%l:%c:\ %m'
   let l:listtype = go#list#Type("GoFmt")
-  if !empty(a:errors)
-    call go#list#Populate(l:listtype, a:errors, 'Format')
-  endif
+
+  call go#list#ParseFormat(l:listtype, l:errorformat, a:errors, 'Format')
+  let l:errors = go#list#Get(l:listtype)
 
   " this closes the window if there are no errors or it opens
-  " it if there is any
-  call go#list#Window(l:listtype, len(a:errors))
+  " it if there are any.
+  call go#list#Window(l:listtype, len(l:errors))
 endfunction
 
 function! go#fmt#ToggleFmtAutoSave() abort
