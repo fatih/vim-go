@@ -18,6 +18,11 @@ set cpo&vim
 "  this and have VimL experience, please look at the function for
 "  improvements, patches are welcome :)
 function! go#fmt#Format(withGoimport) abort
+  let l:bin_name = go#config#FmtCommand()
+  if a:withGoimport == 1
+    let l:bin_name = "goimports"
+  endif
+
   if go#config#FmtExperimental()
     " Using winsaveview to save/restore cursor state has the problem of
     " closing folds on save:
@@ -52,13 +57,8 @@ function! go#fmt#Format(withGoimport) abort
     let l:tmpname = tr(l:tmpname, '\', '/')
   endif
 
-  let bin_name = go#config#FmtCommand()
-  if a:withGoimport == 1
-    let bin_name = "goimports"
-  endif
-
   let current_col = col('.')
-  let [l:out, l:err] = go#fmt#run(bin_name, l:tmpname, expand('%'))
+  let [l:out, l:err] = go#fmt#run(l:bin_name, l:tmpname, expand('%'))
   let diff_offset = len(readfile(l:tmpname)) - line('$')
 
   if l:err == 0
