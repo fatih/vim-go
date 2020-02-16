@@ -204,7 +204,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
     endif
 
     let l:deepCompletion = go#config#GoplsDeepCompletion()
-    let l:fuzzyMatching = go#config#GoplsFuzzyMatching()
+    let l:matcher = go#config#GoplsMatcher()
     let l:completeUnimported = go#config#GoplsCompleteUnimported()
     let l:staticcheck = go#config#GoplsStaticCheck()
     let l:usePlaceholder = go#config#GoplsUsePlaceholders()
@@ -217,12 +217,8 @@ function! go#lsp#message#ConfigurationResult(items) abort
       endif
     endif
 
-    if l:fuzzyMatching isnot v:null
-      if l:fuzzyMatching
-        let l:config.fuzzyMatching = v:true
-      else
-        let l:config.fuzzyMatching = v:false
-      endif
+    if l:matcher isnot v:null
+        let l:config.matcher = l:matcher
     endif
 
     if l:completeUnimported isnot v:null
