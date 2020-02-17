@@ -48,6 +48,21 @@ function! go#lsp#message#Shutdown() abort
        \ }
 endfunction
 
+function! go#lsp#message#Format(file) abort
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/formatting',
+          \ 'params': {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:file)
+          \   },
+          \   'options': {
+          \     'insertSpaces': v:false,
+          \   },
+          \ }
+       \ }
+endfunction
+
 function! go#lsp#message#Exit() abort
   return {
           \ 'notification': 1,

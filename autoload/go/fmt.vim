@@ -23,6 +23,11 @@ function! go#fmt#Format(withGoimport) abort
     let l:bin_name = "goimports"
   endif
 
+  if l:bin_name == 'gopls'
+    call go#lsp#Format()
+    return
+  endif
+
   if go#config#FmtExperimental()
     " Using winsaveview to save/restore cursor state has the problem of
     " closing folds on save:
@@ -65,7 +70,7 @@ function! go#fmt#Format(withGoimport) abort
     call go#fmt#update_file(l:tmpname, expand('%'))
   elseif !go#config#FmtFailSilently()
     let l:errors = s:replace_filename(expand('%'), out)
-    call s:show_errors(l:errors)
+    call go#fmt#ShowErrors(l:errors)
   endif
 
   " We didn't use the temp file, so clean up
@@ -173,7 +178,7 @@ endfunction
 
 " show_errors opens a location list and shows the given errors. If errors is
 " empty, it closes the the location list.
-function! s:show_errors(errors) abort
+function! go#fmt#ShowErrors(errors) abort
   let l:errorformat = '%f:%l:%c:\ %m'
   let l:listtype = go#list#Type("GoFmt")
 

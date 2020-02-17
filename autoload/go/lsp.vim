@@ -1242,6 +1242,115 @@ function! go#lsp#ClearDiagnosticHighlights() abort
   call go#util#ClearHighlights('goDiagnosticWarning')
 endfunction
 
+" Format formats the current buffer.
+function! go#lsp#Format() abort
+  let l:fname = expand('%:p')
+  " send the current file so that TextEdits will be relative to the current
+  " state of the buffer.
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('format')
+  let l:formatHandler = go#promise#New(function('s:formatHandler', [], l:state), 10000, '')
+  let l:state.handleResult = l:formatHandler.wrapper
+  let l:state.error = l:formatHandler.wrapper
+  let l:state.handleError = function('s:handleFormatError', [l:fname], l:state)
+  let l:msg = go#lsp#message#Format(l:fname)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  " await the result to avoid any race conditions among autocmds (e.g.
+  " BufWritePre and BufWritePost)
+  call formatHandler.await()
+endfunction
+
+function! s:formatHandler(msg) abort dict
+  if a:msg is v:null
+    return
+  endif
+
+  if type(a:msg) is type('')
+    call self.handleError(a:msg)
+    return
+  endif
+
+  " process the TextEdit list in reverse order, because the positions are
+  " based on the current line numbers; processing in forward order would
+  " require keeping track of how the proper position of each TextEdit would be
+  " affected by all the TextEdits that came before.
+  call reverse(sort(a:msg, function('s:textEditLess')))
+  for l:msg in a:msg
+    let l:startline = l:msg.range.start.line+1
+    let l:endline = l:msg.range.end.line+1
+    let l:text = l:msg.newText
+
+    " handle the deletion of whole lines
+    if len(l:text) == 0 && l:msg.range.start.character == 0 && l:msg.range.end.character == 0 && l:startline < l:endline
+      call deletebufline('', l:startline, l:endline-1)
+      continue
+    endif
+
+    let l:startcontent = getline(l:startline)
+    let l:preSliceEnd = 0
+    if l:msg.range.start.character > 0
+      let l:preSliceEnd = go#lsp#lsp#PositionOf(l:startcontent, l:msg.range.start.character-1) - 1
+    endif
+
+    let l:endcontent = getline(l:endline)
+    let l:postSliceStart = 0
+    if l:msg.range.end.character > 0
+      let l:postSliceStart = go#lsp#lsp#PositionOf(l:endcontent, l:msg.range.end.character-1)
+    endif
+
+    " There isn't an easy way to replace the text in a byte or character
+    " range, so append any text on l:endline starting from l:tailidx to l:text,
+    " prepend any text on l:startline prior to l:prelen to l:text, and
+    " finally replace the lines with a delete followed by and append.
+    let l:text = printf('%s%s%s', l:startcontent[:l:preSliceEnd], l:text, l:endcontent[(l:postSliceStart):])
+
+    " TODO(bc): deal with the undo file
+    " TODO(bc): deal with folds
+
+    call execute(printf('%d,%d d_', l:startline, l:endline))
+    call append(l:startline-1, l:text)
+  endfor
+
+  call go#lsp#DidChange(expand('%:p'))
+  return
+endfunction
+
+function! s:handleFormatError(filename, msg) abort dict
+  if !go#config#FmtFailSilently()
+    let l:errors = split(a:msg, '\n')
+    let l:errors = map(l:errors, printf('substitute(v:val, ''^'', ''%s:'', '''')', a:filename))
+    let l:errors = join(l:errors, "\n")
+    call go#fmt#ShowErrors(l:errors)
+  endif
+endfunction
+
+function! s:textEditLess(left, right) abort
+  " TextEdits in a TextEdit[] never overlap and Vim's sort() is stable.
+  if a:left.range.start.line < a:right.range.start.line
+    return -1
+  endif
+
+  if a:left.range.start.line > a:right.range.start.line
+    return 1
+  endif
+
+  if a:left.range.start.line == a:right.range.start.line
+    if a:left.range.start.character < a:right.range.start.character
+      return -1
+    endif
+
+    if a:left.range.start.character > a:right.range.start.character
+      return 1
+    endif
+  endif
+
+  " return 0, because a:left an a:right refer to the same position.
+  return 0
+endfunction
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
