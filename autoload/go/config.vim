@@ -515,8 +515,11 @@ function! go#config#GoplsDeepCompletion() abort
   return get(g:, 'go_gopls_deep_completion', v:null)
 endfunction
 
-function! go#config#GoplsFuzzyMatching() abort
-  return get(g:, 'go_gopls_fuzzy_matching', v:null)
+function! go#config#GoplsMatcher() abort
+  if !exists('g:go_gopls_matcher') && get(g:, 'g:go_gopls_fuzzy_matching', v:null) is 1
+    return 'fuzzy'
+  endif
+  return get(g:, 'go_gopls_matcher', v:null)
 endfunction
 
 function! go#config#GoplsStaticCheck() abort
