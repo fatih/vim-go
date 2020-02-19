@@ -68,7 +68,13 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let l:err = len(l:messages)
   else
     if go#util#has_job()
-      call s:lint_job(l:metalinter, {'cmd': cmd, 'statustype': l:metalinter, 'errformat': errformat}, a:bang, a:autosave)
+      if a:autosave
+        let l:for = 'GoMetaLinterAutoSave'
+      else
+        let l:for = 'GoMetaLinter'
+      endif
+
+      call s:lint_job(l:metalinter, {'cmd': cmd, 'statustype': l:metalinter, 'errformat': errformat, 'for': l:for}, a:bang, a:autosave)
       return
     endif
 
@@ -83,7 +89,9 @@ function! go#lint#Gometa(bang, autosave, ...) abort
   endif
 
   if l:err == 0
-    call go#list#Clean(l:listtype)
+    if !s:preserveerrors(a:autosave, l:listtype)
+      call go#list#Clean(l:listtype)
+    endif
     call go#util#EchoSuccess('[metalinter] PASS')
   else
     let l:winid = win_getid(winnr())
@@ -92,7 +100,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     if a:autosave
       call s:metalinterautosavecomplete(l:metalinter, fnamemodify(expand('%:p'), ":."), 0, 1, l:messages)
     endif
-    call go#list#ParseFormat(l:listtype, errformat, l:messages, 'GoMetaLinter')
+    call go#list#ParseFormat(l:listtype, errformat, l:messages, 'GoMetaLinter', s:preserveerrors(a:autosave, l:listtype))
 
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
@@ -130,7 +138,7 @@ function! go#lint#Diagnostics(bang, ...) abort
   else
     " Parse and populate the quickfix list
     let l:winid = win_getid(winnr())
-    call go#list#ParseFormat(l:listtype, errformat, l:messages, 'GoDiagnostics')
+    call go#list#ParseFormat(l:listtype, errformat, l:messages, 'GoDiagnostics', 0)
 
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
@@ -173,7 +181,7 @@ function! go#lint#Golint(bang, ...) abort
 
     let l:winid = win_getid(winnr())
     let l:listtype = go#list#Type("GoLint")
-    call go#list#Parse(l:listtype, l:out, "GoLint")
+    call go#list#Parse(l:listtype, l:out, "GoLint", 0)
     let l:errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(l:errors))
 
@@ -239,7 +247,7 @@ function! go#lint#Vet(bang, ...) abort
 
     let l:winid = win_getid(winnr())
     let l:errorformat = "%-Gexit status %\\d%\\+," . &errorformat
-    call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet")
+    call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet", 0)
     let l:errors = go#list#Get(l:listtype)
 
     if empty(l:errors)
@@ -317,7 +325,7 @@ function! go#lint#Errcheck(bang, ...) abort
     if l:err == 1
       let l:errformat = "%f:%l:%c:\ %m,%f:%l:%c\ %#%m"
       " Parse and populate our location list
-      call go#list#ParseFormat(l:listtype, l:errformat, split(out, "\n"), 'Errcheck')
+      call go#list#ParseFormat(l:listtype, l:errformat, split(out, "\n"), 'Errcheck', 0)
     endif
 
     let l:errors = go#list#Get(l:listtype)
@@ -364,12 +372,13 @@ function! s:lint_job(metalinter, args, bang, autosave)
         \ 'errorformat': a:args.errformat,
         \ 'for': "GoMetaLinter",
         \ 'bang': a:bang,
-        \ }
+      \ }
 
   if a:autosave
     let l:opts.for = "GoMetaLinterAutoSave"
     " s:metalinterautosavecomplete is really only needed for golangci-lint
     let l:opts.complete = funcref('s:metalinterautosavecomplete', [a:metalinter, expand('%:p:t')])
+    let l:opts.preserveerrors = function('s:preserveerrors')
   endif
 
   " autowrite is not enabled for jobs
@@ -438,6 +447,10 @@ function! s:errorformat(metalinter) abort
     return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m'
   endif
 
+endfunction
+
+function! s:preserveerrors(listtype) abort
+  return a:listtype == go#list#Type("GoFmt") && go#config#FmtAutosave() && isdirectory(expand('%:p:h'))
 endfunction
 
 " restore Vi compatibility settings

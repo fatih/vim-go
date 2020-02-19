@@ -79,39 +79,51 @@ func! s:gometa_problems(metalinter) abort
 endfunc
 
 func! Test_GometaAutoSaveGolangciLint() abort
-  call s:gometaautosave('golangci-lint')
+  call s:gometaautosave('golangci-lint', 0)
 endfunc
 
-func! s:gometaautosave(metalinter) abort
+func! Test_GometaAutoSaveKeepsErrors() abort
+  call s:gometaautosave('golangci-lint', 1)
+endfunc
+
+func! s:gometaautosave(metalinter, withList) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
   silent exe 'e ' . $GOPATH . '/src/lint/lint.go'
 
   try
     let g:go_metalinter_command = a:metalinter
-    let expected = [
+    let l:expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported (golint)'}
         \ ]
     if a:metalinter == 'golangci-lint'
-      let expected = [
+      let l:expected = [
             \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingDoc` should have comment or be unexported (golint)'}
           \ ]
     endif
 
-    " clear the location lists
-    call setloclist(0, [], 'r')
+    let l:list = []
+    if a:withList
+      let l:list = [
+            \ {'lnum': 1, 'bufnr': 1, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'before metalinter'}
+          \ ]
+      let l:expected = extend(l:list, l:expected)
+    endif
+
+    " set the location lists
+    call setloclist(0, l:list, 'r')
 
     let g:go_metalinter_autosave_enabled = ['golint']
 
     call go#lint#Gometa(0, 1)
 
-    let actual = getloclist(0)
-    let start = reltime()
-    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+    let l:actual = getloclist(0)
+    let l:start = reltime()
+    while len(l:actual) != len(l:expected) && reltimefloat(reltime(l:start)) < 10
       sleep 100m
-      let actual = getloclist(0)
+      let l:actual = getloclist(0)
     endwhile
 
-    call gotest#assert_quickfix(actual, expected)
+    call gotest#assert_quickfix(l:actual, l:expected)
   finally
     call call(RestoreGOPATH, [])
     unlet g:go_metalinter_autosave_enabled
