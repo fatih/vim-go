@@ -1765,7 +1765,7 @@ Specifies how `gopls` should match for completions. Valid values are `v:null`,
 `fuzzy`, and `caseSensitive`.  When it is `v:null`, `gopls`' defaults will be
 used. By default it is `v:null`.
 >
-  let g:go_gopls_fuzzy_matching = v:null
+  let g:go_gopls_matcher = v:null
 <
 
                                                    *'g:go_gopls_staticcheck'*
