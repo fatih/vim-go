@@ -30,18 +30,16 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
 
   execute l:cd . fnameescape(expand("%:p:h"))
 
-  let l:height = go#config#TermHeight()
-  let l:width = go#config#TermWidth()
+  execute l:mode . ' __go_term__'
+  setlocal filetype=goterm
+  setlocal bufhidden=delete
+  setlocal winfixheight
+  " TODO(bc)?: setlocal winfixwidth
+  setlocal noswapfile
+  setlocal nobuflisted
 
   " setup job for nvim
   if has('nvim')
-    execute l:mode . ' __go_term__'
-    setlocal filetype=goterm
-    setlocal bufhidden=delete
-    setlocal winfixheight
-    setlocal noswapfile
-    setlocal nobuflisted
-
     " explicitly bind callbacks to state so that within them, self will always
     " refer to state. See :help Partial for more information.
     "
@@ -54,6 +52,10 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
     let l:state.id = termopen(a:cmd, l:job)
     let l:state.termwinid = win_getid(winnr())
     execute l:cd . fnameescape(l:dir)
+
+    " resize new term if needed.
+    let l:height = go#config#TermHeight()
+    let l:width = go#config#TermWidth()
 
     " Adjust the window width or height depending on whether it's a vertical or
     " horizontal split.
@@ -68,20 +70,33 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
   " setup term for vim8
   elseif has('terminal')
     let l:term = {
-          \ 'term_rows' : l:height,
-          \ 'term_cols' : l:width,
           \ 'out_cb': function('s:out_cb', [], state),
           \ 'exit_cb' : function('s:exit_cb', [], state),
+          \ 'curwin': 1,
         \ }
 
     if l:mode =~ "vertical" || l:mode =~ "vsplit" || l:mode =~ "vnew"
           let l:term["vertical"] = l:mode
     endif
 
-    let l:id = term_start(a:cmd, l:term)
-    let l:state.id = l:id
-    let l:state.termwinid = win_getid(bufwinnr(l:id))
+    let l:state.id = term_start(a:cmd, l:term)
+    let l:state.termwinid = win_getid(bufwinnr(l:state.id))
     execute l:cd . fnameescape(l:dir)
+
+    " resize new term if needed.
+    let l:height = go#config#TermHeight()
+    let l:width = go#config#TermWidth()
+
+    " Adjust the window width or height depending on whether it's a vertical or
+    " horizontal split.
+    if l:mode =~ "vertical" || l:mode =~ "vsplit" || l:mode =~ "vnew"
+      exe 'vertical resize ' . l:width
+    elseif mode =~ "split" || mode =~ "new"
+      exe 'resize ' . l:height
+    endif
+    "if exists(*term_setsize)
+      "call term_setsize(l:state.id, l:height, l:width)
+    "endif
   endif
 
   call win_gotoid(l:state.winid)
@@ -130,9 +145,10 @@ endfunction
 " handle_exit implements both vim8 and nvim exit callbacks
 func s:handle_exit(job_id, exit_status, state) abort
   let l:winid = win_getid(winnr())
+  call win_gotoid(a:state.winid)
 
   " change to directory where test were run. if we do not do this
-  " the quickfix items will have the incorrect paths. 
+  " the quickfix items will have the incorrect paths.
   " see: https://github.com/fatih/vim-go/issues/2400
   let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let l:dir = getcwd()
@@ -143,10 +159,6 @@ func s:handle_exit(job_id, exit_status, state) abort
   if a:exit_status == 0
     call go#list#Clean(l:listtype)
     execute l:cd l:dir
-    if go#config#TermCloseOnExit()
-      call win_gotoid(a:state.termwinid)
-      close!
-    endif
     call win_gotoid(l:winid)
     return
   endif
@@ -188,7 +200,7 @@ func s:handle_exit(job_id, exit_status, state) abort
   call win_gotoid(a:state.winid)
   call go#list#JumpToFirst(l:listtype)
 
-  " change back to original working directory 
+  " change back to original working directory
   execute l:cd l:dir
 endfunction
 
