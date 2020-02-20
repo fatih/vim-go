@@ -146,28 +146,51 @@ endfunction
 " Golint calls 'golint' on the current directory. Any warnings are populated in
 " the location list
 function! go#lint#Golint(bang, ...) abort
+  call go#cmd#autowrite()
+
+  let l:type = 'golint'
+  let l:status = {
+        \ 'desc': 'current status',
+        \ 'type': l:type,
+        \ 'state': "started",
+        \ }
+  if go#config#EchoCommandInfo()
+    call go#util#EchoProgress(printf('[%s] analyzing...', l:type))
+  endif
+  call go#statusline#Update(expand('%:p:h'), l:status)
+
   if a:0 == 0
     let [l:out, l:err] = go#util#Exec([go#config#GolintBin(), expand('%:p:h')])
   else
     let [l:out, l:err] = go#util#Exec([go#config#GolintBin()] + a:000)
   endif
 
-  if empty(l:out)
-    call go#util#EchoSuccess('[lint] PASS')
-    return
-  endif
+  let l:status.state = 'success'
+  let l:state = 'PASS'
+  if !empty(l:out)
+    let l:status.state = 'failed'
+    let l:state = 'FAIL'
 
-  let l:winid = win_getid(winnr())
-  let l:listtype = go#list#Type("GoLint")
-  call go#list#Parse(l:listtype, l:out, "GoLint")
-  let l:errors = go#list#Get(l:listtype)
-  call go#list#Window(l:listtype, len(l:errors))
+    let l:winid = win_getid(winnr())
+    let l:listtype = go#list#Type("GoLint")
+    call go#list#Parse(l:listtype, l:out, "GoLint")
+    let l:errors = go#list#Get(l:listtype)
+    call go#list#Window(l:listtype, len(l:errors))
 
-  if a:bang
-    call win_gotoid(l:winid)
+    if a:bang
+      call win_gotoid(l:winid)
+    else
+      call go#list#JumpToFirst(l:listtype)
+    endif
+    if go#config#EchoCommandInfo()
+      call go#util#EchoError(printf('[%s] %s', l:type, l:state))
+    endif
   else
-    call go#list#JumpToFirst(l:listtype)
+    if go#config#EchoCommandInfo()
+      call go#util#EchoSuccess(printf('[%s] %s', l:type, l:state))
+    endif
   endif
+  call go#statusline#Update(expand('%:p:h'), l:status)
 endfunction
 
 " Vet calls 'go vet' on the current directory. Any warnings are populated in
@@ -175,27 +198,45 @@ endfunction
 function! go#lint#Vet(bang, ...) abort
   call go#cmd#autowrite()
 
-  if go#config#EchoCommandInfo()
-    call go#util#EchoProgress('calling vet...')
-  endif
-
   let l:cmd = ['go', 'vet']
 
   let buildtags = go#config#BuildTags()
   if buildtags isnot ''
-    let cmd += ['-tags', buildtags]
+    let l:cmd += ['-tags', buildtags]
   endif
 
-  if a:0 != 0
-    call extend(cmd, a:000)
+  if a:0 == 0
+    let l:import_path = go#package#ImportPath()
+    if l:import_path == -1
+      call go#util#EchoError('could not determine package')
+      return
+    endif
+    let l:cmd = add(l:cmd, l:import_path)
+  else
+    let l:cmd = extend(l:cmd, a:000)
   endif
 
-  let cmd += [go#package#ImportPath()]
+  let l:type = 'go vet'
+  if go#config#EchoCommandInfo()
+    call go#util#EchoProgress(printf('[%s] analyzing...', l:type))
+  endif
+  let l:status = {
+        \ 'desc': 'current status',
+        \ 'type': l:type,
+        \ 'state': "started",
+        \ }
+  call go#statusline#Update(expand('%:p:h'), l:status)
 
-  let [l:out, l:err] = go#util#Exec(l:cmd)
+  let [l:out, l:err] = go#util#ExecInDir(l:cmd)
+
+  let l:status.state = 'success'
+  let l:state = 'PASS'
 
   let l:listtype = go#list#Type("GoVet")
   if l:err != 0
+    let l:status.state = 'failed'
+    let l:state = 'FAIL'
+
     let l:winid = win_getid(winnr())
     let l:errorformat = "%-Gexit status %\\d%\\+," . &errorformat
     call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet")
@@ -212,33 +253,65 @@ function! go#lint#Vet(bang, ...) abort
     else
       call win_gotoid(l:winid)
     endif
+
+    if go#config#EchoCommandInfo()
+      call go#util#EchoError(printf('[%s] %s', l:type, l:state))
+    endif
   else
     call go#list#Clean(l:listtype)
-    call go#util#EchoSuccess('[vet] PASS')
+    if go#config#EchoCommandInfo()
+      call go#util#EchoSuccess(printf('[%s] %s', l:type, l:state))
+    endif
   endif
+  call go#statusline#Update(expand('%:p:h'), l:status)
 endfunction
 
 " ErrCheck calls 'errcheck' for the given packages. Any warnings are populated in
 " the location list
 function! go#lint#Errcheck(bang, ...) abort
+  call go#cmd#autowrite()
+
+  let l:cmd = [go#config#ErrcheckBin(), '-abspath']
+
+  let buildtags = go#config#BuildTags()
+  if buildtags isnot ''
+    let l:cmd += ['-tags', buildtags]
+  endif
+
   if a:0 == 0
     let l:import_path = go#package#ImportPath()
     if l:import_path == -1
-      call go#util#EchoError('package is not inside GOPATH src')
+      call go#util#EchoError('could not determine package')
       return
     endif
-    let l:args = [l:import_path]
+    let l:cmd = add(l:cmd, l:import_path)
   else
-    let l:args = a:000
+    let l:cmd = extend(l:cmd, a:000)
   endif
 
-  call go#util#EchoProgress('[errcheck] analysing ...')
+  let l:type = 'errcheck'
+  if go#config#EchoCommandInfo()
+    call go#util#EchoProgress(printf('[%s] analyzing...', l:type))
+  endif
+  let l:status = {
+        \ 'desc': 'current status',
+        \ 'type': l:type,
+        \ 'state': "started",
+        \ }
   redraw
 
-  let [l:out, l:err] = go#util#ExecInDir([go#config#ErrcheckBin(), '-abspath'] + l:args)
+  call go#statusline#Update(expand('%:p:h'), l:status)
+
+  let [l:out, l:err] = go#util#ExecInDir(l:cmd)
+
+  let l:status.state = 'success'
+  let l:state = 'PASS'
 
   let l:listtype = go#list#Type("GoErrCheck")
   if l:err != 0
+    let l:status.state = 'failed'
+    let l:state = 'FAIL'
+
     let l:winid = win_getid(winnr())
 
     if l:err == 1
@@ -262,10 +335,16 @@ function! go#lint#Errcheck(bang, ...) abort
         call win_gotoid(l:winid)
       endif
     endif
+    if go#config#EchoCommandInfo()
+      call go#util#EchoError(printf('[%s] %s', l:type, l:state))
+    endif
   else
     call go#list#Clean(l:listtype)
-    call go#util#EchoSuccess('[errcheck] PASS')
+    if go#config#EchoCommandInfo()
+      call go#util#EchoSuccess(printf('[%s] %s', l:type, l:state))
+    endif
   endif
+  call go#statusline#Update(expand('%:p:h'), l:status)
 endfunction
 
 function! go#lint#ToggleMetaLinterAutoSave() abort

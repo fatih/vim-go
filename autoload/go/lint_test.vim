@@ -158,9 +158,8 @@ func! Test_Vet() abort
   let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
 
   try
-
     let expected = [
-          \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
+          \ {'lnum': 7, 'bufnr': bufnr('%')+2, 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
           \ 'text': 'Printf format %d has arg str of wrong type string'}
         \ ]
 
@@ -188,9 +187,8 @@ func! Test_Vet_compilererror() abort
   let l:tmp = gotest#load_fixture('lint/src/vet/compilererror/compilererror.go')
 
   try
-
     let expected = [
-          \ {'lnum': 6, 'bufnr': bufnr('%'), 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': "missing ',' before newline in argument list (and 1 more errors)"}
+          \ {'lnum': 6, 'bufnr': bufnr('%')+2, 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': "missing ',' before newline in argument list (and 1 more errors)"}
         \ ]
 
     let winnr = winnr()
