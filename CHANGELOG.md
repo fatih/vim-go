@@ -27,6 +27,7 @@ IMPROVEMENTS:
   [[GH-2715]](https://github.com/fatih/vim-go/pull/2715)
 * Add support for Vim8 terminals.
   [[GH-2639]](https://github.com/fatih/vim-go/pull/2639)
+  [[GH-2736]](https://github.com/fatih/vim-go/pull/2736)
 * Replace `g:go_gopls_fuzzy_matching` with `g:go_gopls_matcher` in response to
   `gopls` deprecation of its `fuzzyMatching` option.
   [[GH-2728]](https://github.com/fatih/vim-go/pull/2728)
