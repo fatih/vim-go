@@ -31,6 +31,8 @@ IMPROVEMENTS:
 * Replace `g:go_gopls_fuzzy_matching` with `g:go_gopls_matcher` in response to
   `gopls` deprecation of its `fuzzyMatching` option.
   [[GH-2728]](https://github.com/fatih/vim-go/pull/2728)
+* Set statuses and progress messages consistently for code quality tools.
+  [[GH-2727]](https://github.com/fatih/vim-go/pull/2727)
 
 
 BUG FIXES:
