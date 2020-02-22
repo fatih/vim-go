@@ -1,5 +1,5 @@
 <!--
-STOP. Before filing an issue, please check if vim-go's help addresses your problem (see `:help go-troubleshooting`).
+Before filing an issue, please check if vim-go's help addresses your problem (see `:help go-troubleshooting`).
 
 Consider executing `:GoReportGitHubIssue` to populate much of this information automatically.
 -->
