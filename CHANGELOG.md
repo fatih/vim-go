@@ -33,7 +33,8 @@ IMPROVEMENTS:
   [[GH-2728]](https://github.com/fatih/vim-go/pull/2728)
 * Set statuses and progress messages consistently for code quality tools.
   [[GH-2727]](https://github.com/fatih/vim-go/pull/2727)
-
+* Add a new supported value to `g:go_fmt_command` to format with `gopls`.
+  [[GH-2729]](https://github.com/fatih/vim-go/pull/2729)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
