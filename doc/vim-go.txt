@@ -1342,8 +1342,8 @@ Use this option to auto |:GoFmt| on save. By default it's enabled >
 <
                                                           *'g:go_fmt_command'*
 
-Use this option to define which tool is used to gofmt. By default `gofmt` is
-used.
+Use this option to define which tool is used to gofmt. Valid options are
+`gofmt`, `goimports`, and `gopls`. By default `gofmt` is used.
 >
 
   let g:go_fmt_command = "gofmt"
@@ -1393,7 +1393,9 @@ fails. By default the location list is shown. >
 Use this option to enable fmt's experimental mode. This experimental mode is
 superior to the current mode as it fully saves the undo history, so undo/redo
 doesn't break. However, it's slow (creates/deletes a file for every save) and
-it's causing problems on some Vim versions. By default it's disabled. >
+it's causing problems on some Vim versions. This has no effect if
+`g:go_fmt_command` is set to `gopls`. By default it's disabled.
+>
 
   let g:go_fmt_experimental = 0
 
