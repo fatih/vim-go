@@ -830,6 +830,31 @@ function! s:referencesHandler(next, msg) abort dict
   call call(a:next, [0, l:result, ''])
 endfunction
 
+" go#lsp#Implementations calls gopls to get the implementations to the identifier at line
+" and col in fname. handler should be a dictionary function that takes a list
+" of strings in the form 'file:line:col: message'. handler will be attached to
+" a dictionary that manages state (statuslines, sets the winid, etc.). handler
+" should take three arguments: an exit_code, a JSON object encoded to a string
+" that mimics guru's ouput for `what`, and third mode parameter that only
+" exists for compatibility with the guru implementation of SameIDs.
+function! go#lsp#Implements(fname, line, col, handler) abort
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#Implementation(a:fname, a:line, a:col)
+
+  let l:state = s:newHandlerState('implements')
+
+  let l:state.handleResult = funcref('s:referencesHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:implementsErrorHandler', [function(a:handler, [], l:state)], l:state)
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:implementsErrorHandler(next, error) abort dict
+  call call(a:next, [-1, [a:error], ''])
+endfunction
+
+
 function! go#lsp#Hover(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 

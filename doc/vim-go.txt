@@ -1458,6 +1458,14 @@ other packages. Valid options are `gopls` and `guru`.
 >
   let g:go_referrers_mode = 'gopls'
 <
+                                                      *'g:go_implements_mode'*
+
+Use this option to define the command to be used for |:GoImplements|. 
+The Implements feature in gopls is still new and being worked upon.
+Valid options are `gopls` and `guru`.
+>
+  let g:go_implements_mode = 'guru'
+<
                                                   *'g:go_def_mapping_enabled'*
 
 Use this option to enable/disable the default mapping of CTRL-],

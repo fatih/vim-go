@@ -507,6 +507,10 @@ function! go#config#ReferrersMode() abort
   return get(g:, 'go_referrers_mode', 'gopls')
 endfunction
 
+function! go#config#ImplementsMode() abort
+  return get(g:, 'go_implements_mode', 'guru')
+endfunction
+
 function! go#config#GoplsCompleteUnimported() abort
   return get(g:, 'go_gopls_complete_unimported', v:null)
 endfunction
