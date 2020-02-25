@@ -23,6 +23,7 @@ Use a *minimal* vimrc with other plugins disabled; do not link to a 2,000 line v
 
 If this is not provided or is obviously incomplete, the issue may be unceremoniously closed.
 -->
+<!-- vimrc -->
 <details><summary>vimrc</summary><br><pre>
 
 </pre></details>
