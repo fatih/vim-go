@@ -219,6 +219,14 @@ function! s:errorformat() abort
   let format .= ",%G" . indent . "%#%\\t%\\{2}%m"
   " }}}1
 
+  " Go 1.14 test verbose output {{{1
+  " Match test output lines similarly to Go 1.11 test output lines, but they
+  " have the test name followed by a colon before the filename when run with
+  " the -v flag.
+  let format .= ",%A" . indent . "%\\+%[%^:]%\\+: %f:%l: %m"
+  let format .= ",%A" . indent . "%\\+%[%^:]%\\+: %f:%l: "
+  " }}}1
+
   " Go 1.11 test output {{{1
   " Match test output lines similarly to Go 1.10 test output lines, but they
   " use an indent level where the Go 1.10 test output uses tabs, so they'll

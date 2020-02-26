@@ -1,4 +1,4 @@
-FROM golang:1.13
+FROM golang:1.14.0-buster
 
 RUN apt-get update -y && \
   apt-get install -y build-essential curl git libncurses5-dev python3-pip && \
