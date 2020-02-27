@@ -48,6 +48,9 @@ BUG FIXES:
   [[GH-2726]](https://github.com/fatih/vim-go/pull/2726)
 * Fix errors when highlighting diagnostics after a `:GoImports`.
   [[GH-2746]](https://github.com/fatih/vim-go/pull/2746)
+* Preserve errors from formatting when both formatting and metalinting happen
+  on save.
+  [[GH-2733]](https://github.com/fatih/vim-go/pull/2733)
 
 ## v1.22 - (January 30, 2020)
 
