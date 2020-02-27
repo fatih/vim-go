@@ -46,6 +46,8 @@ BUG FIXES:
   [[GH-2724]](https://github.com/fatih/vim-go/pull/2724)
 * Always execute `errcheck` in the current package's directory.
   [[GH-2726]](https://github.com/fatih/vim-go/pull/2726)
+* Fix errors when highlighting diagnostics after a `:GoImports`.
+  [[GH-2746]](https://github.com/fatih/vim-go/pull/2746)
 
 ## v1.22 - (January 30, 2020)
 
