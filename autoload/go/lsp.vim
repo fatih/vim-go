@@ -224,11 +224,20 @@ function! s:newlsp() abort
   function! l:lsp.updateDiagnostics() dict abort
     for l:data in self.diagnosticsQueue
       call remove(self.diagnosticsQueue, 0)
+
+      let l:fname = go#path#FromURI(l:data.uri)
+      " don't process the messages if the file has already changed.
+      let l:lsp = s:lspfactory.get()
+      let l:version = get(l:lsp.fileVersions, l:fname, 0)
+      if l:version != 0 && l:data.version == l:version
+        continue
+      endif
+
       try
         let l:diagnostics = []
         let l:errorMatches = []
         let l:warningMatches = []
-        let l:fname = go#path#FromURI(l:data.uri)
+
         " get the buffer name relative to the current directory, because
         " Vim says that a buffer name can't be an absolute path.
         let l:bufname = fnamemodify(l:fname, ':.')
