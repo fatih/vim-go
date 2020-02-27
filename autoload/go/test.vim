@@ -80,7 +80,7 @@ function! go#test#Test(bang, compile, ...) abort
 
   if l:err != 0
     let l:winid = win_getid(winnr())
-    call go#list#ParseFormat(l:listtype, s:errorformat(), split(out, '\n'), l:cmd)
+    call go#list#ParseFormat(l:listtype, s:errorformat(), split(out, '\n'), l:cmd, 0)
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
     if empty(errors)

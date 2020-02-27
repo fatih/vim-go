@@ -174,7 +174,7 @@ func s:handle_exit(job_id, exit_status, state) abort
     let l:i += 1
   endwhile
 
-  call go#list#ParseFormat(l:listtype, a:state.errorformat, a:state.stdout, l:title)
+  call go#list#ParseFormat(l:listtype, a:state.errorformat, a:state.stdout, l:title, 0)
   let l:errors = go#list#Get(l:listtype)
   call go#list#Window(l:listtype, len(l:errors))
 
