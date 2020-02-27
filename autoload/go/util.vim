@@ -622,7 +622,6 @@ function! go#util#HighlightPositions(group, pos) abort
       " use a single line prop by default
       let l:prop = {'type': a:group, 'length': l:pos[2]}
 
-      " specify end line and column if needed.
       let l:line = getline(l:pos[0])
 
       " l:max is the 1-based index within the buffer of the first character after l:pos.
@@ -632,6 +631,7 @@ function! go#util#HighlightPositions(group, pos) abort
         " https://github.com/vim/vim/issues/5334) is available.
         let l:end_lnum = byte2line(l:max)
 
+        " specify end line and column if needed.
         if l:pos[0] != l:end_lnum
           let l:end_col = l:max - line2byte(l:end_lnum)
           let l:prop = {'type': a:group, 'end_lnum': l:end_lnum, 'end_col': l:end_col}
@@ -657,7 +657,6 @@ function! go#util#HighlightPositions(group, pos) abort
     return s:matchaddpos(a:group, a:pos)
   endif
 endfunction
-
 
 " s:matchaddpos works around matchaddpos()'s limit of only 8 positions per
 " call by calling matchaddpos() with no more than 8 positions per call.

@@ -117,8 +117,15 @@ function! go#fmt#update_file(source, target)
     call setfperm(a:target , original_fperm)
   endif
 
+  " reset diagnostic matches before reloading so that any locations that have
+  " been invalidated by formatting won't cause errors when the buffer is
+  " reloaded from disk.
+  let b:go_diagnostic_matches = {'errors': [], 'warnings': []}
+
   " reload buffer to reflect latest changes
   silent edit!
+
+  call go#lsp#DidChange(expand(a:target, ':p'))
 
   let &fileformat = old_fileformat
   let &syntax = &syntax
