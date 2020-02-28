@@ -1743,10 +1743,17 @@ options may also need to be adjusted.
   let g:go_gopls_enabled = 1
 <
 
+                                                        *'g:go_gopls_options'*
+
+The commandline arguments to pass to gopls. By default, it's an empty array.
+>
+  let g:go_gopls_options = []
+<
+
                                             *'g:go_gopls_complete_unimported'*
 
 Specifies whether `gopls` should include suggestions from unimported packages.
-When it is `v:null`, `gopls`' defaults will be used. By default it is
+When it is `v:null`, `gopls`' default will be used. By default it is
 `v:null`.
 >
   let g:go_gopls_complete_unimported = v:null
@@ -1755,7 +1762,7 @@ When it is `v:null`, `gopls`' defaults will be used. By default it is
                                                 *'g:go_gopls_deep_completion'*
 
 Specifies whether `gopls` should use deep completion. When it is `v:null`,
-`gopls`' defaults will be used. By default it is `v:null`.
+`gopls`' default will be used. By default it is `v:null`.
 
 >
   let g:go_gopls_deep_completion = v:null
@@ -1764,7 +1771,7 @@ Specifies whether `gopls` should use deep completion. When it is `v:null`,
                                                        *'g:go_gopls_matcher'*
 
 Specifies how `gopls` should match for completions. Valid values are `v:null`,
-`fuzzy`, and `caseSensitive`.  When it is `v:null`, `gopls`' defaults will be
+`fuzzy`, and `caseSensitive`.  When it is `v:null`, `gopls`' default will be
 used. By default it is `v:null`.
 >
   let g:go_gopls_matcher = v:null
@@ -1773,7 +1780,7 @@ used. By default it is `v:null`.
                                                    *'g:go_gopls_staticcheck'*
 
 Specifies whether `gopls` should run staticcheck checks. When it is `v:null`,
-`gopls`' defaults will be used. By default it is `v:null`.
+`gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_staticcheck = v:null
 <
@@ -1783,10 +1790,19 @@ Specifies whether `gopls` should run staticcheck checks. When it is `v:null`,
 Specifies whether `gopls` can provide placeholders for function parameters and
 struct fields. When set, completion items will be treated as anonymous
 snippets if UltiSnips is installed and configured to be used as
-|'g:go_snippet_engine'|. When it is `v:null`, `gopls`' defaults will be used.
+|'g:go_snippet_engine'|. When it is `v:null`, `gopls`' default will be used.
 By default it is `v:null`.
 >
   let g:go_gopls_use_placeholders = v:null
+<
+
+                                                   *'g:go_gopls_temp_modfile'*
+
+Specifies whether `gopls` should use a temp modfile and suggest edits rather
+than modifying the ambient go.mod file.  When it is `v:null`, `gopls`' default
+will be used.  By default it is `v:null`.
+>
+  let g:go_gopls_temp_modfile = v:null
 <
 
                                                  *'g:go_diagnostics_enabled'*

@@ -466,11 +466,26 @@ function! s:newlsp() abort
   endif
 
   let l:cmd = [l:bin_path]
+  let l:cmdopts = go#config#GoplsOptions()
+
   if go#util#HasDebug('lsp')
-    let l:cmd = extend(l:cmd, ['-debug', 'localhost:0'])
+    " debugging can be enabled either with g:go_debug or with
+    " g:go_gopls_options; use g:go_gopls_options if it's given in case users
+    " are running the gopls debug server on a known port.
+    let l:needsDebug = 1
+
+    for l:item in l:cmdopts
+      let l:idx = stridx(l:item, '-debug')
+      if l:idx == 0 || l:idx == 1
+        let l:needsDebug = 0
+      endif
+    endfor
+    if l:needsDebug
+      let l:cmd = extend(l:cmd, ['-debug', 'localhost:0'])
+    endif
   endif
 
-  let l:lsp.job = go#job#Start(l:cmd, l:opts)
+  let l:lsp.job = go#job#Start(l:cmd+l:cmdopts, l:opts)
 
   return l:lsp
 endfunction
