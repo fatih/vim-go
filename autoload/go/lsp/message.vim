@@ -212,6 +212,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:config = {
           \ 'buildFlags': [],
           \ 'hoverKind': 'NoDocumentation',
+          \ 'tempModFile': v:true,
           \ }
     let l:buildtags = go#config#BuildTags()
     if buildtags isnot ''
@@ -223,6 +224,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:completeUnimported = go#config#GoplsCompleteUnimported()
     let l:staticcheck = go#config#GoplsStaticCheck()
     let l:usePlaceholder = go#config#GoplsUsePlaceholders()
+    let l:tempModfile = go#config#GoplsTempModfile()
 
     if l:deepCompletion isnot v:null
       if l:deepCompletion
@@ -257,6 +259,14 @@ function! go#lsp#message#ConfigurationResult(items) abort
         let l:config.usePlaceholders = v:true
       else
         let l:config.usePlaceholders = v:false
+      endif
+    endif
+
+    if l:tempModfile isnot v:null
+      if l:tempModfile
+        let l:config.tempModfile = v:true
+      else
+        let l:config.tempModfile = v:false
       endif
     endif
 

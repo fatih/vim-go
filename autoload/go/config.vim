@@ -530,6 +530,10 @@ function! go#config#GoplsUsePlaceholders() abort
   return get(g:, 'go_gopls_use_placeholders', v:null)
 endfunction
 
+function! go#config#GoplsTempModfile() abort
+  return get(g:, 'go_gopls_temp_modfile', v:null)
+endfunction
+
 function! go#config#GoplsEnabled() abort
   return get(g:, 'go_gopls_enabled', 1)
 endfunction
@@ -539,7 +543,7 @@ function! go#config#DiagnosticsEnabled() abort
 endfunction
 
 function! go#config#GoplsOptions() abort
-  return get(g: 'g:go_gopls_options', [])
+  return get(g:, 'go_gopls_options', [])
 endfunction
 
 " Set the default value. A value of "1" is a shortcut for this, for
