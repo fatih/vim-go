@@ -538,6 +538,10 @@ function! go#config#DiagnosticsEnabled() abort
   return get(g:, 'go_diagnostics_enabled', 0)
 endfunction
 
+function! go#config#GoplsOptions() abort
+  return get(g: 'g:go_gopls_options', [])
+endfunction
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1

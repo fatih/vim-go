@@ -1743,6 +1743,13 @@ options may also need to be adjusted.
   let g:go_gopls_enabled = 1
 <
 
+                                                        *'g:go_gopls_options'*
+
+The commandline arguments to pass to gopls. By default, it's an empty array.
+>
+  let g:go_gopls_options = []
+<
+
                                             *'g:go_gopls_complete_unimported'*
 
 Specifies whether `gopls` should include suggestions from unimported packages.
