@@ -189,7 +189,7 @@ function! go#fmt#ShowErrors(errors) abort
   let l:errorformat = '%f:%l:%c:\ %m'
   let l:listtype = go#list#Type("GoFmt")
 
-  call go#list#ParseFormat(l:listtype, l:errorformat, a:errors, 'Format')
+  call go#list#ParseFormat(l:listtype, l:errorformat, a:errors, 'Format', 0)
   let l:errors = go#list#Get(l:listtype)
 
   " this closes the window if there are no errors or it opens
