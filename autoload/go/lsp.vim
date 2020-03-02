@@ -273,7 +273,7 @@ function! s:newlsp() abort
           " version.
           let l:lsp = s:lspfactory.get()
           let l:version = get(l:lsp.fileVersions, l:fname, 0)
-          let l:data_version = get(l.data, 'version', 0)
+          let l:data_version = get(l:data, 'version', 0)
           if l:version != 0 && l:data_version == l:version
             call s:highlightMatches(l:errorMatches, l:warningMatches)
           endif
