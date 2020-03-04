@@ -212,7 +212,6 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:config = {
           \ 'buildFlags': [],
           \ 'hoverKind': 'NoDocumentation',
-          \ 'tempModFile': v:true,
           \ }
     let l:buildtags = go#config#BuildTags()
     if buildtags isnot ''
