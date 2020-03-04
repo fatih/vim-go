@@ -97,6 +97,7 @@ func! Test_GoplsEnabled_Clear() abort
 
   finally
     unlet g:go_gopls_enabled
+    call delete(l:tmp, 'rf')
   endtry
 endfunc
 " restore Vi compatibility settings
