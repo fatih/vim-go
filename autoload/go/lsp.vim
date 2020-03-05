@@ -1078,8 +1078,10 @@ function! s:exit(restart) abort
   return l:retval
 endfunction
 
-function! s:debugasync(event, data, timer) abort
+let s:log = []
+function! s:debugasync(timer) abort
   if !go#util#HasDebug('lsp')
+    let s:log = []
     return
   endif
 
@@ -1098,11 +1100,14 @@ function! s:debugasync(event, data, timer) abort
 
   try
     setlocal modifiable
-    if getline(1) == ''
-      call setline('$', printf('%s: %s', a:event, a:data))
-    else
-      call append('$', printf('%s: %s', a:event, a:data))
-    endif
+    for [l:event, l:data] in s:log
+      call remove(s:log, 0)
+      if getline(1) == ''
+        call setline('$', printf('%s: %s', l:event, l:data))
+      else
+        call append('$', printf('%s: %s', l:event, l:data))
+      endif
+    endfor
     normal! G
     setlocal nomodifiable
   finally
@@ -1111,7 +1116,12 @@ function! s:debugasync(event, data, timer) abort
 endfunction
 
 function! s:debug(event, data, ...) abort
-  call timer_start(10, function('s:debugasync', [a:event, a:data]))
+  let l:shouldStart = len(s:log) > 0
+  let s:log = add(s:log, [a:event, a:data])
+
+  if l:shouldStart
+    call timer_start(10, function('s:debugasync', []))
+  endif
 endfunction
 
 function! s:compareLocations(left, right) abort
