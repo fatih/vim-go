@@ -49,8 +49,13 @@ function! go#coverage#Buffer(bang, ...) abort
   let l:tmpname = tempname()
 
   if go#util#has_job()
+    let cmd = ['go', 'test', '-coverprofile', l:tmpname] + a:000
+    if len(go#config#BuildTags()) > 0
+      call extend(cmd, ["-tags", go#config#BuildTags()])
+    endif
+
     call s:coverage_job({
-          \ 'cmd': ['go', 'test', '-tags', go#config#BuildTags(), '-coverprofile', l:tmpname] + a:000,
+          \ 'cmd': cmd,
           \ 'complete': function('s:coverage_callback', [l:tmpname]),
           \ 'bang': a:bang,
           \ 'for': 'GoTest',
@@ -94,8 +99,13 @@ endfunction
 function! go#coverage#Browser(bang, ...) abort
   let l:tmpname = tempname()
   if go#util#has_job()
+    let cmd = ['go', 'test', '-coverprofile', l:tmpname] + a:000
+    if len(go#config#BuildTags()) > 0
+      call extend(cmd, ["-tags", go#config#BuildTags()])
+    endif
+
     call s:coverage_job({
-          \ 'cmd': ['go', 'test', '-tags', go#config#BuildTags(), '-coverprofile', l:tmpname],
+          \ 'cmd': cmd,
           \ 'complete': function('s:coverage_browser_callback', [l:tmpname]),
           \ 'bang': a:bang,
           \ 'for': 'GoTest',
