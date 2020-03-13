@@ -71,6 +71,9 @@ function! go#def#Jump(mode, type) abort
       return
     endif
 
+    " reset l:fname when using gopls so that the filename will be converted to
+    " a URI correctly on windows.
+    let l:fname = expand('%')
     let [l:line, l:col] = go#lsp#lsp#Position()
     " delegate to gopls, with an empty job object and an exit status of 0
     " (they're irrelevant for gopls).
