@@ -132,6 +132,15 @@ function! s:handler(timer_id)
   let s:timer_id = 0
 endfunction
 
+function! go#auto#fmt_autoclose()
+  if !(go#config#FmtAutoclose() && isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
+    return
+  endif
+
+  " Go code formatting on save
+  call go#fmt#Format(-1)
+endfunction
+
 function! go#auto#fmt_autosave()
   if !(go#config#FmtAutosave() && isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
     return

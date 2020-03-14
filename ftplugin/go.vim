@@ -96,7 +96,10 @@ augroup vim-go-buffer
     autocmd CompleteDone <buffer> call go#auto#complete_done()
   endif
 
+  " Only format when leaving.  Avoids dumb fold closing
+  " but still ensures formatting is done
   autocmd BufWritePre <buffer> call go#auto#fmt_autosave()
+  autocmd BufWinLeave <buffer> call go#auto#fmt_autoclose()
   autocmd BufWritePost <buffer> call go#auto#metalinter_autosave()
 
   "TODO(bc): how to clear sameids and diagnostics when a non-go buffer is

@@ -303,6 +303,10 @@ function! go#config#ListHeight() abort
   return get(g:, "go_list_height", 0)
 endfunction
 
+function! go#config#FmtAutoclose() abort
+	return get(g:, "go_fmt_autoclose", 0)
+endfunction
+
 function! go#config#FmtAutosave() abort
 	return get(g:, "go_fmt_autosave", 1)
 endfunction
