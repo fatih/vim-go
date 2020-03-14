@@ -1103,10 +1103,11 @@ function! s:debugasync(timer) abort
     for [l:event, l:data] in s:log
       call remove(s:log, 0)
       if getline(1) == ''
-        call setline('$', printf('%s: %s', l:event, l:data))
+        call setline('$', printf('===== %s =====', l:event))
       else
-        call append('$', printf('%s: %s', l:event, l:data))
+        call append('$', printf('===== %s =====', l:event))
       endif
+      call append('$', split(l:data, "\r\n"))
     endfor
     normal! G
     setlocal nomodifiable
