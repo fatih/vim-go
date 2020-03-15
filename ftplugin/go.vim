@@ -99,25 +99,29 @@ augroup vim-go-buffer
   autocmd BufWritePre <buffer> call go#auto#fmt_autosave()
   autocmd BufWritePost <buffer> call go#auto#metalinter_autosave()
 
-  "TODO(bc): how to clear sameids and diagnostics when a non-go buffer is
-  " loaded into a window and the previously loaded buffer is still loaded in
-  " another window?
+  if !has('textprop')
+    "TODO(bc): how to clear sameids and diagnostics when a non-go buffer is
+    " loaded into a window and the previously loaded buffer is still loaded in
+    " another window?
 
-  " clear SameIds when the buffer is unloaded from its last window so that
-  " loading another buffer (especially of a different filetype) in the same
-  " window doesn't highlight the most recently matched identifier's positions.
-  autocmd BufWinLeave <buffer> call go#guru#ClearSameIds()
-  " clear SameIds when a new buffer is loaded in the window so that the
-  " previous buffer's highlighting isn't used.
-  autocmd BufWinEnter <buffer> call go#guru#ClearSameIds()
+    " TODO(bc): only clear when the new buffer isn't the old buffer
 
-  " clear diagnostics when the buffer is unloaded from its last window so that
-  " loading another buffer (especially of a different filetype) in the same
-  " window doesn't highlight th previously loaded buffer's diagnostics.
-  autocmd BufWinLeave <buffer> call go#lsp#ClearDiagnosticHighlights()
-  " clear diagnostics when a new buffer is loaded in the window so that the
-  " previous buffer's diagnostics aren't used.
-  autocmd BufWinEnter <buffer> call go#lsp#ClearDiagnosticHighlights()
+    " clear SameIds when the buffer is unloaded from its last window so that
+    " loading another buffer (especially of a different filetype) in the same
+    " window doesn't highlight the most recently matched identifier's positions.
+    autocmd BufWinLeave <buffer> call go#guru#ClearSameIds()
+    " clear SameIds when a new buffer is loaded in the window so that the
+    " previous buffer's highlighting isn't used.
+    autocmd BufWinEnter <buffer> call go#guru#ClearSameIds()
+
+    " clear diagnostics when the buffer is unloaded from its last window so that
+    " loading another buffer (especially of a different filetype) in the same
+    " window doesn't highlight the previously loaded buffer's diagnostics.
+    autocmd BufWinLeave <buffer> call go#lsp#ClearDiagnosticHighlights()
+    " clear diagnostics when a new buffer is loaded in the window so that the
+    " previous buffer's diagnostics aren't used.
+    "autocmd BufWinEnter <buffer> call go#lsp#ClearDiagnosticHighlights()
+  endif
 
   autocmd BufEnter <buffer>
         \  if go#config#AutodetectGopath() && !exists('b:old_gopath')
