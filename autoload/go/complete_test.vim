@@ -2,18 +2,6 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-func! Test_GetInfo_gocode()
-    let g:go_info_mode = 'gocode'
-    call s:getinfo()
-    unlet g:go_info_mode
-endfunction
-
-func! Test_GetInfo_guru()
-    let g:go_info_mode = 'guru'
-    call s:getinfo()
-    unlet g:go_info_mode
-endfunction
-
 func! Test_GetInfo_gopls()
     let g:go_info_mode = 'gopls'
     call s:getinfo()
