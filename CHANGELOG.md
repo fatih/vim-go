@@ -43,6 +43,8 @@ IMPROVEMENTS:
   [[GH-2747]](https://github.com/fatih/vim-go/pull/2747)
 * Add `g:go_gopls_options` to configure `gopls`' commandline options.
   [[GH-2747]](https://github.com/fatih/vim-go/pull/2747)
+* Improve readability of gopls logs.
+  [[GH-2773]](https://github.com/fatih/vim-go/pull/2773)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
