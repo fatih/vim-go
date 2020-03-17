@@ -921,6 +921,10 @@ endfunction
 
 function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
   " gopls returns a []Location; just take the first one.
+  if a:msg is v:null || len(a:msg) == 0
+    return
+  endif
+
   let l:msg = a:msg[0]
 
   let l:fname = go#path#FromURI(l:msg.uri)
