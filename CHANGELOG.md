@@ -61,6 +61,8 @@ BUG FIXES:
   [[GH-2733]](https://github.com/fatih/vim-go/pull/2733)
 * Preserve ordering of gopls messages in the log.
   [[GH-2753]](https://github.com/fatih/vim-go/pull/2753)
+* Fix `:GoDef` on windows when `g:go_def_mode` is set to `gopls`.
+  [[GH-2768]](https://github.com/fatih/vim-go/pull/2768)
 
 ## v1.22 - (January 30, 2020)
 
