@@ -64,7 +64,8 @@ function! go#fmt#Format(withGoimport) abort
 
   let current_col = col('.')
   let [l:out, l:err] = go#fmt#run(l:bin_name, l:tmpname, expand('%'))
-  let diff_offset = len(readfile(l:tmpname)) - line('$')
+  let line_offset = len(readfile(l:tmpname)) - line('$')
+  let l:orig_line = getline('.')
 
   if l:err == 0
     call go#fmt#update_file(l:tmpname, expand('%'))
@@ -92,8 +93,10 @@ function! go#fmt#Format(withGoimport) abort
     call winrestview(l:curw)
   endif
 
-  " be smart and jump to the line the new statement was added/removed
-  call cursor(line('.') + diff_offset, current_col)
+  " be smart and jump to the line the new statement was added/removed and
+  " adjust the column within the line
+  let l:lineno = line('.') + line_offset
+  call cursor(l:lineno, current_col + (len(getline(l:lineno)) - len(l:orig_line)))
 
   " Syntax highlighting breaks less often.
   syntax sync fromstart
@@ -116,11 +119,6 @@ function! go#fmt#update_file(source, target)
   if exists("*setfperm") && original_fperm != ''
     call setfperm(a:target , original_fperm)
   endif
-
-  " reset diagnostic matches before reloading so that any locations that have
-  " been invalidated by formatting won't cause errors when the buffer is
-  " reloaded from disk.
-  let b:go_diagnostic_matches = {'errors': [], 'warnings': []}
 
   " reload buffer to reflect latest changes
   silent edit!

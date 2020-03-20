@@ -240,13 +240,11 @@ function! s:newlsp() abort
           if !bufexists(l:bufname)
             "let l:starttime = reltime()
             call bufadd(l:bufname)
-            "echom printf('added %s (%s)', l:bufname, reltimestr(reltime(l:startime)))
           endif
 
           if !bufloaded(l:bufname)
             "let l:starttime = reltime()
             call bufload(l:bufname)
-            "echom printf('loaded %s (%s)', l:bufname, reltimestr(reltime(l:starttime)))
           endif
 
           for l:diag in l:data.diagnostics
@@ -273,9 +271,11 @@ function! s:newlsp() abort
           " version.
           let l:lsp = s:lspfactory.get()
           let l:version = get(l:lsp.fileVersions, l:fname, 0)
-          if l:version != 0 && (!has_key(l:data, 'version') || l:data.version == l:version)
-            call s:highlightMatches(l:errorMatches, l:warningMatches)
-          endif
+          " it's tempting to only highlight matches when they are for the
+          " current version of the buffer, but that causes problems when the
+          " version number has been updated and the content has not. In such a
+          " case, the diagnostics may not be sent for later versions.
+          call s:highlightMatches(l:errorMatches, l:warningMatches)
         endif
 
         let self.diagnostics[l:fname] = l:diagnostics
@@ -1269,11 +1269,15 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
   augroup vim-go-diagnostics
     autocmd! * <buffer>
     autocmd BufDelete <buffer> autocmd! vim-go-diagnostics * <buffer=abuf>
-    autocmd BufWinEnter <buffer> nested call s:highlightMatches(b:go_diagnostic_matches.errors, b:go_diagnostic_matches.warnings)
+    if has('textprop')
+      autocmd BufReadPost <buffer> nested call s:highlightMatches(b:go_diagnostic_matches.errors, b:go_diagnostic_matches.warnings)
+    else
+      autocmd BufWinEnter <buffer> nested call s:highlightMatches(b:go_diagnostic_matches.errors, b:go_diagnostic_matches.warnings)
+    endif
   augroup end
 endfunction
 
-" ClearDiagnosticsHighlights removes all goDiagnosticError and
+" ClearDiagnosticHighlights removes all goDiagnosticError and
 " goDiagnosticWarning matches.
 function! go#lsp#ClearDiagnosticHighlights() abort
   call go#util#ClearHighlights('goDiagnosticError')

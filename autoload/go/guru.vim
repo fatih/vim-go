@@ -484,7 +484,11 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
     " is redisplayed: e.g. :edit, :GoRename, etc.
     augroup vim-go-sameids
       autocmd! * <buffer>
-      autocmd BufWinEnter <buffer> nested call go#guru#SameIds(0)
+      if has('textprop')
+        autocmd BufReadPost <buffer> nested call go#guru#SameIds(0)
+      else
+        autocmd BufWinEnter <buffer> nested call go#guru#SameIds(0)
+      endif
     augroup end
   endif
 endfunction

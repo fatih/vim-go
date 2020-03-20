@@ -270,6 +270,153 @@ function! s:numericHighlightGroupInSliceSlicing(testname, from, to)
   endtry
 endfunction
 
+function! Test_diagnostic_after_fmt() abort
+  let g:go_fmt_command = 'gofmt'
+  try
+    call s:diagnostic_after_write( [
+          \ 'package main',
+          \ 'import "fmt"',
+          \ '',
+          \ 'func main() {',
+          \ '',
+          \ "\tfmt.Println(\x1fhello)",
+          \ '}',
+          \ ], [])
+  finally
+    unlet g:go_fmt_command
+  endtry
+endfunction
+
+function! Test_diagnostic_after_fmt_change() abort
+  " craft a file that will be changed when its written (gofmt will change it).
+  let g:go_fmt_command = 'gofmt'
+  try
+    call s:diagnostic_after_write( [
+          \ 'package main',
+          \ 'import "fmt"',
+          \ '',
+          \ 'func main() {',
+          \ '',
+          \ "fmt.Println(\x1fhello)",
+          \ '}',
+          \ ], [])
+  finally
+    unlet g:go_fmt_command
+  endtry
+endfunction
+
+function! Test_diagnostic_after_fmt_cleared() abort
+  " craft a file that will be fixed when it is written.
+  let g:go_fmt_command = 'gofmt'
+  try
+    call s:diagnostic_after_write( [
+          \ 'package main',
+          \ 'import "fmt"',
+          \ '',
+          \ 'func main() {',
+          \ '',
+          \ "fmt.Println(\x1fhello)",
+          \ '}',
+          \ ], ['hello := "hello, vim-go"'])
+  finally
+    unlet g:go_fmt_command
+  endtry
+endfunction
+
+function! Test_diagnostic_after_reload() abort
+  let l:dir = gotest#write_file('diagnostic/after-reload.go', [
+              \ 'package main',
+              \ 'import "fmt"',
+              \ '',
+              \ 'func main() {',
+              \ '',
+              \ "\tfmt.Println(\x1fhello)",
+              \ '}',
+              \ ])
+  try
+    call s:check_diagnostics('', 'goDiagnosticError', 'initial')
+    let l:pos = getcurpos()
+    edit
+    call setpos('.', l:pos)
+    call s:check_diagnostics('', 'goDiagnosticError', 'after-reload')
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunction
+
+function! s:diagnostic_after_write(contents, changes) abort
+  syntax on
+
+  let l:dir = gotest#write_file('diagnostic/after-write.go', a:contents)
+
+  try
+    let l:pos = getcurpos()
+    call s:check_diagnostics('', 'goDiagnosticError', 'initial')
+
+    " write a:changes to the previous line and make sure l:actual and
+    " l:expected are set so that they won't accidentally match on the next
+    " check.
+    if len(a:changes) > 0
+      call append(l:pos[1]-1, a:changes)
+      let l:actual = 'goDiagnosticError'
+      let l:expected = ''
+    else
+      let l:actual = ''
+      let l:expected = 'goDiagnosticError'
+    endif
+
+    write
+
+    call s:check_diagnostics(l:actual, l:expected, 'after-write')
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunction
+
+function! s:check_diagnostics(actual, expected, when)
+  let l:actual = a:actual
+  let l:start = reltime()
+
+  while l:actual != a:expected && reltimefloat(reltime(l:start)) < 10
+    " Get the cursor position on each iteration, because the cursor postion
+    " may change between iterations when go#fmt#GoFmt formats, reloads the
+    " file, and moves the cursor to try to keep it where the user expects it
+    " to be when gofmt modifies the files.
+    let l:pos = getcurpos()
+    if !has('textprop')
+      let l:matches = getmatches()
+      if len(l:matches) == 0
+        let l:actual = ''
+      endif
+
+      for l:m in l:matches
+        let l:matchline = l:m.pos1[0]
+        if len(l:m.pos1) < 2
+          continue
+        endif
+        let l:matchcol = get(l:m.pos1, 1, 1)
+        if l:pos[1] == l:matchline && l:pos[2] >= l:matchcol && l:pos[2] <= l:matchcol + l:m.pos1[2]
+        " Ideally, we'd check that the cursor is within the match, but when a
+        " tab is added on the current line, the cursor position within the
+        " line will stay constant while the line itself is shifted over by a
+        " column, so just check the line itself instead of checking a precise
+        " cursor location.
+        " if l:pos[1] == l:matchline
+          let l:actual = l:m.group
+          break
+        endif
+      endfor
+
+      sleep 100m
+      continue
+    endif
+
+    let l:actual = get(prop_list(l:pos[1]), 0, {'type': ''}).type
+    sleep 100m
+  endwhile
+
+  call assert_equal(a:expected, l:actual, a:when)
+endfunction
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

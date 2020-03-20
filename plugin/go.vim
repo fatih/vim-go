@@ -38,8 +38,7 @@ call s:checkVersion()
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries.
 
-" NOTE(bc): varying the binary name and the tail of the import path (e.g.
-" gocode-gomod) does not yet work in module aware mode.
+" NOTE(bc): varying the binary name and the tail of the import path does not yet work in module aware mode.
 let s:packages = {
       \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt@master'],
       \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv@master'],
