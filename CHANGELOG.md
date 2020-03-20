@@ -65,6 +65,8 @@ BUG FIXES:
   [[GH-2768]](https://github.com/fatih/vim-go/pull/2768)
 * Handle null values from `gopls`.
   [[GH-2778]](https://github.com/fatih/vim-go/pull/2778)
+* Preserve diagnostics highlights after formatting.
+  [[GH-2779]](https://github.com/fatih/vim-go/pull/2779)
 
 ## v1.22 - (January 30, 2020)
 
