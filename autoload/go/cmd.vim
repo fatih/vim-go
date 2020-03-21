@@ -160,12 +160,24 @@ function! go#cmd#Run(bang, ...) abort
     let cmd .= "-tags " . go#util#Shellescape(tags) . " "
   endif
 
+  if a:0 == 0
+    let l:files = go#tool#Files()
+  else
+    let l:files = map(copy(a:000), "expand(v:val)")
+  endif
+
+  let cmd = printf('%s%s', cmd, go#util#Shelljoin(l:files, 1))
+
+  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let dir = getcwd()
+
   if go#util#IsWin()
-    if a:0 == 0
-      exec '!' . cmd . go#util#Shelljoin(go#tool#Files(), 1)
-    else
-      exec '!' . cmd . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
-    endif
+    try
+      execute cd . fnameescape(expand("%:p:h"))
+      exec printf('!%s', cmd)
+    finally
+      execute cd . fnameescape(dir)
+    endtry
 
     let l:status.state = 'success'
     if v:shell_error
@@ -187,26 +199,25 @@ function! go#cmd#Run(bang, ...) abort
 
   " :make expands '%' and '#' wildcards, so they must also be escaped
   let default_makeprg = &makeprg
-  if a:0 == 0
-    let &makeprg = cmd . go#util#Shelljoin(go#tool#Files(), 1)
-  else
-    let &makeprg = cmd . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
-  endif
+  let &makeprg = cmd
 
   let l:listtype = go#list#Type("GoRun")
 
   let l:status.state = 'success'
+
   try
     " backup user's errorformat, will be restored once we are finished
     let l:old_errorformat = &errorformat
     let &errorformat = s:runerrorformat()
+    execute cd . fnameescape(expand("%:p:h"))
     if l:listtype == "locationlist"
       exe 'lmake!'
     else
       exe 'make!'
     endif
   finally
-    "restore errorformat
+    "restore the working directory, errformat, and makeprg
+    execute cd . fnameescape(dir)
     let &errorformat = l:old_errorformat
     let &makeprg = default_makeprg
   endtry
