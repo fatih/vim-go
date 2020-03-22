@@ -67,6 +67,9 @@ BUG FIXES:
   [[GH-2778]](https://github.com/fatih/vim-go/pull/2778)
 * Preserve diagnostics highlights after formatting.
   [[GH-2779]](https://github.com/fatih/vim-go/pull/2779)
+* Fix the decoding and encoding of multi-byte file paths received from and sent
+  to `gopls`.
+  [[GH-2784]](https://github.com/fatih/vim-go/pull/2784)
 
 ## v1.22 - (January 30, 2020)
 
