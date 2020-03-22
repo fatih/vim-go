@@ -18,7 +18,7 @@ function! s:encode(value, unreserved)
     return substitute(
     \   a:value,
     \   a:unreserved,
-    \   '\="%".printf(''%02X'', char2nr(submatch(0)))',
+    \   '\=s:encodechar(submatch(0))',
     \   'g'
     \)
 endfunction
@@ -27,10 +27,27 @@ function! go#uri#Decode(value) abort
     return substitute(
     \   a:value,
     \   '%\(\x\x\)',
-    \   '\=nr2char(''0X'' . submatch(1))',
+    \   '\=s:decodehex(submatch(1))',
     \   'g'
     \)
 endfunction
+
+function! s:encodechar(value)
+  let l:idx = 0
+  let l:encoded = ''
+  while l:idx < strlen(a:value)
+    let l:byte = strpart(a:value, l:idx, 1)
+    let l:encoded = printf('%s%%%02X', l:encoded, char2nr(l:byte))
+    let l:idx += 1
+  endwhile
+
+  return l:encoded
+endfunction
+
+function! s:decodehex(value)
+  return eval(printf('"\x%s"', a:value))
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
