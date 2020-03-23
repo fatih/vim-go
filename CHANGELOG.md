@@ -70,6 +70,9 @@ BUG FIXES:
 * Fix the decoding and encoding of multi-byte file paths received from and sent
   to `gopls`.
   [[GH-2784]](https://github.com/fatih/vim-go/pull/2784)
+* Fix `:GoRun` so that it works as expected when the current working directory
+  is neither in GOPATH nor within a module.
+  [[GH-2782]](https://github.com/fatih/vim-go/pull/2782)
 
 ## v1.22 - (January 30, 2020)
 
