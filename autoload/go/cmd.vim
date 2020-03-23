@@ -154,18 +154,30 @@ function! go#cmd#Run(bang, ...) abort
 
   call go#statusline#Update(expand('%:p:h'), l:status)
 
-  let cmd = "go run "
-  let tags = go#config#BuildTags()
-  if len(tags) > 0
-    let cmd .= "-tags " . go#util#Shellescape(tags) . " "
+  let l:cmd = "go run "
+  let l:tags = go#config#BuildTags()
+  if len(l:tags) > 0
+    let l:cmd .= "-tags " . go#util#Shellescape(l:tags) . " "
   endif
 
+  if a:0 == 0
+    let l:files = go#tool#Files()
+  else
+    let l:files = map(copy(a:000), "expand(v:val)")
+  endif
+
+  let l:cmd = printf('%s%s', l:cmd, go#util#Shelljoin(l:files, 1))
+
+  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let l:dir = getcwd()
+
   if go#util#IsWin()
-    if a:0 == 0
-      exec '!' . cmd . go#util#Shelljoin(go#tool#Files(), 1)
-    else
-      exec '!' . cmd . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
-    endif
+    try
+      execute l:cd . fnameescape(expand("%:p:h"))
+      exec printf('!%s', l:cmd)
+    finally
+      execute l:cd . fnameescape(l:dir)
+    endtry
 
     let l:status.state = 'success'
     if v:shell_error
@@ -186,29 +198,28 @@ function! go#cmd#Run(bang, ...) abort
   endif
 
   " :make expands '%' and '#' wildcards, so they must also be escaped
-  let default_makeprg = &makeprg
-  if a:0 == 0
-    let &makeprg = cmd . go#util#Shelljoin(go#tool#Files(), 1)
-  else
-    let &makeprg = cmd . go#util#Shelljoin(map(copy(a:000), "expand(v:val)"), 1)
-  endif
+  let l:default_makeprg = &makeprg
+  let &makeprg = l:cmd
 
   let l:listtype = go#list#Type("GoRun")
 
   let l:status.state = 'success'
+
   try
     " backup user's errorformat, will be restored once we are finished
     let l:old_errorformat = &errorformat
     let &errorformat = s:runerrorformat()
+    execute l:cd . fnameescape(expand("%:p:h"))
     if l:listtype == "locationlist"
       exe 'lmake!'
     else
       exe 'make!'
     endif
   finally
-    "restore errorformat
+    "restore the working directory, errformat, and makeprg
+    execute cd . fnameescape(l:dir)
     let &errorformat = l:old_errorformat
-    let &makeprg = default_makeprg
+    let &makeprg = l:default_makeprg
   endtry
 
   let l:errors = go#list#Get(l:listtype)
