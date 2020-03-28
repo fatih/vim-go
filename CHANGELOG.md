@@ -75,7 +75,8 @@ BUG FIXES:
   [[GH-2782]](https://github.com/fatih/vim-go/pull/2782)
 * Show the command executed by `:GoRun` when `g:go_debug` includes `'shell-commands'`.
   [[GH-2785]](https://github.com/fatih/vim-go/pull/2785)
-
+* Clear the list for formatting errors when `g:go_fmt_command` is `gopls`.
+  [[GH-2790]](https://github.com/fatih/vim-go/pull/2790)
 
 ## v1.22 - (January 30, 2020)
 
