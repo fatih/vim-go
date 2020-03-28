@@ -1301,6 +1301,8 @@ function! go#lsp#Format() abort
   let l:msg = go#lsp#message#Format(l:fname)
   call l:lsp.sendMessage(l:msg, l:state)
 
+  call go#fmt#CleanErrors()
+
   " await the result to avoid any race conditions among autocmds (e.g.
   " BufWritePre and BufWritePost)
   call formatHandler.await()
@@ -1362,12 +1364,14 @@ function! s:formatHandler(msg) abort dict
 endfunction
 
 function! s:handleFormatError(filename, msg) abort dict
-  if !go#config#FmtFailSilently()
-    let l:errors = split(a:msg, '\n')
-    let l:errors = map(l:errors, printf('substitute(v:val, ''^'', ''%s:'', '''')', a:filename))
-    let l:errors = join(l:errors, "\n")
-    call go#fmt#ShowErrors(l:errors)
+  if go#config#FmtFailSilently()
+    return
   endif
+
+  let l:errors = split(a:msg, '\n')
+  let l:errors = map(l:errors, printf('substitute(v:val, ''^'', ''%s:'', '''')', a:filename))
+  let l:errors = join(l:errors, "\n")
+  call go#fmt#ShowErrors(l:errors)
 endfunction
 
 function! s:textEditLess(left, right) abort
