@@ -26,6 +26,13 @@ function! go#lsp#message#Initialize(wd) abort
                 \     'snippetSupport': go#config#GoplsUsePlaceholders() ? v:true : v:false,
                 \   },
                 \ },
+                \ 'codeAction': {
+                \   'codeActionLiteralSupport': {
+                \     'codeActionKind': {
+                \       'valueSet': ['source.organizeImports'],
+                \     },
+                \   },
+                \ },
               \ }
             \ },
             \ 'workspaceFolders': [s:workspaceFolder(0, a:wd)],
@@ -58,6 +65,29 @@ function! go#lsp#message#Format(file) abort
           \   },
           \   'options': {
           \     'insertSpaces': v:false,
+          \   },
+          \ }
+       \ }
+endfunction
+
+function! go#lsp#message#CodeActionImports(file) abort
+  return s:codeAction('source.organizeImports', a:file)
+endfunction
+
+function! s:codeAction(name, file) abort
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/codeAction',
+          \ 'params': {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:file)
+          \   },
+          \   'range': {
+          \     'start': {'line': 0, 'character': 0},
+          \     'end': {'line': line('$'), 'character': 0},
+          \   },
+          \   'context': {
+          \     'only': [a:name],
           \   },
           \ }
        \ }

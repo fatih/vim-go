@@ -1294,9 +1294,9 @@ function! go#lsp#Format() abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('format')
-  let l:formatHandler = go#promise#New(function('s:formatHandler', [], l:state), 10000, '')
-  let l:state.handleResult = l:formatHandler.wrapper
-  let l:state.error = l:formatHandler.wrapper
+  let l:handleFormat = go#promise#New(function('s:handleFormat', [], l:state), 10000, '')
+  let l:state.handleResult = l:handleFormat.wrapper
+  let l:state.error = l:handleFormat.wrapper
   let l:state.handleError = function('s:handleFormatError', [l:fname], l:state)
   let l:msg = go#lsp#message#Format(l:fname)
   call l:lsp.sendMessage(l:msg, l:state)
@@ -1305,16 +1305,68 @@ function! go#lsp#Format() abort
 
   " await the result to avoid any race conditions among autocmds (e.g.
   " BufWritePre and BufWritePost)
-  call formatHandler.await()
+  call l:handleFormat.await()
 endfunction
 
-function! s:formatHandler(msg) abort dict
+" Imports executes the source.organizeImports code action for the current
+" buffer.
+function! go#lsp#Imports() abort
+  let l:fname = expand('%:p')
+  " send the current file so that TextEdits will be relative to the current
+  " state of the buffer.
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('imports')
+  let l:handler = go#promise#New(function('s:handleCodeAction', [], l:state), 10000, '')
+  let l:state.handleResult = l:handler.wrapper
+  let l:state.error = l:handler.wrapper
+  " let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
+  let l:msg = go#lsp#message#CodeActionImports(l:fname)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  " await the result to avoid any race conditions among autocmds (e.g.
+  " BufWritePre and BufWritePost)
+  call l:handler.await()
+endfunction
+
+function! s:handleFormat(msg) abort dict
+  call go#fmt#CleanErrors()
+
+  if type(a:msg) is type('')
+    call self.handleError(a:msg)
+    return
+  endif
+  call s:applyTextEdits(a:msg)
+endfunction
+
+function! s:handleCodeAction(msg) abort dict
   if a:msg is v:null
     return
   endif
 
-  if type(a:msg) is type('')
-    call self.handleError(a:msg)
+  for l:item in a:msg
+    if get(l:item, 'kind', '') is 'source.organizeImports'
+      if !has_key(l:item, 'edit')
+        continue
+      endif
+      if !has_key(l:item.edit, 'documentChanges')
+        continue
+      endif
+      for l:change in l:item.edit.documentChanges
+        if !has_key(l:change, 'edits')
+          continue
+        endif
+        " TODO(bc): change to the buffer for l:change.textDocument.uri
+        call s:applyTextEdits(l:change.edits)
+      endfor
+    endif
+  endfor
+endfunction
+
+function s:applyTextEdits(msg) abort
+  if a:msg is v:null
     return
   endif
 
@@ -1356,7 +1408,11 @@ function! s:formatHandler(msg) abort dict
     " TODO(bc): deal with folds
 
     call execute(printf('%d,%d d_', l:startline, l:endline))
-    call append(l:startline-1, l:text)
+    for l:line in split(l:text, "\n")
+      call s:debug('debug', printf('adding "%s"', l:text))
+      call append(l:startline-1, l:line)
+      let l:startline += 1
+    endfor
   endfor
 
   call go#lsp#DidChange(expand('%:p'))
@@ -1372,6 +1428,10 @@ function! s:handleFormatError(filename, msg) abort dict
   let l:errors = map(l:errors, printf('substitute(v:val, ''^'', ''%s:'', '''')', a:filename))
   let l:errors = join(l:errors, "\n")
   call go#fmt#ShowErrors(l:errors)
+endfunction
+
+function! s:handleCodeActionError(filename, msg) abort dict
+  " TODO(bc): handle the error?
 endfunction
 
 function! s:textEditLess(left, right) abort
