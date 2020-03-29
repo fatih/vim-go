@@ -31,7 +31,7 @@ function! s:parse_output(exit_val, output, title) abort
 
   let errformat = ",%f:%l:%c:\ %m"
   let l:listtype = go#list#Type("GoImplements")
-  call go#list#ParseFormat(l:listtype, errformat, a:output, '')
+  call go#list#ParseFormat(l:listtype, errformat, a:output, a:title)
 
   let errors = go#list#Get(l:listtype)
   call go#list#Window(l:listtype, len(errors))

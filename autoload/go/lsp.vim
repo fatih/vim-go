@@ -784,12 +784,16 @@ function! go#lsp#Referrers(fname, line, col, handler) abort
 
   let l:state = s:newHandlerState('referrers')
 
-  let l:state.handleResult = funcref('s:referencesHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.handleResult = funcref('s:handleReferences', [function(a:handler, [], l:state)], l:state)
   let l:state.error = funcref('s:noop')
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:referencesHandler(next, msg) abort dict
+function! s:handleReferences(next, msg) abort dict
+  call s:handleLocations(a:next, a:msg)
+endfunction
+
+function! s:handleLocations(next, msg) abort
   let l:result = []
 
   let l:msg = a:msg
@@ -830,13 +834,13 @@ function! s:referencesHandler(next, msg) abort dict
   call call(a:next, [0, l:result, ''])
 endfunction
 
-" go#lsp#Implementations calls gopls to get the implementations to the identifier at line
-" and col in fname. handler should be a dictionary function that takes a list
-" of strings in the form 'file:line:col: message'. handler will be attached to
-" a dictionary that manages state (statuslines, sets the winid, etc.). handler
-" should take three arguments: an exit_code, a JSON object encoded to a string
-" that mimics guru's ouput for `what`, and third mode parameter that only
-" exists for compatibility with the guru implementation of SameIDs.
+" go#lsp#Implementations calls gopls to get the implementations to the
+" identifier at line and col in fname. handler should be a dictionary function
+" that takes a list of strings in the form 'file:line:col: message'. handler
+" will be attached to a dictionary that manages state (statuslines, sets the
+" winid, etc.). handler should take three arguments: an exit_code, a JSON
+" object encoded to a string that mimics guru's ouput for guru implements, and
+" a third parameter that only exists for compatibility with guru implements.
 function! go#lsp#Implements(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
@@ -845,15 +849,18 @@ function! go#lsp#Implements(fname, line, col, handler) abort
 
   let l:state = s:newHandlerState('implements')
 
-  let l:state.handleResult = funcref('s:referencesHandler', [function(a:handler, [], l:state)], l:state)
-  let l:state.error = funcref('s:implementsErrorHandler', [function(a:handler, [], l:state)], l:state)
+  let l:state.handleResult = funcref('s:handleImplements', [function(a:handler, [], l:state)], l:state)
+  let l:state.error = funcref('s:handleImplementsError', [function(a:handler, [], l:state)], l:state)
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:implementsErrorHandler(next, error) abort dict
-  call call(a:next, [-1, [a:error], ''])
+function! s:handleImplements(next, msg) abort dict
+  call s:handleLocations(a:next, a:msg)
 endfunction
 
+function! s:handleImplementsError(next, error) abort dict
+  call call(a:next, [1, [a:error], ''])
+endfunction
 
 function! go#lsp#Hover(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
