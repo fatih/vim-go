@@ -100,6 +100,19 @@ function! go#lsp#message#TypeDefinition(file, line, col) abort
        \ }
 endfunction
 
+function! go#lsp#message#Implementation(file, line, col) abort
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/implementation',
+          \ 'params': {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:file)
+          \   },
+          \   'position': s:position(a:line, a:col)
+          \ }
+       \ }
+endfunction
+
 function! go#lsp#message#DidOpen(file, content, version) abort
   return {
           \ 'notification': 1,
@@ -189,7 +202,7 @@ endfunction
 
 function! go#lsp#message#ChangeWorkspaceFolders(add, remove) abort
   let l:addDirs = map(copy(a:add), function('s:workspaceFolder', []))
-  let l:removeDirs = map(copy(a:add), function('s:workspaceFolder', []))
+  let l:removeDirs = map(copy(a:remove), function('s:workspaceFolder', []))
 
   return {
           \ 'notification': 1,
