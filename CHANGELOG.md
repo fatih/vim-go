@@ -45,6 +45,10 @@ IMPROVEMENTS:
   [[GH-2747]](https://github.com/fatih/vim-go/pull/2747)
 * Improve readability of gopls logs.
   [[GH-2773]](https://github.com/fatih/vim-go/pull/2773)
+* Introduce `g:go_referrers_modes` to allow `:GoImplements` to be satisfied
+  with `gopls`.
+  [[GH-2741]](https://github.com/fatih/vim-go/pull/2741)
+
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
