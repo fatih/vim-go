@@ -2387,6 +2387,17 @@ and |'g:go_def_mode'| can be set to use other tools for now (though some of
 the alternatives to `gopls` are effectively at their end of life and support
 for them from within vim-go may be removed soon).
 
+I want to disable `gopls`~
+
+Vim-go's use of `gopls` can be disabled with 'g:go_gopls_enabled'.
+
+Some users want to do this to limit the load on their system when using vim-go
+concurrently with an LSP client like vim-lsp. Instead of disabling vim-go's
+use of `gopls`, you may prefer to configure vim-go to share the `gopls`
+instance with other LSP plugins. 'g:go_gopls_options' can be used to configure
+how vim-go starts `gopls` so that the instance can be shared with other
+plugins and vim-go user's can leverage the full power of vim-go.
+
 I get a "Unknown function: go#config#..." error~
 
 This often happens to vim-polyglot users when new config options are added to

@@ -13,8 +13,8 @@ This plugin adds Go language support for Vim, with the following main features:
 * Quickly execute your current file(s) with `:GoRun`.
 * Improved syntax highlighting and folding.
 * Debug programs with integrated `delve` support with `:GoDebugStart`.
-* Completion support via `gopls`.
-* `gofmt` or `goimports` on save keeps the cursor position and undo history.
+* Completion and many other features support via `gopls`.
+* formatting on save keeps the cursor position and undo history.
 * Go to symbol/declaration with `:GoDef`.
 * Look up documentation with `:GoDoc` or `:GoDocBrowser`.
 * Easily import packages via `:GoImport`, remove them via `:GoDrop`.
@@ -30,6 +30,8 @@ This plugin adds Go language support for Vim, with the following main features:
   `:GoCallees`, and `:GoReferrers`.
 * ... and many more! Please see [doc/vim-go.txt](doc/vim-go.txt) for more
   information.
+* The `gopls` instance can be shared with other Vim plugins.
+* Vim-go's use of `gopls` can be disabled.
 
 ## Install
 
