@@ -20,8 +20,8 @@ set cpo&vim
 function! go#fmt#Format(withGoimport) abort
   let l:bin_name = go#config#FmtCommand()
   if a:withGoimport == 1
-    let l:bin_name = go#config#ImportsCommand()
-    if l:bin_name == 'gopls'
+    let l:mode = go#config#ImportsMode()
+    if l:mode == 'gopls'
       if !go#config#GoplsEnabled()
         call go#util#EchoError("go_def_mode is 'gopls', but gopls is disabled")
         return
