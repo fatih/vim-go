@@ -351,6 +351,10 @@ function! go#config#FmtCommand() abort
   return get(g:, "go_fmt_command", "gofmt")
 endfunction
 
+function! go#config#ImportsCommand() abort
+  return get(g:, "go_imports_command", "goimports")
+endfunction
+
 function! go#config#FmtOptions() abort
   return get(b:, "go_fmt_options", get(g:, "go_fmt_options", {}))
 endfunction

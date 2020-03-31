@@ -1342,7 +1342,7 @@ Use this option to auto |:GoFmt| on save. By default it's enabled >
 <
                                                           *'g:go_fmt_command'*
 
-Use this option to define which tool is used to gofmt. Valid options are
+Use this option to define which tool is used to format code. Valid options are
 `gofmt`, `goimports`, and `gopls`. By default `gofmt` is used.
 >
 
@@ -1399,6 +1399,15 @@ it's causing problems on some Vim versions. This has no effect if
 
   let g:go_fmt_experimental = 0
 
+<
+
+                                                      *'g:go_imports_command'*
+
+Use this option to define which tool is used to adjust imports. Valid options
+are `goimports` and `gopls`. By default `goimports` is used.
+>
+
+  let g:go_imports_command = "goimports"
 <
                                                      *'g:go_mod_fmt_autosave'*
 
