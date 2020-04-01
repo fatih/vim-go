@@ -1152,7 +1152,7 @@ function! s:debugasync(timer) abort
   endtry
 endfunction
 
-function! s:debug(event, data, ...) abort
+function! s:debug(event, data) abort
   let l:shouldStart = len(s:log) > 0
   let s:log = add(s:log, [a:event, a:data])
 
@@ -1354,7 +1354,7 @@ function! go#lsp#Imports() abort
   let l:handler = go#promise#New(function('s:handleCodeAction', [], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
-  " let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
+  let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
   let l:msg = go#lsp#message#CodeActionImports(l:fname)
   call l:lsp.sendMessage(l:msg, l:state)
 
@@ -1374,6 +1374,11 @@ function! s:handleFormat(msg) abort dict
 endfunction
 
 function! s:handleCodeAction(msg) abort dict
+  if type(a:msg) is type('')
+    call self.handleError(a:msg)
+    return
+  endif
+
   if a:msg is v:null
     return
   endif
@@ -1422,26 +1427,32 @@ function s:applyTextEdits(msg) abort
     let l:preSliceEnd = 0
     if l:msg.range.start.character > 0
       let l:preSliceEnd = go#lsp#lsp#PositionOf(l:startcontent, l:msg.range.start.character-1) - 1
+      let l:startcontent = l:startcontent[:l:preSliceEnd]
+    elseif l:endline == l:startline && l:msg.range.end.character == 0
+      " l:startcontent should be the empty string when l:text is to be
+      " inserted at the beginning of the line.
+      let l:startcontent = ''
     endif
 
     let l:endcontent = getline(l:endline)
     let l:postSliceStart = 0
     if l:msg.range.end.character > 0
       let l:postSliceStart = go#lsp#lsp#PositionOf(l:endcontent, l:msg.range.end.character-1)
+      let l:endcontent = l:endcontent[(l:postSliceStart):]
     endif
 
     " There isn't an easy way to replace the text in a byte or character
-    " range, so append any text on l:endline starting from l:tailidx to l:text,
-    " prepend any text on l:startline prior to l:prelen to l:text, and
-    " finally replace the lines with a delete followed by and append.
-    let l:text = printf('%s%s%s', l:startcontent[:l:preSliceEnd], l:text, l:endcontent[(l:postSliceStart):])
+    " range, so append to l:text any text on l:endline starting from
+    " l:postSliceStart and prepend to l:text any text on l:startline prior to
+    " l:preSliceEnd, and finally replace the lines with a delete followed by
+    " and append.
+    let l:text = printf('%s%s%s', l:startcontent, l:text, l:endcontent)
 
     " TODO(bc): deal with the undo file
     " TODO(bc): deal with folds
 
     call execute(printf('%d,%d d_', l:startline, l:endline))
     for l:line in split(l:text, "\n")
-      call s:debug('debug', printf('adding "%s"', l:text))
       call append(l:startline-1, l:line)
       let l:startline += 1
     endfor
