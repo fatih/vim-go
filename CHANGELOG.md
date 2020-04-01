@@ -48,6 +48,7 @@ IMPROVEMENTS:
 * Introduce `g:go_implements_mode` to allow `:GoImplements` to be satisfied
   with `gopls`.
   [[GH-2741]](https://github.com/fatih/vim-go/pull/2741)
+  [[GH-2799]](https://github.com/fatih/vim-go/pull/2799)
 * Introduce `g:go_imports_mode` to allow `:GoImports` to be satisfied with
   `gopls`.
   [[GH-2791]](https://github.com/fatih/vim-go/pull/2791)
