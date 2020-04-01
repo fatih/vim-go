@@ -23,12 +23,14 @@ function! go#fmt#Format(withGoimport) abort
     let l:mode = go#config#ImportsMode()
     if l:mode == 'gopls'
       if !go#config#GoplsEnabled()
-        call go#util#EchoError("go_def_mode is 'gopls', but gopls is disabled")
+        call go#util#EchoError("go_imports_mode is 'gopls', but gopls is disabled")
         return
       endif
       call go#lsp#Imports()
       return
     endif
+
+    let l:bin_name = 'goimports'
   endif
 
   if l:bin_name == 'gopls'
