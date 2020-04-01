@@ -140,6 +140,10 @@ The following plugins are supported for use with vim-go:
 
 * Real-time completion (Neovim and Vim 8):
   https://github.com/Shougo/deoplete.nvim
+  
+  Make sure "noselect" is set in the 'completeopt' option.
+  
+    set completeopt+=noselect
 
   Add the following line to your vimrc. This instructs deoplete to use omni
   completion for Go files.
