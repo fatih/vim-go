@@ -86,6 +86,8 @@ BUG FIXES:
   [[GH-2785]](https://github.com/fatih/vim-go/pull/2785)
 * Clear the list for formatting errors when `g:go_fmt_command` is `gopls`.
   [[GH-2790]](https://github.com/fatih/vim-go/pull/2790)
+* Handle text edits from gopls that are only line insertions.
+  [[GH-2802]](https://github.com/fatih/vim-go/pull/2802)
 
 ## v1.22 - (January 30, 2020)
 
