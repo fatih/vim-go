@@ -1354,7 +1354,7 @@ function! go#lsp#Imports() abort
   let l:handler = go#promise#New(function('s:handleCodeAction', [], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
-  " let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
+  let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
   let l:msg = go#lsp#message#CodeActionImports(l:fname)
   call l:lsp.sendMessage(l:msg, l:state)
 
@@ -1374,6 +1374,11 @@ function! s:handleFormat(msg) abort dict
 endfunction
 
 function! s:handleCodeAction(msg) abort dict
+  if type(a:msg) is type('')
+    call self.handleError(a:msg)
+    return
+  endif
+
   if a:msg is v:null
     return
   endif
