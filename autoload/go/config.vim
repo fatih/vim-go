@@ -307,6 +307,10 @@ function! go#config#FmtAutosave() abort
 	return get(g:, "go_fmt_autosave", 1)
 endfunction
 
+function! go#config#ImportsAutosave() abort
+  return get(g:, 'go_imports_autosave', 1)
+endfunction
+
 function! go#config#SetFmtAutosave(value) abort
   let g:go_fmt_autosave = a:value
 endfunction

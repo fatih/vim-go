@@ -1401,7 +1401,13 @@ it's causing problems on some Vim versions. This has no effect if
 
 <
 
-                                                        *'g:go_imports_mode'*
+                                                     *'g:go_imports_autosave'*
+
+Use this option to auto |:GoImports| on save. By default it's enabled.
+>
+  let g:go_imports_autosave = 1
+<
+                                                         *'g:go_imports_mode'*
 
 Use this option to define which tool is used to adjust imports. Valid options
 are `goimports` and `gopls`. By default `goimports` is used.
