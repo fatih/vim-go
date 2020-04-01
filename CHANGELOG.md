@@ -52,6 +52,7 @@ IMPROVEMENTS:
   `gopls`.
   [[GH-2791]](https://github.com/fatih/vim-go/pull/2791)
   [[GH-2794]](https://github.com/fatih/vim-go/pull/2794)
+  [[GH-2796]](https://github.com/fatih/vim-go/pull/2796)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
