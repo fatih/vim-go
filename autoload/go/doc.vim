@@ -192,10 +192,10 @@ function! s:gogetdoc(json) abort
 
   if &modified
     let l:cmd += ['-modified']
-    return go#util#Exec(l:cmd, go#util#archive())
+    return go#util#ExecInDir(l:cmd, go#util#archive())
   endif
 
-  return go#util#Exec(l:cmd)
+  return go#util#ExecInDir(l:cmd)
 endfunction
 
 " returns the package and exported name. exported name might be empty.
