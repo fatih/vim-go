@@ -42,6 +42,38 @@ function! s:getinfo(str, name)
   endtry
 endfunction
 
+func! Test_Format() abort
+  try
+    let expected = join(readfile("test-fixtures/lsp/fmt/format_golden.go"), "\n")
+    let l:tmp = gotest#load_fixture('lsp/fmt/format.go')
+
+    call go#lsp#Format()
+
+    " this should now contain the formatted code
+    let actual = join(go#util#GetLines(), "\n")
+
+    call assert_equal(expected, actual)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
+func! Test_Imports() abort
+  try
+    let expected = join(readfile("test-fixtures/lsp/imports/imports_golden.go"), "\n")
+    let l:tmp = gotest#load_fixture('lsp/imports/imports.go')
+
+    call go#lsp#Imports()
+
+    " this should now contain the expected imports code
+    let actual = join(go#util#GetLines(), "\n")
+
+    call assert_equal(expected, actual)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
