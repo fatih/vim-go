@@ -88,6 +88,7 @@ BUG FIXES:
   [[GH-2790]](https://github.com/fatih/vim-go/pull/2790)
 * Handle text edits from gopls that are only line insertions.
   [[GH-2802]](https://github.com/fatih/vim-go/pull/2802)
+  [[GH-2803]](https://github.com/fatih/vim-go/pull/2803)
 
 ## v1.22 - (January 30, 2020)
 
