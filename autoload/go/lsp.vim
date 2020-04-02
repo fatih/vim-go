@@ -1428,9 +1428,9 @@ function s:applyTextEdits(msg) abort
     if l:msg.range.start.character > 0
       let l:preSliceEnd = go#lsp#lsp#PositionOf(l:startcontent, l:msg.range.start.character-1) - 1
       let l:startcontent = l:startcontent[:l:preSliceEnd]
-    elseif l:endline == l:startline && l:msg.range.end.character == 0
-      " l:startcontent should be the empty string when l:text is to be
-      " inserted at the beginning of the line.
+    elseif l:endline == l:startline && (l:msg.range.end.character == 0 || l:msg.range.start.character == 0)
+      " l:startcontent should be the empty string when l:text is a
+      " replacement at the beginning of the line.
       let l:startcontent = ''
     endif
 
