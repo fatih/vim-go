@@ -57,6 +57,9 @@ IMPROVEMENTS:
 * Send LSP synchronization messages to `gopls` when the file does not yet exist
   on disk as long as its directory exists.
   [[GH-2805]](https://github.com/fatih/vim-go/pull/2805)
+* Run `gogetdoc` in the buffer's directory so that it will work regardless of
+  the user's working directory in module-aware mode.
+  [[GH-2804]](https://github.com/fatih/vim-go/pull/2804)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
