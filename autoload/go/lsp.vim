@@ -609,12 +609,12 @@ function! go#lsp#DidOpen(fname) abort
     return
   endif
 
-  if !filereadable(a:fname)
+  let l:fname = fnamemodify(a:fname, ':p')
+  if !isdirectory(fnamemodify(l:fname, ':h'))
     return
   endif
 
   let l:lsp = s:lspfactory.get()
-  let l:fname = fnamemodify(a:fname, ':p')
 
   if !has_key(l:lsp.notificationQueue, l:fname)
     let l:lsp.notificationQueue[l:fname] = []
@@ -644,7 +644,8 @@ function! go#lsp#DidChange(fname) abort
     return
   endif
 
-  if !filereadable(a:fname)
+  let l:fname = fnamemodify(a:fname, ':p')
+  if !isdirectory(fnamemodify(l:fname, ':h'))
     return
   endif
 
@@ -652,7 +653,6 @@ function! go#lsp#DidChange(fname) abort
 
   let l:lsp = s:lspfactory.get()
 
-  let l:fname = fnamemodify(a:fname, ':p')
   if !has_key(l:lsp.fileVersions, l:fname)
     let l:lsp.fileVersions[l:fname] = 0
   endif
@@ -664,7 +664,8 @@ function! go#lsp#DidChange(fname) abort
 endfunction
 
 function! go#lsp#DidClose(fname) abort
-  if !filereadable(a:fname)
+  let l:fname = fnamemodify(a:fname, ':p')
+  if !isdirectory(fnamemodify(l:fname, ':h'))
     return
   endif
 
@@ -673,7 +674,7 @@ function! go#lsp#DidClose(fname) abort
   endif
 
   let l:lsp = s:lspfactory.get()
-  let l:msg = go#lsp#message#DidClose(fnamemodify(a:fname, ':p'))
+  let l:msg = go#lsp#message#DidClose(l:fname)
   let l:state = s:newHandlerState('')
   " TODO(bc): setting a buffer level variable here assumes that a:fname is the
   " current buffer. Change to a:fname first before setting it and then change
@@ -1216,12 +1217,12 @@ function! go#lsp#Diagnostics(...) abort
 endfunction
 
 function! go#lsp#AnalyzeFile(fname) abort
-  if !filereadable(a:fname)
+  let l:fname = fnamemodify(a:fname, ':p')
+  if !isdirectory(fnamemodify(l:fname, ':h'))
     return []
   endif
 
   let l:lsp = s:lspfactory.get()
-  let l:fname = fnamemodify(a:fname, ':p')
 
   let l:version = l:lsp.fileVersions[l:fname]
 
