@@ -22,7 +22,8 @@ IMPROVEMENTS:
   [[GH-2706]](https://github.com/fatih/vim-go/pull/2706)
   [[GH-2720]](https://github.com/fatih/vim-go/pull/2720)
 * Support golangci-lint config file by not using `--disable-all` when
-  `g:go_metalinter_enable` or `g:go_metalinter_autosave_enabled` is set.
+  `g:go_metalinter_enable` or `g:go_metalinter_autosave_enabled` is set to an
+  empty array.
   [[GH-2655]](https://github.com/fatih/vim-go/pull/2655)
   [[GH-2715]](https://github.com/fatih/vim-go/pull/2715)
 * Add support for Vim8 terminals.
