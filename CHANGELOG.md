@@ -74,6 +74,7 @@ BUG FIXES:
 * Preserve errors from formatting when both formatting and metalinting happen
   on save.
   [[GH-2733]](https://github.com/fatih/vim-go/pull/2733)
+  [[GH-2810]](https://github.com/fatih/vim-go/pull/2810)
 * Preserve ordering of gopls messages in the log.
   [[GH-2753]](https://github.com/fatih/vim-go/pull/2753)
 * Fix `:GoDef` on windows when `g:go_def_mode` is set to `gopls`.
