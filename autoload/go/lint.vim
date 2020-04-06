@@ -378,7 +378,7 @@ function! s:lint_job(metalinter, args, bang, autosave)
     let l:opts.for = "GoMetaLinterAutoSave"
     " s:metalinterautosavecomplete is really only needed for golangci-lint
     let l:opts.complete = funcref('s:metalinterautosavecomplete', [a:metalinter, expand('%:p:t')])
-    let l:opts.preserveerrors = function('s:preserveerrors')
+    let l:opts.preserveerrors = funcref('s:preserveerrors'), [a:autosave])
   endif
 
   " autowrite is not enabled for jobs
