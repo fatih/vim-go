@@ -380,7 +380,6 @@ function! s:lint_job(metalinter, args, bang, autosave)
     let l:opts.for = 'GoMetaLinterAutoSave'
     " s:metalinterautosavecomplete is really only needed for golangci-lint
     let l:opts.complete = funcref('s:metalinterautosavecomplete', [a:metalinter, expand('%:p:t')])
-    let l:opts.preserveerrors = funcref('s:preserveerrors', [a:autosave])
   endif
 
   " autowrite is not enabled for jobs
@@ -444,7 +443,7 @@ function! s:errorformat(metalinter) abort
     " Golangci-lint can output the following:
     "   <file>:<line>:<column>: <message> (<linter>)
     " This can be defined by the following errorformat:
-    return 'level=%tarning\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%tarning\ msg="%m",level=%trror\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%trror\ msg="%m",%f:%l:%c:\ %m,%f:%l\ %m'
+    return 'level=%tarning\ msg="%.%#:\ [%f:%l:%c:\ %m]",level=%tarning\ msg="%m",level=%trror\ msg="%.%#:\ [%f:%l:%c:\ %m]",level=%trror\ msg="%m",%f:%l:%c:\ %m,%f:%l\ %m'
   elseif a:metalinter == 'gopls'
     return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m'
   endif
