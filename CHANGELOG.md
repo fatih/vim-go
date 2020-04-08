@@ -97,6 +97,9 @@ BUG FIXES:
 * Handle text edits from gopls that are only line insertions.
   [[GH-2802]](https://github.com/fatih/vim-go/pull/2802)
   [[GH-2803]](https://github.com/fatih/vim-go/pull/2803)
+* Add `g:go_imports_autosave` so that imports can be adjusted on save when
+  `g:go_imports_mode` is set to `gopls`.
+  [[GH-2800]](https://github.com/fatih/vim-go/pull/2800)
 
 ## v1.22 - (January 30, 2020)
 
