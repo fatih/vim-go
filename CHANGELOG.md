@@ -90,6 +90,7 @@ BUG FIXES:
 * Fix `:GoRun` so that it works as expected when the current working directory
   is neither in GOPATH nor within a module.
   [[GH-2782]](https://github.com/fatih/vim-go/pull/2782)
+  [[GH-2818]](https://github.com/fatih/vim-go/pull/2818)
 * Show the command executed by `:GoRun` when `g:go_debug` includes `'shell-commands'`.
   [[GH-2785]](https://github.com/fatih/vim-go/pull/2785)
 * Clear the list for formatting errors when `g:go_fmt_command` is `gopls`.
