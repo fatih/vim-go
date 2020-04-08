@@ -93,6 +93,7 @@ BUG FIXES:
   [[GH-2818]](https://github.com/fatih/vim-go/pull/2818)
 * Show the command executed by `:GoRun` when `g:go_debug` includes `'shell-commands'`.
   [[GH-2785]](https://github.com/fatih/vim-go/pull/2785)
+  [[GH-2817]](https://github.com/fatih/vim-go/pull/2817)
 * Clear the list for formatting errors when `g:go_fmt_command` is `gopls`.
   [[GH-2790]](https://github.com/fatih/vim-go/pull/2790)
 * Handle text edits from gopls that are only line insertions.
