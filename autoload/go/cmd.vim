@@ -174,7 +174,7 @@ function! go#cmd#Run(bang, ...) abort
   if go#util#IsWin()
     try
       if go#util#HasDebug('shell-commands')
-        call go#util#EchoInfo('shell command: ' . l:cmd)
+        call go#util#EchoInfo(printf('shell command: %s', string(l:cmd)))
       endif
 
       execute l:cd . fnameescape(expand("%:p:h"))
