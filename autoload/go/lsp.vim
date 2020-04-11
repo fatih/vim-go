@@ -898,15 +898,13 @@ function! go#lsp#Hover(fname, line, col, handler) abort
 endfunction
 
 function! s:hoverHandler(next, msg) abort dict
-  try
-    let l:content = split(a:msg.contents.value, '; ')
-    if len(l:content) > 1
-      let l:curly = stridx(l:content[0], '{')
-      let l:content = extend([l:content[0][0:l:curly]], map(extend([l:content[0][l:curly+1:]], l:content[1:]), '"\t" . v:val'))
-      let l:content[len(l:content)-1] = '}'
-    endif
+  if a:msg is v:null || !has_key(a:msg, 'contents')
+    return
+  endif
 
-    let l:args = [l:content]
+  try
+    let l:value = json_decode(a:msg.contents.value)
+    let l:args = [l:value.signature]
     call call(a:next, l:args)
   catch
     " TODO(bc): log the message and/or show an error message.
@@ -973,13 +971,19 @@ function! s:infoDefinitionHandler(next, showstatus, msg) abort dict
     let l:state = s:newHandlerState('')
   endif
 
-  let l:state.handleResult = funcref('s:hoverHandler', [a:next], l:state)
+  let l:state.handleResult = a:next
   let l:state.error = funcref('s:noop')
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:info(show, content) abort dict
-  let l:content = s:infoFromHoverContent(a:content)
+function! s:info(show, msg) abort dict
+  if a:msg is v:null || !has_key(a:msg, 'contents')
+    return
+  endif
+
+  let l:value = json_decode(a:msg.contents.value)
+  let l:content = [l:value.singleLine]
+  let l:content = s:infoFromHoverContent(l:content)
 
   if a:show
     call go#util#ShowInfo(l:content)
