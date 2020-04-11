@@ -60,11 +60,8 @@ function! go#doc#Open(newmode, mode, ...) abort
   " With argument: run "godoc [arg]".
   if len(a:000)
     let [l:out, l:err] = go#util#Exec(['go', 'doc'] + a:000)
-  else " Without argument: run gogetdoc on cursor position.
-    let [l:out, l:err] = s:gogetdoc(0)
-    if out == -1
-      return
-    endif
+  else " Without argument: use gopls to get documentation
+    let [l:out, l:err] = go#lsp#Doc()
   endif
 
   if l:err
@@ -72,7 +69,7 @@ function! go#doc#Open(newmode, mode, ...) abort
     return
   endif
 
-  call s:GodocView(a:newmode, a:mode, out)
+  call s:GodocView(a:newmode, a:mode, l:out)
 endfunction
 
 function! s:GodocView(newposition, position, content) abort

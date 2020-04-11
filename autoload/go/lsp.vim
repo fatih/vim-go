@@ -911,6 +911,40 @@ function! s:hoverHandler(next, msg) abort dict
   endtry
 endfunction
 
+function! go#lsp#Doc() abort
+  let l:fname = expand('%:p')
+  let [l:line, l:col] = go#lsp#lsp#Position()
+
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#Hover(l:fname, l:line, l:col)
+  let l:state = s:newHandlerState('doc')
+  let l:resultHandler = go#promise#New(function('s:docFromHoverResult', [], l:state), 10000, '')
+  let l:state.handleResult = l:resultHandler.wrapper
+  let l:state.error = l:resultHandler.wrapper
+  call l:lsp.sendMessage(l:msg, l:state)
+  return l:resultHandler.await()
+endfunction
+
+function! s:docFromHoverResult(msg) abort dict
+  if type(a:msg) is type('')
+    return [a:msg, 1]
+  endif
+
+  if a:msg is v:null || !has_key(a:msg, 'contents')
+    return
+  endif
+
+  let l:value = json_decode(a:msg.contents.value)
+  let l:doc = l:value.fullDocumentation
+  if len(l:doc) is 0
+    let l:doc = 'Undocumented'
+  endif
+  let l:content = printf("%s\n\n%s", l:value.signature, l:doc)
+  return [l:content, 0]
+endfunction
+
 function! go#lsp#Info(showstatus)
   let l:fname = expand('%:p')
   let [l:line, l:col] = go#lsp#lsp#Position()
