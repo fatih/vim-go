@@ -1773,6 +1773,14 @@ The commandline arguments to pass to gopls. By default, it's an empty array.
   let g:go_gopls_options = []
 <
 
+                                                       *'g:go_gopls_analyses'*
+
+The analyses settings for `gopls`. By default, it's `v:null`. Valid map values
+are `v:true` and `v:false`.
+>
+  let g:go_gopls_analyses = v:null
+<
+
                                             *'g:go_gopls_complete_unimported'*
 
 Specifies whether `gopls` should include suggestions from unimported packages.

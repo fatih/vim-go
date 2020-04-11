@@ -546,6 +546,10 @@ function! go#config#GoplsTempModfile() abort
   return get(g:, 'go_gopls_temp_modfile', v:null)
 endfunction
 
+function! go#config#GoplsAnalyses() abort
+  return get(g:, 'go_gopls_analyses', v:null)
+endfunction
+
 function! go#config#GoplsEnabled() abort
   return get(g:, 'go_gopls_enabled', 1)
 endfunction
