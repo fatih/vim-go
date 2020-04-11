@@ -267,6 +267,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:staticcheck = go#config#GoplsStaticCheck()
     let l:usePlaceholder = go#config#GoplsUsePlaceholders()
     let l:tempModfile = go#config#GoplsTempModfile()
+    let l:analyses = go#config#GoplsAnalyses()
 
     if l:deepCompletion isnot v:null
       if l:deepCompletion
@@ -310,6 +311,10 @@ function! go#lsp#message#ConfigurationResult(items) abort
       else
         let l:config.tempModfile = v:false
       endif
+    endif
+
+    if l:analyses isnot v:null
+      let l:config.analyses = l:analyses
     endif
 
     let l:result = add(l:result, l:config)
