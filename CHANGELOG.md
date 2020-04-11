@@ -61,8 +61,11 @@ IMPROVEMENTS:
 * Run `gogetdoc` in the buffer's directory so that it will work regardless of
   the user's working directory in module-aware mode.
   [[GH-2804]](https://github.com/fatih/vim-go/pull/2804)
-* Add `g:go_gopls_analyses` to support `gpols` analyses options.
+* Add `g:go_gopls_analyses` to support `gopls`' analyses options.
   [[GH-2820]](https://github.com/fatih/vim-go/pull/2820)
+* Add `g:go_gopls_local` to support `gopls`' local option to control how third
+  party imports are organized.
+  [[GH-2821]](https://github.com/fatih/vim-go/pull/2821)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
