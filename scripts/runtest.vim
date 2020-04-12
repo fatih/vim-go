@@ -81,8 +81,12 @@ for s:test in sort(s:tests)
   " Restore the working directory after each test.
   execute s:cd . s:dir
 
-  " exit gopls after each test
-  call go#lsp#Exit()
+  try
+    " exit gopls after each test
+    call go#lsp#Exit()
+  catch /^Vim(call):E900: Invalid channel id/
+    " do nothing - gopls has stopped
+  endtry
 
   let s:done += 1
 

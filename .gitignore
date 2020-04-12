@@ -1,5 +1,10 @@
-.DS_Store
-/doc/tags
-/.coverage.covimerage
-/coverage.xml
 *.pyc
+.DS_Store
+/.bash_history
+/.cache
+/.config
+/.coverage.covimerage
+/.local
+/coverage.xml
+/doc/tags
+/issues
