@@ -14,19 +14,22 @@ _usage() {
   echo "  -h     Show this help"
   echo "  -v     Enable verbose output"
   echo "  -r     Run only the tests from this file"
-  echo "  -c     Generate and submit code coverage reports"
+  echo "  -c     Generate code coverage reports"
+  echo "  -u     Submit code coverage reports"
   echo
 }
 
 verbose=0
 run=""
 coverage=""
-while getopts "hvcr:" option; do
+uploadcoverage=""
+while getopts "hvcur:" option; do
   case "$option" in
       h) _usage; exit 0 ;;
       v) verbose=1; ;;
       r) run=$OPTARG ;;
       c) coverage="-c" ;;
+      u) uploadcoverage=1 ;;
       *)
         echo "error: unknown option '$option'"
         _usage
@@ -91,12 +94,15 @@ if [ -f "/tmp/vim-go-test/FAILED" ]; then
 fi
 echo 2>&1 "All ($vim) tests PASSED"
 
-# Submit coverage reports
+# Generate coverage reports
 if [ -n "$coverage" ]; then
   coverage xml --omit '*_test.vim'
-  codecov -X search gcov pycov -f coverage.xml --required \
+
+  if [ -n "$uploadcoverage" ]; then
+    codecov -X search gcov pycov -f coverage.xml --required \
     --flags "$(echo "$vim" | sed -s 's/[-.]//g')"
-  rm coverage.xml
+    rm coverage.xml
+  fi
 fi
 
 # vim:ts=2:sts=2:sw=2:et
