@@ -5,9 +5,9 @@ notifications:
   email: false
 matrix:
   include:
-    - env: SCRIPT="test -c" VIM_VERSION=vim-8.0
-    - env: SCRIPT="test -c" VIM_VERSION=vim-8.2
-    - env: SCRIPT="test -c" VIM_VERSION=nvim
+    - env: SCRIPT="test -c -u" VIM_VERSION=vim-8.0
+    - env: SCRIPT="test -c -u" VIM_VERSION=vim-8.2
+    - env: SCRIPT="test -c -u" VIM_VERSION=nvim
     - env: ENV=vimlint SCRIPT=lint VIM_VERSION=vim-8.2
       language: python
       python: 3.6
