@@ -177,12 +177,12 @@ function! go#lint#Golint(bang, ...) abort
 
   let l:status.state = 'success'
   let l:state = 'PASS'
+  let l:listtype = go#list#Type("GoLint")
   if !empty(l:out)
     let l:status.state = 'failed'
     let l:state = 'FAIL'
 
     let l:winid = win_getid(winnr())
-    let l:listtype = go#list#Type("GoLint")
     call go#list#Parse(l:listtype, l:out, "GoLint", 0)
     let l:errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(l:errors))
@@ -196,6 +196,7 @@ function! go#lint#Golint(bang, ...) abort
       call go#util#EchoError(printf('[%s] %s', l:type, l:state))
     endif
   else
+    call go#list#Clean(l:listtype)
     if go#config#EchoCommandInfo()
       call go#util#EchoSuccess(printf('[%s] %s', l:type, l:state))
     endif
