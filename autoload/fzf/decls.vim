@@ -1,3 +1,7 @@
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 function! s:code(group, attr) abort
   let code = synIDattr(synIDtrans(hlID(a:group)), a:attr, "cterm")
   if code =~ '^[0-9]\+$'
@@ -117,10 +121,10 @@ function! s:source(mode,...) abort
           \ decl.col
           \)
     call add(ret_decls, printf("%s\t%s %s\t%s",
-          \ s:color(decl.ident . space, "Function"),
-          \ s:color(decl.keyword, "Keyword"),
-          \ s:color(pos, "SpecialComment"),
-          \ s:color(decl.full, "Comment"),
+          \ s:color(decl.ident . space, "goDeclsFzfFunction"),
+          \ s:color(decl.keyword, "goDeclsFzfKeyword"),
+          \ s:color(pos, "goDeclsFzfSpecialComment"),
+          \ s:color(decl.full, "goDeclsFzfComment"),
           \))
   endfor
 
@@ -145,5 +149,9 @@ function! fzf#decls#cmd(...) abort
         \ 'sink*': function('s:sink')
         \ }))
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

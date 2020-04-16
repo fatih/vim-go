@@ -9,7 +9,12 @@ if exists("b:did_ftplugin")
 endif
 let b:did_ftplugin = 1
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 let b:undo_ftplugin = "setl fo< com< cms<"
+      \ . "| exe 'au! vim-go-buffer * <buffer>'"
 
 setlocal formatoptions-=t
 
@@ -20,8 +25,13 @@ setlocal noexpandtab
 
 compiler go
 
-" Set gocode completion
-setlocal omnifunc=go#complete#Complete
+if go#config#CodeCompletionEnabled()
+  " Set autocompletion
+  setlocal omnifunc=go#complete#Complete
+  if !go#util#has_job()
+    setlocal omnifunc=go#complete#GocodeComplete
+  endif
+endif
 
 if get(g:, "go_doc_keywordprg_enabled", 1)
   " keywordprg doesn't allow to use vim commands, override it
@@ -35,8 +45,8 @@ if get(g:, "go_def_mapping_enabled", 1)
   nnoremap <buffer> <silent> <C-]> :GoDef<cr>
   nnoremap <buffer> <silent> <C-LeftMouse> <LeftMouse>:GoDef<cr>
   nnoremap <buffer> <silent> g<LeftMouse> <LeftMouse>:GoDef<cr>
-  nnoremap <buffer> <silent> <C-w><C-]> :<C-u>call go#def#Jump("split")<CR>
-  nnoremap <buffer> <silent> <C-w>] :<C-u>call go#def#Jump("split")<CR>
+  nnoremap <buffer> <silent> <C-w><C-]> :<C-u>call go#def#Jump("split", 0)<CR>
+  nnoremap <buffer> <silent> <C-w>] :<C-u>call go#def#Jump("split", 0)<CR>
   nnoremap <buffer> <silent> <C-t> :<C-U>call go#def#StackPop(v:count1)<cr>
 endif
 
@@ -64,76 +74,70 @@ if get(g:, "go_textobj_enabled", 1)
   xnoremap <buffer> <silent> [[ :<c-u>call go#textobj#FunctionJump('v', 'prev')<cr>
 endif
 
-if go#config#AutoTypeInfo() || go#config#AutoSameids()
-  let &l:updatetime= get(g:, "go_updatetime", 800)
-endif
-
-" NOTE(arslan): experimental, disabled by default, doesn't work well. No
-" documentation as well. If anyone feels adventurous, enable the following and
-" try to search for Go identifiers ;)
+" Autocommands
+" ============================================================================
 "
-" if get(g:, "go_sameid_search_enabled", 0)
-"   autocmd FileType go nnoremap <buffer> <silent> * :<c-u>call Sameids_search(0)<CR>
-"   autocmd FileType go nnoremap <buffer> <silent> # :<c-u>call Sameids_search(1)<CR>
-"   autocmd FileType go nnoremap <buffer> <silent> n :<c-u>call Sameids_repeat(0)<CR>
-"   autocmd FileType go nnoremap <buffer> <silent> N :<c-u>call Sameids_repeat(1)<CR>
-"   autocmd FileType go cabbrev nohlsearch <C-r>=Sameids_nohlsearch()<CR>
-" endif
+augroup vim-go-buffer
+  autocmd! * <buffer>
 
-" " mode 0: next 1: prev
-" function! Sameids_repeat(mode)
-"   let matches = getmatches()
-"   if empty(matches)
-"     return
-"   endif
-"   let cur_offset = go#util#OffsetCursor()
+  " The file is registered (textDocument/DidOpen) with gopls in plugin/go.vim
+  " on the FileType event.
+  " TODO(bc): handle all the other events that may be of interest to gopls,
+  " too (e.g.  BufFilePost , CursorHold , CursorHoldI, FileReadPost,
+  " StdinReadPre, BufWritePost, TextChange, TextChangedI)
+  if go#util#has_job()
+    autocmd BufWritePost <buffer> call go#lsp#DidChange(expand('<afile>:p'))
+    autocmd FileChangedShellPost <buffer> call go#lsp#DidChange(expand('<afile>:p'))
+    autocmd BufDelete <buffer> call go#lsp#DidClose(expand('<afile>:p'))
+  endif
 
-"   " reverse list to make it easy to find the prev occurrence
-"   if a:mode
-"    call reverse(matches)
-"   endif
+  autocmd BufEnter,CursorHold <buffer> call go#auto#update_autocmd()
 
-"   for m in matches
-"     if !has_key(m, "group")
-"       return
-"     endif
+  " Echo the identifier information when completion is done. Useful to see
+  " the signature of a function, etc...
+  if exists('##CompleteDone')
+    autocmd CompleteDone <buffer> call go#auto#complete_done()
+  endif
 
-"     if m.group != "goSameId"
-"       return
-"     endif
+  autocmd BufWritePre <buffer> call go#auto#fmt_autosave()
+  autocmd BufWritePost <buffer> call go#auto#metalinter_autosave()
 
-"     let offset = go#util#Offset(m.pos1[0], m.pos1[1])
+  "TODO(bc): how to clear sameids and diagnostics when a non-go buffer is
+  " loaded into a window and the previously loaded buffer is still loaded in
+  " another window?
 
-"     if a:mode && cur_offset > offset
-"       call cursor(m.pos1[0], m.pos1[1])
-"       return
-"     elseif !a:mode && cur_offset < offset
-"       call cursor(m.pos1[0], m.pos1[1])
-"       return
-"     endif
-"   endfor
+  " clear SameIds when the buffer is unloaded from its last window so that
+  " loading another buffer (especially of a different filetype) in the same
+  " window doesn't highlight the most recently matched identifier's positions.
+  autocmd BufWinLeave <buffer> call go#guru#ClearSameIds()
+  " clear SameIds when a new buffer is loaded in the window so that the
+  " previous buffer's highlighting isn't used.
+  autocmd BufWinEnter <buffer> call go#guru#ClearSameIds()
 
-"   " reached start/end, jump to the end/start
-"   let initial_match = matches[0]
-"   if !has_key(initial_match, "group")
-"     return
-"   endif
+  " clear diagnostics when the buffer is unloaded from its last window so that
+  " loading another buffer (especially of a different filetype) in the same
+  " window doesn't highlight th previously loaded buffer's diagnostics.
+  autocmd BufWinLeave <buffer> call go#lsp#ClearDiagnosticHighlights()
+  " clear diagnostics when a new buffer is loaded in the window so that the
+  " previous buffer's diagnostics aren't used.
+  autocmd BufWinEnter <buffer> call go#lsp#ClearDiagnosticHighlights()
 
-"   if initial_match.group != "goSameId"
-"     return
-"   endif
+  autocmd BufEnter <buffer>
+        \  if go#config#AutodetectGopath() && !exists('b:old_gopath')
+        \|   let b:old_gopath = exists('$GOPATH') ? $GOPATH : -1
+        \|   let $GOPATH = go#path#Detect()
+        \| endif
+  autocmd BufLeave <buffer>
+        \  if exists('b:old_gopath')
+        \|   if b:old_gopath isnot -1
+        \|     let $GOPATH = b:old_gopath
+        \|   endif
+        \|   unlet b:old_gopath
+        \| endif
+augroup end
 
-"   call cursor(initial_match.pos1[0], initial_match.pos1[1])
-" endfunction
-
-" function! Sameids_search(mode)
-"   call go#guru#SameIds()
-"   call Sameids_repeat(a:mode)
-" endfunction
-
-" function! Sameids_nohlsearch()
-"   call go#guru#ClearSameIds()
-"   return "nohlsearch"
-" endfunction
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

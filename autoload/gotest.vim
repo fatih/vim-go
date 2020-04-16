@@ -1,3 +1,7 @@
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 " Write a Go file to a temporary directory and append this directory to $GOPATH.
 "
 " The file will written to a:path, which is relative to the temporary directory,
@@ -8,6 +12,9 @@
 " The full path to the created directory is returned, it is the caller's
 " responsibility to clean that up!
 fun! gotest#write_file(path, contents) abort
+  if go#util#has_job()
+    call go#lsp#CleanWorkspaces()
+  endif
   let l:dir = go#util#tempdir("vim-go-test/testrun/")
   let $GOPATH .= ':' . l:dir
   let l:full_path = l:dir . '/src/' . a:path
@@ -15,15 +22,26 @@ fun! gotest#write_file(path, contents) abort
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
   call writefile(a:contents, l:full_path)
   exe 'cd ' . l:dir . '/src'
+
+  if go#util#has_job()
+    call go#lsp#AddWorkspaceDirectory(fnamemodify(l:full_path, ':p:h'))
+  endif
+
   silent exe 'e! ' . a:path
 
   " Set cursor.
   let l:lnum = 1
   for l:line in a:contents
-    let l:m = match(l:line, "\x1f")
+    let l:m = stridx(l:line, "\x1f")
     if l:m > -1
-      call setpos('.', [0, l:lnum, l:m, 0])
+      let l:byte = line2byte(l:lnum) + l:m
+      exe 'goto '. l:byte
       call setline('.', substitute(getline('.'), "\x1f", '', ''))
+      silent noautocmd w!
+
+      call go#lsp#DidClose(expand('%:p'))
+      call go#lsp#DidOpen(expand('%:p'))
+
       break
     endif
 
@@ -38,6 +56,9 @@ endfun
 " The file will be copied to a new GOPATH-compliant temporary directory and
 " loaded as the current buffer.
 fun! gotest#load_fixture(path) abort
+  if go#util#has_job()
+    call go#lsp#CleanWorkspaces()
+  endif
   let l:dir = go#util#tempdir("vim-go-test/testrun/")
   let $GOPATH .= ':' . l:dir
   let l:full_path = l:dir . '/src/' . a:path
@@ -47,6 +68,9 @@ fun! gotest#load_fixture(path) abort
   silent exe 'noautocmd e ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
+  if go#util#has_job()
+    call go#lsp#AddWorkspaceDirectory(fnamemodify(l:full_path, ':p:h'))
+  endif
 
   return l:dir
 endfun
@@ -126,5 +150,9 @@ func! gotest#assert_quickfix(got, want) abort
     call assert_equal(want_item.valid, got_item.valid, "valid")
   endwhile
 endfunc
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

@@ -2,6 +2,11 @@
 " English.
 
 " vint: -ProhibitSetNoCompatible
+
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 set nocompatible nomore shellslash encoding=utf-8 shortmess+=WIF
 lang mess C
 
@@ -31,7 +36,8 @@ source %
 " cd into the folder of the test file.
 let s:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
 let s:testfile = expand('%:t')
-execute s:cd . expand('%:p:h')
+let s:dir = expand('%:p:h')
+execute s:cd . s:dir
 
 " Export root path to vim-go dir.
 let g:vim_go_root = fnamemodify(getcwd(), ':p')
@@ -42,7 +48,7 @@ redir @q
 redir END
 let s:tests = split(substitute(@q, 'function \(\k\+()\)', '\1', 'g'))
 
-" log any messages that we may already accumulated.
+" log any messages already accumulated.
 call s:logmessages()
 " Iterate over all tests and execute them.
 for s:test in sort(s:tests)
@@ -58,27 +64,39 @@ for s:test in sort(s:tests)
   endif
   try
     exe 'call ' . s:test
+    " sleep to give events a chance to be processed. This is especially
+    " important for the LSP code to have a chance to run before Vim exits,  in
+    " order to avoid errors trying to write to the gopls channels since Vim
+    " would otherwise stop gopls before the event handlers were run and result
+    " in 'stream closed' errors when the events were run _after_ gopls exited.
+    sleep 50m
   catch
     let v:errors += [v:exception]
   endtry
 
+  let s:elapsed_time = substitute(reltimestr(reltime(s:started)), '^\s*\(.\{-}\)\s*$', '\1', '')
+
   " Restore GOPATH after each test.
   let $GOPATH = s:gopath
+  " Restore the working directory after each test.
+  execute s:cd . s:dir
 
-  let s:elapsed_time = substitute(reltimestr(reltime(s:started)), '^\s*\(.\{-}\)\s*$', '\1', '')
+  " exit gopls after each test
+  call go#lsp#Exit()
+
   let s:done += 1
-
-  call s:logmessages()
 
   if len(v:errors) > 0
     let s:fail += 1
     call add(s:logs, printf("--- FAIL %s (%ss)", s:test[:-3], s:elapsed_time))
+    call s:logmessages()
     call extend(s:logs, map(v:errors, '"        ".  v:val'))
 
     " Reset so we can capture failures of the next test.
     let v:errors = []
   else
     if g:test_verbose is 1
+      call s:logmessages()
       call add(s:logs, printf("--- PASS %s (%ss)", s:test[:-3], s:elapsed_time))
     endif
   endif
@@ -107,5 +125,9 @@ silent! write
 
 " Our work here is done.
 qall!
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim:ts=2:sts=2:sw=2:et

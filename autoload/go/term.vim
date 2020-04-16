@@ -1,30 +1,36 @@
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 " new creates a new terminal with the given command. Mode is set based on the
 " global variable g:go_term_mode, which is by default set to :vsplit
-function! go#term#new(bang, cmd) abort
-  return go#term#newmode(a:bang, a:cmd, go#config#TermMode())
+function! go#term#new(bang, cmd, errorformat) abort
+  return go#term#newmode(a:bang, a:cmd, a:errorformat, go#config#TermMode())
 endfunction
 
-" new creates a new terminal with the given command and window mode.
-function! go#term#newmode(bang, cmd, mode) abort
-  let mode = a:mode
-  if empty(mode)
-    let mode = go#config#TermMode()
+" go#term#newmode creates a new terminal with the given command and window mode.
+function! go#term#newmode(bang, cmd, errorformat, mode) abort
+  let l:mode = a:mode
+  if empty(l:mode)
+    let l:mode = go#config#TermMode()
   endif
 
-  let state = {
+  let l:state = {
         \ 'cmd': a:cmd,
         \ 'bang' : a:bang,
         \ 'winid': win_getid(winnr()),
-        \ 'stdout': []
+        \ 'stdout': [],
+        \ 'stdout_buf': '',
+        \ 'errorformat': a:errorformat,
       \ }
 
   " execute go build in the files directory
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
+  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let l:dir = getcwd()
 
-  execute cd . fnameescape(expand("%:p:h"))
+  execute l:cd . fnameescape(expand("%:p:h"))
 
-  execute mode.' __go_term__'
+  execute l:mode . ' __go_term__'
 
   setlocal filetype=goterm
   setlocal bufhidden=delete
@@ -37,83 +43,135 @@ function! go#term#newmode(bang, cmd, mode) abort
   "
   " Don't set an on_stderr, because it will be passed the same data as
   " on_stdout. See https://github.com/neovim/neovim/issues/2836
-  let job = {
+  let l:job = {
         \ 'on_stdout': function('s:on_stdout', [], state),
         \ 'on_exit' : function('s:on_exit', [], state),
       \ }
 
-  let state.id = termopen(a:cmd, job)
-  let state.termwinid = win_getid(winnr())
+  let l:state.id = termopen(a:cmd, l:job)
+  let l:state.termwinid = win_getid(winnr())
 
-  execute cd . fnameescape(dir)
+  execute l:cd . fnameescape(l:dir)
 
   " resize new term if needed.
-  let height = go#config#TermHeight()
-  let width = go#config#TermWidth()
+  let l:height = go#config#TermHeight()
+  let l:width = go#config#TermWidth()
 
   " Adjust the window width or height depending on whether it's a vertical or
   " horizontal split.
-  if mode =~ "vertical" || mode =~ "vsplit" || mode =~ "vnew"
-    exe 'vertical resize ' . width
+  if l:mode =~ "vertical" || l:mode =~ "vsplit" || l:mode =~ "vnew"
+    exe 'vertical resize ' . l:width
   elseif mode =~ "split" || mode =~ "new"
-    exe 'resize ' . height
+    exe 'resize ' . l:height
   endif
 
   " we also need to resize the pty, so there you go...
-  call jobresize(state.id, width, height)
+  call jobresize(l:state.id, l:width, l:height)
 
-  call win_gotoid(state.winid)
+  call win_gotoid(l:state.winid)
 
-  return state.id
+  return l:state.id
 endfunction
 
 function! s:on_stdout(job_id, data, event) dict abort
-  call extend(self.stdout, a:data)
+  " A single empty string means EOF was reached. The first item will never be
+  " the empty string except for when it's the only item and is signaling that
+  " EOF was reached.
+  if len(a:data) == 1 && a:data[0] == ''
+    " when there's nothing buffered, return early so that an
+    " erroneous message will not be added.
+    if self.stdout_buf == ''
+      return
+    endif
+
+    let self.stdout = add(self.stdout, self.stdout_buf)
+  else
+    let l:data = copy(a:data)
+    let l:data[0] = self.stdout_buf . l:data[0]
+
+    " The last element may be a partial line; save it for next time.
+    let self.stdout_buf = l:data[-1]
+    let self.stdout = extend(self.stdout, l:data[:-2])
+  endif
 endfunction
 
 function! s:on_exit(job_id, exit_status, event) dict abort
+  let l:winid = win_getid(winnr())
+  call win_gotoid(self.winid)
+
+  " change to directory where test were run. if we do not do this
+  " the quickfix items will have the incorrect paths. 
+  " see: https://github.com/fatih/vim-go/issues/2400
+  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let l:dir = getcwd()
+  execute l:cd . fnameescape(expand("%:p:h"))
+
   let l:listtype = go#list#Type("_term")
 
-  " usually there is always output so never branch into this clause
-  if empty(self.stdout)
-    call s:cleanlist(self.winid, l:listtype)
+  if a:exit_status == 0
+    call go#list#Clean(l:listtype)
+    execute l:cd l:dir
+    call win_gotoid(l:winid)
     return
   endif
 
-  let errors = go#tool#ParseErrors(self.stdout)
-  let errors = go#tool#FilterValids(errors)
+  call win_gotoid(self.winid)
 
-  if !empty(errors)
-    " close terminal; we don't need it anymore
+  let l:title = self.cmd
+  if type(l:title) == v:t_list
+    let l:title = join(self.cmd)
+  endif
+
+  let l:i = 0
+  while l:i < len(self.stdout)
+    let self.stdout[l:i] = substitute(self.stdout[l:i], "\r$", '', 'g')
+    let l:i += 1
+  endwhile
+
+  call go#list#ParseFormat(l:listtype, self.errorformat, self.stdout, l:title)
+  let l:errors = go#list#Get(l:listtype)
+  call go#list#Window(l:listtype, len(l:errors))
+
+  if empty(l:errors)
+    call go#util#EchoError( '[' . l:title . '] ' . "FAIL")
+    execute l:cd l:dir
+    call win_gotoid(l:winid)
+    return
+  endif
+
+  " close terminal; we don't need it anymore
+  if go#config#TermCloseOnExit()
     call win_gotoid(self.termwinid)
-    close
+    close!
+  endif
 
-    call win_gotoid(self.winid)
-
-    let title = self.cmd
-    if type(title) == v:t_list
-      let title = join(self.cmd)
-    endif
-    call go#list#Populate(l:listtype, errors, title)
-    call go#list#Window(l:listtype, len(errors))
-    if !self.bang
-      call go#list#JumpToFirst(l:listtype)
-    endif
-
+  if self.bang
+    execute l:cd l:dir
+    call win_gotoid(l:winid)
     return
   endif
 
-  call s:cleanlist(self.winid, l:listtype)
+  call win_gotoid(self.winid)
+  call go#list#JumpToFirst(l:listtype)
+
+  " change back to original working directory 
+  execute l:cd l:dir
 endfunction
 
-function! s:cleanlist(winid, listtype) abort
-  " There are no errors. Clean and close the list. Jump to the window to which
-  " the location list is attached, close the list, and then jump back to the
-  " current window.
-  let winid = win_getid(winnr())
-  call win_gotoid(a:winid)
-  call go#list#Clean(a:listtype)
-  call win_gotoid(l:winid)
+function! go#term#ToggleCloseOnExit() abort
+  if go#config#TermCloseOnExit()
+    call go#config#SetTermCloseOnExit(0)
+    call go#util#EchoProgress("term close on exit disabled")
+    return
+  endif
+
+  call go#config#SetTermCloseOnExit(1)
+  call go#util#EchoProgress("term close on exit enabled")
+  return
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

@@ -13,7 +13,7 @@ This plugin adds Go language support for Vim, with the following main features:
 * Quickly execute your current file(s) with `:GoRun`.
 * Improved syntax highlighting and folding.
 * Debug programs with integrated `delve` support with `:GoDebugStart`.
-* Completion support via `gocode`.
+* Completion support via `gocode` and `gopls`.
 * `gofmt` or `goimports` on save keeps the cursor position and undo history.
 * Go to symbol/declaration with `:GoDef`.
 * Look up documentation with `:GoDoc` or `:GoDocBrowser`.
@@ -33,7 +33,7 @@ This plugin adds Go language support for Vim, with the following main features:
 
 ## Install
 
-vim-go requires at least Vim 7.4.2009 or Neovim 0.3.1.
+vim-go requires at least Vim 8.0.1453 or Neovim 0.3.1.
 
 The [**latest stable release**](https://github.com/fatih/vim-go/releases/latest) is the
 recommended version to use. If you choose to use the master branch instead,
@@ -68,8 +68,18 @@ Depending on your installation method, you may have to generate the plugin's
 [`help tags`](http://vimhelp.appspot.com/helphelp.txt.html#%3Ahelptags)
 manually (e.g. `:helptags ALL`).
 
-We also have an [official vim-go tutorial](https://github.com/fatih/vim-go-tutorial).
+We also have an [official vim-go tutorial](https://github.com/fatih/vim-go/wiki).
+
+## FAQ and troubleshooting
+
+The FAQ and troubleshooting tips are in the documentation and can be quickly
+accessed using `:help go-troubleshooting`. If you believe you've found a bug or
+shortcoming in vim-go that is neither addressed by help nor in [existing
+issues](https://github.com/fatih/vim-go/issues), please open an issue with
+clear reproduction steps. `:GoReportGitHubIssue` can be used pre-populate a lot
+of the information needed when creating a new issue.
 
 ## License
 
 The BSD 3-Clause License - see [`LICENSE`](LICENSE) for more details
+

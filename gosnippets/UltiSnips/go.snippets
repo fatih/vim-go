@@ -144,16 +144,38 @@ else {
 endsnippet
 
 # if inline error
-snippet ife "If with inline erro"
+snippet ife "If with inline error"
 if err := ${1:condition}; err != nil {
 	${0:${VISUAL}}
 }
 endsnippet
 
+snippet ew "errors.Wrap"
+errors.Wrap(${1:err}, "${2:message}")
+endsnippet
+
+snippet ewf "errors.Wrapf"
+errors.Wrapf(${1:err}, "${2:message %v}", ${3:args...})
+endsnippet
+
 # error snippet
-snippet errn "Error return " !b
+snippet errn "Error return" !b
 if err != nil {
 	return err
+}
+${0}
+endsnippet
+
+snippet errnw "Error return wrap" !b
+if err != nil {
+	return errors.Wrap(err, "${1:message}")
+}
+${0}
+endsnippet
+
+snippet errnwf "Error return wrapf" !b
+if err != nil {
+	return errors.Wrapf(err, "${1:message %v}", ${2:args...})
 }
 ${0}
 endsnippet
@@ -170,6 +192,20 @@ endsnippet
 snippet errn, "Error return with two return values" !b
 if err != nil {
 	return ${1:nil}, ${2:err}
+}
+${0}
+endsnippet
+
+snippet errn,w "Error return wrap with two return values" !b
+if err != nil {
+	return nil, errors.Wrap(err, "${1:message}")
+}
+${0}
+endsnippet
+
+snippet errn,wf "Error return wrapf with two return values" !b
+if err != nil {
+	return nil, errors.Wrapf(err, "${1:message %v}", ${2:args...})
 }
 ${0}
 endsnippet
@@ -235,6 +271,20 @@ for ${2:k}, ${3:v} := range ${1} {
 }
 endsnippet
 
+snippet forsel "for select"
+for {
+	select {
+		case ${2:${1:result} := }<- ${3:channel}:
+			${0}
+	}
+}
+endsnippet
+
+snippet selc "select case" !b
+case ${1:${2:var} := }<-${3:channel}:
+  ${0}
+endsnippet
+
 # function
 snippet func "func Function(...) [error] { ... }"
 func ${1:name}(${2:params})${3/(.+)/ /}`!p opening_par(snip, 3)`$3`!p closing_par(snip, 3)` {
@@ -244,7 +294,12 @@ endsnippet
 
 # Fmt Printf debug
 snippet ff "fmt.Printf(...)"
-fmt.Printf("${1:${VISUAL}} = %+v\n", $1)
+fmt.Printf("$1 = %+v\n", ${1:${VISUAL}})
+endsnippet
+
+# Fmt Printf debug with hash
+snippet ffh "fmt.Printf(#...) hash"
+fmt.Printf("$1 = %#v\n", ${1:${VISUAL}})
 endsnippet
 
 # Fmt Println debug
@@ -326,7 +381,7 @@ endsnippet
 # struct
 snippet st "type T struct { ... }"
 type ${1:Type} struct {
-${0}
+	${0}
 }
 endsnippet
 
@@ -334,6 +389,12 @@ endsnippet
 snippet switch "switch x { ... }"
 switch ${1:var} {
 case ${2:value1}:
+	${0}
+}
+endsnippet
+
+snippet tswitch "type switch x { ... }"
+switch ${2:$1 := }${1:v}.(type) {
 	${0}
 }
 endsnippet
@@ -385,7 +446,7 @@ for _, tt := range tests {
 endsnippet
 
 
-snippet hf "http.HandlerFunc" !b
+snippet hf "http.HandlerFunc"
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
 	${0:fmt.Fprintf(w, "hello world")}
 }

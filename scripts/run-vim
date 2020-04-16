@@ -17,12 +17,13 @@ shift $((OPTIND - 1))
 
 if [ -z "${1:-}" ]; then
   echo "unknown version: '${1:-}'"
-  echo "First argument must be 'vim-7.4', 'vim-8.0', or 'nvim'."
+  echo "First argument must be 'vim-8.0' or 'nvim'."
   exit 1
 fi
 
 dir="/tmp/vim-go-test/$1-install"
 export GOPATH=$dir
+export GO111MODULE=auto
 export PATH=${GOPATH}/bin:$PATH
 shift
 

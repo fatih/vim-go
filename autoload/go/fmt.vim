@@ -5,6 +5,10 @@
 " fmt.vim: Vim command to format Go files with gofmt (and gofmt compatible
 " toorls, such as goimports).
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 "  we have those problems :
 "  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
 "  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
@@ -116,18 +120,11 @@ function! go#fmt#update_file(source, target)
 
   let l:listtype = go#list#Type("GoFmt")
 
-  " the title information was introduced with 7.4-2200
-  " https://github.com/vim/vim/commit/d823fa910cca43fec3c31c030ee908a14c272640
-  if has('patch-7.4.2200')
-    " clean up previous list
-    if l:listtype == "quickfix"
-      let l:list_title = getqflist({'title': 1})
-    else
-      let l:list_title = getloclist(0, {'title': 1})
-    endif
+  " clean up previous list
+  if l:listtype == "quickfix"
+    let l:list_title = getqflist({'title': 1})
   else
-    " can't check the title, so assume that the list was for go fmt.
-    let l:list_title = {'title': 'Format'}
+    let l:list_title = getloclist(0, {'title': 1})
   endif
 
   if has_key(l:list_title, "title") && l:list_title['title'] == "Format"
@@ -192,7 +189,6 @@ function! s:show_errors(errors) abort
   let l:listtype = go#list#Type("GoFmt")
   if !empty(a:errors)
     call go#list#Populate(l:listtype, a:errors, 'Format')
-    echohl Error | echomsg "Gofmt returned error" | echohl None
   endif
 
   " this closes the window if there are no errors or it opens
@@ -210,5 +206,9 @@ function! go#fmt#ToggleFmtAutoSave() abort
   call go#config#SetFmtAutosave(1)
   call go#util#EchoProgress("auto fmt enabled")
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et
