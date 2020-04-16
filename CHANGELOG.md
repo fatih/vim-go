@@ -107,6 +107,8 @@ BUG FIXES:
 * Add `g:go_imports_autosave` so that imports can be adjusted on save when
   `g:go_imports_mode` is set to `gopls`.
   [[GH-2800]](https://github.com/fatih/vim-go/pull/2800)
+* Correct vim-go's help to correctly identify `g:go_referrer_mode`'s default.
+  [[GH-2832]](https://github.com/fatih/vim-go/pull/2832)
 
 ## v1.22 - (January 30, 2020)
 
