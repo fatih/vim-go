@@ -109,6 +109,8 @@ BUG FIXES:
   [[GH-2800]](https://github.com/fatih/vim-go/pull/2800)
 * Correct vim-go's help to correctly identify `g:go_referrer_mode`'s default.
   [[GH-2832]](https://github.com/fatih/vim-go/pull/2832)
+* Clear the quickfix list when `:GoLint` succeeds.
+  [[GH-2833]](https://github.com/fatih/vim-go/pull/2833)
 
 ## v1.22 - (January 30, 2020)
 
