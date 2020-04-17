@@ -161,23 +161,6 @@ function! s:GodocView(newposition, position, content) abort
   nnoremap <buffer> <silent> <Esc>[ <Esc>[
 endfunction
 
-function! s:gogetdoc(json) abort
-  let l:cmd = [
-        \ 'gogetdoc',
-        \ '-tags', go#config#BuildTags(),
-        \ '-pos', expand("%:p:gs!\\!/!") . ':#' . go#util#OffsetCursor()]
-  if a:json
-    let l:cmd += ['-json']
-  endif
-
-  if &modified
-    let l:cmd += ['-modified']
-    return go#util#ExecInDir(l:cmd, go#util#archive())
-  endif
-
-  return go#util#ExecInDir(l:cmd)
-endfunction
-
 " returns the package and exported name. exported name might be empty.
 " ie: fmt and Println
 " ie: github.com/fatih/set and New
