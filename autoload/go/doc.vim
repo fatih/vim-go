@@ -13,7 +13,7 @@ function! go#doc#OpenBrowser(...) abort
   " Only supported if we have json_decode as it's not worth to parse the plain
   " non-json output of gogetdoc
   let bin_path = go#path#CheckBinPath('gogetdoc')
-  if !empty(bin_path) && exists('*json_decode')
+  if len(a:000) == 0 && !empty(bin_path) && exists('*json_decode')
     let [l:json_out, l:err] = s:gogetdoc(1)
     if l:err
       call go#util#EchoError(json_out)
