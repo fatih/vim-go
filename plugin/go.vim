@@ -45,7 +45,6 @@ let s:packages = {
       \ 'errcheck':      ['github.com/kisielk/errcheck@master'],
       \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct@master'],
       \ 'godef':         ['github.com/rogpeppe/godef@master'],
-      \ 'gogetdoc':      ['github.com/zmb3/gogetdoc@master'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
       \ 'golint':        ['golang.org/x/lint/golint@master'],
       \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],

@@ -254,7 +254,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
   for l:item in a:items
     let l:config = {
           \ 'buildFlags': [],
-          \ 'hoverKind': 'NoDocumentation',
+          \ 'hoverKind': 'Structured',
           \ }
     let l:buildtags = go#config#BuildTags()
     if buildtags isnot ''
