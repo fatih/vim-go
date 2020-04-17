@@ -66,6 +66,9 @@ IMPROVEMENTS:
 * Add `g:go_gopls_local` to support `gopls`' local option to control how third
   party imports are organized.
   [[GH-2821]](https://github.com/fatih/vim-go/pull/2821)
+* Use gopls to get documentation and documentation links for identifiers under
+  the cursor.
+  [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
@@ -111,6 +114,10 @@ BUG FIXES:
   [[GH-2832]](https://github.com/fatih/vim-go/pull/2832)
 * Clear the quickfix list when `:GoLint` succeeds.
   [[GH-2833]](https://github.com/fatih/vim-go/pull/2833)
+* Respect arguments to `:GoDocBrowser`.
+  [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
+* Use the correct path to documentation for struct fields with `:GoDocBrowser`.
+  [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
 
 ## v1.22 - (January 30, 2020)
 
