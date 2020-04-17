@@ -945,6 +945,35 @@ function! s:docFromHoverResult(msg) abort dict
   return [l:content, 0]
 endfunction
 
+function! go#lsp#DocLink() abort
+  let l:fname = expand('%:p')
+  let [l:line, l:col] = go#lsp#lsp#Position()
+
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#Hover(l:fname, l:line, l:col)
+  let l:state = s:newHandlerState('doc url')
+  let l:resultHandler = go#promise#New(function('s:docLinkFromHoverResult', [], l:state), 10000, '')
+  let l:state.handleResult = l:resultHandler.wrapper
+  let l:state.error = l:resultHandler.wrapper
+  call l:lsp.sendMessage(l:msg, l:state)
+  return l:resultHandler.await()
+endfunction
+
+function! s:docLinkFromHoverResult(msg) abort dict
+  if type(a:msg) is type('')
+    return [a:msg, 1]
+  endif
+
+  if a:msg is v:null || !has_key(a:msg, 'contents')
+    return
+  endif
+
+  let l:doc = json_decode(a:msg.contents.value)
+  return [l:doc.link, '']
+endfunction
+
 function! go#lsp#Info(showstatus)
   let l:fname = expand('%:p')
   let [l:line, l:col] = go#lsp#lsp#Position()
