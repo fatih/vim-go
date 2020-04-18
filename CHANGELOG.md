@@ -69,6 +69,10 @@ IMPROVEMENTS:
 * Use gopls to get documentation and documentation links for identifiers under
   the cursor.
   [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
+* Parse compiler errors that prevent golangci-lint linters from running more
+  usefully.
+  [[GH-2835]](https://github.com/fatih/vim-go/pull/2835)
+
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
