@@ -5,6 +5,7 @@
 /.config
 /.coverage.covimerage
 /.local
+/.viminfo
 /coverage.xml
 /doc/tags
 /issues
