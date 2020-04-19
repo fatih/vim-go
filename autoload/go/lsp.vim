@@ -933,7 +933,7 @@ function! s:docFromHoverResult(msg) abort dict
   endif
 
   if a:msg is v:null || !has_key(a:msg, 'contents')
-    return
+    return ['Undocumented', 0]
   endif
 
   let l:value = json_decode(a:msg.contents.value)
