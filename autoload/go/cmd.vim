@@ -125,7 +125,7 @@ function! go#cmd#RunTerm(bang, mode, files) abort
   if empty(a:files)
     call extend(cmd, go#tool#Files())
   else
-    call extend(cmd, map(copy(a:files), "expand(v:val)"))
+    call extend(cmd, map(copy(a:files), funcref('s:expandRunArgs')))
   endif
   call go#term#newmode(a:bang, cmd, s:runerrorformat(), a:mode)
 endfunction
