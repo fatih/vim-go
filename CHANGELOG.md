@@ -125,6 +125,9 @@ BUG FIXES:
   [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
 * Use the correct path to documentation for struct fields with `:GoDocBrowser`.
   [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
+* Do not try parsing errors from terminal jobs when the working directory has
+  been removed.
+  [[GH-2824]](https://github.com/fatih/vim-go/pull/2824)
 
 ## v1.22 - (January 30, 2020)
 
