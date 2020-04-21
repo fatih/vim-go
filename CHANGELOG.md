@@ -73,6 +73,8 @@ IMPROVEMENTS:
 * Parse compiler errors that prevent golangci-lint linters from running more
   usefully.
   [[GH-2835]](https://github.com/fatih/vim-go/pull/2835)
+* Clarify documentation for terminal options.
+  [GH-2843]](https://github.com/fatih/vim-go/pull/2843)
 
 
 BUG FIXES:
