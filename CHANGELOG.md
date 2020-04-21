@@ -107,6 +107,8 @@ BUG FIXES:
   [[GH-2782]](https://github.com/fatih/vim-go/pull/2782)
   [[GH-2818]](https://github.com/fatih/vim-go/pull/2818)
   [[GH-2842]](https://github.com/fatih/vim-go/pull/2842)
+* Use absolute file paths for `:GoRun`'s arguments in terminal mode.
+  [[GH-2844]](https://github.com/fatih/vim-go/pull/2844)
 * Show the command executed by `:GoRun` when `g:go_debug` includes `'shell-commands'`.
   [[GH-2785]](https://github.com/fatih/vim-go/pull/2785)
   [[GH-2817]](https://github.com/fatih/vim-go/pull/2817)
