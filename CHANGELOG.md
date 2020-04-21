@@ -106,6 +106,7 @@ BUG FIXES:
   is neither in GOPATH nor within a module.
   [[GH-2782]](https://github.com/fatih/vim-go/pull/2782)
   [[GH-2818]](https://github.com/fatih/vim-go/pull/2818)
+  [[GH-2842]](https://github.com/fatih/vim-go/pull/2842)
 * Show the command executed by `:GoRun` when `g:go_debug` includes `'shell-commands'`.
   [[GH-2785]](https://github.com/fatih/vim-go/pull/2785)
   [[GH-2817]](https://github.com/fatih/vim-go/pull/2817)
