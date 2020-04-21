@@ -147,27 +147,27 @@ func s:handle_exit(job_id, exit_status, state) abort
   let l:winid = win_getid(winnr())
   call win_gotoid(a:state.winid)
 
-  let l:bufdir = fnameescape(expand('%:p:h'))
-  if !isdirectory(l:bufdir)
-    call win_gotoid(l:winid)
-    return
-  endif
-
-  " change to directory where test were run. if we do not do this
-  " the quickfix items will have the incorrect paths.
-  " see: https://github.com/fatih/vim-go/issues/2400
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let l:dir = getcwd()
-  execute l:cd . l:bufdir
-
   let l:listtype = go#list#Type("_term")
 
   if a:exit_status == 0
     call go#list#Clean(l:listtype)
-    execute l:cd l:dir
     call win_gotoid(l:winid)
     return
   endif
+
+  let l:bufdir = fnameescape(expand('%:p:h'))
+  if !isdirectory(l:bufdir)
+    call go#term#Warn('terminal job failure not processed, because the job''s working directory no longer exists')
+    call win_gotoid(l:winid)
+    return
+  endif
+
+  " change to directory where the command was run. If we do not do this the
+  " quickfix items will have the incorrect paths.
+  " see: https://github.com/fatih/vim-go/issues/2400
+  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+  let l:dir = getcwd()
+  execute l:cd . l:bufdir
 
   let l:title = a:state.cmd
   if type(l:title) == v:t_list
