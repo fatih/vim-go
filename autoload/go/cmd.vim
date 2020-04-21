@@ -163,7 +163,7 @@ function! go#cmd#Run(bang, ...) abort
   if a:0 == 0
     let l:files = go#tool#Files()
   else
-    let l:files = map(copy(a:000), "fnamemodify(expand(v:val), ':p')")
+    let l:files = map(copy(a:000), funcref('s:expandRunArgs'))
   endif
 
   let l:cmd = l:cmd + l:files
@@ -354,6 +354,18 @@ function! s:runerrorformat()
   return l:errorformat
 endfunction
 
+" s:expandRunArgs expands arguments for go#cmd#Run according to the
+" documentation of :GoRun. When val is a readable file, it is expanded to the
+" full path so that go run can be executed in the current buffer's directory.
+" val is return unaltered otherwise to support non-file arguments to go run.
+function! s:expandRunArgs(idx, val) abort
+  let l:val = expand(a:val)
+  if !filereadable(l:val)
+    return l:val
+  endif
+
+  return fnamemodify(l:val, ':p')")
+endfunction
 " ---------------------
 " | Vim job callbacks |
 " ---------------------
