@@ -1393,7 +1393,7 @@ function! go#lsp#Format() abort
 
   let l:lsp = s:lspfactory.get()
 
-  let l:state = s:newHandlerState('format')
+  let l:state = s:newHandlerState('')
   let l:handleFormat = go#promise#New(function('s:handleFormat', [], l:state), 10000, '')
   let l:state.handleResult = l:handleFormat.wrapper
   let l:state.error = l:handleFormat.wrapper
@@ -1418,7 +1418,7 @@ function! go#lsp#Imports() abort
 
   let l:lsp = s:lspfactory.get()
 
-  let l:state = s:newHandlerState('imports')
+  let l:state = s:newHandlerState('')
   let l:handler = go#promise#New(function('s:handleCodeAction', [], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
