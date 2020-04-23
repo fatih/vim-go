@@ -55,6 +55,7 @@ IMPROVEMENTS:
   [[GH-2791]](https://github.com/fatih/vim-go/pull/2791)
   [[GH-2794]](https://github.com/fatih/vim-go/pull/2794)
   [[GH-2796]](https://github.com/fatih/vim-go/pull/2796)
+  [[GH-2848]](https://github.com/fatih/vim-go/pull/2848)
 * Send LSP synchronization messages to `gopls` when the file does not yet exist
   on disk as long as its directory exists.
   [[GH-2805]](https://github.com/fatih/vim-go/pull/2805)
