@@ -34,7 +34,7 @@ case "$vim" in
 
   "nvim")
     # Use latest stable version.
-    tag="v0.3.2"
+    tag="v0.4.0"
     giturl="https://github.com/neovim/neovim"
     ;;
 
