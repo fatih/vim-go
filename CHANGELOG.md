@@ -37,6 +37,7 @@ IMPROVEMENTS:
 * Add a new supported value to `g:go_fmt_command` to format with `gopls`.
   [[GH-2729]](https://github.com/fatih/vim-go/pull/2729)
   [[GH-2752]](https://github.com/fatih/vim-go/pull/2752)
+  [[GH-2852]](https://github.com/fatih/vim-go/pull/2852)
 * Handle changes to `go test -v` output.
   [[GH-2743]](https://github.com/fatih/vim-go/pull/2743)
 * Add `g:go_gopls_mod_tempfile` to configure `gopls`' `tempModfile`
@@ -76,7 +77,6 @@ IMPROVEMENTS:
   [[GH-2835]](https://github.com/fatih/vim-go/pull/2835)
 * Clarify documentation for terminal options.
   [GH-2843]](https://github.com/fatih/vim-go/pull/2843)
-
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
