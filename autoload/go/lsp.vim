@@ -1487,7 +1487,7 @@ function s:applyTextEdits(msg) abort
 
     " handle the deletion of whole lines
     if len(l:text) == 0 && l:msg.range.start.character == 0 && l:msg.range.end.character == 0 && l:startline < l:endline
-      call deletebufline('', l:startline, l:endline-1)
+      call s:deleteline(l:startline, l:endline-1)
       continue
     endif
 
@@ -1519,7 +1519,7 @@ function s:applyTextEdits(msg) abort
     " TODO(bc): deal with the undo file
     " TODO(bc): deal with folds
 
-    call execute(printf('%d,%d d_', l:startline, l:endline))
+    call s:deleteline(l:startline, l:endline)
     for l:line in split(l:text, "\n")
       call append(l:startline-1, l:line)
       let l:startline += 1
@@ -1568,6 +1568,15 @@ function! s:textEditLess(left, right) abort
   " return 0, because a:left an a:right refer to the same position.
   return 0
 endfunction
+
+function! s:deleteline(start, end) abort
+  if exists('*deletebufline')
+    call deletebufline('', a:start, a:end)
+  else
+    call execute(printf('%d,%d d_', a:start, a:end))
+  endif
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
