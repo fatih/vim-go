@@ -11,7 +11,13 @@ endif
 
 syn case match
 
-syn keyword     goPackage           package
+if go#config#HighlightPackageName()
+  syn keyword goPackage     package nextgroup=goPackageName skipwhite
+  syn match   goPackageName /\w\+/  contained skipwhite
+else
+  syn keyword goPackage package
+endif
+
 syn keyword     goImport            import    contained
 syn keyword     goVar               var       contained
 syn keyword     goConst             const     contained

@@ -2038,6 +2038,12 @@ Disable everything (same as not setting 'foldmethod' to `syntax`):
 >
   let g:go_fold_enable = []
 <
+                                     *'g:go_highlight_package_name'*
+
+Highlight package name.
+
+  let g:go_highlight_package_name = 0
+
                                      *'g:go_highlight_array_whitespace_error'*
 
 Highlight white space after `[]`. >
