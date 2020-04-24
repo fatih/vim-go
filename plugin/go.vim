@@ -12,7 +12,7 @@ function! s:checkVersion() abort
   let l:unsupported = 0
   if go#config#VersionWarning() != 0
     if has('nvim')
-      let l:unsupported = !has('nvim-0.3.2')
+      let l:unsupported = !has('nvim-0.4.0')
     else
       let l:unsupported = !has('patch-8.0.1453')
     endif
