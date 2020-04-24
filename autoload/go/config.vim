@@ -308,7 +308,7 @@ function! go#config#FmtAutosave() abort
 endfunction
 
 function! go#config#ImportsAutosave() abort
-  return get(g:, 'go_imports_autosave', 1)
+  return get(g:, 'go_imports_autosave', 0)
 endfunction
 
 function! go#config#SetFmtAutosave(value) abort

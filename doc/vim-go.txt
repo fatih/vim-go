@@ -1404,9 +1404,9 @@ it's causing problems on some Vim versions. This has no effect if
 
                                                      *'g:go_imports_autosave'*
 
-Use this option to auto |:GoImports| on save. By default it's enabled.
+Use this option to auto |:GoImports| on save. By default it's disabled.
 >
-  let g:go_imports_autosave = 1
+  let g:go_imports_autosave = 0
 <
                                                          *'g:go_imports_mode'*
 
