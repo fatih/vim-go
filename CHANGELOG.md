@@ -5,6 +5,7 @@ BACKWARDS INCOMPATIBILITIES:
   [[GH-2686]](https://github.com/fatih/vim-go/pull/2686)
 * Require at least Neovim >= 0.4.0
   [[GH-2853]](https://github.com/fatih/vim-go/pull/2853)
+  [[GH-2856]](https://github.com/fatih/vim-go/pull/2856)
 
 IMPROVEMENTS:
 * Make signs for breakpoints configurable.
