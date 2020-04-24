@@ -132,6 +132,9 @@ BUG FIXES:
 * Do not try parsing errors from terminal jobs when the working directory has
   been removed.
   [[GH-2824]](https://github.com/fatih/vim-go/pull/2824)
+* Document that `g:go_jump_to_error` apples to running the metalinter on save,
+  too.
+  [[GH-2854]](https://github.com/fatih/vim-go/pull/2854)
 
 ## v1.22 - (January 30, 2020)
 
