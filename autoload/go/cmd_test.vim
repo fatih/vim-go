@@ -31,6 +31,22 @@ func! Test_GoBuildErrors()
   endtry
 endfunc
 
+func! Test_GoRunPanic()
+  let l:filename = 'cmd/run/panic/panic.go'
+  let l:tmp = gotest#load_fixture(l:filename)
+
+  let expected = [
+        \ {'lnum': 9, 'bufnr': bufnr('%'), 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'E', 'pattern': '', 'text': 'panic: quux'}
+      \ ]
+  try
+    call go#cmd#Run(0)
+    let l:actual = getqflist()
+    call gotest#assert_quickfix(l:actual, l:expected)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
