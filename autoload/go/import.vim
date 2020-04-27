@@ -82,7 +82,7 @@ function! go#import#SwitchImport(enabled, localname, path, bang) abort
       while line <= line("$")
         let line = line + 1
         let linestr = getline(line)
-        let m = matchlist(getline(line), '^\()\|\(\s\+\)\(\S*\s*\)"\(.\+\)"\)')
+        let m = matchlist(getline(line), '^\()\|\(\s\+\)\(\w\+\s\+\)\="\(.\+\)"\)')
         if empty(m)
           if siteprefix == "" && a:enabled
             " must be in the first group
