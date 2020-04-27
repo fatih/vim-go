@@ -140,6 +140,8 @@ BUG FIXES:
 * Document that `g:go_jump_to_error` apples to running the metalinter on save,
   too.
   [[GH-2854]](https://github.com/fatih/vim-go/pull/2854)
+* Ignore commented out import statements when executing `:GoImport`.
+  [[GH-2862]](https://github.com/fatih/vim-go/pull/2862)
 
 ## v1.22 - (January 30, 2020)
 
