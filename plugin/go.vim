@@ -19,7 +19,7 @@ function! s:checkVersion() abort
 
     if l:unsupported == 1
       echohl Error
-      echom "vim-go requires at least Vim 8.0.1453 or Neovim 0.3.2, but you're using an older version."
+      echom "vim-go requires at least Vim 8.0.1453 or Neovim 0.4.0, but you're using an older version."
       echom "Please update your Vim for the best vim-go experience."
       echom "If you really want to continue you can set this to make the error go away:"
       echom "    let g:go_version_warning = 0"
