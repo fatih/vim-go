@@ -1,344 +1,455 @@
 "  guru.vim -- Vim integration for the Go guru.
 
-func! s:RunGuru(mode, format, selected, needs_scope) range abort
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
+" guru_cmd returns a dict that contains the command to execute guru. args
+" is dict with following options:
+"  mode        : guru mode, such as 'implements'
+"  format      : output format, either 'plain' or 'json'
+"  needs_scope : if 1, adds the current package to the scope
+"  selected    : if 1, means it's a range of selection, otherwise it picks up the
+"                offset under the cursor
+" example output:
+"  {'cmd' : ['guru', '-json', 'implements', 'demo/demo.go:#66']}
+function! s:guru_cmd(args) range abort
+  let mode = a:args.mode
+  let format = a:args.format
+  let needs_scope = a:args.needs_scope
+  let selected = a:args.selected
+  let postype = get(a:args, 'postype', 'cursor')
+
+  let result = {}
+
   "return with a warning if the binary doesn't exist
-  let bin_path = go#path#CheckBinPath("guru") 
+  let bin_path = go#path#CheckBinPath("guru")
   if empty(bin_path)
     return {'err': "bin path not found"}
   endif
 
-  let dirname = expand('%:p:h')
-  let pkg = go#package#ImportPath(dirname)
+  " start constructing the command
+  let cmd = [bin_path, '-tags', go#config#BuildTags()]
 
-  " this is important, check it!
-  if pkg == -1 && a:needs_scope
-    return {'err': "current directory is not inside of a valid GOPATH"}
-  endif
-
-  " start constructing the 'command' variable
-  let command = bin_path
-
-  let filename = fnamemodify(expand("%"), ':p:gs?\\?/?')
-  let in = ""
   if &modified
-    let sep = go#util#LineEnding()
-    let content  = join(getline(1, '$'), sep )
-    let in = filename . "\n" . strlen(content) . "\n" . content
-    let command .= " -modified"
+    let result.stdin_content = go#util#archive()
+    call add(cmd, "-modified")
   endif
 
   " enable outputting in json format
-  if a:format == "json"
-    let command .= " -json"
+  if format == "json"
+    call add(cmd, "-json")
   endif
 
-  " check for any tags
-  if exists('g:go_guru_tags')
-    let tags = get(g:, 'go_guru_tags')
-    let command .= printf(" -tags %s", tags)
-  endif
-
-  " some modes require scope to be defined (such as callers). For these we
-  " choose a sensible setting, which is using the current file's package
-  let scopes = []
-  if a:needs_scope
-    let scopes = [pkg]
-  endif
-
-  " check for any user defined scope setting. users can define the scope,
-  " in package pattern form. examples:
-  "  golang.org/x/tools/cmd/guru # a single package
-  "  golang.org/x/tools/...      # all packages beneath dir
-  "  ...                         # the entire workspace.
-  if exists('g:go_guru_scope')
-    " check that the setting is of type list
-    if type(get(g:, 'go_guru_scope')) != type([])
-      return {'err' : "go_guru_scope should of type list"}
+  let scopes = go#config#GuruScope()
+  if empty(scopes)
+    " some modes require scope to be defined (such as callers). For these we
+    " choose a sensible setting, which is using the current file's package
+    if needs_scope
+      let pkg = go#package#ImportPath()
+      if pkg == -1
+        return {'err': "current directory is not inside of a valid GOPATH"}
+      endif
+      let scopes = [pkg]
     endif
-
-    let scopes = get(g:, 'go_guru_scope')
   endif
 
-  " now add the scope to our command if there is any
+  " Add the scope.
   if !empty(scopes)
-    " strip trailing slashes for each path in scoped. bug:
-    " https://github.com/golang/go/issues/14584
-    let scopes = go#util#StripTrailingSlash(scopes)
-
-    " create shell-safe entries of the list
-    let scopes = go#util#Shelllist(scopes)
-
-    " guru expect a comma-separated list of patterns, construct it
+    " guru expect a comma-separated list of patterns.
     let l:scope = join(scopes, ",")
-    let command .= printf(" -scope %s", l:scope)
+    let result.scope = l:scope
+    call extend(cmd, ["-scope", l:scope])
   endif
 
-  let pos = printf("#%s", go#util#OffsetCursor())
-  if a:selected != -1
-    " means we have a range, get it
-    let pos1 = go#util#Offset(line("'<"), col("'<"))
-    let pos2 = go#util#Offset(line("'>"), col("'>"))
-    let pos = printf("#%s,#%s", pos1, pos2)
+  if postype == 'balloon'
+    let pos = printf("#%s", go#util#Offset(v:beval_lnum, v:beval_col))
+  else
+    let pos = printf("#%s", go#util#OffsetCursor())
+    if selected != -1
+      " means we have a range, get it
+      let pos1 = go#util#Offset(line("'<"), col("'<"))
+      let pos2 = go#util#Offset(line("'>"), col("'>"))
+      let pos = printf("#%s,#%s", pos1, pos2)
+    endif
   endif
 
-  " this is our final command
-  let filename .= ':'.pos
-  let command .= printf(' %s %s', a:mode, shellescape(filename))
+  let l:filename = fnamemodify(expand("%"), ':p:gs?\\?/?') . ':' . pos
+  call extend(cmd, [mode, l:filename])
 
-  let old_gopath = $GOPATH
-  let $GOPATH = go#path#Detect()
+  let result.cmd = cmd
+  return result
+endfunction
 
-  if a:needs_scope
-    call go#util#EchoProgress("analysing with scope ". l:scope . " ...")
-  elseif a:mode !=# 'what'
-    " the query might take time, let us give some feedback
-    call go#util#EchoProgress("analysing ...")
+" sync_guru runs guru in sync mode with the given arguments
+function! s:sync_guru(args) abort
+  let result = s:guru_cmd(a:args)
+  if has_key(result, 'err')
+    call go#util#EchoError(result.err)
+    return -1
+  endif
+
+  if !has_key(a:args, 'disable_progress')
+    if a:args.needs_scope
+      call go#util#EchoProgress("analysing with scope ". result.scope .
+            \ " (see ':help go-guru-scope' if this doesn't work)...")
+    elseif a:args.mode !=# 'what'
+      " the query might take time, let us give some feedback
+      call go#util#EchoProgress("analysing ...")
+    endif
   endif
 
   " run, forrest run!!!
-  if &modified
-    let out = go#util#System(command, in)
+  if has_key(l:result, 'stdin_content')
+    let [l:out, l:err] = go#util#Exec(l:result.cmd, l:result.stdin_content)
   else
-    let out = go#util#System(command)
+    let [l:out, l:err] = go#util#Exec(l:result.cmd)
   endif
 
-  let $GOPATH = old_gopath
-  if go#util#ShellError() != 0
-    " the output contains the error message
-    return {'err' : out}
+  if has_key(a:args, 'custom_parse')
+    call a:args.custom_parse(l:err, l:out, a:args.mode)
+  else
+    call s:parse_guru_output(l:err, l:out, a:args.mode)
   endif
 
-  return {'out': out}
+  return l:out
 endfunc
 
-" This uses Vim's errorformat to parse the output from Guru's 'plain output
-" and put it into location list. I believe using errorformat is much more
-" easier to use. If we need more power we can always switch back to parse it
-" via regex.
-func! s:loclistSecond(output)
-  " backup users errorformat, will be restored once we are finished
-  let old_errorformat = &errorformat
-
-  " match two possible styles of errorformats:
-  "
-  "   'file:line.col-line2.col2: message'
-  "   'file:line:col: message'
-  "
-  " We discard line2 and col2 for the first errorformat, because it's not
-  " useful and location only has the ability to show one line and column
-  " number
-  let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-  call go#list#ParseFormat("locationlist", errformat, split(a:output, "\n"))
-
-  let errors = go#list#Get("locationlist")
-  call go#list#Window("locationlist", len(errors))
-endfun
-
-
-function! go#guru#Scope(...)
-  if a:0
-    if a:0 == 1 && a:1 == '""'
-      unlet g:go_guru_scope
-      call go#util#EchoSuccess("guru scope is cleared")
-    else
-      let g:go_guru_scope = a:000
-      call go#util#EchoSuccess("guru scope changed to: ". join(a:000, ","))
-    endif
-
+" async_guru runs guru in async mode with the given arguments
+function! s:async_guru(args) abort
+  let result = s:guru_cmd(a:args)
+  if has_key(result, 'err')
+    call go#util#EchoError(result.err)
     return
   endif
 
-  if !exists('g:go_guru_scope')
-    call go#util#EchoError("guru scope is not set")
-  else
-    call go#util#EchoSuccess("current guru scope: ". join(g:go_guru_scope, ","))
+  let state = {
+        \ 'mode': a:args.mode,
+        \ 'parse' : get(a:args, 'custom_parse', funcref("s:parse_guru_output"))
+      \ }
+
+  " explicitly bind complete to state so that within it, self will
+  " always refer to state. See :help Partial for more information.
+  let state.complete = function('s:complete', [], state)
+
+  let opts = {
+        \ 'statustype': get(a:args, 'statustype', a:args.mode),
+        \ 'for': '_',
+        \ 'errorformat': "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m",
+        \ 'complete': state.complete,
+        \ }
+
+  if has_key(a:args, 'disable_progress')
+    let opts.statustype = ''
   endif
+
+  let opts = go#job#Options(l:opts)
+
+  if has_key(result, 'stdin_content')
+    let l:tmpname = tempname()
+    call writefile(split(result.stdin_content, "\n"), l:tmpname, "b")
+    let l:opts.in_io = "file"
+    let l:opts.in_name = l:tmpname
+  endif
+
+  call go#job#Start(result.cmd, opts)
+
+  if a:args.needs_scope && go#config#EchoCommandInfo() && !has_key(a:args, 'disable_progress')
+    call go#util#EchoProgress("analysing with scope " . result.scope .
+          \ " (see ':help go-guru-scope' if this doesn't work)...")
+  endif
+endfunc
+
+function! s:complete(job, exit_status, messages) dict abort
+  let output = join(a:messages, "\n")
+  call self.parse(a:exit_status, output, self.mode)
 endfunction
 
-function! go#guru#Tags(...)
-  if a:0
-    if a:0 == 1 && a:1 == '""'
-      unlet g:go_guru_tags
-      call go#util#EchoSuccess("guru tags is cleared")
-    else
-      let g:go_guru_tags = a:1
-      call go#util#EchoSuccess("guru tags changed to: ". a:1)
-    endif
-
-    return
-  endif
-
-  if !exists('g:go_guru_tags')
-    call go#util#EchoSuccess("guru tags is not set")
+" run_guru runs the given guru argument
+function! s:run_guru(args) abort
+  if go#util#has_job()
+    let res = s:async_guru(a:args)
   else
-    call go#util#EchoSuccess("current guru tags: ". a:1)
+    let res = s:sync_guru(a:args)
   endif
+
+  return res
+endfunction
+
+" Show 'implements' relation for selected package
+function! go#guru#Implements(selected) abort
+  let args = {
+        \ 'mode': 'implements',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
+
+  call s:run_guru(args)
+endfunction
+
+" Shows the set of possible objects to which a pointer may point.
+function! go#guru#PointsTo(selected) abort
+  let l:args = {
+        \ 'mode': 'pointsto',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
+
+  call s:run_guru(l:args)
 endfunction
 
 " Report the possible constants, global variables, and concrete types that may
 " appear in a value of type error
-function! go#guru#Whicherrs(selected)
-  let out = s:RunGuru('whicherrs', 'plain', a:selected, 1)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+function! go#guru#Whicherrs(selected) abort
+  let args = {
+        \ 'mode': 'whicherrs',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
-  if empty(out.out)
-    call go#util#EchoSuccess("no error variables found. Try to change the scope with :GoGuruScope")
-    return
-  endif
 
-  call s:loclistSecond(out.out)
-endfunction
-
-" Show 'implements' relation for selected package
-function! go#guru#Implements(selected)
-  let out = s:RunGuru('implements', 'plain', a:selected, 1)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
-
-  call s:loclistSecond(out.out)
+  " TODO(arslan): handle empty case for both sync/async
+  " if empty(out.out)
+  "   call go#util#EchoSuccess("no error variables found. Try to change the scope with :GoGuruScope")
+  "   return
+  " endif
+  call s:run_guru(args)
 endfunction
 
 " Describe selected syntax: definition, methods, etc
-function! go#guru#Describe(selected)
-  let out = s:RunGuru('describe', 'plain', a:selected, 0)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
+function! go#guru#Describe(selected) abort
+  let args = {
+        \ 'mode': 'describe',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
+
+  call s:run_guru(args)
+endfunction
+
+function! go#guru#DescribeInfo(showstatus) abort
+
+  " check if the version of Vim being tested supports json_decode()
+  if !exists("*json_decode")
+    call go#util#EchoError("GoDescribeInfo requires 'json_decode'. Update your Vim/Neovim version.")
     return
   endif
 
-  call s:loclistSecond(out.out)
+  let args = {
+        \ 'mode': 'describe',
+        \ 'format': 'json',
+        \ 'selected': -1,
+        \ 'needs_scope': 0,
+        \ 'custom_parse': function('s:info'),
+        \ 'disable_progress': a:showstatus == 0,
+        \ }
+
+  call s:run_guru(args)
+endfunction
+
+function! s:info(exit_val, output, mode)
+  if a:exit_val != 0
+    return
+  endif
+
+  if a:output[0] !=# '{'
+    return
+  endif
+
+  if empty(a:output) || type(a:output) != type("")
+    return
+  endif
+
+  let result = json_decode(a:output)
+  if type(result) != type({})
+    call go#util#EchoError(printf("malformed output from guru: %s", a:output))
+    return
+  endif
+
+  if !has_key(result, 'detail')
+    " if there is no detail check if there is a description and print it
+    if has_key(result, "desc")
+      call go#util#EchoInfo(result["desc"])
+      return
+    endif
+
+    call go#util#EchoError("detail key is missing. Please open a bug report on vim-go repo.")
+    return
+  endif
+
+  let detail = result['detail']
+  let info = ""
+
+  " guru gives different information based on the detail mode. Let try to
+  " extract the most useful information
+
+  if detail == "value"
+    if !has_key(result, 'value')
+      call go#util#EchoError("value key is missing. Please open a bug report on vim-go repo.")
+      return
+    endif
+
+    let val = result["value"]
+    if !has_key(val, 'type')
+      call go#util#EchoError("type key is missing (value.type). Please open a bug report on vim-go repo.")
+      return
+    endif
+
+    let info = val["type"]
+  elseif detail == "type"
+    if !has_key(result, 'type')
+      call go#util#EchoError("type key is missing. Please open a bug report on vim-go repo.")
+      return
+    endif
+
+    let type = result["type"]
+    if !has_key(type, 'type')
+      call go#util#EchoError("type key is missing (type.type). Please open a bug report on vim-go repo.")
+      return
+    endif
+
+    let info = type["type"]
+  elseif detail == "package"
+    if !has_key(result, 'package')
+      call go#util#EchoError("package key is missing. Please open a bug report on vim-go repo.")
+      return
+    endif
+
+    let package = result["package"]
+    if !has_key(package, 'path')
+      call go#util#EchoError("path key is missing (package.path). Please open a bug report on vim-go repo.")
+      return
+    endif
+
+    let info = printf("package %s", package["path"])
+  elseif detail == "unknown"
+    let info = result["desc"]
+  else
+    call go#util#EchoError(printf("unknown detail mode found '%s'. Please open a bug report on vim-go repo", detail))
+    return
+  endif
+
+  call go#util#ShowInfo(info)
 endfunction
 
 " Show possible targets of selected function call
-function! go#guru#Callees(selected)
-  let out = s:RunGuru('callees', 'plain', a:selected, 1)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+function! go#guru#Callees(selected) abort
+  let args = {
+        \ 'mode': 'callees',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show possible callers of selected function
-function! go#guru#Callers(selected)
-  let out = s:RunGuru('callers', 'plain', a:selected, 1)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+function! go#guru#Callers(selected) abort
+  let args = {
+        \ 'mode': 'callers',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show path from callgraph root to selected function
-function! go#guru#Callstack(selected)
-  let out = s:RunGuru('callstack', 'plain', a:selected, 1)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+function! go#guru#Callstack(selected) abort
+  let args = {
+        \ 'mode': 'callstack',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show free variables of selection
-function! go#guru#Freevars(selected)
+function! go#guru#Freevars(selected) abort
   " Freevars requires a selection
   if a:selected == -1
     call go#util#EchoError("GoFreevars requires a selection (range) of code")
     return
   endif
 
-  let out = s:RunGuru('freevars', 'plain', a:selected, 0)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+  let args = {
+        \ 'mode': 'freevars',
+        \ 'format': 'plain',
+        \ 'selected': 1,
+        \ 'needs_scope': 0,
+        \ }
 
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show send/receive corresponding to selected channel op
-function! go#guru#ChannelPeers(selected)
-  let out = s:RunGuru('peers', 'plain', a:selected, 1)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+function! go#guru#ChannelPeers(selected) abort
+  let args = {
+        \ 'mode': 'peers',
+        \ 'format': 'plain',
+        \ 'selected': a:selected,
+        \ 'needs_scope': 1,
+        \ }
 
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
 " Show all refs to entity denoted by selected identifier
-function! go#guru#Referrers(selected)
-  let out = s:RunGuru('referrers', 'plain', a:selected, 0)
-  if has_key(out, 'err')
-    call go#util#EchoError(out.err)
-    return
-  endif
+function! go#guru#Referrers(selected) abort
+  let args = {
+          \ 'mode': 'referrers',
+          \ 'format': 'plain',
+          \ 'selected': a:selected,
+          \ 'needs_scope': 0,
+          \ }
 
-  call s:loclistSecond(out.out)
+  call s:run_guru(args)
 endfunction
 
-function! go#guru#What(selected)
-  " json_encode() and friends are introduced with this patch (7.4.1304)
-  " vim: https://groups.google.com/d/msg/vim_dev/vLupTNhQhZ8/cDGIk0JEDgAJ
-  " nvim: https://github.com/neovim/neovim/pull/4131        
-  if !exists("*json_decode")
-    return {'err': "GoWhat is not supported due old version of Vim/Neovim"}
-  endif
-
-  let out = s:RunGuru('what', 'json', a:selected, 0)
-  if has_key(out, 'err')
-    return {'err': out.err}
-  endif
-
-  let result = json_decode(out.out)
-
-  if type(result) != type({})
-    return {'err': "malformed output from guru"}
-  endif
-
-  return result
-endfunction
-
-function! go#guru#AutoToogleSameIds()
-  if get(g:, "go_auto_sameids", 0)
-    call go#util#EchoProgress("sameids auto highlighting disabled")
-    call go#guru#ClearSameIds()
-    let g:go_auto_sameids = 0
-    return
-  endif
-
-  call go#util#EchoSuccess("sameids auto highlighting enabled")
-  let g:go_auto_sameids = 1
-endfunction
-
-function! go#guru#SameIds(selected)
-  " we use matchaddpos() which was introduce with 7.4.330, be sure we have
-  " it: http://ftp.vim.org/vim/patches/7.4/7.4.330
+function! go#guru#SameIds(showstatus) abort
+  " check if the version of Vim being tested supports matchaddpos()
   if !exists("*matchaddpos")
-    call go#util#EchoError("GoSameIds is supported with Vim version 7.4-330 or later")
+    call go#util#EchoError("GoSameIds requires 'matchaddpos'. Update your Vim/Neovim version.")
     return
   endif
 
-  let result = go#guru#What(a:selected)
+  " check if the version of Vim being tested supports json_decode()
+  if !exists("*json_decode")
+    call go#util#EchoError("GoSameIds requires 'json_decode'. Update your Vim/Neovim version.")
+    return
+  endif
 
+  let [l:line, l:col] = getpos('.')[1:2]
+  let [l:line, l:col] = go#lsp#lsp#Position(l:line, l:col)
+  call go#lsp#SameIDs(0, expand('%:p'), l:line, l:col, funcref('s:same_ids_highlight'))
+endfunction
+
+function! s:same_ids_highlight(exit_val, output, mode) abort
   call go#guru#ClearSameIds() " run after calling guru to reduce flicker.
-  if has_key(result, 'err') && !get(g:, 'go_auto_sameids', 0)
-    " only echo if it's called via `:GoSameIds, but not if it's in automode
-    call go#util#EchoError(result.err)
+
+  if a:output[0] !=# '{'
+    if !go#config#AutoSameids()
+      call go#util#EchoError(a:output)
+    endif
+    return
+  endif
+
+  let result = json_decode(a:output)
+  if type(result) != type({}) && !go#config#AutoSameids()
+    call go#util#EchoError("malformed output from guru")
     return
   endif
 
   if !has_key(result, 'sameids')
-    if !get(g:, 'go_auto_sameids', 0)
+    if !go#config#AutoSameids()
       call go#util#EchoError("no same_ids founds for the given identifier")
     endif
     return
@@ -358,39 +469,254 @@ function! go#guru#SameIds(selected)
   endif
 
   let same_ids = result['sameids']
+
   " highlight the lines
+  let l:matches = []
   for item in same_ids
     let pos = split(item, ':')
-    call matchaddpos('goSameId', [[str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)]])
+    let l:matches = add(l:matches, [str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)])
   endfor
 
-  if get(g:, "go_auto_sameids", 0)
+  call go#util#HighlightPositions('goSameId', l:matches)
+
+  if go#config#AutoSameids()
     " re-apply SameIds at the current cursor position at the time the buffer
     " is redisplayed: e.g. :edit, :GoRename, etc.
-    autocmd BufWinEnter <buffer> nested call go#guru#SameIds(-1)
+    augroup vim-go-sameids
+      autocmd! * <buffer>
+      if has('textprop')
+        autocmd BufReadPost <buffer> nested call go#guru#SameIds(0)
+      else
+        autocmd BufWinEnter <buffer> nested call go#guru#SameIds(0)
+      endif
+    augroup end
   endif
 endfunction
 
-function! go#guru#ClearSameIds()
-  let m = getmatches()
-  for item in m
-    if item['group'] == 'goSameId'
-      call matchdelete(item['id'])
-    endif
-  endfor
+" ClearSameIds returns 0 when it removes goSameId groups and non-zero if no
+" goSameId groups are found.
+function! go#guru#ClearSameIds() abort
+  let l:cleared = go#util#ClearHighlights('goSameId')
+
+  if !l:cleared
+    return 1
+  endif
 
   " remove the autocmds we defined
-  if exists("#BufWinEnter<buffer>")
-    autocmd! BufWinEnter <buffer>
+  augroup vim-go-sameids
+    autocmd! * <buffer>
+  augroup end
+
+  return 0
+endfunction
+
+function! go#guru#ToggleSameIds() abort
+  if go#guru#ClearSameIds() != 0
+    call go#guru#SameIds(1)
   endif
 endfunction
 
-function! go#guru#ToggleSameIds(selected)
-  if len(getmatches()) != 0 
+function! go#guru#AutoToggleSameIds() abort
+  if go#config#AutoSameids()
+    call go#util#EchoProgress("sameids auto highlighting disabled")
     call go#guru#ClearSameIds()
+    call go#config#SetAutoSameids(0)
   else
-    call go#guru#SameIds(a:selected)
+    call go#util#EchoSuccess("sameids auto highlighting enabled")
+    call go#config#SetAutoSameids(1)
+  endif
+  call go#auto#update_autocmd()
+endfunction
+
+
+""""""""""""""""""""""""""""""""""""""""
+"" HELPER FUNCTIONS
+""""""""""""""""""""""""""""""""""""""""
+
+" This uses Vim's errorformat to parse the output from Guru's 'plain output
+" and put it into location list. I believe using errorformat is much more
+" easier to use. If we need more power we can always switch back to parse it
+" via regex. Match two possible styles of errorformats:
+"
+"   'file:line.col-line2.col2: message'
+"   'file:line:col: message'
+"
+" We discard line2 and col2 for the first errorformat, because it's not
+" useful and location only has the ability to show one line and column
+" number
+function! s:parse_guru_output(exit_val, output, title) abort
+  if a:exit_val
+    call go#util#EchoError(a:output)
+    return
+  endif
+
+  let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
+  let l:listtype = go#list#Type("_guru")
+  call go#list#ParseFormat(l:listtype, errformat, a:output, a:title, 0)
+
+  let errors = go#list#Get(l:listtype)
+  call go#list#Window(l:listtype, len(errors))
+endfunction
+
+function! go#guru#Scope(...) abort
+  if a:0
+    let scope = a:000
+    if a:0 == 1 && a:1 == '""'
+      let scope = []
+    endif
+
+    call go#config#SetGuruScope(scope)
+    if empty(scope)
+      call go#util#EchoSuccess("guru scope is cleared")
+    else
+      call go#util#EchoSuccess("guru scope changed to: ". join(a:000, ","))
+    endif
+
+    return
+  endif
+
+  let scope = go#config#GuruScope()
+  if empty(scope)
+    call go#util#EchoError("guru scope is not set")
+  else
+    call go#util#EchoSuccess("current guru scope: ". join(scope, ","))
   endif
 endfunction
+
+function! go#guru#DescribeBalloon() abort
+  " don't even try if async isn't available.
+  if !go#util#has_job()
+    return
+  endif
+
+  " check if the version of Vim being tested supports json_decode()
+  if !exists("*json_decode")
+    call go#util#EchoError("GoDescribeBalloon requires 'json_decode'. Update your Vim/Neovim version.")
+    return
+  endif
+
+  " change the active window to the window where the cursor is.
+  let l:winid = win_getid(winnr())
+  call win_gotoid(v:beval_winid)
+
+  let l:args = {
+        \ 'mode': 'describe',
+        \ 'format': 'json',
+        \ 'selected': -1,
+        \ 'needs_scope': 0,
+        \ 'custom_parse': function('s:describe_balloon'),
+        \ 'disable_progress': 1,
+        \ 'postype': 'balloon',
+        \ }
+
+  call s:async_guru(args)
+
+  " make the starting window active again
+  call win_gotoid(l:winid)
+
+  return ''
+endfunction
+
+function! s:describe_balloon(exit_val, output, mode)
+  if a:exit_val != 0
+    return
+  endif
+
+  if a:output[0] !=# '{'
+    return
+  endif
+
+  if empty(a:output) || type(a:output) != type("")
+    return
+  endif
+
+  let l:result = json_decode(a:output)
+  if type(l:result) != type({})
+    call go#util#EchoError(printf('malformed output from guru: %s', a:output))
+    return
+  endif
+
+  let l:info = []
+  if has_key(l:result, 'desc')
+    if l:result['desc'] != 'identifier'
+      let l:info = add(l:info, l:result['desc'])
+    endif
+  endif
+
+  if has_key(l:result, 'detail')
+    let l:detail = l:result['detail']
+
+    " guru gives different information based on the detail mode. Let try to
+    " extract the most useful information
+
+    if l:detail == 'value'
+      if !has_key(l:result, 'value')
+        call go#util#EchoError('value key is missing. Please open a bug report on vim-go repo.')
+        return
+      endif
+
+      let l:val = l:result['value']
+      if !has_key(l:val, 'type')
+        call go#util#EchoError('type key is missing (value.type). Please open a bug report on vim-go repo.')
+        return
+      endif
+
+      let l:info = add(l:info, printf('type: %s', l:val['type']))
+      if has_key(l:val, 'value')
+        let l:info = add(l:info, printf('value: %s', l:val['value']))
+      endif
+    elseif l:detail == 'type'
+      if !has_key(l:result, 'type')
+        call go#util#EchoError('type key is missing. Please open a bug report on vim-go repo.')
+        return
+      endif
+
+      let l:type = l:result['type']
+      if !has_key(l:type, 'type')
+        call go#util#EchoError('type key is missing (type.type). Please open a bug report on vim-go repo.')
+        return
+      endif
+
+      let l:info = add(l:info, printf('type: %s', l:type['type']))
+
+      if has_key(l:type, 'methods')
+        let l:info = add(l:info, 'methods:')
+        for l:m in l:type.methods
+          let l:info = add(l:info, printf("\t%s", l:m['name']))
+        endfor
+      endif
+    elseif l:detail == 'package'
+      if !has_key(l:result, 'package')
+        call go#util#EchoError('package key is missing. Please open a bug report on vim-go repo.')
+        return
+      endif
+
+      let l:package = result['package']
+      if !has_key(l:package, 'path')
+        call go#util#EchoError('path key is missing (package.path). Please open a bug report on vim-go repo.')
+        return
+      endif
+
+      let l:info = add(l:info, printf('package: %s', l:package["path"]))
+    elseif l:detail == 'unknown'
+      " the description is already included in l:info, and there's no other
+      " information on unknowns.
+    else
+      call go#util#EchoError(printf('unknown detail mode (%s) found. Please open a bug report on vim-go repo', l:detail))
+      return
+    endif
+  endif
+
+  if has('balloon_eval')
+    call balloon_show(join(l:info, "\n"))
+    return
+  endif
+
+  call balloon_show(l:info)
+endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

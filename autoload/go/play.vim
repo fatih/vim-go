@@ -1,11 +1,10 @@
-if !exists("g:go_play_open_browser")
-  let g:go_play_open_browser = 1
-endif
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
 
-
-function! go#play#Share(count, line1, line2)
+function! go#play#Share(count, line1, line2) abort
   if !executable('curl')
-    echohl ErrorMsg | echomsg "vim-go: require 'curl' command" | echohl None
+    call go#util#EchoError('cannot share: curl cannot be found')
     return
   endif
 
@@ -13,15 +12,15 @@ function! go#play#Share(count, line1, line2)
   let share_file = tempname()
   call writefile(split(content, "\n"), share_file, "b")
 
-  let command = "curl -s -X POST https://play.golang.org/share --data-binary '@".share_file."'"
-  let snippet_id = go#util#System(command)
+  let l:cmd = ['curl', '-s', '-X', 'POST', 'https://play.golang.org/share',
+        \ '--data-binary', '@' . l:share_file]
+  let [l:snippet_id, l:err] = go#util#Exec(l:cmd)
 
   " we can remove the temp file because it's now posted.
   call delete(share_file)
 
-  if go#util#ShellError() != 0
-    echo 'A error has occured. Run this command to see what the problem is:'
-    echo command
+  if l:err != 0
+    call go#util#EchoError(['A error has occurred. Run this command to see what the problem is:', go#util#Shelljoin(l:cmd)])
     return
   endif
 
@@ -34,15 +33,15 @@ function! go#play#Share(count, line1, line2)
     let @+ = url
   endif
 
-  if g:go_play_open_browser != 0
-    call go#tool#OpenBrowser(url)
+  if go#config#PlayOpenBrowser()
+    call go#util#OpenBrowser(url)
   endif
 
-  echo "vim-go: snippet uploaded: ".url
+  call go#util#EchoInfo('snippet uploaded: ' . url)
 endfunction
 
 
-function! s:get_visual_content()
+function! s:get_visual_content() abort
   let save_regcont = @"
   let save_regtype = getregtype('"')
   silent! normal! gvy
@@ -55,7 +54,7 @@ endfunction
 " http://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript
 " another function that returns the content of visual selection, it's not used
 " but might be useful in the future
-function! s:get_visual_selection()
+function! s:get_visual_selection() abort
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
 
@@ -70,24 +69,8 @@ function! s:get_visual_selection()
   return join(lines, "\n")
 endfunction
 
-" following two functions are from: https://github.com/mattn/gist-vim 
-" thanks  @mattn
-function! s:get_browser_command()
-  let go_play_browser_command = get(g:, 'go_play_browser_command', '')
-  if go_play_browser_command == ''
-    if has('win32') || has('win64')
-      let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
-    elseif has('mac') || has('macunix') || has('gui_macvim') || go#util#System('uname') =~? '^darwin'
-      let go_play_browser_command = 'open %URL%'
-    elseif executable('xdg-open')
-      let go_play_browser_command = 'xdg-open %URL%'
-    elseif executable('firefox')
-      let go_play_browser_command = 'firefox %URL% &'
-    else
-      let go_play_browser_command = ''
-    endif
-  endif
-  return go_play_browser_command
-endfunction
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

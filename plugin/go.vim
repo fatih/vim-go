@@ -4,56 +4,93 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
+function! s:checkVersion() abort
+  let l:unsupported = 0
+  if go#config#VersionWarning() != 0
+    if has('nvim')
+      let l:unsupported = !has('nvim-0.4.0')
+    else
+      let l:unsupported = !has('patch-8.0.1453')
+    endif
+
+    if l:unsupported == 1
+      echohl Error
+      echom "vim-go requires at least Vim 8.0.1453 or Neovim 0.4.0, but you're using an older version."
+      echom "Please update your Vim for the best vim-go experience."
+      echom "If you really want to continue you can set this to make the error go away:"
+      echom "    let g:go_version_warning = 0"
+      echom "Note that some features may error out or behave incorrectly."
+      echom "Please do not report bugs unless you're using at least Vim 8.0.1453 or Neovim 0.3.2."
+      echohl None
+
+      " Make sure people see this.
+      sleep 2
+    endif
+  endif
+endfunction
+
+call s:checkVersion()
+
 " these packages are used by vim-go and can be automatically installed if
-" needed by the user with GoInstallBinaries
-let s:packages = [
-      \ "github.com/nsf/gocode",
-      \ "github.com/alecthomas/gometalinter",
-      \ "golang.org/x/tools/cmd/goimports",
-      \ "golang.org/x/tools/cmd/guru",
-      \ "golang.org/x/tools/cmd/gorename",
-      \ "github.com/golang/lint/golint",
-      \ "github.com/rogpeppe/godef",
-      \ "github.com/kisielk/errcheck",
-      \ "github.com/jstemmer/gotags",
-      \ "github.com/klauspost/asmfmt/cmd/asmfmt",
-      \ "github.com/fatih/motion",
-      \ "github.com/zmb3/gogetdoc",
-      \ "github.com/josharian/impl",
-      \ ]
+" needed by the user with GoInstallBinaries.
+
+" NOTE(bc): varying the binary name and the tail of the import path does not yet work in module aware mode.
+let s:packages = {
+      \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt@master'],
+      \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv@master'],
+      \ 'errcheck':      ['github.com/kisielk/errcheck@master'],
+      \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct@master'],
+      \ 'godef':         ['github.com/rogpeppe/godef@master'],
+      \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
+      \ 'golint':        ['golang.org/x/lint/golint@master'],
+      \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
+      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@master'],
+      \ 'gomodifytags':  ['github.com/fatih/gomodifytags@master'],
+      \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
+      \ 'gotags':        ['github.com/jstemmer/gotags@master'],
+      \ 'guru':          ['golang.org/x/tools/cmd/guru@master'],
+      \ 'impl':          ['github.com/josharian/impl@master'],
+      \ 'keyify':        ['honnef.co/go/tools/cmd/keyify@master'],
+      \ 'motion':        ['github.com/fatih/motion@master'],
+      \ 'iferr':         ['github.com/koron/iferr@master'],
+\ }
 
 " These commands are available on any filetypes
-command! GoInstallBinaries call s:GoInstallBinaries(-1)
-command! GoUpdateBinaries call s:GoInstallBinaries(1)
+command! -nargs=* -complete=customlist,s:complete GoInstallBinaries call s:GoInstallBinaries(-1, <f-args>)
+command! -nargs=* -complete=customlist,s:complete GoUpdateBinaries  call s:GoInstallBinaries(1, <f-args>)
 command! -nargs=? -complete=dir GoPath call go#path#GoPath(<f-args>)
 
-" GoInstallBinaries downloads and install all necessary binaries stated in the
-" packages variable. It uses by default $GOBIN or $GOPATH/bin as the binary
-" target install directory. GoInstallBinaries doesn't install binaries if they
-" exist, to update current binaries pass 1 to the argument.
-function! s:GoInstallBinaries(updateBinaries)
-  if $GOPATH == ""
-    echohl Error
-    echomsg "vim.go: $GOPATH is not set"
-    echohl None
+fun! s:complete(lead, cmdline, cursor)
+  return filter(keys(s:packages), 'strpart(v:val, 0, len(a:lead)) == a:lead')
+endfun
+
+" GoInstallBinaries downloads and installs binaries defined in s:packages to
+" $GOBIN or $GOPATH/bin. GoInstallBinaries will update already installed
+" binaries only if updateBinaries = 1. By default, all packages in s:packages
+" will be installed, but the set can be limited by passing the desired
+" packages in the unnamed arguments.
+function! s:GoInstallBinaries(updateBinaries, ...)
+  let err = s:CheckBinaries()
+  if err != 0
     return
   endif
 
-  let err = s:CheckBinaries()
-  if err != 0
+  if go#path#Default() == ""
+    call go#util#EchoError('$GOPATH is not set and `go env GOPATH` returns empty')
     return
   endif
 
   let go_bin_path = go#path#BinPath()
 
   " change $GOBIN so go get can automatically install to it
-  let $GOBIN = go_bin_path
-
-  " old_path is used to restore users own path
-  let old_path = $PATH
+  let Restore_gobin = go#util#SetEnv('GOBIN', go_bin_path)
 
   " vim's executable path is looking in PATH so add our go_bin path to it
-  let $PATH = go_bin_path . go#util#PathListSep() . $PATH
+  let Restore_path = go#util#SetEnv('PATH', go_bin_path . go#util#PathListSep() . $PATH)
 
   " when shellslash is set on MS-* systems, shellescape puts single quotes
   " around the output string. cmd on Windows does not handle single quotes
@@ -65,59 +102,146 @@ function! s:GoInstallBinaries(updateBinaries)
     set noshellslash
   endif
 
-  let cmd = "go get -v "
-  if get(g:, "go_get_update", 1) != 0
-    let cmd .= "-u "
+  let l:get_base_cmd = ['go', 'get', '-v']
+
+  " Filter packages from arguments (if any).
+  let l:packages = {}
+  if a:0 > 0
+    for l:bin in a:000
+      let l:pkg = get(s:packages, l:bin, [])
+      if len(l:pkg) == 0
+        call go#util#EchoError('unknown binary: ' . l:bin)
+        return
+      endif
+      let l:packages[l:bin] = l:pkg
+    endfor
+  else
+    let l:packages = s:packages
   endif
 
-  let s:go_version = matchstr(go#util#System("go version"), '\d.\d.\d')
-
-  " https://github.com/golang/go/issues/10791
-  if s:go_version > "1.4.0" && s:go_version < "1.5.0"
-    let cmd .= "-f "
+  let l:platform = ''
+  if go#util#IsWin()
+    let l:platform = 'windows'
   endif
 
-  for pkg in s:packages
-    let basename = fnamemodify(pkg, ":t")
-    let binname = "go_" . basename . "_bin"
+  let l:oldmore = &more
+  let &more = 0
 
-    let bin = basename
-    if exists("g:{binname}")
-      let bin = g:{binname}
+  for [l:binary, l:pkg] in items(l:packages)
+    let l:importPath = l:pkg[0]
+
+    " TODO(bc): how to support this with modules? Do we have to clone and then
+    " install manually? Probably not. I suspect that we can just use GOPATH
+    " mode and then do the legacy method.
+    let bin_setting_name = "go_" . l:binary . "_bin"
+
+    if exists("g:{bin_setting_name}")
+      let bin = g:{bin_setting_name}
+    else
+      if go#util#IsWin()
+        let bin = l:binary . '.exe'
+      else
+        let bin = l:binary
+      endif
     endif
 
     if !executable(bin) || a:updateBinaries == 1
       if a:updateBinaries == 1
-        echo "vim-go: Updating ". basename .". Reinstalling ". pkg . " to folder " . go_bin_path
+        echo "vim-go: Updating " . l:binary . ". Reinstalling ". importPath . " to folder " . go_bin_path
       else
-        echo "vim-go: ". basename ." not found. Installing ". pkg . " to folder " . go_bin_path
+        echo "vim-go: ". l:binary ." not found. Installing ". importPath . " to folder " . go_bin_path
       endif
 
+      if l:importPath =~ "@"
+        let Restore_modules = go#util#SetEnv('GO111MODULE', 'on')
+        let l:tmpdir = go#util#tempdir('vim-go')
+        let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+        let l:dir = getcwd()
+        try
+          execute l:cd . fnameescape(l:tmpdir)
+          let l:get_cmd = copy(l:get_base_cmd)
 
-      let out = go#util#System(cmd . shellescape(pkg))
-      if go#util#ShellError() != 0
-        echo "Error installing ". pkg . ": " . out
+          if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
+            let l:get_cmd += get(l:pkg[1], l:platform, [])
+          endif
+
+          " TODO(bc): how to install the bin to a different name than the
+          " binary path? go get does not support -o
+          " let l:get_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin)]
+
+          let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
+          if l:err
+            call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
+          endif
+
+          call call(Restore_modules, [])
+        finally
+          execute l:cd . fnameescape(l:dir)
+        endtry
+        call call(Restore_modules, [])
+      else
+        let l:get_cmd = copy(l:get_base_cmd)
+        let l:get_cmd += ['-d']
+        if get(g:, "go_get_update", 1) != 0
+          let l:get_cmd += ['-u']
+        endif
+
+        let Restore_modules = go#util#SetEnv('GO111MODULE', 'off')
+
+        " first download the binary
+        let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
+        if l:err
+          call go#util#EchoError(printf('Error downloading %s: %s', l:importPath, l:out))
+        endif
+
+        " and then build and install it
+        let l:build_cmd = ['go', 'build']
+        if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
+          let l:build_cmd += get(l:pkg[1], l:platform, [])
+        endif
+        let l:build_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin), l:importPath]
+
+        let [l:out, l:err] = go#util#Exec(l:build_cmd)
+        if l:err
+          call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
+        endif
+
+        call call(Restore_modules, [])
+      endif
+
+      if len(l:pkg) > 2
+        call call(get(l:pkg[2], 'after', function('s:noop', [])), [])
       endif
     endif
   endfor
 
   " restore back!
-  let $PATH = old_path
+  call call(Restore_path, [])
+  call call(Restore_gobin, [])
+
   if resetshellslash
     set shellslash
   endif
+
+  if a:updateBinaries == 1
+    call go#util#EchoInfo('updating finished!')
+  else
+    call go#util#EchoInfo('installing finished!')
+  endif
+
+  let &more = l:oldmore
 endfunction
 
 " CheckBinaries checks if the necessary binaries to install the Go tool
 " commands are available.
 function! s:CheckBinaries()
   if !executable('go')
-    echohl Error | echomsg "vim-go: go executable not found." | echohl None
+    call go#util#EchoError('go executable not found.')
     return -1
   endif
 
   if !executable('git')
-    echohl Error | echomsg "vim-go: git executable not found." | echohl None
+    call go#util#EchoError('git executable not found.')
     return -1
   endif
 endfunction
@@ -125,81 +249,61 @@ endfunction
 " Autocommands
 " ============================================================================
 "
-function! s:echo_go_info()
-  if !exists('v:completed_item') || empty(v:completed_item)
+
+" We take care to preserve the user's fileencodings and fileformats,
+" because those settings are global (not buffer local), yet we want
+" to override them for loading Go files, which are defined to be UTF-8.
+let s:current_fileformats = ''
+let s:current_fileencodings = ''
+
+" define fileencodings to open as utf-8 encoding even if it's ascii.
+function! s:gofiletype_pre()
+  let s:current_fileformats = &g:fileformats
+  let s:current_fileencodings = &g:fileencodings
+  set fileencodings=utf-8 fileformats=unix
+endfunction
+
+" restore fileencodings as others
+function! s:gofiletype_post()
+  let &g:fileformats = s:current_fileformats
+  let &g:fileencodings = s:current_fileencodings
+endfunction
+
+function! s:register()
+  if !(&modifiable && expand('<amatch>') ==# 'go')
     return
   endif
-  let item = v:completed_item
 
-  if !has_key(item, "info")
-    return
+  let l:RestoreGopath = function('s:noop')
+  if go#config#AutodetectGopath()
+    let l:RestoreGopath = go#util#SetEnv('GOPATH', go#path#Detect())
   endif
-
-  if empty(item.info)
-    return
-  endif
-
-  redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
+  call go#lsp#DidOpen(expand('<afile>:p'))
+  call call(l:RestoreGopath, [])
 endfunction
 
-function! s:auto_type_info()
-  " GoInfo automatic update
-  if get(g:, "go_auto_type_info", 0)
-    call go#complete#Info(1)
-  endif
-endfunction
-
-function! s:auto_sameids()
-  " GoSameId automatic update
-  if get(g:, "go_auto_sameids", 0)
-    call go#guru#SameIds(-1)
-  endif
-endfunction
-
-function! s:fmt_autosave()
-  " Go code formatting on save
-  if get(g:, "go_fmt_autosave", 1)
-    call go#fmt#Format(-1)
-  endif
-endfunction
-
-function! s:asmfmt_autosave()
-  " Go asm formatting on save
-  if get(g:, "go_asmfmt_autosave", 1)
-    call go#asmfmt#Format()
-  endif
-endfunction
-
-function! s:metalinter_autosave()
-  " run gometalinter on save
-  if get(g:, "go_metalinter_autosave", 0)
-    call go#lint#Gometa(1)
-  endif
-endfunction
-
-function! s:template_autocreate()
-  " create new template from scratch
-  if get(g:, "go_template_autocreate", 1)
-    call go#template#create()
-  endif
+function! s:noop(...) abort
 endfunction
 
 augroup vim-go
   autocmd!
 
-  autocmd CursorHold *.go call s:auto_type_info()
-  autocmd CursorHold *.go call s:auto_sameids()
+  autocmd BufNewFile *.go if &modifiable | setlocal fileencoding=utf-8 fileformat=unix | endif
+  autocmd BufNewFile *.go call go#auto#template_autocreate()
+  autocmd BufRead *.go call s:gofiletype_pre()
+  autocmd BufReadPost *.go call s:gofiletype_post()
 
-  " Echo the identifier information when completion is done. Useful to see
-  " the signature of a function, etc...
-  if exists('##CompleteDone')
-    autocmd CompleteDone *.go call s:echo_go_info()
+  autocmd BufNewFile *.s if &modifiable | setlocal fileencoding=utf-8 fileformat=unix | endif
+  autocmd BufRead *.s call s:gofiletype_pre()
+  autocmd BufReadPost *.s call s:gofiletype_post()
+
+  if go#util#has_job()
+    autocmd FileType * call s:register()
   endif
+augroup end
 
-  autocmd BufWritePre *.go call s:fmt_autosave()
-  autocmd BufWritePre *.s call s:asmfmt_autosave()
-  autocmd BufWritePost *.go call s:metalinter_autosave()
-  autocmd BufNewFile *.go call s:template_autocreate()
-augroup END
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et
