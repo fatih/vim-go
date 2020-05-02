@@ -140,9 +140,9 @@ endif
 
 " import
 if go#config#FoldEnable('import')
-  syn region    goImport            start='import (' end=')' transparent fold contains=goImport,goString,goComment
+  syn region    goImport            start='^import (' end=')' transparent fold contains=goImport,goString,goComment
 else
-  syn region    goImport            start='import (' end=')' transparent contains=goImport,goString,goComment
+  syn region    goImport            start='^import (' end=')' transparent contains=goImport,goString,goComment
 endif
 
 " var, const
@@ -159,7 +159,7 @@ else
 endif
 
 " Single-line var, const, and import.
-syn match       goSingleDecl        /\%(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
+syn match       goSingleDecl        /^\s*\%(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
 
 " Integers
 syn match       goDecimalInt        "\<-\=\(0\|[1-9]_\?\(\d\|\d\+_\?\d\+\)*\)\%([Ee][-+]\=\d\+\)\=\>"

@@ -448,18 +448,19 @@ function! s:errorformat(metalinter) abort
     " Based on trial and error, these error format strings seem to catch all
     " the relevant combinations.
 
+    " When the actual locations and error message are not wrapped in
+    " in brackets without the inner parenthetical. This usually happens when
+    " the linter can't do its job because of compiler or AST problems.
+    let l:efm .= 'level=%tarning\ msg="%.%#:\ [%f:%l:%c:\ %m]"'
+    let l:efm .= ',level=%trror\ msg="%.%#:\ [%f:%l:%c:\ %m]"'
+
     " When the actual locations and error message is wrapped in parentheses
     " within brackets (there is usually duplicated location information in
     " this form). This usually happens when the linter can't do its job
     " because of compiler or AST problems.
-    let l:efm .= 'level=%tarning\ msg="%.%#(%f:%l:%c:\ %m)\ %.%#]"'
+    let l:efm .= ',level=%tarning\ msg="%.%#(%f:%l:%c:\ %m)\ %.%#]"'
     let l:efm .= ',level=%trror\ msg="%.%#(%f:%l:%c:\ %m)\ %.%#]"'
 
-    " When the actual locations and error message are not wrapped in
-    " in bracked without the inner parenthetical. This usually happens when
-    " the linter can't do its job because of compiler or AST problems.
-    let l:efm .= ',level=%tarning\ msg="%.%#:\ [%f:%l:%c:\ %m]"'
-    let l:efm .= ',level=%trror\ msg="%.%#:\ [%f:%l:%c:\ %m]"'
 
     " When the file location is not provided. The usually happens when the
     " linter can't do its job because of some other problem.
