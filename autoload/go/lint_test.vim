@@ -42,19 +42,19 @@ func! s:gometa(metalinter) abort
   endtry
 endfunc
 
-func! Test_GometaGolangciLint_problems() abort
-  call s:gometa_problems('golangci-lint')
+func! Test_GometaGolangciLint_shadow() abort
+  call s:gometa_shadow('golangci-lint')
 endfunc
 
-func! s:gometa_problems(metalinter) abort
+func! s:gometa_shadow(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/problems.go'
+  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/shadow/problems.go'
 
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
         \ ]
     " clear the quickfix lists
     call setqflist([], 'r')
@@ -129,19 +129,125 @@ func! s:gometaautosave(metalinter, withList) abort
   endtry
 endfunc
 
-func! Test_GometaAutoSaveGolangciLint_problems() abort
-  call s:gometaautosave_problems('golangci-lint')
+func! Test_GometaGolangciLint_importabs() abort
+  call s:gometa_importabs('golangci-lint')
 endfunc
 
-func! s:gometaautosave_problems(metalinter) abort
+func! s:gometa_importabs(metalinter) abort
+  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
+  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/problems.go'
+
+  try
+    let g:go_metalinter_command = a:metalinter
+    let expected = [
+          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+        \ ]
+    " clear the quickfix lists
+    call setqflist([], 'r')
+
+    let g:go_metalinter_enabled = ['golint']
+
+    call go#lint#Gometa(0, 0)
+
+    let actual = getqflist()
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getqflist()
+    endwhile
+
+    call gotest#assert_quickfix(actual, expected)
+  finally
+      call call(RestoreGOPATH, [])
+      unlet g:go_metalinter_enabled
+  endtry
+endfunc
+
+func! Test_GometaAutoSaveGolangciLint_importabs() abort
+  call s:gometaautosave_importabs('golangci-lint')
+endfunc
+
+func! s:gometaautosave_importabs(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/ok.go'
+  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/ok.go'
 
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
           \ {'lnum': 3, 'bufnr': bufnr('%')+1, 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
           \ {'lnum': 3, 'bufnr': bufnr('%')+1, 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+        \ ]
+
+    " clear the location lists
+    call setloclist(0, [], 'r')
+
+    let g:go_metalinter_autosave_enabled = ['golint']
+
+    call go#lint#Gometa(0, 1)
+
+    let actual = getloclist(0)
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getloclist(0)
+    endwhile
+
+    call gotest#assert_quickfix(actual, expected)
+  finally
+    call call(RestoreGOPATH, [])
+    unlet g:go_metalinter_autosave_enabled
+  endtry
+endfunc
+
+func! Test_GometaGolangciLint_multiple() abort
+  call s:gometa_multiple('golangci-lint')
+endfunc
+
+func! s:gometa_multiple(metalinter) abort
+  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
+  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/multiple/problems.go'
+
+  try
+    let g:go_metalinter_command = a:metalinter
+    let expected = [
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
+        \ ]
+    " clear the quickfix lists
+    call setqflist([], 'r')
+
+    let g:go_metalinter_enabled = ['golint']
+
+    call go#lint#Gometa(0, 0)
+
+    let actual = getqflist()
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getqflist()
+    endwhile
+
+    call gotest#assert_quickfix(actual, expected)
+  finally
+      call call(RestoreGOPATH, [])
+      unlet g:go_metalinter_enabled
+  endtry
+endfunc
+
+func! Test_GometaAutoSaveGolangciLint_multiple() abort
+  call s:gometaautosave_multiple('golangci-lint')
+endfunc
+
+func! s:gometaautosave_multiple(metalinter) abort
+  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
+  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/multiple/problems.go'
+
+  try
+    let g:go_metalinter_command = a:metalinter
+    let expected = [
+          \ {'lnum': 3, 'bufnr': bufnr('%')+2, 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+          \ {'lnum': 3, 'bufnr': bufnr('%')+2, 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
         \ ]
 
     " clear the location lists
@@ -230,7 +336,7 @@ func! Test_Lint_GOPATH() abort
 
   let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
-          \ {'lnum': 5, 'bufnr': bufnr('%')+5, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
+          \ {'lnum': 5, 'bufnr': bufnr('%')+6, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
 
   let winnr = winnr()
@@ -258,7 +364,7 @@ func! Test_Lint_NullModule() abort
 
   let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
-          \ {'lnum': 5, 'bufnr': bufnr('%')+5, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
+          \ {'lnum': 5, 'bufnr': bufnr('%')+6, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
 
   let winnr = winnr()
