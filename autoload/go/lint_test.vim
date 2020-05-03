@@ -53,9 +53,10 @@ func! s:gometa_shadow(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
-          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
+          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
+          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'}
         \ ]
+
     " clear the quickfix lists
     call setqflist([], 'r')
 
@@ -175,8 +176,8 @@ func! s:gometaautosave_importabs(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 3, 'bufnr': bufnr('%')+1, 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
-          \ {'lnum': 3, 'bufnr': bufnr('%')+1, 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+          \ {'lnum': 3, 'bufnr': bufnr('%')+1, 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
+          \ {'lnum': 3, 'bufnr': bufnr('%')+1, 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'}
         \ ]
 
     " clear the location lists
