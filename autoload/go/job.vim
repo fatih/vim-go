@@ -289,7 +289,18 @@ endfunction
 " transformed to their Neovim equivalents.
 function! go#job#Start(cmd, options)
   let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+  let l:cmd = copy(a:cmd)
   let l:options = copy(a:options)
+
+  let l:go_bin_path = go#path#BinPath()
+  if !empty(l:go_bin_path)
+    if go#config#SearchBinPathFirst()
+      let l:path = l:go_bin_path . go#util#PathListSep() . $PATH
+    else
+      let l:path = $PATH . go#util#PathListSep() . l:go_bin_path
+    endif
+    let l:cmd = extend(['env', 'PATH=' . l:path], l:cmd)
+  endif
 
   if has('nvim')
     let l:options = s:neooptions(l:options)
@@ -326,8 +337,9 @@ function! go#job#Start(cmd, options)
     call remove(l:options, 'noblock')
   endif
 
+
   if go#util#HasDebug('shell-commands')
-    call go#util#EchoInfo('job command: ' . string(a:cmd))
+    call go#util#EchoInfo('job command: ' . string(l:cmd))
   endif
 
   if has('nvim')
@@ -336,7 +348,7 @@ function! go#job#Start(cmd, options)
       let l:input = readfile(a:options.in_name, "b")
     endif
 
-    let job = jobstart(a:cmd, l:options)
+    let job = jobstart(l:cmd, l:options)
 
     if len(l:input) > 0
       call chansend(job, l:input)
@@ -344,9 +356,9 @@ function! go#job#Start(cmd, options)
       call chanclose(job, 'stdin')
     endif
   else
-    let l:cmd = a:cmd
+    let l:cmd = l:cmd
     if go#util#IsWin()
-      let l:cmd = join(map(copy(a:cmd), function('s:winjobarg')), " ")
+      let l:cmd = join(map(copy(l:cmd), function('s:winjobarg')), " ")
     endif
 
     let job = job_start(l:cmd, l:options)
