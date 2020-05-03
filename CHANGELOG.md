@@ -76,9 +76,6 @@ IMPROVEMENTS:
   the cursor.
   [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
   [[GH-2839]](https://github.com/fatih/vim-go/pull/2839)
-* Parse compiler errors that prevent golangci-lint linters from running more
-  usefully.
-  [[GH-2835]](https://github.com/fatih/vim-go/pull/2835)
 * Clarify documentation for terminal options.
   [GH-2843]](https://github.com/fatih/vim-go/pull/2843)
 

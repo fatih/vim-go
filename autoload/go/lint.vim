@@ -442,40 +442,14 @@ endfunction
 
 function! s:errorformat(metalinter) abort
   if a:metalinter == 'golangci-lint'
-    let l:efm = ''
-
-    " Golangci-lint can several formats, all of which seem to be undocumented.
-    " Based on trial and error, these error format strings seem to catch all
-    " the relevant combinations.
-
-    " When the actual locations and error message is wrapped in parentheses
-    " within brackets (there is usually duplicated location information in
-    " this form). This usually happens when the linter can't do its job
-    " because of compiler or AST problems.
-    let l:efm .= 'level=%tarning\ msg="%.%#(%f:%l:%c:\ %m)\ %.%#]"'
-    let l:efm .= ',level=%trror\ msg="%.%#(%f:%l:%c:\ %m)\ %.%#]"'
-
-    " When the actual locations and error message are not wrapped in
-    " in bracked without the inner parenthetical. This usually happens when
-    " the linter can't do its job because of compiler or AST problems.
-    let l:efm .= ',level=%tarning\ msg="%.%#:\ [%f:%l:%c:\ %m]"'
-    let l:efm .= ',level=%trror\ msg="%.%#:\ [%f:%l:%c:\ %m]"'
-
-    " When the file location is not provided. The usually happens when the
-    " linter can't do its job because of some other problem.
-    let l:efm .= ',level=%tarning\ msg="%m"'
-    let l:efm .= ',level=%trror\ msg="%m"'
-
-    " when the linter was able to compile and/or create the AST, and the
-    " linter found some problems.
-    let l:efm .= ',%f:%l:%c:\ %m'
-    let l:efm .= ',%f:%l\ %m'
+    " Golangci-lint can output the following:
+    "   <file>:<line>:<column>: <message> (<linter>)
+    " This can be defined by the following errorformat:
+    return 'level=%tarning\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%tarning\ msg="%m",level=%trror\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%trror\ msg="%m",%f:%l:%c:\ %m,%f:%l\ %m'
   elseif a:metalinter == 'gopls'
-    let l:efm = '%f:%l:%c:%t:\ %m'
-    let l:efm .= ',%f:%l:%c::\ %m'
+    return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m'
   endif
 
-  return l:efm
 endfunction
 
 function! s:preserveerrors(autosave, listtype) abort
