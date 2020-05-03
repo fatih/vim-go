@@ -169,10 +169,25 @@ function! s:system(cmd, ...) abort
     endif
   endif
 
+  let l:old_path = $PATH
+
+  let l:go_bin_path = go#path#BinPath()
+  if !empty(l:go_bin_path)
+    " append our GOBIN and GOPATH paths and be sure they can be found there...
+    " let us search in our GOBIN and GOPATH paths
+    " respect the ordering specified by go_search_bin_path_first
+    if go#config#SearchBinPathFirst()
+      let $PATH = l:go_bin_path . go#util#PathListSep() . $PATH
+    else
+      let $PATH = $PATH . go#util#PathListSep() . l:go_bin_path
+    endif
+  endif
+
   try
     return call('system', [a:cmd] + a:000)
   finally
     " Restore original values
+    let $PATH = l:old_path
     let &shell = l:shell
     let &shellredir = l:shellredir
     let &shellcmdflag = l:shellcmdflag
