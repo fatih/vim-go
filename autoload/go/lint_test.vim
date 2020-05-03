@@ -17,7 +17,7 @@ func! s:gometa(metalinter) abort
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
-            \ {'lnum': 5, 'bufnr': bufnr('%')+4, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
+            \ {'lnum': 5, 'bufnr': bufnr('%')+5, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
           \ ]
     endif
 
@@ -53,8 +53,8 @@ func! s:gometa_shadow(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'}
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'}
         \ ]
 
     " clear the quickfix lists
@@ -141,8 +141,8 @@ func! s:gometa_importabs(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
+          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'},
         \ ]
     " clear the quickfix lists
     call setqflist([], 'r')
@@ -212,8 +212,8 @@ func! s:gometa_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
-          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) /vim-go/autoload/go/test-fixtures/lint/src/lint/golangci-lint/problems/shadow/problems.go:4:24: time.Millisecond undefined (type int has no field or method Millisecond)'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'},
         \ ]
     " clear the quickfix lists
     call setqflist([], 'r')
@@ -247,8 +247,8 @@ func! s:gometaautosave_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 3, 'bufnr': bufnr('%')+2, 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
-          \ {'lnum': 3, 'bufnr': bufnr('%')+2, 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'import \"/quux\": cannot import absolute path'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'},
         \ ]
 
     " clear the location lists
@@ -337,7 +337,7 @@ func! Test_Lint_GOPATH() abort
 
   let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
-          \ {'lnum': 5, 'bufnr': bufnr('%')+6, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
+          \ {'lnum': 5, 'bufnr': bufnr('%')+7, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
 
   let winnr = winnr()
@@ -365,7 +365,7 @@ func! Test_Lint_NullModule() abort
 
   let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
-          \ {'lnum': 5, 'bufnr': bufnr('%')+6, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
+          \ {'lnum': 5, 'bufnr': bufnr('%')+7, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
 
   let winnr = winnr()
