@@ -139,6 +139,9 @@ BUG FIXES:
   [[GH-2854]](https://github.com/fatih/vim-go/pull/2854)
 * Ignore commented out import statements when executing `:GoImport`.
   [[GH-2862]](https://github.com/fatih/vim-go/pull/2862)
+* Interpret file paths in `go vet` errors relative to the current buffer's
+  directory.
+  [[GH-2882]](https://github.com/fatih/vim-go/pull/2882)
 
 ## v1.22 - (January 30, 2020)
 
