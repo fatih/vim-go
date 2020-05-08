@@ -678,6 +678,15 @@ function! s:matchaddpos(group, pos) abort
   endfor
 endfunction
 
+function! go#util#Chdir(dir) abort
+  if !exists('*chdir')
+    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
+    execute cd . a:dir
+    return
+  endif
+  call chdir(a:dir)
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

@@ -18,7 +18,7 @@ fun! gotest#write_file(path, contents) abort
 
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
   call writefile(a:contents, l:full_path)
-  exe 'cd ' . l:dir . '/src'
+  call go#util#Chdir(l:dir . '/src')
 
   silent exe 'e! ' . a:path
 
@@ -57,7 +57,7 @@ fun! gotest#load_fixture(path) abort
   let l:full_path = l:dir . '/src/' . a:path
 
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
-  exe 'cd ' . l:dir . '/src'
+  call go#util#Chdir(l:dir . '/src')
   silent exe 'noautocmd e ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
