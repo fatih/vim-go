@@ -204,8 +204,8 @@ function! go#lint#Golint(bang, ...) abort
   call go#statusline#Update(expand('%:p:h'), l:status)
 endfunction
 
-" Vet calls 'go vet' on the current directory. Any warnings are populated in
-" the location list
+" Vet calls 'go vet' on the current buffer's directory. Any warnings are
+" populated in the location list
 function! go#lint#Vet(bang, ...) abort
   call go#cmd#autowrite()
 
@@ -250,7 +250,13 @@ function! go#lint#Vet(bang, ...) abort
 
     let l:winid = win_getid(winnr())
     let l:errorformat = "%-Gexit status %\\d%\\+," . &errorformat
-    call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet", 0)
+    let l:dir = getcwd()
+    call go#util#Chdir(expand('%:p:h'))
+    try
+      call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet", 0)
+    finally
+      call go#util#Chdir(l:dir)
+    endtry
     let l:errors = go#list#Get(l:listtype)
 
     if empty(l:errors)
