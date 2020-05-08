@@ -301,6 +301,40 @@ func! Test_Vet() abort
   endtry
 endfunc
 
+func! Test_Vet_subdir() abort
+  let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
+
+  " go up one directory to easily test that go vet's file paths are handled
+  " correctly when the working directory is not the directory that contains
+  " the file being vetted.
+  call go#util#Chdir('..')
+
+  try
+    let expected = [
+          \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
+          \ 'text': 'Printf format %d has arg str of wrong type string'}
+        \ ]
+
+    let winnr = winnr()
+
+    " clear the location lists
+    call setqflist([], 'r')
+
+    call go#lint#Vet(1)
+
+    let actual = getqflist()
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getqflist()
+    endwhile
+
+    call gotest#assert_quickfix(actual, expected)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 func! Test_Vet_compilererror() abort
   let l:tmp = gotest#load_fixture('lint/src/vet/compilererror/compilererror.go')
 
