@@ -216,7 +216,7 @@ COMMANDS                                                         *go-commands*
 
     Open the relevant GoDoc in browser for either the word[s] passed to the
     command or by default, the word under the cursor. By default it opens the
-    documentation in 'https://godoc.org'. To change it see |'g:go_doc_url'|.
+    documentation in 'https://pkg.go.dev'. To change it see |'g:go_doc_url'|.
 
                                                                       *:GoFmt*
 :GoFmt
@@ -1442,9 +1442,9 @@ Maximum height for the GoDoc window created with |:GoDoc|. Default is 20. >
                                                               *'g:go_doc_url'*
 
 godoc server URL used when |:GoDocBrowser| is used. Change if you want to use
-a private internal service. Default is 'https://godoc.org'.
+a private internal service. Default is 'https://pkg.go.dev'.
 >
-  let g:go_doc_url = 'https://godoc.org'
+  let g:go_doc_url = 'https://pkg.go.dev'
 <
 
                                                      *'g:go_doc_popup_window'*
@@ -1476,7 +1476,7 @@ other packages. Valid options are `gopls` and `guru`. By default it's `gopls`.
 <
                                                       *'g:go_implements_mode'*
 
-Use this option to define the command to be used for |:GoImplements|. 
+Use this option to define the command to be used for |:GoImplements|.
 The Implements feature in gopls is still new and being worked upon.
 Valid options are `gopls` and `guru`. By default it's `guru`.
 >
