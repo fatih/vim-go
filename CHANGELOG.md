@@ -1,5 +1,7 @@
 ## unplanned
 
+## v1.23 - (May 16, 2020)
+
 BACKWARDS INCOMPATIBILITIES:
 * Remove support for gocode.
   [[GH-2686]](https://github.com/fatih/vim-go/pull/2686)
