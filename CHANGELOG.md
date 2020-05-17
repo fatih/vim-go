@@ -79,7 +79,7 @@ IMPROVEMENTS:
   [[GH-2822]](https://github.com/fatih/vim-go/pull/2822)
   [[GH-2839]](https://github.com/fatih/vim-go/pull/2839)
 * Clarify documentation for terminal options.
-  [GH-2843]](https://github.com/fatih/vim-go/pull/2843)
+  [[GH-2843]](https://github.com/fatih/vim-go/pull/2843)
 
 BUG FIXES:
 * Use the discovered full path for gopls when renaming.
