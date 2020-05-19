@@ -99,8 +99,8 @@ fun! gotest#assert_buffer(skipHeader, want) abort
   try
     call writefile(l:buffer, l:tmp . '/have')
     call writefile(l:want, l:tmp . '/want')
-    call go#fmt#run('gofmt', l:tmp . '/have', l:tmp . '/have')
-    call go#fmt#run('gofmt', l:tmp . '/want', l:tmp . '/want')
+    call system('gofmt -w ' . l:tmp . '/have')
+    call system('gofmt -w ' . l:tmp . '/want')
     let [l:out, l:err] = go#util#Exec(["diff", "-u", l:tmp . '/have', l:tmp . '/want'])
   finally
     call delete(l:tmp . '/have')

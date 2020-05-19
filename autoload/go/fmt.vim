@@ -9,15 +9,28 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-"  we have those problems :
-"  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
-"  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
-"
-"  The below function is an improved version that aims to fix all problems.
-"  it doesn't undo changes and break undo history.  If you are here reading
-"  this and have VimL experience, please look at the function for
-"  improvements, patches are welcome :)
 function! go#fmt#Format(withGoimport) abort
+  let l:lines = getbufline(bufnr('%'), 1, '$')
+  let l:filepath = expand("%")
+
+  let l:out = go#fmt#run(a:withGoimport, l:lines, l:filepath)
+
+  if empty(l:out)
+    return
+  endif
+
+  if l:out == l:lines
+    return
+  endif
+
+  " replace buffer with formatted lines
+  call go#fmt#replace(l:out)
+
+  call go#lsp#DidChange(expand(l:filepath, ':p'))
+endfunction
+
+
+function! go#fmt#run(withGoimport, lines, filepath) abort
   let l:bin_name = go#config#FmtCommand()
   if a:withGoimport == 1
     let l:mode = go#config#ImportsMode()
@@ -42,6 +55,26 @@ function! go#fmt#Format(withGoimport) abort
     return
   endif
 
+  let l:cmd = join(s:fmt_cmd(l:bin_name, a:filepath), " ")
+
+  " format with specified command
+  let l:out = split(system(l:cmd, a:lines), '\n')
+
+  " check system exit code
+  if v:shell_error
+    if !go#config#FmtFailSilently()
+      let l:errors = s:replace_filename(expand('%'), l:out)
+      call go#fmt#ShowErrors(l:errors)
+    endif
+
+    return
+  endif
+
+  return l:out
+endfunction
+
+function! go#fmt#replace(lines) abort
+  " store view
   if go#config#FmtExperimental()
     " Using winsaveview to save/restore cursor state has the problem of
     " closing folds on save:
@@ -65,32 +98,34 @@ function! go#fmt#Format(withGoimport) abort
     let tmpundofile = tempname()
     exe 'wundo! ' . tmpundofile
   else
-    " Save cursor position and many other things.
     let l:curw = winsaveview()
   endif
 
-  " Write current unsaved buffer to a temp file
-  let l:tmpname = tempname() . '.go'
-  call writefile(go#util#GetLines(), l:tmpname)
-  if go#util#IsWin()
-    let l:tmpname = tr(l:tmpname, '\', '/')
+  " we should not replace contents if the newBuffer is empty
+  if empty(a:lines)
+    return
   endif
 
-  let current_col = col('.')
-  let [l:out, l:err] = go#fmt#run(l:bin_name, l:tmpname, expand('%'))
-  let line_offset = len(readfile(l:tmpname)) - line('$')
-  let l:orig_line = getline('.')
+  " https://vim.fandom.com/wiki/Restore_the_cursor_position_after_undoing_text_change_made_by_a_script
+  " create a fake change entry and merge with undo stack prior to do formating
+  normal! ix
+  normal! x
+  try | silent undojoin | catch | endtry
 
-  if l:err == 0
-    call go#fmt#update_file(l:tmpname, expand('%'))
-  elseif !go#config#FmtFailSilently()
-    let l:errors = s:replace_filename(expand('%'), out)
-    call go#fmt#ShowErrors(l:errors)
-  endif
+  " delete all lines on the current buffer
+  silent! execute '%delete _'
 
-  " We didn't use the temp file, so clean up
-  call delete(l:tmpname)
+  " replace all lines from the current buffer with output
+  let l:idx = 0
+  for l:line in a:lines
+    silent! call append(l:idx, l:line)
+    let l:idx += 1
+  endfor
+  
+  " delete trailing newline introduced by the above append procedure
+  silent! execute '$delete _'
 
+  " restore view
   if go#config#FmtExperimental()
     " restore our undo history
     silent! exe 'rundo ' . tmpundofile
@@ -103,61 +138,16 @@ function! go#fmt#Format(withGoimport) abort
       call winrestview(l:curw)
     endif
   else
-    " Restore our cursor/windows positions.
     call winrestview(l:curw)
   endif
-
-  " be smart and jump to the line the new statement was added/removed and
-  " adjust the column within the line
-  let l:lineno = line('.') + line_offset
-  call cursor(l:lineno, current_col + (len(getline(l:lineno)) - len(l:orig_line)))
-
-  " Syntax highlighting breaks less often.
+    
+  " syntax highlighting breaks less often
   syntax sync fromstart
 endfunction
 
-" update_file updates the target file with the given formatted source
-function! go#fmt#update_file(source, target)
-  " remove undo point caused via BufWritePre
-  try | silent undojoin | catch | endtry
-
-  let old_fileformat = &fileformat
-  if exists("*getfperm")
-    " save file permissions
-    let original_fperm = getfperm(a:target)
-  endif
-
-  call rename(a:source, a:target)
-
-  " restore file permissions
-  if exists("*setfperm") && original_fperm != ''
-    call setfperm(a:target , original_fperm)
-  endif
-
-  " reload buffer to reflect latest changes
-  silent edit!
-
-  call go#lsp#DidChange(expand(a:target, ':p'))
-
-  let &fileformat = old_fileformat
-  let &syntax = &syntax
-
-  call go#fmt#CleanErrors()
-endfunction
-
-" run runs the gofmt/goimport command for the given source file and returns
-" the output of the executed command. Target is the real file to be formatted.
-function! go#fmt#run(bin_name, source, target)
-  let l:cmd = s:fmt_cmd(a:bin_name, a:source, a:target)
-  if empty(l:cmd)
-    return
-  endif
-  return go#util#Exec(l:cmd)
-endfunction
-
 " fmt_cmd returns the command to run as a list.
-function! s:fmt_cmd(bin_name, source, target)
-  let l:cmd = [a:bin_name, '-w']
+function! s:fmt_cmd(bin_name, filepath)
+  let l:cmd = [a:bin_name]
 
   " add the options for binary (if any). go_fmt_options was by default of type
   " string, however to allow customization it's now a dictionary of binary
@@ -168,19 +158,16 @@ function! s:fmt_cmd(bin_name, source, target)
   endif
   call extend(cmd, split(opts, " "))
   if a:bin_name is# 'goimports'
-    call extend(cmd, ["-srcdir", a:target])
+    call extend(cmd, ["-srcdir", a:filepath])
   endif
 
-  call add(cmd, a:source)
   return cmd
 endfunction
 
 " replace_filename replaces the filename on each line of content with
 " a:filename.
-function! s:replace_filename(filename, content) abort
-  let l:errors = split(a:content, '\n')
-
-  let l:errors = map(l:errors, printf('substitute(v:val, ''^.\{-}:'', ''%s:'', '''')', a:filename))
+function! s:replace_filename(filename, errors) abort
+  let l:errors = map(a:errors, printf('substitute(v:val, ''^.\{-}:'', ''%s:'', '''')', a:filename))
   return join(l:errors, "\n")
 endfunction
 
