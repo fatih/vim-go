@@ -620,10 +620,7 @@ function! go#lsp#DidOpen(fname) abort
     let l:lsp.notificationQueue[l:fname] = []
   endif
 
-  if !has_key(l:lsp.fileVersions, l:fname)
-    let l:lsp.fileVersions[l:fname] = 0
-  endif
-  let l:lsp.fileVersions[l:fname] = l:lsp.fileVersions[l:fname] + 1
+  let l:lsp.fileVersions[l:fname] = getbufvar(l:fname, 'changedtick')
 
   let l:msg = go#lsp#message#DidOpen(l:fname, join(go#util#GetLines(), "\n") . "\n", l:lsp.fileVersions[l:fname])
   let l:state = s:newHandlerState('')
@@ -653,10 +650,11 @@ function! go#lsp#DidChange(fname) abort
 
   let l:lsp = s:lspfactory.get()
 
-  if !has_key(l:lsp.fileVersions, l:fname)
-    let l:lsp.fileVersions[l:fname] = 0
+  let l:version = getbufvar(l:fname, 'changedtick')
+  if l:lsp.fileVersions[l:fname] == l:version
+    return
   endif
-  let l:lsp.fileVersions[l:fname] = l:lsp.fileVersions[l:fname] + 1
+  let l:lsp.fileVersions[l:fname] = l:version
 
   let l:msg = go#lsp#message#DidChange(l:fname, join(go#util#GetLines(), "\n") . "\n", l:lsp.fileVersions[l:fname])
   let l:state = s:newHandlerState('')
