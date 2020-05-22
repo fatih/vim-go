@@ -649,6 +649,12 @@ function! go#lsp#DidChange(fname) abort
     return
   endif
 
+  if !s:bufferchanged()
+    return
+  endif
+
+  call s:clearbufferchanged()
+
   call go#lsp#DidOpen(a:fname)
 
   let l:lsp = s:lspfactory.get()
@@ -1575,6 +1581,21 @@ function! s:deleteline(start, end) abort
   else
     call execute(printf('%d,%d d_', a:start, a:end))
   endif
+endfunction
+
+function! go#lsp#SetBufferChanged() abort
+  let b:go_lsp_changed = 1
+endfunction
+
+" s:bufferchanged returns true when the buffer has changed
+function! s:bufferchanged() abort
+  " assume the buffer has changed so that it will be treated as such when the
+  " buffer variable hasn't been set yet.
+  return get(b:, 'go_lsp_changed', 1)
+endfunction
+
+function! s:clearbufferchanged() abort
+  let b:go_lsp_changed = 0
 endfunction
 
 " restore Vi compatibility settings
