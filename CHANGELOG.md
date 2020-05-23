@@ -1,5 +1,12 @@
 ## unplanned
 
+IMPROVEMENTS:
+* Clarify how `g:go_imports_autosave` and `g:go_fmt_autosave` interact.
+  [[GH-2893]](https://github.com/fatih/vim-go/pull/2893)
+
+
+BUG FIXES:
+
 ## v1.23 - (May 16, 2020)
 
 BACKWARDS INCOMPATIBILITIES:
