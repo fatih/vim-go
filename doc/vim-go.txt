@@ -343,6 +343,9 @@ CTRL-t
     If using neovim then `:GoRun` will run in a new terminal according to
     |'g:go_term_mode'|.
 
+    The working directory will be the directory containing the current buffer.
+
+
                                                                     *:GoBuild*
 :GoBuild[!] [expand]
 
