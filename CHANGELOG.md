@@ -5,6 +5,8 @@ IMPROVEMENTS:
   [[GH-2893]](https://github.com/fatih/vim-go/pull/2893)
 * Document what the working directory will be for `:GoRun`.
   [[GH-2898]](https://github.com/fatih/vim-go/pull/2898)
+* Add Ultisnip snippet for wrapping errors.
+  [[GH-2883]](https://github.com/fatih/vim-go/pull/2883)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
