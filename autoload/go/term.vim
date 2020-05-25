@@ -157,7 +157,7 @@ func s:handle_exit(job_id, exit_status, state) abort
 
   let l:bufdir = fnameescape(expand('%:p:h'))
   if !isdirectory(l:bufdir)
-    call go#term#Warn('terminal job failure not processed, because the job''s working directory no longer exists')
+    call go#util#EchoWarning('terminal job failure not processed, because the job''s working directory no longer exists')
     call win_gotoid(l:winid)
     return
   endif
