@@ -6,6 +6,8 @@ IMPROVEMENTS:
 
 
 BUG FIXES:
+* Fix call to non-existent function in terminal mode edge case.
+  [[GH-2895]](https://github.com/fatih/vim-go/pull/2895)
 
 ## v1.23 - (May 16, 2020)
 
