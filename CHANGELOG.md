@@ -3,7 +3,8 @@
 IMPROVEMENTS:
 * Clarify how `g:go_imports_autosave` and `g:go_fmt_autosave` interact.
   [[GH-2893]](https://github.com/fatih/vim-go/pull/2893)
-
+* Document what the working directory will be for `:GoRun`.
+  [[GH-2898]](https://github.com/fatih/vim-go/pull/2898)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
