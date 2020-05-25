@@ -312,6 +312,18 @@ snippet fe "fmt.Errorf(...)"
 fmt.Errorf("${1:${VISUAL}}")
 endsnippet
 
+# Fmt Errorf wrap
+snippet few "fmt.Errorf(%w, err)"
+fmt.Errorf("${1:message}: %w", ${2:${VISUAL:err}})
+endsnippet
+
+# Fmt Errorf wrap and return
+snippet errnfw "Error return fmt.Errorf(%w, err)" !b
+if ${1:${VISUAL:err}} != nil {
+	return fmt.Errorf("${2:message}: %w", $1)
+}
+endsnippet
+
 # log printf
 snippet lf "log.Printf(...)"
 log.Printf("${1:${VISUAL}} = %+v\n", $1)
