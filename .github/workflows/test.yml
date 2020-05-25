@@ -17,6 +17,8 @@ jobs:
       uses: actions/checkout@v2.1.0
     - name: install vim
       run: $GITHUB_WORKSPACE/scripts/install-vim vim-8.2
+    - name: install tools
+      run: $GITHUB_WORKSPACE/scripts/install-tools vim-8.2
     - name: lint
       run: $GITHUB_WORKSPACE/scripts/lint vim-8.2
   test:
@@ -44,6 +46,8 @@ jobs:
       uses: actions/checkout@v2.1.0
     - name: install vim
       run: $GITHUB_WORKSPACE/scripts/install-vim ${{ matrix.vim }}
+    - name: install tools
+      run: $GITHUB_WORKSPACE/scripts/install-tools ${{ matrix.vim }}
     - name: test
       run: $GITHUB_WORKSPACE/scripts/test -c ${{ matrix.vim }}
     - uses: codecov/codecov-action@v1
