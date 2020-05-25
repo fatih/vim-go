@@ -1,8 +1,8 @@
 #!/bin/sh
 #
 # Install and setup a Vim or Neovim for running tests.
-# This should work on both Travis and people's desktop computers, and be 100%
-# independent from any system installed Vim.
+# This should work on both GitHub Actions and people's desktop computers, and
+# be 100% independent from any system installed Vim.
 #
 # It will echo the full path to a Vim binary, e.g.:
 #   /some/path/src/vim
@@ -91,22 +91,6 @@ else
   mkdir -p "$installdir/share/vim/vimgo/pack/vim-go/start"
   ln -s "$vimgodir" "$installdir/share/vim/vimgo/pack/vim-go/start/vim-go"
 fi
-
-# Make sure all Go tools and other dependencies are installed.
-echo "Installing Go binaries"
-export GOPATH=$installdir
-export GO111MODULE=off
-export PATH=${GOPATH}/bin:$PATH
-"$vimgodir/scripts/run-vim" $vim +':silent :GoUpdateBinaries' +':qa'
-
-echo "Installing lint tools"
-(
-  mkdir -p "$installdir/share/vim/vimgo/pack/vim-go/start/"
-  cd "$installdir/share/vim/vimgo/pack/vim-go/start/"
-  [ -d "vim-vimhelplint" ] || git clone --depth 1 --quiet https://github.com/machakann/vim-vimhelplint
-  [ -d "vim-vimlparser" ]  || git clone --depth 1 --quiet https://github.com/ynkdir/vim-vimlparser
-  [ -d "vim-vimlint" ]     || git clone --depth 1 --quiet https://github.com/syngan/vim-vimlint
-)
 
 # Don't really need source after successful install.
 rm -rf "$srcdir"
