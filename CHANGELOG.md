@@ -11,6 +11,8 @@ IMPROVEMENTS:
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
   [[GH-2895]](https://github.com/fatih/vim-go/pull/2895)
+* Do not show errors when adding a text property for highlighting fails.
+  [[GH-2892]](https://github.com/fatih/vim-go/pull/2892)
 
 ## v1.23 - (May 16, 2020)
 
