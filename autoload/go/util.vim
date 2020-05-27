@@ -648,7 +648,14 @@ function! go#util#HighlightPositions(group, pos) abort
         let l:end_col = l:max - line2byte(l:end_lnum) + l:end_lnum - l:pos[0]
         let l:prop = {'type': a:group, 'end_lnum': l:end_lnum, 'end_col': l:end_col}
       endif
-      call prop_add(l:pos[0], l:pos[1], l:prop)
+      try
+        call prop_add(l:pos[0], l:pos[1], l:prop)
+      catch
+        " Swallow any exceptions encountered while trying to add the property
+        " Due to the asynchronous nature, it's possible that the buffer has
+        " changed since the buffer was analyzed and that the specified
+        " position is no longer valid.
+      endtry
     endfor
     return
   endif
