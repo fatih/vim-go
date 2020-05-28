@@ -7,6 +7,8 @@ IMPROVEMENTS:
   [[GH-2898]](https://github.com/fatih/vim-go/pull/2898)
 * Add Ultisnip snippet for wrapping errors.
   [[GH-2883]](https://github.com/fatih/vim-go/pull/2883)
+* Beautify the godoc pop up window border.
+  [[GH-2900]](https://github.com/fatih/vim-go/pull/2900)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
