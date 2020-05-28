@@ -6,6 +6,8 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
+scriptencoding utf-8
+
 let s:buf_nr = -1
 
 function! go#doc#OpenBrowser(...) abort
@@ -61,10 +63,14 @@ function! s:GodocView(newposition, position, content) abort
     if exists('*popup_atcursor') && exists('*popup_clear')
       call popup_clear()
 
+      let borderchars = ['-', '|', '-', '|', '+', '+', '+', '+']
+      if &encoding == "utf-8"
+        let borderchars = ['─', '│', '─', '│', '┌', '┐', '┘', '└']
+      endif
       call popup_atcursor(split(a:content, '\n'), {
             \ 'padding': [1, 1, 1, 1],
-            \ 'borderchars': ['-','|','-','|','+','+','+','+'],
-            \ "border": [1, 1, 1, 1],
+            \ 'borderchars': borderchars,
+            \ 'border': [1, 1, 1, 1],
             \ })
     elseif has('nvim') && exists('*nvim_open_win')
       let lines = split(a:content, '\n')
