@@ -69,7 +69,7 @@ function! s:GodocView(newposition, position, content) abort
       endif
       call popup_atcursor(split(a:content, '\n'), {
             \ 'padding': [1, 1, 1, 1],
-            \ 'borderchars': get(g:, 'go_doc_popup_border', borderchars),
+            \ 'borderchars': borderchars,
             \ 'border': [1, 1, 1, 1],
             \ })
     elseif has('nvim') && exists('*nvim_open_win')
