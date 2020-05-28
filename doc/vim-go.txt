@@ -1465,6 +1465,14 @@ Use this option to use the popup-window for |K| and |:GoDoc|, rather than the
   let g:go_doc_popup_window = 0
 <
 
+                                                     *'g:go_doc_popup_border'*
+
+Use this option to custome border chars of the popup-window for |K|
+and |:GoDoc|, Default is empty. Example usage, set the border as rounded:
+>
+  let g:go_doc_popup_border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+<
+
                                                              *'g:go_def_mode'*
 
 Use this option to define the command to be used for |:GoDef|. By default
@@ -1486,7 +1494,7 @@ other packages. Valid options are `gopls` and `guru`. By default it's `gopls`.
 <
                                                       *'g:go_implements_mode'*
 
-Use this option to define the command to be used for |:GoImplements|. 
+Use this option to define the command to be used for |:GoImplements|.
 The Implements feature in gopls is still new and being worked upon.
 Valid options are `gopls` and `guru`. By default it's `guru`.
 >
