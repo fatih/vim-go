@@ -9,6 +9,8 @@ IMPROVEMENTS:
   [[GH-2883]](https://github.com/fatih/vim-go/pull/2883)
 * Beautify the godoc pop up window border.
   [[GH-2900]](https://github.com/fatih/vim-go/pull/2900)
+* Default `g:go_doc_url` to https://pkg.go.dev.
+  [[GH-2884]](https://github.com/fatih/vim-go/pull/2884)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
