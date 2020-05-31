@@ -17,6 +17,8 @@ BUG FIXES:
   [[GH-2895]](https://github.com/fatih/vim-go/pull/2895)
 * Do not show errors when adding a text property for highlighting fails.
   [[GH-2892]](https://github.com/fatih/vim-go/pull/2892)
+* Include `errcheck` in `g:go_metalinter_enabled`'s default.
+  [[GH-2903]](https://github.com/fatih/vim-go/pull/2903)
 
 ## v1.23 - (May 16, 2020)
 
