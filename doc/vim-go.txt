@@ -1782,7 +1782,7 @@ options may also need to be adjusted.
 
                                                         *'g:go_gopls_options'*
 
-The commandline arguments to pass to gopls. By default, it's an empty array.
+The commandline arguments to pass to gopls. By default, it's `-remote=auto`.
 >
   let g:go_gopls_options = []
 <
