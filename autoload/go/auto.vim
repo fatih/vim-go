@@ -57,15 +57,15 @@ function! s:echo_go_info()
   endif
   let item = v:completed_item
 
-  if !has_key(item, "info")
+  if !has_key(item, "user_data")
     return
   endif
 
-  if empty(item.info)
+  if empty(item.user_data)
     return
   endif
 
-  redraws! | echo "vim-go: " | echohl Function | echon item.info | echohl None
+  redraws! | echo "vim-go: " | echohl Function | echon item.user_data | echohl None
 endfunction
 
 let s:timer_id = 0

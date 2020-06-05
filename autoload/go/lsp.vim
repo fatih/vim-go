@@ -703,7 +703,7 @@ function! s:completionHandler(next, msg) abort dict
   for l:item in a:msg.items
     let l:start = l:item.textEdit.range.start.character
 
-    let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind)}
+    let l:match = {'abbr': l:item.label, 'word': l:item.textEdit.newText, 'info': '', 'kind': go#lsp#completionitemkind#Vim(l:item.kind), 'user_data': ''}
     if has_key(l:item, 'detail')
         let l:match.menu = l:item.detail
         if go#lsp#completionitemkind#IsFunction(l:item.kind) || go#lsp#completionitemkind#IsMethod(l:item.kind)
@@ -721,6 +721,7 @@ function! s:completionHandler(next, msg) abort dict
         endif
     endif
 
+    let l:match.user_data = l:match.info
     if has_key(l:item, 'documentation')
       let l:match.info .= "\n\n" . l:item.documentation
     endif
