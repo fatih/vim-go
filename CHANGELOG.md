@@ -25,6 +25,9 @@ BUG FIXES:
 * Fix display of completion selection information on command-line when
   `g:go_echo_go_info` is enabled.
   [[GH-2907]](https://github.com/fatih/vim-go/pull/2907)
+* Prevent `:GoDebugBreakpoint` from causing delve to exit.
+  [[GH-2908]](https://github.com/fatih/vim-go/pull/2908)
+
 
 ## v1.23 - (May 16, 2020)
 
