@@ -551,7 +551,7 @@ function! go#config#DiagnosticsEnabled() abort
 endfunction
 
 function! go#config#GoplsOptions() abort
-  return get(g:, 'go_gopls_options', [])
+  return get(g:, 'go_gopls_options', ['-remote=auto'])
 endfunction
 
 " Set the default value. A value of "1" is a shortcut for this, for
