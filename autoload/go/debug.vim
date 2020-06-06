@@ -1017,14 +1017,14 @@ endfunction
 
 " Change Goroutine
 function! go#debug#Goroutine() abort
-  let l:goroutineID = substitute(getline('.'), '^  Goroutine \(.\{-1,\}\) - .*', '\1', 'g')
+  let l:goroutineID = str2nr(substitute(getline('.'), '^  Goroutine \(.\{-1,\}\) - .*', '\1', 'g'))
 
   if l:goroutineID <= 0
     return
   endif
 
   try
-    let l:res = s:call_jsonrpc('RPCServer.Command', {'Name': 'switchGoroutine', 'GoroutineID': str2nr(l:goroutineID)})
+    let l:res = s:call_jsonrpc('RPCServer.Command', {'Name': 'switchGoroutine', 'GoroutineID': l:goroutineID})
     call s:stack_cb(l:res)
     call go#util#EchoInfo("Switched goroutine to: " . l:goroutineID)
   catch
@@ -1063,7 +1063,7 @@ function! go#debug#Breakpoint(...) abort
     if type(l:found) == v:t_dict && !empty(l:found)
       exe 'sign unplace '. l:found.id .' file=' . l:found.file
       if s:isActive()
-        let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': str2nr(l:found.id, 10)})
+        let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': l:found.id})
       endif
     " Add breakpoint.
     else
@@ -1107,7 +1107,7 @@ function! s:list_breakpoints()
 
     let l:sign = matchlist(l:line, '\vline\=(\d+) +id\=(\d+)')
     call add(l:signs, {
-          \ 'id': l:sign[2],
+          \ 'id': str2nr(l:sign[2]),
           \ 'file': fnamemodify(l:file, ':p'),
           \ 'line': str2nr(l:sign[1]),
     \ })
