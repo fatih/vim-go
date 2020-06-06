@@ -1063,7 +1063,7 @@ function! go#debug#Breakpoint(...) abort
     if type(l:found) == v:t_dict && !empty(l:found)
       exe 'sign unplace '. l:found.id .' file=' . l:found.file
       if s:isActive()
-        let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': l:found.id})
+        let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': str2nr(l:found.id, 10)})
       endif
     " Add breakpoint.
     else
