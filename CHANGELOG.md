@@ -19,6 +19,9 @@ BUG FIXES:
   [[GH-2892]](https://github.com/fatih/vim-go/pull/2892)
 * Include `errcheck` in `g:go_metalinter_enabled`'s default.
   [[GH-2903]](https://github.com/fatih/vim-go/pull/2903)
+* Fix display of completion selection information on command-line when
+  `g:go_echo_go_info` is enabled.
+  [[GH-2907]](https://github.com/fatih/vim-go/pull/2907)
 
 ## v1.23 - (May 16, 2020)
 
