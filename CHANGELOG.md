@@ -11,6 +11,9 @@ IMPROVEMENTS:
   [[GH-2900]](https://github.com/fatih/vim-go/pull/2900)
 * Default `g:go_doc_url` to https://pkg.go.dev.
   [[GH-2884]](https://github.com/fatih/vim-go/pull/2884)
+* Default `g:go_gopls_options` to `[-remote=auto]` to share gopls instances
+  with other plugins and multiple instances of Vim.
+  [[GH-2905]](https://github.com/fatih/vim-go/pull/2905)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
