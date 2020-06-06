@@ -114,16 +114,34 @@ function! go#test#Func(bang, ...) abort
   "
   " for the full list
   " :help search
-  let test = search('func \(Test\|Example\)', "bcnW")
+  " Find the last line that has a full test declaration.
+  let outerTest = search('func \(Test\|Example\)', "bcnW")
+  " Find the next line that has a full test declaration.
+  let nextTest = search('func \(Test\|Example\)', "cnW")
+  " Try to find an inner test that is declared before the current cursor
+  " position.
+  let innerTest = search('t.Run("', "bcnW")
 
-  if test == 0
+  if outerTest == 0
     echo "vim-go: [test] no test found immediate to cursor"
     return
   end
 
-  let line = getline(test)
+  let line = getline(outerTest)
   let name = split(split(line, " ")[1], "(")[0]
   let args = [a:bang, 0, "-run", name . "$"]
+
+  " If an inner test was found, and it comes AFTER the outer test, but it
+  " comes BEFORE the next test, we can assume that the user wants to run this
+  " specific inner test.
+  if innerTest != 0 && innerTest > outerTest && (nextTest == 0 || innerTest < nextTest)
+    let innerLine = getline(innerTest)
+    let innerName = split(split(innerLine, "\"")[1], "\"")[0]
+
+    " Rewrite the arguments with a specific test pattern to only run the
+    " current inner test.
+    let args = [a:bang, 0, "-run", "^" . name . "$/^" . innerName . "$"]
+  end
 
   if a:0
     call extend(args, a:000)
