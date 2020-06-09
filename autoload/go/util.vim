@@ -144,7 +144,7 @@ function! go#util#ModuleRoot() abort
     return expand('%:p:h')
   endif
 
-  return fnamemodify(l:module, ':p:h')
+  return resolve(fnamemodify(l:module, ':p:h'))
 endfunction
 
 " Run a shell command.
