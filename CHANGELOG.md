@@ -27,6 +27,9 @@ BUG FIXES:
   [[GH-2907]](https://github.com/fatih/vim-go/pull/2907)
 * Prevent `:GoDebugBreakpoint` from causing delve to exit.
   [[GH-2908]](https://github.com/fatih/vim-go/pull/2908)
+* Use the resolved directory name for `gopls`' working directory when `go.mod`
+  is in a symlinked path.
+  [[GH-2913]](https://github.com/fatih/vim-go/pull/2913)
 
 
 ## v1.23 - (May 16, 2020)
