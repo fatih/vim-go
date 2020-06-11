@@ -47,22 +47,17 @@ function! go#rename#Rename(bang, ...) abort
   if go#util#has_job()
     call s:rename_job({
           \ 'cmd': cmd,
-          \ 'bin': bin,
           \ 'bang': a:bang,
           \})
     return
   endif
 
-  if l:bin == 'gopls'
-    let l:wd = go#util#ModuleRoot()
-    if l:wd == -1
-      let l:wd = getcwd()
-    endif
-    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-    execute cd . fnameescape(l:wd)
+  let l:wd = go#util#ModuleRoot()
+  if l:wd == -1
+    let l:wd = getcwd()
   endif
 
-  let [l:out, l:err] = go#util#Exec(l:cmd)
+  let [l:out, l:err] = go#util#ExecInDir2(l:cmd, l:wd)
   call s:parse_errors(l:err, a:bang, split(l:out, '\n'))
 endfunction
 
@@ -77,11 +72,9 @@ function s:rename_job(args)
   call go#cmd#autowrite()
   let l:cbs = go#job#Options(l:job_opts)
 
-  if a:args.bin == "gopls"
-    let l:wd = go#util#ModuleRoot()
-    if l:wd != -1
-      let l:cbs.cwd = l:wd
-    endif
+  let l:wd = go#util#ModuleRoot()
+  if l:wd != -1
+    let l:cbs.cwd = l:wd
   endif
 
   " wrap l:cbs.exit_cb in s:exit_cb.

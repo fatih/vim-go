@@ -209,14 +209,19 @@ function! go#util#Exec(cmd, ...) abort
 endfunction
 
 function! go#util#ExecInDir(cmd, ...) abort
-  if !isdirectory(expand("%:p:h"))
+  let l:to = expand("%:p:h")
+  return call('go#util#ExecInDir2', [a:cmd, l:to] + a:000)
+endfunction
+
+function! go#util#ExecInDir2(cmd, to, ...) abort
+  if !isdirectory(a:to)
     return ['', 1]
   endif
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
   try
-    execute cd . fnameescape(expand("%:p:h"))
+    execute cd . fnameescape(a:to)
     let [l:out, l:err] = call('go#util#Exec', [a:cmd] + a:000)
   finally
     execute cd . fnameescape(l:dir)
