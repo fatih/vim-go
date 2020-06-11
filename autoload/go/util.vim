@@ -200,17 +200,21 @@ function! go#util#Exec(cmd, ...) abort
   " CheckBinPath will show a warning for us.
   let l:bin = go#path#CheckBinPath(l:bin)
   if empty(l:bin)
-    return ['', 1]
+    return ['command not found', 1]
   endif
 
   " Finally execute the command using the full, resolved path. Do not pass the
   " unmodified command as the correct program might not exist in $PATH.
-  return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
+  try
+    return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
+  catch
+    return [v:exception, 1]
+  endtry
 endfunction
 
 function! go#util#ExecInDir(cmd, ...) abort
   if !isdirectory(expand("%:p:h"))
-    return ['', 1]
+    return ['not a directory', 1]
   endif
 
   let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
