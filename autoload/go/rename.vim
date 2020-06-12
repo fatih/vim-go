@@ -54,7 +54,7 @@ function! go#rename#Rename(bang, ...) abort
 
   let l:wd = go#util#ModuleRoot()
   if l:wd == -1
-    let l:wd = getcwd()
+    let l:wd = expand("%:p:h")
   endif
 
   let [l:out, l:err] = go#util#ExecInDir2(l:cmd, l:wd)
