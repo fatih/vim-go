@@ -208,18 +208,25 @@ function! go#util#Exec(cmd, ...) abort
   return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
 endfunction
 
+" ExecInDir will execute cmd with the working directory set to the current
+" buffer's directory.
 function! go#util#ExecInDir(cmd, ...) abort
-  if !isdirectory(expand("%:p:h"))
+  let l:wd = expand('%:p:h')
+  return call('go#util#ExecInWorkDir', [a:cmd, l:wd] + a:000)
+endfunction
+
+" ExecInWorkDir will execute cmd with the working diretory set to wd. Additional arguments will be passed
+" to cmd.
+function! go#util#ExecInWorkDir(cmd, wd, ...) abort
+  if !isdirectory(a:wd)
     return ['', 1]
   endif
 
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
+  let l:dir = go#util#Chdir(a:wd)
   try
-    execute cd . fnameescape(expand("%:p:h"))
     let [l:out, l:err] = call('go#util#Exec', [a:cmd] + a:000)
   finally
-    execute cd . fnameescape(l:dir)
+    call go#util#Chdir(l:dir)
   endtry
   return [l:out, l:err]
 endfunction
@@ -687,11 +694,12 @@ endfunction
 
 function! go#util#Chdir(dir) abort
   if !exists('*chdir')
+    let l:olddir = getcwd()
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     execute cd . a:dir
-    return
+    return l:olddir
   endif
-  call chdir(a:dir)
+  return chdir(a:dir)
 endfunction
 
 " restore Vi compatibility settings

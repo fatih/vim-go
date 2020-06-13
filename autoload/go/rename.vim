@@ -52,7 +52,12 @@ function! go#rename#Rename(bang, ...) abort
     return
   endif
 
-  let [l:out, l:err] = go#util#ExecInDir(l:cmd)
+  let l:wd = go#util#ModuleRoot()
+  if l:wd == -1
+    let l:wd = expand("%:p:h")
+  endif
+
+  let [l:out, l:err] = go#util#ExecInWorkDir(l:cmd, l:wd)
   call s:parse_errors(l:err, a:bang, split(l:out, '\n'))
 endfunction
 
@@ -66,6 +71,11 @@ function s:rename_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
   let l:cbs = go#job#Options(l:job_opts)
+
+  let l:wd = go#util#ModuleRoot()
+  if l:wd != -1
+    let l:cbs.cwd = l:wd
+  endif
 
   " wrap l:cbs.exit_cb in s:exit_cb.
   let l:cbs.exit_cb = funcref('s:exit_cb', [l:cbs.exit_cb])
