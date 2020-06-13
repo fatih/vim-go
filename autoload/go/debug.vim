@@ -959,7 +959,11 @@ function! go#debug#Stack(name) abort
   endif
 
   try
-    " TODO: document why this is needed.
+    " s:stack_name is reset in s:stack_cb(). While its value is 'next', the
+    " current operation being performed by delve is a next operation and it
+    " must be cancelled before another next operation can start. See
+    " https://github.com/go-delve/delve/blob/ab5713d3ec5d12754f4b2edf85e4b36a08b67c48/Documentation/api/ClientHowto.md#special-continue-commands-and-asynchronous-breakpoints
+    " for more information.
     if l:name is# 'next' && get(s:, 'stack_name', '') is# 'next'
       call s:call_jsonrpc('RPCServer.CancelNext')
     endif
