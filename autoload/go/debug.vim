@@ -668,7 +668,7 @@ function! go#debug#Start(is_test, ...) abort
 
     let s:state['job'] = go#job#Start(l:cmd, l:opts)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not start debugger: %s', v:exception))
   endtry
 
   return s:state['job']
@@ -771,7 +771,7 @@ function! s:eval(arg) abort
       \ })
     return s:eval_tree(l:res.result.Variable, 0)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('evaluation failed: %s', v:exception))
     return ''
   endtry
 endfunction
@@ -785,7 +785,7 @@ function! go#debug#Print(arg) abort
   try
     echo substitute(s:eval(a:arg), "\n$", "", 0)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not print: %s', v:exception))
   endtry
 endfunction
 
@@ -804,7 +804,7 @@ function! s:update_goroutines() abort
     let l:res = s:call_jsonrpc('RPCServer.ListGoroutines')
     call s:show_goroutines(l:currentGoroutineID, l:res)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not show goroutines: %s', v:exception))
   endtry
  endfunction
 
@@ -894,7 +894,7 @@ function! s:update_variables() abort
       let s:state['localVars'] = l:res.result['Variables']
     endif
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not list variables: %s', v:exception))
   endtry
 
   try
@@ -904,7 +904,7 @@ function! s:update_variables() abort
       let s:state['functionArgs'] = res.result['Args']
     endif
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not list function arguments: %s', v:exception))
   endtry
 
   call s:show_variables()
@@ -919,7 +919,7 @@ function! go#debug#Set(symbol, value) abort
           \ 'scope':  {'GoroutineID': l:res.result.State.currentThread.goroutineID}
     \ })
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not set symbol value: %s', v:exception))
   endtry
 
   call s:update_variables()
@@ -930,7 +930,7 @@ function! s:update_stacktrace() abort
     let l:res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:goroutineID(), 'depth': 5})
     call s:show_stacktrace(l:res)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not update stack: %s', v:exception))
   endtry
 endfunction
 
@@ -997,8 +997,9 @@ function! go#debug#Stack(name) abort
       endif
       call s:stack_cb(l:res)
     catch
-      call go#util#EchoError(v:exception)
+      call go#util#EchoError(printf('rpc failure: %s', v:exception))
       call s:clearState()
+      call go#util#EchoInfo('restarting debugger')
       call go#debug#Restart()
     endtry
   catch
@@ -1023,7 +1024,7 @@ function! go#debug#Restart() abort
 
     call call('go#debug#Start', s:start_args)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('restart failed: %s', v:exception))
   endtry
 endfunction
 
@@ -1045,7 +1046,7 @@ function! go#debug#Goroutine() abort
     call s:stack_cb(l:res)
     call go#util#EchoInfo("Switched goroutine to: " . l:goroutineID)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not switch goroutine: %s', v:exception))
   endtry
 endfunction
 
@@ -1094,7 +1095,7 @@ function! go#debug#Breakpoint(...) abort
       endif
     endif
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not toggle breakpoint: %s', v:exception))
     return 1
   endtry
 
