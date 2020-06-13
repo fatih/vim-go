@@ -985,15 +985,7 @@ function! go#debug#Stack(name) abort
       let l:res = s:call_jsonrpc('RPCServer.Command', {'name': l:name})
 
       if l:name is# 'next'
-          let l:res2 = l:res
-          let l:w = 0
-          while l:w < 1
-            if l:res2.result.State.NextInProgress == v:true
-              let l:res2 = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
-            else
-              break
-            endif
-          endwhile
+        call s:handleNextInProgress(l:res)
       endif
       call s:stack_cb(l:res)
     catch
@@ -1003,7 +995,26 @@ function! go#debug#Stack(name) abort
       call go#debug#Restart()
     endtry
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('CancelNext RPC call failed: %s', v:exception))
+  endtry
+endfunction
+
+function! s:handleNextInProgress(res)
+  try
+    let l:res = a:res
+    let l:w = 0
+    while l:w < 1
+      if l:res.result.State.NextInProgress == v:true
+        " TODO(bc): message the user that a breakpoint was hit in a different
+        " goroutine while trying to resume.
+        " was hit.
+        let l:res = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
+      else
+        return
+      endif
+    endwhile
+  catch
+    throw v:exception
   endtry
 endfunction
 
