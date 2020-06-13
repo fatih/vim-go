@@ -1752,10 +1752,10 @@ default it is set to edit.
 <
                                                        *'g:go_rename_command'*
 
-Use this option to define which tool is used to rename. By default `gorename`
+Use this option to define which tool is used to rename. By default `gopls`
 is used. Valid options are `gorename` and `gopls`.
 >
-  let g:go_rename_command = 'gorename'
+  let g:go_rename_command = 'gopls'
 <
                                                      *'g:go_gorename_prefill'*
 
