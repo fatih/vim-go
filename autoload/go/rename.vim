@@ -57,7 +57,7 @@ function! go#rename#Rename(bang, ...) abort
     let l:wd = expand("%:p:h")
   endif
 
-  let [l:out, l:err] = go#util#ExecInDir2(l:cmd, l:wd)
+  let [l:out, l:err] = go#util#ExecInWorkDir(l:cmd, l:wd)
   call s:parse_errors(l:err, a:bang, split(l:out, '\n'))
 endfunction
 

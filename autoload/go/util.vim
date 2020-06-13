@@ -208,23 +208,26 @@ function! go#util#Exec(cmd, ...) abort
   return call('s:exec', [[l:bin] + a:cmd[1:]] + a:000)
 endfunction
 
+" ExecInDir will execute cmd with the working directory set to the current
+" buffer's directory.
 function! go#util#ExecInDir(cmd, ...) abort
-  let l:to = expand("%:p:h")
-  return call('go#util#ExecInDir2', [a:cmd, l:to] + a:000)
+  let l:wd = expand('%:p:h')
+  return call('go#util#ExecInWorkDir', [a:cmd, l:wd] + a:000)
 endfunction
 
-function! go#util#ExecInDir2(cmd, to, ...) abort
-  if !isdirectory(a:to)
+" ExecInWorkDir will execute cmd with the working diretory set to wd. Additional arguments will be passed
+" to cmd.
+function! go#util#ExecInWorkDir(cmd, wd, ...) abort
+  if !isdirectory(a:wd)
     return ['', 1]
   endif
 
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
   let dir = getcwd()
   try
-    execute cd . fnameescape(a:to)
+    call go#util#Chdir(a:wd)
     let [l:out, l:err] = call('go#util#Exec', [a:cmd] + a:000)
   finally
-    execute cd . fnameescape(l:dir)
+    call go#util#Chdir(l:dir)
   endtry
   return [l:out, l:err]
 endfunction
