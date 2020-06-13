@@ -222,9 +222,8 @@ function! go#util#ExecInWorkDir(cmd, wd, ...) abort
     return ['', 1]
   endif
 
-  let dir = getcwd()
+  let l:dir = go#util#Chdir(a:wd)
   try
-    call go#util#Chdir(a:wd)
     let [l:out, l:err] = call('go#util#Exec', [a:cmd] + a:000)
   finally
     call go#util#Chdir(l:dir)
@@ -695,11 +694,12 @@ endfunction
 
 function! go#util#Chdir(dir) abort
   if !exists('*chdir')
+    let l:olddir = getcwd()
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
     execute cd . a:dir
-    return
+    return l:olddir
   endif
-  call chdir(a:dir)
+  return chdir(a:dir)
 endfunction
 
 " restore Vi compatibility settings

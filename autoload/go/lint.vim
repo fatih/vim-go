@@ -250,8 +250,7 @@ function! go#lint#Vet(bang, ...) abort
 
     let l:winid = win_getid(winnr())
     let l:errorformat = "%-Gexit status %\\d%\\+," . &errorformat
-    let l:dir = getcwd()
-    call go#util#Chdir(expand('%:p:h'))
+    let l:dir = go#util#Chdir(expand('%:p:h'))
     try
       call go#list#ParseFormat(l:listtype, l:errorformat, out, "GoVet", 0)
     finally
