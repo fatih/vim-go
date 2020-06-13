@@ -18,6 +18,8 @@ IMPROVEMENTS:
   references to the symbol will be renamed when in module aware mode and
   `g:go_rename_command` is set to `gopls`.
   [[GH-2917]](https://github.com/fatih/vim-go/pull/2917)
+* Change `g:go_rename_command`'s default to `gopls`.
+  [[GH-2922]](https://github.com/fatih/vim-go/pull/2922)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
