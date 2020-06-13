@@ -127,6 +127,15 @@ function! s:call_jsonrpc(method, ...) abort
   endtry
 endfunction
 
+function! s:exited(res) abort
+  if type(a:res) ==# type(v:null)
+    return 0
+  endif
+
+  let state = a:res.result.State
+  return state.exited == v:true
+endfunction
+
 " Update the location of the current breakpoint or line we're halted on based on
 " response from dlv.
 function! s:update_breakpoint(res) abort
@@ -932,6 +941,10 @@ function! s:stack_cb(res) abort
     return
   endif
 
+  if s:exited(a:res)
+    call go#debug#Stop()
+    return
+  endif
   call s:update_breakpoint(a:res)
   call s:update_goroutines()
   call s:update_stacktrace()
