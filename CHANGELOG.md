@@ -14,6 +14,10 @@ IMPROVEMENTS:
 * Default `g:go_gopls_options` to `[-remote=auto]` to share gopls instances
   with other plugins and multiple instances of Vim.
   [[GH-2905]](https://github.com/fatih/vim-go/pull/2905)
+* Use the module root as the working directory when renaming so that all
+  references to the symbol will be renamed when in module aware mode and
+  `g:go_rename_command` is set to `gopls`.
+  [[GH-2917]](https://github.com/fatih/vim-go/pull/2917)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
