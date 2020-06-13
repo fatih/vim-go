@@ -369,7 +369,7 @@ function! go#config#RenameCommand() abort
 endfunction
 
 function! go#config#GorenameBin() abort
-  return get(g:, "go_gorename_bin", "gorename")
+  return get(g:, "go_gorename_bin", "gopls")
 endfunction
 
 function! go#config#GorenamePrefill() abort
