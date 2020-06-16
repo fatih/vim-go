@@ -1128,6 +1128,15 @@ function! s:list_breakpoints()
     if l:line =~# '^Signs for '
       let l:file = l:line[10:-2]
       continue
+    else
+      " sign place's output may end with Signs instead of starting with Signs.
+      " See
+      " https://github.com/fatih/vim-go/issues/2920#issuecomment-644885774.
+      let l:idx = match(l:line, '\.go .* Signs:$')
+      if l:idx >= 0
+        let l:file = l:line[0:l:idx+2]
+        continue
+      endif
     endif
 
     if l:line !~# 'name=godebugbreakpoint'
