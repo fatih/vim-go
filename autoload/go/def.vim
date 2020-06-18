@@ -172,7 +172,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     " and 3. there is buffer window number we switch to
     if go#config#DefReuseBuffer() && bufwinnr(filename) != -1
       " jump to existing buffer if it exists
-      call win_gotoid(bufwinnr(filename))
+      call win_gotoid(bufwinid(filename))
     else
       if &modified
         let cmd = 'hide edit'
