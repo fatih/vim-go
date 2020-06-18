@@ -36,7 +36,8 @@ BUG FIXES:
 * Use the resolved directory name for `gopls`' working directory when `go.mod`
   is in a symlinked path.
   [[GH-2913]](https://github.com/fatih/vim-go/pull/2913)
-
+* Fix buffer reuse with `:GoDef`.
+  [[GH-2928]](https://github.com/fatih/vim-go/pull/2928)
 
 ## v1.23 - (May 16, 2020)
 
