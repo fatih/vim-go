@@ -22,6 +22,7 @@ IMPROVEMENTS:
   [[GH-2922]](https://github.com/fatih/vim-go/pull/2922)
 * Do not send unnecessary textDocument/didChange notifications to `gopls`.
   [[GH-2902]](https://github.com/fatih/vim-go/pull/2902)
+  [[GH-2930]](https://github.com/fatih/vim-go/pull/2930)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
