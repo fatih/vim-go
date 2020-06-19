@@ -651,7 +651,7 @@ function! go#lsp#DidChange(fname) abort
   let l:lsp = s:lspfactory.get()
 
   let l:version = getbufvar(l:fname, 'changedtick')
-  if l:lsp.fileVersions[l:fname] == l:version
+  if has_key(l:lsp.fileVersions, l:fname) && l:lsp.fileVersions[l:fname] == l:version
     return
   endif
   let l:lsp.fileVersions[l:fname] = l:version
