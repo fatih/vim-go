@@ -1089,13 +1089,14 @@ function! go#debug#Breakpoint(...) abort
     endfor
 
     " Remove breakpoint.
+    " TODO(bc): use sign_unplace() when it's available
     if type(l:found) == v:t_dict && !empty(l:found)
       exe 'sign unplace '. l:found.id .' file=' . l:found.file
       if s:isActive()
         let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': l:found.id})
       endif
-    " Add breakpoint.
-    else
+    else " Add breakpoint
+      " TODO(bc): use sign_placelist() when it's available.
       if s:isActive()
         let l:res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint': {'file': l:filename, 'line': l:linenr}})
         let l:bt = res.result.Breakpoint
@@ -1114,44 +1115,71 @@ function! go#debug#Breakpoint(...) abort
 endfunction
 
 function! s:list_breakpoints()
-  " :sign place
-  " --- Signs ---
-  " Signs for a.go:
-  "     line=15  id=2  name=godebugbreakpoint
-  "     line=16  id=1  name=godebugbreakpoint
-  " Signs for a_test.go:
-  "     line=6  id=3  name=godebugbreakpoint
-
-  let l:signs = []
-  let l:file = ''
-  for l:line in split(execute('sign place'), '\n')[1:]
-    if l:line =~# '^Signs for '
-      let l:file = l:line[10:-2]
-      continue
-    else
-      " sign place's output may end with Signs instead of starting with Signs.
-      " See
-      " https://github.com/fatih/vim-go/issues/2920#issuecomment-644885774.
-      let l:idx = match(l:line, '\.go .* Signs:$')
-      if l:idx >= 0
-        let l:file = l:line[0:l:idx+2]
-        continue
-      endif
-    endif
-
-    if l:line !~# 'name=godebugbreakpoint'
-      continue
-    endif
-
-    let l:sign = matchlist(l:line, '\vline\=(\d+) +id\=(\d+)')
-    call add(l:signs, {
-          \ 'id': str2nr(l:sign[2]),
-          \ 'file': fnamemodify(l:file, ':p'),
-          \ 'line': str2nr(l:sign[1]),
-    \ })
+  let l:breakpoints = []
+  let l:signs = s:sign_getplaced()
+  for l:item in l:signs
+    let l:file = fnamemodify(bufname(l:item.bufnr), ':p')
+    for l:sign in l:item.signs
+      call add(l:breakpoints, {
+            \ 'id': l:sign.id,
+            \ 'file': l:file,
+            \ 'line': l:sign.lnum,
+      \ })
+    endfor
   endfor
 
-  return l:signs
+  return l:breakpoints
+endfunction
+
+function! s:sign_getplaced() abort
+  if !exists('*sign_getplaced') " sign_getplaced was introduced in Vim 8.1.0614
+    " :sign place
+    " --- Signs ---
+    " Signs for a.go:
+    "     line=15  id=2  name=godebugbreakpoint
+    "     line=16  id=1  name=godebugbreakpoint
+    " Signs for a_test.go:
+    "     line=6  id=3  name=godebugbreakpoint
+
+    " l:signs should be the same sam form as the return  value for
+    " sign_getplaced(), a list with the following entries:
+    "   * bufnr - number of the buffer with the sign
+    "   * signs = list of signs placed in bufnr
+    let l:signs = []
+    let l:file = ''
+    for l:line in split(execute('sign place'), '\n')[1:]
+      if l:line =~# '^Signs for '
+        let l:file = l:line[10:-2]
+        continue
+      else
+        " sign place's output may end with Signs instead of starting with Signs.
+        " See
+        " https://github.com/fatih/vim-go/issues/2920#issuecomment-644885774.
+        let l:idx = match(l:line, '\.go .* Signs:$')
+        if l:idx >= 0
+          let l:file = l:line[0:l:idx+2]
+          continue
+        endif
+      endif
+
+      if l:line !~# 'name=godebugbreakpoint'
+        continue
+      endif
+
+      let l:sign = matchlist(l:line, '\vline\=(\d+) +id\=(\d+)')
+      call add(l:signs, {
+                          \ 'bufnr': bufnr(l:file),
+                          \ 'signs': [{
+                            \ 'id': str2nr(l:sign[2]),
+                            \ 'lnum': str2nr(l:sign[1]),
+                          \ }],
+                      \ })
+    endfor
+
+    return l:signs
+  endif
+
+  return sign_getplaced()
 endfunction
 
 exe 'sign define godebugbreakpoint text='.go#config#DebugBreakpointSignText().' texthl=GoDebugBreakpoint'
