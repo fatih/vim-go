@@ -127,6 +127,15 @@ function! s:call_jsonrpc(method, ...) abort
   endtry
 endfunction
 
+function! s:exited(res) abort
+  if type(a:res) ==# type(v:null)
+    return 0
+  endif
+
+  let state = a:res.result.State
+  return state.exited == v:true
+endfunction
+
 " Update the location of the current breakpoint or line we're halted on based on
 " response from dlv.
 function! s:update_breakpoint(res) abort
@@ -659,7 +668,7 @@ function! go#debug#Start(is_test, ...) abort
 
     let s:state['job'] = go#job#Start(l:cmd, l:opts)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not start debugger: %s', v:exception))
   endtry
 
   return s:state['job']
@@ -762,7 +771,7 @@ function! s:eval(arg) abort
       \ })
     return s:eval_tree(l:res.result.Variable, 0)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('evaluation failed: %s', v:exception))
     return ''
   endtry
 endfunction
@@ -776,7 +785,7 @@ function! go#debug#Print(arg) abort
   try
     echo substitute(s:eval(a:arg), "\n$", "", 0)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not print: %s', v:exception))
   endtry
 endfunction
 
@@ -795,7 +804,7 @@ function! s:update_goroutines() abort
     let l:res = s:call_jsonrpc('RPCServer.ListGoroutines')
     call s:show_goroutines(l:currentGoroutineID, l:res)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not show goroutines: %s', v:exception))
   endtry
  endfunction
 
@@ -885,7 +894,7 @@ function! s:update_variables() abort
       let s:state['localVars'] = l:res.result['Variables']
     endif
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not list variables: %s', v:exception))
   endtry
 
   try
@@ -895,7 +904,7 @@ function! s:update_variables() abort
       let s:state['functionArgs'] = res.result['Args']
     endif
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not list function arguments: %s', v:exception))
   endtry
 
   call s:show_variables()
@@ -910,7 +919,7 @@ function! go#debug#Set(symbol, value) abort
           \ 'scope':  {'GoroutineID': l:res.result.State.currentThread.goroutineID}
     \ })
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not set symbol value: %s', v:exception))
   endtry
 
   call s:update_variables()
@@ -921,7 +930,7 @@ function! s:update_stacktrace() abort
     let l:res = s:call_jsonrpc('RPCServer.Stacktrace', {'id': s:goroutineID(), 'depth': 5})
     call s:show_stacktrace(l:res)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not update stack: %s', v:exception))
   endtry
 endfunction
 
@@ -932,6 +941,10 @@ function! s:stack_cb(res) abort
     return
   endif
 
+  if s:exited(a:res)
+    call go#debug#Stop()
+    return
+  endif
   call s:update_breakpoint(a:res)
   call s:update_goroutines()
   call s:update_stacktrace()
@@ -959,7 +972,11 @@ function! go#debug#Stack(name) abort
   endif
 
   try
-    " TODO: document why this is needed.
+    " s:stack_name is reset in s:stack_cb(). While its value is 'next', the
+    " current operation being performed by delve is a next operation and it
+    " must be cancelled before another next operation can start. See
+    " https://github.com/go-delve/delve/blob/ab5713d3ec5d12754f4b2edf85e4b36a08b67c48/Documentation/api/ClientHowto.md#special-continue-commands-and-asynchronous-breakpoints
+    " for more information.
     if l:name is# 'next' && get(s:, 'stack_name', '') is# 'next'
       call s:call_jsonrpc('RPCServer.CancelNext')
     endif
@@ -968,24 +985,36 @@ function! go#debug#Stack(name) abort
       let l:res = s:call_jsonrpc('RPCServer.Command', {'name': l:name})
 
       if l:name is# 'next'
-          let l:res2 = l:res
-          let l:w = 0
-          while l:w < 1
-            if l:res2.result.State.NextInProgress == v:true
-              let l:res2 = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
-            else
-              break
-            endif
-          endwhile
+        call s:handleNextInProgress(l:res)
       endif
       call s:stack_cb(l:res)
     catch
-      call go#util#EchoError(v:exception)
+      call go#util#EchoError(printf('rpc failure: %s', v:exception))
       call s:clearState()
+      call go#util#EchoInfo('restarting debugger')
       call go#debug#Restart()
     endtry
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('CancelNext RPC call failed: %s', v:exception))
+  endtry
+endfunction
+
+function! s:handleNextInProgress(res)
+  try
+    let l:res = a:res
+    let l:w = 0
+    while l:w < 1
+      if l:res.result.State.NextInProgress == v:true
+        " TODO(bc): message the user that a breakpoint was hit in a different
+        " goroutine while trying to resume.
+        " was hit.
+        let l:res = s:call_jsonrpc('RPCServer.Command', {'name': 'continue'})
+      else
+        return
+      endif
+    endwhile
+  catch
+    throw v:exception
   endtry
 endfunction
 
@@ -1006,7 +1035,7 @@ function! go#debug#Restart() abort
 
     call call('go#debug#Start', s:start_args)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('restart failed: %s', v:exception))
   endtry
 endfunction
 
@@ -1028,7 +1057,7 @@ function! go#debug#Goroutine() abort
     call s:stack_cb(l:res)
     call go#util#EchoInfo("Switched goroutine to: " . l:goroutineID)
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not switch goroutine: %s', v:exception))
   endtry
 endfunction
 
@@ -1060,13 +1089,14 @@ function! go#debug#Breakpoint(...) abort
     endfor
 
     " Remove breakpoint.
+    " TODO(bc): use sign_unplace() when it's available
     if type(l:found) == v:t_dict && !empty(l:found)
       exe 'sign unplace '. l:found.id .' file=' . l:found.file
       if s:isActive()
         let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': l:found.id})
       endif
-    " Add breakpoint.
-    else
+    else " Add breakpoint
+      " TODO(bc): use sign_placelist() when it's available.
       if s:isActive()
         let l:res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint': {'file': l:filename, 'line': l:linenr}})
         let l:bt = res.result.Breakpoint
@@ -1077,7 +1107,7 @@ function! go#debug#Breakpoint(...) abort
       endif
     endif
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('could not toggle breakpoint: %s', v:exception))
     return 1
   endtry
 
@@ -1085,35 +1115,71 @@ function! go#debug#Breakpoint(...) abort
 endfunction
 
 function! s:list_breakpoints()
-  " :sign place
-  " --- Signs ---
-  " Signs for a.go:
-  "     line=15  id=2  name=godebugbreakpoint
-  "     line=16  id=1  name=godebugbreakpoint
-  " Signs for a_test.go:
-  "     line=6  id=3  name=godebugbreakpoint
-
-  let l:signs = []
-  let l:file = ''
-  for l:line in split(execute('sign place'), '\n')[1:]
-    if l:line =~# '^Signs for '
-      let l:file = l:line[10:-2]
-      continue
-    endif
-
-    if l:line !~# 'name=godebugbreakpoint'
-      continue
-    endif
-
-    let l:sign = matchlist(l:line, '\vline\=(\d+) +id\=(\d+)')
-    call add(l:signs, {
-          \ 'id': str2nr(l:sign[2]),
-          \ 'file': fnamemodify(l:file, ':p'),
-          \ 'line': str2nr(l:sign[1]),
-    \ })
+  let l:breakpoints = []
+  let l:signs = s:sign_getplaced()
+  for l:item in l:signs
+    let l:file = fnamemodify(bufname(l:item.bufnr), ':p')
+    for l:sign in l:item.signs
+      call add(l:breakpoints, {
+            \ 'id': l:sign.id,
+            \ 'file': l:file,
+            \ 'line': l:sign.lnum,
+      \ })
+    endfor
   endfor
 
-  return l:signs
+  return l:breakpoints
+endfunction
+
+function! s:sign_getplaced() abort
+  if !exists('*sign_getplaced') " sign_getplaced was introduced in Vim 8.1.0614
+    " :sign place
+    " --- Signs ---
+    " Signs for a.go:
+    "     line=15  id=2  name=godebugbreakpoint
+    "     line=16  id=1  name=godebugbreakpoint
+    " Signs for a_test.go:
+    "     line=6  id=3  name=godebugbreakpoint
+
+    " l:signs should be the same sam form as the return  value for
+    " sign_getplaced(), a list with the following entries:
+    "   * bufnr - number of the buffer with the sign
+    "   * signs = list of signs placed in bufnr
+    let l:signs = []
+    let l:file = ''
+    for l:line in split(execute('sign place'), '\n')[1:]
+      if l:line =~# '^Signs for '
+        let l:file = l:line[10:-2]
+        continue
+      else
+        " sign place's output may end with Signs instead of starting with Signs.
+        " See
+        " https://github.com/fatih/vim-go/issues/2920#issuecomment-644885774.
+        let l:idx = match(l:line, '\.go .* Signs:$')
+        if l:idx >= 0
+          let l:file = l:line[0:l:idx+2]
+          continue
+        endif
+      endif
+
+      if l:line !~# 'name=godebugbreakpoint'
+        continue
+      endif
+
+      let l:sign = matchlist(l:line, '\vline\=(\d+) +id\=(\d+)')
+      call add(l:signs, {
+                          \ 'bufnr': bufnr(l:file),
+                          \ 'signs': [{
+                            \ 'id': str2nr(l:sign[2]),
+                            \ 'lnum': str2nr(l:sign[1]),
+                          \ }],
+                      \ })
+    endfor
+
+    return l:signs
+  endif
+
+  return sign_getplaced()
 endfunction
 
 exe 'sign define godebugbreakpoint text='.go#config#DebugBreakpointSignText().' texthl=GoDebugBreakpoint'
