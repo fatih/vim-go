@@ -236,6 +236,7 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos) abort
   for dir in dirs
     " this may expand to multiple lines
     let root = split(expand(dir . '/pkg/' . s:goos . '_' . s:goarch), "\n")
+    let root = add(root, expand(dir . '/pkg/mod'))
     let root = add(root, expand(dir . '/src'), )
     let root = extend(root, vendordirs)
     let root = add(root, module)
@@ -276,6 +277,11 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos) abort
           " directories manually?
           if fnamemodify(candidate, ':t') == 'vendor'
             continue
+          endif
+          " if path contains version info, strip it out
+          let vidx = strridx(candidate, '@')
+          if vidx > -1
+            let candidate = strpart(candidate, 0, vidx)
           endif
           let candidate .= '/'
         elseif candidate !~ '\.a$'
