@@ -120,6 +120,11 @@ function! go#util#gomod() abort
   return substitute(s:exec(['go', 'env', 'GOMOD'])[0], '\n', '', 'g')
 endfunction
 
+" gomodcache returns 'go env GOMODCACHE'. Instead use 'go#util#env("gomodcache")'
+function! go#util#gomodcache() abort
+  return substitute(s:exec(['go', 'env', 'GOMODCACHE'])[0], '\n', '', 'g')
+endfunction
+
 function! go#util#osarch() abort
   return go#util#env("goos") . '_' . go#util#env("goarch")
 endfunction
