@@ -28,6 +28,7 @@ IMPROVEMENTS:
 * Use the module package cache as a source of packages candidates when trying
   to complete package names.
   [[GH-2936]](https://github.com/fatih/vim-go/pull/2936)
+  [[GH-2939]](https://github.com/fatih/vim-go/pull/2939)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
