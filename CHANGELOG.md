@@ -25,6 +25,9 @@ IMPROVEMENTS:
   [[GH-2930]](https://github.com/fatih/vim-go/pull/2930)
 * Stop the debugger when the process being debugged exits.
   [[GH-2921]](https://github.com/fatih/vim-go/pull/2921)
+* Use the module package cache as a source of packages candidates when trying
+  to complete package names.
+  [[GH-2936]](https://github.com/fatih/vim-go/pull/2936)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
