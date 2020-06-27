@@ -35,7 +35,7 @@ func! Test_update_file() abort
 endfunc
 
 func! Test_goimports() abort
-  let $GOPATH = 'test-fixtures/fmt/'
+  let $GOPATH = printf('%s/%s', fnamemodify(getcwd(), ':p'), 'test-fixtures/fmt')
   let actual_file = tempname()
   call writefile(readfile("test-fixtures/fmt/src/imports/goimports.go"), actual_file)
 
