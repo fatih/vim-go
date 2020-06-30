@@ -50,6 +50,9 @@ BUG FIXES:
 * Handle breakpoints that are already set before calling `:GoDebugStart` or
   `:GoDebugTest` in some locales that cause the `sign place` output to vary.
   [[GH-2921]](https://github.com/fatih/vim-go/pull/2921)
+* Handle diagnostic errors at the end of a .go file.
+  [[GH-2942]](https://github.com/fatih/vim-go/pull/2942)
+
 
 ## v1.23 - (May 16, 2020)
 
