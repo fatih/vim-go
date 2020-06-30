@@ -1311,7 +1311,11 @@ function! s:errorFromDiagnostic(diagnostic, bufname, fname) abort
   let l:range = a:diagnostic.range
 
   let l:line = l:range.start.line + 1
-  let l:col = go#lsp#lsp#PositionOf(getbufline(a:bufname, l:line)[0], l:range.start.character)
+  let l:buflines = getbufline(a:bufname, l:line)
+  let l:col = ''
+  if len(l:buflines) > 0
+    let l:col = go#lsp#lsp#PositionOf(l:buflines[0], l:range.start.character)
+  endif
   let l:error = printf('%s:%s:%s:%s: %s', a:fname, l:line, l:col, go#lsp#lsp#SeverityToErrorType(a:diagnostic.severity), a:diagnostic.message)
 
   if !(a:diagnostic.severity == 1 || a:diagnostic.severity == 2)
