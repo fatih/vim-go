@@ -52,6 +52,8 @@ BUG FIXES:
   [[GH-2921]](https://github.com/fatih/vim-go/pull/2921)
 * Handle diagnostic errors at the end of a .go file.
   [[GH-2942]](https://github.com/fatih/vim-go/pull/2942)
+* Fix the `go-implements` mapping to use respect `g:go_implements_mode`.
+  [[GH-2944]](https://github.com/fatih/vim-go/pull/2944)
 
 
 ## v1.23 - (May 16, 2020)
