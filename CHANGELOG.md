@@ -32,6 +32,9 @@ IMPROVEMENTS:
 * Allow interaction with Vim while waiting for a breakpoint to be hit while
   debugging.
   [[GH-2932]](https://github.com/fatih/vim-go/pull/2932)
+* Refactor Vim signs used for debugging breakpoints to avoid id collision with
+  other plugins.
+  [[GH-2943]](https://github.com/fatih/vim-go/pull/2943)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
