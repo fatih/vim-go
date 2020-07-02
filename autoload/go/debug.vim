@@ -162,7 +162,9 @@ function! s:update_breakpoint(res) abort
   endif
   silent! exe 'norm!' linenr.'G'
   silent! normal! zvzz
+  " TODO(bc): convert to use s:sign_unplace()
   silent! sign unplace 9999
+  " TODO(bc): convert to use s:sign_place()
   silent! exe 'sign place 9999 line=' . linenr . ' name=godebugcurline file=' . filename
 endfunction
 
@@ -553,9 +555,8 @@ function! s:out_cb(ch, msg) abort
     let s:state['ready'] = 1
 
     " replace all the breakpoints set before delve started so that the ids won't overlap.
-    let l:breakpoints = s:list_breakpoints()
     for l:bt in s:list_breakpoints()
-      exe 'sign unplace '. l:bt.id
+      call s:sign_unplace(l:bt.id, l:bt.file)
       call go#debug#Breakpoint(l:bt.line, l:bt.file)
     endfor
 
@@ -1103,21 +1104,19 @@ function! go#debug#Breakpoint(...) abort
     endfor
 
     " Remove breakpoint.
-    " TODO(bc): use sign_unplace() when it's available
     if type(l:found) == v:t_dict && !empty(l:found)
-      exe 'sign unplace '. l:found.id .' file=' . l:found.file
+      call s:sign_unplace(l:found.id, l:found.file)
       if s:isActive()
         let res = s:call_jsonrpc('RPCServer.ClearBreakpoint', {'id': l:found.id})
       endif
     else " Add breakpoint
-      " TODO(bc): use sign_placelist() when it's available.
       if s:isActive()
         let l:res = s:call_jsonrpc('RPCServer.CreateBreakpoint', {'Breakpoint': {'file': l:filename, 'line': l:linenr}})
         let l:bt = res.result.Breakpoint
-        exe 'sign place '. l:bt.id .' line=' . l:bt.line . ' name=godebugbreakpoint file=' . l:bt.file
+        call s:sign_place(l:bt.id, l:bt.file, l:bt.line)
       else
         let l:id = len(s:list_breakpoints()) + 1
-        exe 'sign place ' . l:id . ' line=' . l:linenr . ' name=godebugbreakpoint file=' . l:filename
+        call s:sign_place(l:id, l:filename, l:linenr)
       endif
     endif
   catch
@@ -1126,6 +1125,24 @@ function! go#debug#Breakpoint(...) abort
   endtry
 
   return 0
+endfunction
+
+function! s:sign_unplace(id, file) abort
+  if !exists('*sign_unplace')
+    exe 'sign unplace ' . a:id .' file=' . a:file
+    return
+  endif
+
+  call sign_unplace('vim-go-debug', {'buffer': a:file, 'id': a:id})
+endfunction
+
+function! s:sign_place(id, expr, lnum) abort
+  if !exists('*sign_place')
+    exe 'sign place ' . a:id . ' line=' . a:lnum . ' name=godebugbreakpoint file=' . a:expr
+    return
+  endif
+
+  call sign_place(a:id, 'vim-go-debug', 'godebugbreakpoint', a:expr, {'lnum': a:lnum})
 endfunction
 
 function! s:list_breakpoints()
@@ -1193,7 +1210,23 @@ function! s:sign_getplaced() abort
     return l:signs
   endif
 
-  return sign_getplaced()
+
+  " it would be nice to use lambda's here, but vim-vimparser currently fails
+  " to parse lamdas as map() arguments.
+  " TODO(bc): return flatten(map(filter(copy(getbufinfo()), { _, val -> val.listed }), { _, val -> sign_getplaced(val.bufnr, {'group': 'vim-go-debug', 'name': 'godebugbreakpoint'})}))
+  let l:bufinfo = getbufinfo()
+  let l:listed = []
+  for l:info in l:bufinfo
+    if l:info.listed
+      let l:listed = add(l:listed, l:info)
+    endif
+  endfor
+
+  let l:signs = []
+  for l:buf in l:listed
+    let l:signs = add(l:signs, sign_getplaced(l:buf.bufnr, {'group': 'vim-go-debug', 'name': 'godebugbreakpoint'})[0])
+  endfor
+  return l:signs
 endfunction
 
 exe 'sign define godebugbreakpoint text='.go#config#DebugBreakpointSignText().' texthl=GoDebugBreakpoint'
