@@ -97,19 +97,18 @@ function! s:call_jsonrpc(method, ...) abort
     let l:ch = s:state['ch']
     if has('nvim')
       call chansend(l:ch, l:req_json)
-      while len(s:state.data) == 0
-        sleep 50m
-        if get(s:state, 'ready', 0) == 0
-          return
-        endif
-      endwhile
-      let resp_json = s:state.data[0]
-      let s:state.data = s:state.data[1:]
     else
       call ch_sendraw(l:ch, req_json)
-      let l:resp_raw = ch_readraw(l:ch)
-      let resp_json = json_decode(l:resp_raw)
     endif
+
+    while len(s:state.data) == 0
+      sleep 50m
+      if get(s:state, 'ready', 0) == 0
+        return
+      endif
+    endwhile
+    let resp_json = s:state.data[0]
+    let s:state.data = s:state.data[1:]
 
     if go#util#HasDebug('debugger-commands')
       let g:go_debug_commands = add(go#config#DebugCommands(), {
@@ -521,10 +520,10 @@ function! s:out_cb(ch, msg) abort
   let s:state['message'] += [a:msg]
 
   if stridx(a:msg, go#config#DebugAddress()) != -1
-    if has('nvim')
-      let s:state['data'] = []
-      let l:state = {'databuf': ''}
+    let s:state['data'] = []
+    let l:state = {'databuf': ''}
 
+    if has('nvim')
       " explicitly bind callback to state so that within it, self will
       " always refer to state. See :help Partial for more information.
       let l:state.on_data = function('s:on_data', [], l:state)
@@ -535,7 +534,10 @@ function! s:out_cb(ch, msg) abort
         return
       endif
     else
-      let l:ch = ch_open(go#config#DebugAddress(), {'mode': 'raw', 'timeout': 20000})
+      " explicitly bind callback to state so that within it, self will
+      " always refer to state. See :help Partial for more information.
+      let l:state.on_data = function('s:on_data', [], l:state)
+      let l:ch = ch_open(go#config#DebugAddress(), {'mode': 'raw', 'timeout': 20000, 'callback': l:state.on_data})
       if ch_status(l:ch) !=# 'open'
         call go#util#EchoError("could not connect to debugger")
         call go#job#Stop(s:state['job'])
@@ -561,11 +563,10 @@ function! s:out_cb(ch, msg) abort
   endif
 endfunction
 
-function! s:on_data(ch, data, event) dict abort
-  let l:data = self.databuf
-  for l:msg in a:data
-    let l:data .= l:msg
-  endfor
+" s:on_data's third optional argument is provided, but not used, so that the
+" same function can be used for Vim's 'callback' and Neovim's 'data'.
+function! s:on_data(ch, data, ...) dict abort
+  let l:data = s:message(self.databuf, a:data)
 
   try
     let l:res = json_decode(l:data)
@@ -577,6 +578,19 @@ function! s:on_data(ch, data, event) dict abort
     let self.databuf = l:data
   finally
   endtry
+endfunction
+
+function! s:message(buf, data) abort
+  let l:data = a:buf
+  if has('nvim')
+    for l:msg in a:data
+      let l:data .= l:msg
+    endfor
+
+    return l:data
+  endif
+
+  return printf('%s%s', a:buf, a:data)
 endfunction
 
 " Start the debug mode. The first argument is the package name to compile and
