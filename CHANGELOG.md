@@ -29,6 +29,9 @@ IMPROVEMENTS:
   to complete package names.
   [[GH-2936]](https://github.com/fatih/vim-go/pull/2936)
   [[GH-2939]](https://github.com/fatih/vim-go/pull/2939)
+* Allow interaction with Vim while waiting for a breakpoint to be hit while
+  debugging.
+  [[GH-2932]](https://github.com/fatih/vim-go/pull/2932)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
