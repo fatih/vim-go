@@ -35,6 +35,9 @@ IMPROVEMENTS:
 * Refactor Vim signs used for debugging breakpoints to avoid id collision with
   other plugins.
   [[GH-2943]](https://github.com/fatih/vim-go/pull/2943)
+* Refactor debugger's rpc response handling to be asynchronous so that Vim will
+  be responsive while the program being debugged is executing.
+  [[GH-2948]](https://github.com/fatih/vim-go/pull/2948)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
