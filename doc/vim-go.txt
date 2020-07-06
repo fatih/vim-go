@@ -2248,8 +2248,10 @@ the `dlv` process, or |:GoDebugRestart| to recompile the code.
                                                            *go-debug-commands*
 DEBUGGER COMMANDS~
 
-Only |:GoDebugStart| and |:GoDebugBreakpoint| are available by default; the
-rest of the commands and mappings become available after starting debug mode.
+Only |:GoDebugStart|, `:GoDebugTest`, and |:GoDebugBreakpoint| are available
+by default. `:GoDebugContinue` becomes available after running `:GoDebugStart`
+or `:GoDebugTest`. The rest of the commands and mappings become available
+after executing `:GoDebugContinue`.
 
                                                                *:GoDebugStart*
 :GoDebugStart [pkg] [program-args]
@@ -2316,7 +2318,6 @@ rest of the commands and mappings become available after starting debug mode.
 
     Advance execution by one line, also called "step over" by some other
     debuggers.
-    It will behave as |:GoDebugContinue| if the program isn't started.
 
     Mapped to <F10> by default.
 
@@ -2326,7 +2327,6 @@ rest of the commands and mappings become available after starting debug mode.
 
     Advance execution by one step, stopping at the next line of code that will
     be executed (regardless of location).
-    It will behave as |:GoDebugContinue| if the program isn't started.
 
     Mapped to <F11> by default.
 
@@ -2337,7 +2337,6 @@ rest of the commands and mappings become available after starting debug mode.
 
     Run all the code in the current function and halt when the function
     returns ("step out of the current function").
-    It will behave as |:GoDebugContinue| if the program isn't started.
 
                                                                  *:GoDebugSet*
 :GoDebugSet {var} {value}
