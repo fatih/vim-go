@@ -38,6 +38,7 @@ IMPROVEMENTS:
 * Refactor debugger's rpc response handling to be asynchronous so that Vim will
   be responsive while the program being debugged is executing.
   [[GH-2948]](https://github.com/fatih/vim-go/pull/2948)
+  [[GH-2952]](https://github.com/fatih/vim-go/pull/2952)
 * Warn when the debugger breaks in a file that has changed since debugging started.
   [[GH-2950]](https://github.com/fatih/vim-go/pull/2950)
 
