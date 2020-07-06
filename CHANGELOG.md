@@ -63,6 +63,9 @@ BUG FIXES:
   [[GH-2942]](https://github.com/fatih/vim-go/pull/2942)
 * Fix the `go-implements` mapping to use respect `g:go_implements_mode`.
   [[GH-2944]](https://github.com/fatih/vim-go/pull/2944)
+* Handle null results from `gopls` when getting definitions or type definitions
+  from virtual files.
+  [[GH-2951]](https://github.com/fatih/vim-go/pull/2951)
 
 
 ## v1.23 - (May 16, 2020)
