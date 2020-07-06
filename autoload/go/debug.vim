@@ -162,6 +162,7 @@ function! s:update_breakpoint(res) abort
   silent! sign unplace 9999
   " TODO(bc): convert to use s:sign_place()
   silent! exe 'sign place 9999 line=' . linenr . ' name=godebugcurline file=' . filename
+  call s:warn_when_stale(fnamemodify(l:filename, ':p'))
 endfunction
 
 " Populate the stacktrace window.
@@ -540,10 +541,11 @@ function! s:out_cb(ch, msg) abort
     let s:state['data'] = []
     let l:state = {'databuf': ''}
 
+    " explicitly bind callback to state so that within it, self will
+    " always refer to state. See :help Partial for more information.
+    let l:state.on_data = function('s:on_data', [], l:state)
+
     if has('nvim')
-      " explicitly bind callback to state so that within it, self will
-      " always refer to state. See :help Partial for more information.
-      let l:state.on_data = function('s:on_data', [], l:state)
       let l:ch = sockconnect('tcp', go#config#DebugAddress(), {'on_data': l:state.on_data, 'state': l:state})
       if l:ch == 0
         call go#util#EchoError("could not connect to debugger")
@@ -551,9 +553,6 @@ function! s:out_cb(ch, msg) abort
         return
       endif
     else
-      " explicitly bind callback to state so that within it, self will
-      " always refer to state. See :help Partial for more information.
-      let l:state.on_data = function('s:on_data', [], l:state)
       let l:ch = ch_open(go#config#DebugAddress(), {'mode': 'raw', 'timeout': 20000, 'callback': l:state.on_data})
       if ch_status(l:ch) !=# 'open'
         call go#util#EchoError("could not connect to debugger")
@@ -1402,6 +1401,39 @@ endfunction
 " s:noop is a noop function. It takes any number of arguments and does
 " nothing.
 function s:noop(...) abort
+endfunction
+
+function! s:warn_when_stale(filename) abort
+  let l:bufinfo = getbufinfo(a:filename)
+  if len(l:bufinfo) == 0
+    return
+  endif
+
+  if l:bufinfo[0].changed
+    call s:warn_stale()
+    return
+  endif
+
+  call s:call_jsonrpc(function('s:handle_staleness_check_response', [fnamemodify(a:filename, ':p')]), 'RPCServer.LastModified')
+endfunction
+
+function! s:handle_staleness_check_response(filename, check_errors, res) abort
+  try
+    call a:check_errors()
+  catch
+    " swallow any errors
+    return
+  endtry
+
+  let l:ftime = strftime('%Y-%m-%dT%H:%M:%S', getftime(a:filename))
+  if l:ftime < a:res.result.Time[0:(len(l:ftime) - 1)]
+    return
+  endif
+  call s:warn_stale(a:filename)
+endfunction
+
+function! s:warn_stale(filename) abort
+  call go#util#EchoWarning(printf('file locations may be incorrect, because  %s has changed since debugging started', a:filename))
 endfunction
 
 " restore Vi compatibility settings
