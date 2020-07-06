@@ -576,6 +576,10 @@ function! go#lsp#Definition(fname, line, col, handler) abort
 endfunction
 
 function! s:definitionHandler(next, msg) abort dict
+  if a:msg is v:null || len(a:msg) == 0
+    return
+  endif
+
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
   let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(getline(l:msg.range.start.line+1), l:msg.range.start.character), 'lsp does not supply a description')]]
@@ -598,6 +602,10 @@ function! go#lsp#TypeDef(fname, line, col, handler) abort
 endfunction
 
 function! s:typeDefinitionHandler(next, msg) abort dict
+  if a:msg is v:null || len(a:msg) == 0
+    return
+  endif
+
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
   let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(getline(l:msg.range.start.line+1), l:msg.range.start.character), 'lsp does not supply a description')]]
