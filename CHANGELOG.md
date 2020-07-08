@@ -41,6 +41,8 @@ IMPROVEMENTS:
   [[GH-2952]](https://github.com/fatih/vim-go/pull/2952)
 * Warn when the debugger breaks in a file that has changed since debugging started.
   [[GH-2950]](https://github.com/fatih/vim-go/pull/2950)
+* Enable `go-run` mappings that use the terminal to work with Vim in addition to Neovim.
+  [[GH-2956]](https://github.com/fatih/vim-go/pull/2956)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
