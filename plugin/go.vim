@@ -24,7 +24,7 @@ function! s:checkVersion() abort
       echom "If you really want to continue you can set this to make the error go away:"
       echom "    let g:go_version_warning = 0"
       echom "Note that some features may error out or behave incorrectly."
-      echom "Please do not report bugs unless you're using at least Vim 8.0.1453 or Neovim 0.3.2."
+      echom "Please do not report bugs unless you're using at least Vim 8.0.1453 or Neovim 0.4.0."
       echohl None
 
       " Make sure people see this.
