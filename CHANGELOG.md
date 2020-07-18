@@ -71,6 +71,8 @@ BUG FIXES:
 * Handle null results from `gopls` when getting definitions or type definitions
   from virtual files.
   [[GH-2951]](https://github.com/fatih/vim-go/pull/2951)
+* Fix warning when Neovim is older than v0.4.0.
+  [[GH-2959]](https://github.com/fatih/vim-go/pull/2959)
 
 
 ## v1.23 - (May 16, 2020)
