@@ -1298,11 +1298,16 @@ function! go#lsp#AnalyzeFile(fname) abort
 
   let l:lsp = s:lspfactory.get()
 
-  let l:version = l:lsp.fileVersions[l:fname]
+  let l:lastdiagnostics = get(l:lsp.diagnostics, l:fname, [])
+
+  let l:version = l:lsp.fileVersions[a:fname]
+  if l:version == getbufvar(a:fname, 'changedtick')
+    return l:lastdiagnostics
+  endif
 
   call go#lsp#DidChange(a:fname)
 
-  let l:diagnostics = go#promise#New(function('s:setDiagnostics', []), 10000, get(l:lsp.diagnostics, l:fname, []))
+  let l:diagnostics = go#promise#New(function('s:setDiagnostics', []), 10000, l:lastdiagnostics)
   let l:lsp.notificationQueue[l:fname] = add(l:lsp.notificationQueue[l:fname], l:diagnostics.wrapper)
   return l:diagnostics.await()
 endfunction
