@@ -1258,7 +1258,7 @@ Enable code completion with 'omnifunc'. By default it is enabled.
 
                                                 *'g:go_code_completion_icase'*
 
-Override the 'icase' value in 'omnifunc' results. By default it is set to 0.
+Override the icase field in 'omnifunc' results. By default it is set to 0.
 See 'complete-items' for details.
 >
   let g:go_code_completion_icase = 0
