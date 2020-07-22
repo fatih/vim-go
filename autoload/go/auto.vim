@@ -17,10 +17,9 @@ function! go#auto#complete_done()
 endfunction
 
 function! s:ExpandSnippet() abort
-  if !exists('v:completed_item') || empty(v:completed_item) || !go#config#GoplsUsePlaceholders()
+  if !exists('v:completed_item') || empty(v:completed_item) || empty(v:completed_item.kind) || !go#config#GoplsUsePlaceholders()
     return
   endif
-
 
   let l:engine = go#config#SnippetEngine()
 
