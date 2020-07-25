@@ -46,6 +46,9 @@ IMPROVEMENTS:
 * Use existing diagnostics for the file when the file hasn't changed and
   `g:go_metalinter_command` is `gopls`.
   [[GH-2960]](https://github.com/fatih/vim-go/pull/2960)
+* Add a new option, `g:go_code_completion_icase`, to allow ignoring case when
+  filtering completion results.
+  [[GH-2961]](https://github.com/fatih/vim-go/pull/2961)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
