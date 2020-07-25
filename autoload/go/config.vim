@@ -494,6 +494,10 @@ function! go#config#CodeCompletionEnabled() abort
   return get(g:, "go_code_completion_enabled", 1)
 endfunction
 
+function! go#config#CodeCompletionIcase() abort
+  return get(g:, "go_code_completion_icase", 0)
+endfunction
+
 function! go#config#Updatetime() abort
   let go_updatetime = get(g:, 'go_updatetime', 800)
   return go_updatetime == 0 ? &updatetime : go_updatetime
