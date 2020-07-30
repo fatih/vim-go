@@ -79,7 +79,9 @@ BUG FIXES:
   [[GH-2951]](https://github.com/fatih/vim-go/pull/2951)
 * Fix warning when Neovim is older than v0.4.0.
   [[GH-2959]](https://github.com/fatih/vim-go/pull/2959)
-
+* Correct documentation that referred to `g:go_imports_command` to refer to
+  `g:go_imports_mode`  instead.
+  [[GH-2969]](https://github.com/fatih/vim-go/pull/2969)
 
 ## v1.23 - (May 16, 2020)
 
