@@ -206,7 +206,6 @@ func s:handle_exit(job_id, exit_status, state) abort
 
   if go#config#TermJumpOnExit()
     call go#list#Window(l:listtype, len(l:errors))
-    call go#list#JumpToFirst(l:listtype)
   endif
 
   " change back to original working directory
