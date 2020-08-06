@@ -57,6 +57,14 @@ function! go#config#SetTermCloseOnExit(value) abort
   let g:go_term_close_on_exit = a:value
 endfunction
 
+function! go#config#TermJumpOnExit() abort
+  return get(g:, 'go_term_jump_on_exit', 1)
+endfunction
+
+function! go#config#SetTermJumpOnExit(value) abort
+  let g:go_term_jump_on_exit = a:value
+endfunction
+
 function! go#config#TermEnabled() abort
   " nvim always support
   " vim will support if terminal feature exists

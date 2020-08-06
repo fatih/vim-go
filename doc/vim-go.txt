@@ -1751,6 +1751,16 @@ Applicable to Neovim and Vim with `terminal` feature only.
 >
   let g:go_term_close_on_exit = 1
 <
+                                                   'g:go_term_jump_on_exit'
+
+Performs a jump to the first line of the terminal window output.
+By default is enabled.
+
+Applicable to Neovim and Vim with `terminal` feature only.
+
+>
+  let g:go_term_jump_on_exit = 1
+<
                                                        *'g:go_alternate_mode'*
 
 Specifies the command that |:GoAlternate| uses to open the alternate file.  By

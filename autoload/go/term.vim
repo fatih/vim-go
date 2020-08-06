@@ -182,7 +182,6 @@ func s:handle_exit(job_id, exit_status, state) abort
 
   call go#list#ParseFormat(l:listtype, a:state.errorformat, a:state.stdout, l:title, 0)
   let l:errors = go#list#Get(l:listtype)
-  call go#list#Window(l:listtype, len(l:errors))
 
   " close terminal; we don't need it anymore
   if go#config#TermCloseOnExit()
@@ -204,7 +203,11 @@ func s:handle_exit(job_id, exit_status, state) abort
   endif
 
   call win_gotoid(a:state.winid)
-  call go#list#JumpToFirst(l:listtype)
+
+  if go#config#TermJumpOnExit()
+    call go#list#Window(l:listtype, len(l:errors))
+    call go#list#JumpToFirst(l:listtype)
+  endif
 
   " change back to original working directory
   execute l:cd l:dir
@@ -219,6 +222,18 @@ function! go#term#ToggleCloseOnExit() abort
 
   call go#config#SetTermCloseOnExit(1)
   call go#util#EchoProgress("term close on exit enabled")
+  return
+endfunction
+
+function! go#term#ToggleJumpOnExit() abort
+  if go#config#TermJumpOnExit()
+    call go#config#SetTermJumpOnExit(0)
+    call go#util#EchoProgress("term jump on exit disabled")
+    return
+  endif
+
+  call go#config#SetTermJumpOnExit(1)
+  call go#util#EchoProgress("term jump on exit enabled")
   return
 endfunction
 
