@@ -52,7 +52,7 @@ for popular package managers:
 * [Pathogen](https://github.com/tpope/vim-pathogen)
   * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
 * [vim-plug](https://github.com/junegunn/vim-plug)
-  * `Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }`
+  * `Plug 'fatih/vim-go', { 'tag': '*', 'do': ':GoUpdateBinaries' }`
 * [Vundle](https://github.com/VundleVim/Vundle.vim)
   * `Plugin 'fatih/vim-go'`
 

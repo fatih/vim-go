@@ -105,7 +105,7 @@ manager's install command.
 <
 *  https://github.com/junegunn/vim-plug >
 
-    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+    Plug 'fatih/vim-go', { 'tag': '*', 'do': ':GoUpdateBinaries' }
 <
 *  https://github.com/Shougo/neobundle.vim >
 
