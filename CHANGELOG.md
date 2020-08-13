@@ -82,6 +82,9 @@ BUG FIXES:
 * Correct documentation that referred to `g:go_imports_command` to refer to
   `g:go_imports_mode`  instead.
   [[GH-2969]](https://github.com/fatih/vim-go/pull/2969)
+* Remove reference to gocode in error message when `g:go_info_mode` is set to
+  an unsupported value.
+  [[GH-2978]](https://github.com/fatih/vim-go/pull/2978)
 
 ## v1.23 - (May 16, 2020)
 
