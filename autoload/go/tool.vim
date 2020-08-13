@@ -91,7 +91,7 @@ function! go#tool#Info(showstatus) abort
     endif
     call go#lsp#Info(a:showstatus)
   else
-    call go#util#EchoError('go_info_mode value: '. l:mode .' is not valid. Valid values are: [gocode, guru, gopls]')
+    call go#util#EchoError('go_info_mode value: '. l:mode .' is not valid. Valid values are: [guru, gopls]')
   endif
 endfunction
 
