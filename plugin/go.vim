@@ -86,6 +86,10 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
   let go_bin_path = go#path#BinPath()
 
+  let [l:goos, l:goarch] = go#util#hostosarch()
+  let Restore_goos = go#util#SetEnv('GOOS', l:goos)
+  let Restore_goarch = go#util#SetEnv('GOARCH', l:goarch)
+
   " change $GOBIN so go get can automatically install to it
   let Restore_gobin = go#util#SetEnv('GOBIN', go_bin_path)
 
@@ -218,6 +222,8 @@ function! s:GoInstallBinaries(updateBinaries, ...)
   " restore back!
   call call(Restore_path, [])
   call call(Restore_gobin, [])
+  call call(Restore_goarch, [])
+  call call(Restore_goos, [])
 
   if resetshellslash
     set shellslash
