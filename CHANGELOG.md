@@ -49,6 +49,9 @@ IMPROVEMENTS:
 * Add a new option, `g:go_code_completion_icase`, to allow ignoring case when
   filtering completion results.
   [[GH-2961]](https://github.com/fatih/vim-go/pull/2961)
+ * Make sure tools are not cross-compiled with `:GoInstallBinaries` and
+   `:GoUpdateBinaries`.
+  [[GH-2982]](https://github.com/fatih/vim-go/pull/2982)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
