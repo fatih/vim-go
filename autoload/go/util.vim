@@ -125,8 +125,11 @@ function! go#util#gomodcache() abort
   return substitute(s:exec(['go', 'env', 'GOMODCACHE'])[0], '\n', '', 'g')
 endfunction
 
-function! go#util#osarch() abort
-  return go#util#env("goos") . '_' . go#util#env("goarch")
+" hostosarch returns the OS and ARCH values that the go binary is intended for.
+function! go#util#hostosarch() abort
+  let [l:hostos, l:err] = s:exec(['go', 'env', 'GOHOSTOS'])
+  let [l:hostarch, l:err] = s:exec(['go', 'env', 'GOHOSTARCH'])
+  return [trim(l:hostos), trim(l:hostarch)]
 endfunction
 
 " go#util#ModuleRoot returns the root directory of the module of the current
