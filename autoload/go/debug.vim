@@ -191,6 +191,9 @@ function! s:show_stacktrace(check_errors, res) abort
     silent %delete _
     for i in range(len(a:res.result.Locations))
       let loc = a:res.result.Locations[i]
+      if loc.file is# '?' || !has_key(loc, 'function')
+        continue
+      endif
       call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':p'), loc.line))
     endfor
   finally
@@ -495,11 +498,13 @@ function! s:continue()
   command! -nargs=0 GoDebugRestart    call go#debug#Restart()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
   command! -nargs=1 GoDebugPrint      call go#debug#Print(<q-args>)
+  command! -nargs=0 GoDebugHalt       call go#debug#Stack('halt')
 
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
   nnoremap <silent> <Plug>(go-debug-step)       :<C-u>call go#debug#Stack('step')<CR>
   nnoremap <silent> <Plug>(go-debug-stepout)    :<C-u>call go#debug#Stack('stepOut')<CR>
   nnoremap <silent> <Plug>(go-debug-print)      :<C-u>call go#debug#Print(expand('<cword>'))<CR>
+  nnoremap <silent> <Plug>(go-debug-halt)       :<C-u>call go#debug#Stack('halt')<CR>
 
   if has('balloon_eval')
     let s:balloonexpr=&balloonexpr
@@ -516,6 +521,7 @@ function! s:continue()
     autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
     autocmd FileType go nmap <buffer> <F10>  <Plug>(go-debug-next)
     autocmd FileType go nmap <buffer> <F11>  <Plug>(go-debug-step)
+    autocmd FileType go nmap <buffer> <F6>  <Plug>(go-debug-halt)
   augroup END
   doautocmd vim-go-debug FileType go
 endfunction
@@ -651,10 +657,10 @@ function! s:message(buf, data) abort
   return printf('%s%s', a:buf, a:data)
 endfunction
 
-" s:error_check will be curried and injected into rpc result handlers so that
+" s:check_errors will be curried and injected into rpc result handlers so that
 " those result handlers can consistently check for errors in the response by
 " catching exceptions and handling the error appropriately.
-function! s:error_check(resp_json) abort
+function! s:check_errors(resp_json) abort
   if type(a:resp_json) == v:t_dict && has_key(a:resp_json, 'error') && !empty(a:resp_json.error)
     throw a:resp_json.error
   endif
@@ -664,10 +670,10 @@ function! s:handleRPCResult(resp) abort
   try
     let l:id = a:resp.id
     " call the result handler with its first argument set to a curried
-    " s:error_check value so that the the handle can call s:error_check
+    " s:check_errors value so that the result handler can call s:check_errors
     " without passing any arguments to check whether the response is an error
     " response.
-    call call(s:state.resultHandlers[l:id], [function('s:error_check', [a:resp]), a:resp])
+    call call(s:state.resultHandlers[l:id], [function('s:check_errors', [a:resp]), a:resp])
   catch
     throw v:exception
   finally
@@ -1020,28 +1026,28 @@ function! s:update_variables() abort
 endfunction
 
 function! s:handle_list_local_vars(check_errors, res) abort
+  let s:state['localVars'] = {}
   try
     call a:check_errors()
-    let s:state['localVars'] = {}
     if type(a:res) is type({}) && has_key(a:res, 'result') && !empty(a:res.result)
       let s:state['localVars'] = a:res.result['Variables']
     endif
   catch
-    call go#util#EchoError(printf('could not list variables: %s', v:exception))
+    call go#util#EchoWarning(printf('could not list variables: %s', v:exception))
   endtry
 
   call s:show_variables()
 endfunction
 
 function! s:handle_list_function_args(check_errors, res) abort
+  let s:state['functionArgs'] = {}
   try
     call a:check_errors()
-    let s:state['functionArgs'] = {}
     if type(a:res) is type({}) && has_key(a:res, 'result') && !empty(a:res.result)
       let s:state['functionArgs'] = a:res.result['Args']
     endif
   catch
-    call go#util#EchoError(printf('could not list function arguments: %s', v:exception))
+    call go#util#EchoWarning(printf('could not list function arguments: %s', v:exception))
   endtry
 
   call s:show_variables()

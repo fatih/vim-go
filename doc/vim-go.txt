@@ -2240,6 +2240,8 @@ The program will halt on the breakpoint, at which point you can inspect the
 program state. You can go to the next line with |:GoDebugNext| (<F10>) or step
 in with |:GoDebugStep| (<F11>).
 
+The program can also be halted with `:GoDebugHalt` (<F6>).
+
 The variable window in the bottom left (`GODEBUG_VARIABLES`) will display all
 local variables. Struct values are displayed as `{...}`, array/slices as
 `[4]`. Use <CR> on the variable name to expand the values.
@@ -2288,6 +2290,14 @@ after executing `:GoDebugContinue`.
 
     Stop the program (if running) and restart `dlv` to recompile the package.
     The current window layout and breakpoints will be left intact.
+
+                                                                *:GoDebugHalt*
+                                                             *(go-debug-halt)*
+:GoDebugHalt
+
+    Halt the program.
+
+    Mapped to <F6> by default.
 
                                                                 *:GoDebugStop*
                                                              *(go-debug-stop)*
