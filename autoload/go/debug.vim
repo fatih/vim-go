@@ -242,6 +242,7 @@ function! s:show_variables() abort
 endfunction
 
 function! s:clearState() abort
+  let s:state['running'] = 0
   let s:state['currentThread'] = {}
   let s:state['localVars'] = {}
   let s:state['functionArgs'] = {}
