@@ -52,6 +52,7 @@ IMPROVEMENTS:
  * Make sure tools are not cross-compiled with `:GoInstallBinaries` and
    `:GoUpdateBinaries`.
    [[GH-2982]](https://github.com/fatih/vim-go/pull/2982)
+   [[GH-2988]](https://github.com/fatih/vim-go/pull/2988)
 * Add `:GoDebugHalt` to allow a program being debugged to be paused before it
   hits a breakpoint.
   [[GH-2983]](https://github.com/fatih/vim-go/pull/2983)
