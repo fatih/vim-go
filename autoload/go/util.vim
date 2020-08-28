@@ -129,7 +129,7 @@ endfunction
 function! go#util#hostosarch() abort
   let [l:hostos, l:err] = s:exec(['go', 'env', 'GOHOSTOS'])
   let [l:hostarch, l:err] = s:exec(['go', 'env', 'GOHOSTARCH'])
-  return [trim(l:hostos), trim(l:hostarch)]
+  return [substitute(l:hostos, '\n', '', 'g'), substitute(l:hostarch, '\n', '', 'g')]
 endfunction
 
 " go#util#ModuleRoot returns the root directory of the module of the current
