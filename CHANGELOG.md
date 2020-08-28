@@ -51,10 +51,11 @@ IMPROVEMENTS:
   [[GH-2961]](https://github.com/fatih/vim-go/pull/2961)
  * Make sure tools are not cross-compiled with `:GoInstallBinaries` and
    `:GoUpdateBinaries`.
-  [[GH-2982]](https://github.com/fatih/vim-go/pull/2982)
- * Add `:GoDebugHalt` to allow a program being debugged to be paused before it hits a breakpoint.
+   [[GH-2982]](https://github.com/fatih/vim-go/pull/2982)
+* Add `:GoDebugHalt` to allow a program being debugged to be paused before it
+  hits a breakpoint.
   [[GH-2983]](https://github.com/fatih/vim-go/pull/2983)
- * Clear highlighting of the current line when after resuming when debugging.
+* Clear highlighting of the current line when after resuming when debugging.
   [[GH-2984]](https://github.com/fatih/vim-go/pull/2984)
 
 BUG FIXES:
@@ -92,6 +93,9 @@ BUG FIXES:
 * Remove reference to gocode in error message when `g:go_info_mode` is set to
   an unsupported value.
   [[GH-2978]](https://github.com/fatih/vim-go/pull/2978)
+* Make sure debugging commands are configured when debugging a second time
+  within a single Vim session.
+  [[GH-2985]](https://github.com/fatih/vim-go/pull/2985)
 
 ## v1.23 - (May 16, 2020)
 
