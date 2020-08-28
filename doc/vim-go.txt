@@ -1350,10 +1350,10 @@ By default it's enabled >
                                                           *'g:go_fmt_command'*
 
 Use this option to define which tool is used to format code. Valid options are
-`gofmt`, `goimports`, and `gopls`. By default `gofmt` is used.
+`gofmt`, `goimports`, and `gopls`. By default `gopls` is used.
 >
 
-  let g:go_fmt_command = "gofmt"
+  let g:go_fmt_command = 'gopls'
 <
                                                           *'g:go_fmt_options'*
 
@@ -1413,18 +1413,18 @@ it's causing problems on some Vim versions. This has no effect if
 Use this option to auto |:GoImports| on save. When both
 'g:go_imports_autosave' and 'g:go_fmt_autosave' are enabled and both
 'g:go_fmt_command' and 'g:go_imports_mode' are set to `goimports`, `goimports`
-will be run only once. By default it's disabled.
+will be run only once. By default it's enabled.
 >
-  let g:go_imports_autosave = 0
+  let g:go_imports_autosave = 1
 <
                                                          *'g:go_imports_mode'*
 
 Use this option to define which tool is used to adjust imports. Valid options
 are `goimports` and `gopls`. The buffer will not be formatted when this is set
-to `gopls`. By default `goimports` is used.
+to `gopls`. By default `gopls` is used.
 >
 
-  let g:go_imports_mode = "goimports"
+  let g:go_imports_mode = 'gopls'
 <
                                                      *'g:go_mod_fmt_autosave'*
 
