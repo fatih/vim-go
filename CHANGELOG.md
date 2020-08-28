@@ -54,6 +54,8 @@ IMPROVEMENTS:
   [[GH-2982]](https://github.com/fatih/vim-go/pull/2982)
  * Add `:GoDebugHalt` to allow a program being debugged to be paused before it hits a breakpoint.
   [[GH-2983]](https://github.com/fatih/vim-go/pull/2983)
+ * Clear highlighting of the current line when after resuming when debugging.
+  [[GH-2984]](https://github.com/fatih/vim-go/pull/2984)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
