@@ -117,6 +117,8 @@ function! s:call_jsonrpc(handle_result, method, ...) abort
             \ 'request':  l:req_json,
       \ })
     endif
+
+    redraw
   catch
     throw substitute(v:exception, '^Vim', '', '')
   endtry
@@ -1143,6 +1145,7 @@ function! go#debug#Stack(name) abort
     endif
     let s:stack_name = l:name
     try
+      silent! sign unplace 9999
       call s:call_jsonrpc(function('s:handle_stack_response', [l:name]), 'RPCServer.Command', {'name': l:name})
     catch
       call go#util#EchoError(printf('rpc failure: %s', v:exception))
