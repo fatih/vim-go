@@ -13,6 +13,7 @@ if !exists('s:state')
         \ 'functionArgs': {},
         \ 'message': [],
         \ 'resultHandlers': {},
+        \ 'kill_on_detach': v:true,
       \ }
 
   if go#util#HasDebug('debugger-state')
@@ -252,7 +253,7 @@ function! s:clearState() abort
 endfunction
 
 function! s:stop() abort
-  call s:call_jsonrpc(function('s:noop'), 'RPCServer.Detach', {'kill': v:true})
+  call s:call_jsonrpc(function('s:noop'), 'RPCServer.Detach', {'kill': s:state['kill_on_detach']})
 
   if has_key(s:state, 'job')
     call go#job#Wait(s:state['job'])
@@ -279,8 +280,9 @@ function! go#debug#Stop() abort
   for k in map(split(execute('command GoDebug'), "\n")[1:], 'matchstr(v:val, "^\\s*\\zs\\S\\+")')
     exe 'delcommand' k
   endfor
-  command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start(0, <f-args>)
-  command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start(1, <f-args>)
+  command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start('debug', <f-args>)
+  command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start('test', <f-args>)
+  command! -nargs=1 GoDebugAttach call go#debug#Start('attach', <f-args>)
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
 
   " Remove all mappings.
@@ -478,6 +480,7 @@ function! s:start_cb() abort
 
   silent! delcommand GoDebugStart
   silent! delcommand GoDebugTest
+  silent! delcommand GoDebugAttach
 
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
@@ -686,10 +689,9 @@ function! s:handleRPCResult(resp) abort
   endtry
 endfunction
 
-
 " Start the debug mode. The first argument is the package name to compile and
 " debug, anything else will be passed to the running program.
-function! go#debug#Start(is_test, ...) abort
+function! go#debug#Start(mode, ...) abort
   call go#cmd#autowrite()
 
   if !go#util#has_job()
@@ -702,7 +704,7 @@ function! go#debug#Start(is_test, ...) abort
     return s:state['job']
   endif
 
-  let s:start_args = [a:is_test] + a:000
+  let s:start_args = [a:mode] + a:000
 
   if go#util#HasDebug('debugger-state')
     call go#config#SetDebugDiag(s:state)
@@ -714,37 +716,21 @@ function! go#debug#Start(is_test, ...) abort
   endif
 
   try
-    let l:cmd = [
-          \ dlv,
-          \ (a:is_test ? 'test' : 'debug'),
-     \]
 
-    " append the package when it's given.
-    if len(a:000) > 0
-      let l:pkgname = a:1
-      if l:pkgname[0] == '.'
-        let l:pkgabspath = fnamemodify(l:pkgname, ':p')
+    let l:cmd = [dlv, a:mode]
 
-        let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
-        let l:dir = getcwd()
-        execute l:cd fnameescape(expand('%:p:h'))
-
-        try
-          let l:pkgname = go#package#FromPath(l:pkgabspath)
-          if type(l:pkgname) == type(0)
-            call go#util#EchoError('could not determine package name')
-            return
-          endif
-        finally
-          execute l:cd fnameescape(l:dir)
-        endtry
-      endif
-
-      let l:cmd += [l:pkgname]
+    let s:state['kill_on_detach'] = v:true
+    if a:mode is 'debug' || a:mode is 'test'
+      let l:cmd = extend(l:cmd, s:package(a:000))
+      let l:cmd = extend(l:cmd, ['--output', tempname()])
+    elseif a:mode is 'attach'
+      let l:cmd = add(l:cmd, a:1)
+      let s:state['kill_on_detach'] = v:false
+    else
+      call go#util#EchoError('Unknown dlv command')
     endif
 
     let l:cmd += [
-          \ '--output', tempname(),
           \ '--headless',
           \ '--api-version', '2',
           \ '--listen', go#config#DebugAddress(),
@@ -782,7 +768,40 @@ function! go#debug#Start(is_test, ...) abort
   return s:state['job']
 endfunction
 
-" Translate a reflect kind constant to a human string.
+" s:package returns the import path of package name of a :GoDebug(Start|Test)
+" call as a list so that the package can be appended to a command list using
+" extend(). args is expected to be a (potentially empty_ list. The first
+" element in args (if there are any) is expected to be a package path. An
+" emnpty list is returned when either args is an empty list or the import path
+" cannot be determined.
+function! s:package(args)
+  if len(a:args) == 0
+    return []
+  endif
+
+  " append the package when it's given.
+  let l:pkgname = a:args[0]
+  if l:pkgname[0] == '.'
+    let l:pkgabspath = fnamemodify(l:pkgname, ':p')
+
+    let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+    let l:dir = getcwd()
+    let l:dir = go#util#Chdir(expand('%:p:h'))
+    try
+      let l:pkgname = go#package#FromPath(l:pkgabspath)
+      if type(l:pkgname) == type(0)
+        call go#util#EchoError('could not determine package name')
+        return []
+      endif
+    finally
+      call go#util#Chdir(l:dir)
+    endtry
+  endif
+
+  return [l:pkgname]
+endfunction
+
+  " Translate a reflect kind constant to a human string.
 function! s:reflect_kind(k)
   " Kind constants from Go's reflect package.
   return [
@@ -1210,6 +1229,7 @@ function! go#debug#Restart() abort
           \ 'functionArgs': {},
           \ 'message': [],
           \ 'resultHandlers': {},
+          \ 'kill_on_detach': s:state['kill_on_detach'],
         \ }
 
     call call('go#debug#Start', s:start_args)
