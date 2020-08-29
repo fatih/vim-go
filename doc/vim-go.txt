@@ -2258,10 +2258,21 @@ the `dlv` process, or |:GoDebugRestart| to recompile the code.
                                                            *go-debug-commands*
 DEBUGGER COMMANDS~
 
-Only |:GoDebugStart|, `:GoDebugTest`, and |:GoDebugBreakpoint| are available
-by default. `:GoDebugContinue` becomes available after running `:GoDebugStart`
-or `:GoDebugTest`. The rest of the commands and mappings become available
-after executing `:GoDebugContinue`.
+Only |:GoDebugAttach|, |:GoDebugStart|, |:GoDebugTest|, and
+|:GoDebugBreakpoint| are available by default. |:GoDebugContinue| becomes
+available after running |:GoDebugAttach|, |:GoDebugStart| or |:GoDebugTest|.
+The rest of the commands and mappings become available after executing
+|:GoDebugContinue|.
+
+                                                             *:GoDebugAttach*
+:GoDebugAttach pid
+
+    Start the debug mode for pid; this does several things:
+
+      * Setup the debug windows according to |'g:go_debug_windows'|.
+      * Make the `:GoDebug*` commands and `(go-debug-*)` mappings available.
+
+    Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
                                                                *:GoDebugStart*
 :GoDebugStart [pkg] [program-args]

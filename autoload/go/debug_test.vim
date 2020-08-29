@@ -38,7 +38,7 @@ function! Test_GoDebugStart_Errors() abort
     let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
     execute l:cd . ' debug/compilerror'
 
-    call go#debug#Start(0)
+    call go#debug#Start('debug')
 
     let l:actual = getqflist()
     let l:start = reltime()
@@ -80,9 +80,9 @@ function! s:debug(...) abort
     if a:0 == 0
       let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
       execute l:cd . ' debug/debugmain'
-      let l:job = go#debug#Start(0)
+      let l:job = go#debug#Start('debug')
     else
-      let l:job = go#debug#Start(0, a:1)
+      let l:job = go#debug#Start('debug', a:1)
     endif
 
     let l:start = reltime()

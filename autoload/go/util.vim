@@ -704,7 +704,7 @@ function! go#util#Chdir(dir) abort
   if !exists('*chdir')
     let l:olddir = getcwd()
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-    execute cd . a:dir
+    execute cd . fnameescape(a:dir)
     return l:olddir
   endif
   return chdir(a:dir)
