@@ -24,11 +24,8 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
         \ 'errorformat': a:errorformat,
       \ }
 
-  " execute go build in the files directory
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let l:dir = getcwd()
-
-  execute l:cd . fnameescape(expand("%:p:h"))
+  " execute the command in the current file's directory
+  let l:dir = go#util#Chdir(expand('%:p:h'))
 
   execute l:mode . ' __go_term__'
   setlocal filetype=goterm
@@ -51,7 +48,7 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
         \ }
     let l:state.id = termopen(a:cmd, l:job)
     let l:state.termwinid = win_getid(winnr())
-    execute l:cd . fnameescape(l:dir)
+    call go#util#Chdir(l:dir)
 
     " resize new term if needed.
     let l:height = go#config#TermHeight()
@@ -81,7 +78,7 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
 
     let l:state.id = term_start(a:cmd, l:term)
     let l:state.termwinid = win_getid(bufwinnr(l:state.id))
-    execute l:cd . fnameescape(l:dir)
+    call go#util#Chdir(l:dir)
 
     " resize new term if needed.
     let l:height = go#config#TermHeight()
@@ -155,7 +152,7 @@ func s:handle_exit(job_id, exit_status, state) abort
     return
   endif
 
-  let l:bufdir = fnameescape(expand('%:p:h'))
+  let l:bufdir = expand('%:p:h')
   if !isdirectory(l:bufdir)
     call go#util#EchoWarning('terminal job failure not processed, because the job''s working directory no longer exists')
     call win_gotoid(l:winid)
@@ -165,9 +162,7 @@ func s:handle_exit(job_id, exit_status, state) abort
   " change to directory where the command was run. If we do not do this the
   " quickfix items will have the incorrect paths.
   " see: https://github.com/fatih/vim-go/issues/2400
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let l:dir = getcwd()
-  execute l:cd . l:bufdir
+  let l:dir = go#util#Chdir(l:bufdir)
 
   let l:title = a:state.cmd
   if type(l:title) == v:t_list
@@ -192,13 +187,13 @@ func s:handle_exit(job_id, exit_status, state) abort
 
   if empty(l:errors)
     call go#util#EchoError( '[' . l:title . '] ' . "FAIL")
-    execute l:cd l:dir
+    call go#util#Chdir(l:dir)
     call win_gotoid(l:winid)
     return
   endif
 
   if a:state.bang
-    execute l:cd l:dir
+    call go#util#Chdir(l:dir)
     call win_gotoid(l:winid)
     return
   endif
@@ -207,7 +202,7 @@ func s:handle_exit(job_id, exit_status, state) abort
   call go#list#JumpToFirst(l:listtype)
 
   " change back to original working directory
-  execute l:cd l:dir
+  call go#util#Chdir(l:dir)
 endfunction
 
 function! go#term#ToggleCloseOnExit() abort
