@@ -2,6 +2,8 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
+let s:bufnameprefix = 'goterm://'
+
 " new creates a new terminal with the given command. Mode is set based on the
 " global variable g:go_term_mode, which is by default set to :vsplit
 function! go#term#new(bang, cmd, errorformat) abort
@@ -15,6 +17,10 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
     let l:mode = go#config#TermMode()
   endif
 
+  if go#config#TermReuse()
+    call s:closeterm()
+  endif
+
   let l:state = {
         \ 'cmd': a:cmd,
         \ 'bang' : a:bang,
@@ -24,11 +30,8 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
         \ 'errorformat': a:errorformat,
       \ }
 
-  " execute go build in the files directory
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let l:dir = getcwd()
-
-  execute l:cd . fnameescape(expand("%:p:h"))
+  " execute the command in the current file's directory
+  let l:dir = go#util#Chdir(expand('%:p:h'))
 
   execute l:mode . ' __go_term__'
   setlocal filetype=goterm
@@ -51,7 +54,8 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
         \ }
     let l:state.id = termopen(a:cmd, l:job)
     let l:state.termwinid = win_getid(winnr())
-    execute l:cd . fnameescape(l:dir)
+    let s:lasttermwinid = l:state.termwinid
+    call go#util#Chdir(l:dir)
 
     " resize new term if needed.
     let l:height = go#config#TermHeight()
@@ -69,19 +73,25 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
 
   " setup term for vim8
   elseif has('terminal')
+    " Not great randomness, but "good enough" for our purpose here.
+    let l:rnd = sha256(printf('%s%s', reltimestr(reltime()), fnamemodify(bufname(''), ":p")))
+    let l:termname = printf("%s%s", s:bufnameprefix, l:rnd)
+
     let l:term = {
           \ 'out_cb': function('s:out_cb', [], state),
           \ 'exit_cb' : function('s:exit_cb', [], state),
           \ 'curwin': 1,
+          \ 'term_name': l:termname,
         \ }
 
     if l:mode =~ "vertical" || l:mode =~ "vsplit" || l:mode =~ "vnew"
-          let l:term["vertical"] = l:mode
+      let l:term["vertical"] = l:mode
     endif
 
     let l:state.id = term_start(a:cmd, l:term)
     let l:state.termwinid = win_getid(bufwinnr(l:state.id))
-    execute l:cd . fnameescape(l:dir)
+    let s:lasttermwinid = l:state.termwinid
+    call go#util#Chdir(l:dir)
 
     " resize new term if needed.
     let l:height = go#config#TermHeight()
@@ -155,7 +165,7 @@ func s:handle_exit(job_id, exit_status, state) abort
     return
   endif
 
-  let l:bufdir = fnameescape(expand('%:p:h'))
+  let l:bufdir = expand('%:p:h')
   if !isdirectory(l:bufdir)
     call go#util#EchoWarning('terminal job failure not processed, because the job''s working directory no longer exists')
     call win_gotoid(l:winid)
@@ -165,9 +175,7 @@ func s:handle_exit(job_id, exit_status, state) abort
   " change to directory where the command was run. If we do not do this the
   " quickfix items will have the incorrect paths.
   " see: https://github.com/fatih/vim-go/issues/2400
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let l:dir = getcwd()
-  execute l:cd . l:bufdir
+  let l:dir = go#util#Chdir(l:bufdir)
 
   let l:title = a:state.cmd
   if type(l:title) == v:t_list
@@ -192,13 +200,13 @@ func s:handle_exit(job_id, exit_status, state) abort
 
   if empty(l:errors)
     call go#util#EchoError( '[' . l:title . '] ' . "FAIL")
-    execute l:cd l:dir
+    call go#util#Chdir(l:dir)
     call win_gotoid(l:winid)
     return
   endif
 
   if a:state.bang
-    execute l:cd l:dir
+    call go#util#Chdir(l:dir)
     call win_gotoid(l:winid)
     return
   endif
@@ -207,7 +215,7 @@ func s:handle_exit(job_id, exit_status, state) abort
   call go#list#JumpToFirst(l:listtype)
 
   " change back to original working directory
-  execute l:cd l:dir
+  call go#util#Chdir(l:dir)
 endfunction
 
 function! go#term#ToggleCloseOnExit() abort
@@ -220,6 +228,43 @@ function! go#term#ToggleCloseOnExit() abort
   call go#config#SetTermCloseOnExit(1)
   call go#util#EchoProgress("term close on exit enabled")
   return
+endfunction
+
+function! s:closeterm()
+  if !exists('s:lasttermwinid')
+    return
+  endif
+
+  try
+    let l:termwinid = s:lasttermwinid
+    unlet s:lasttermwinid
+    let l:info = getwininfo(l:termwinid)
+    if empty(l:info)
+      return
+    endif
+
+    let l:info = l:info[0]
+
+    if !get(l:info, 'terminal', 0) is 1
+      return
+    endif
+
+    if has('nvim')
+      if 'goterm' == nvim_buf_get_option(nvim_win_get_buf(l:termwinid), 'filetype')
+        call nvim_win_close(l:termwinid, v:true)
+      endif
+      return
+    endif
+
+    if stridx(bufname(winbufnr(l:termwinid)), s:bufnameprefix, 0) == 0
+      let l:winid = win_getid()
+      call win_gotoid(l:termwinid)
+      close!
+      call win_gotoid(l:winid)
+    endif
+  catch
+    call go#util#EchoError(printf("vim-go: %s", v:exception))
+  endtry
 endfunction
 
 " restore Vi compatibility settings

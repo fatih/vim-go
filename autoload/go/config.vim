@@ -53,6 +53,10 @@ function! go#config#TermCloseOnExit() abort
   return get(g:, 'go_term_close_on_exit', 1)
 endfunction
 
+function! go#config#TermReuse() abort
+  return get(g:, 'go_term_reuse', 0)
+endfunction
+
 function! go#config#SetTermCloseOnExit(value) abort
   let g:go_term_close_on_exit = a:value
 endfunction
