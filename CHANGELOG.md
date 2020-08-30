@@ -60,6 +60,8 @@ IMPROVEMENTS:
   [[GH-2984]](https://github.com/fatih/vim-go/pull/2984)
 * Add `:GoDebugAttach` to debug a running process.
   [[GH-2989]](https://github.com/fatih/vim-go/pull/2989)
+* Add `g:go_term_reuse` option to allow the reuse of a terminal window.
+  [[GH-2990]](https://github.com/fatih/vim-go/pull/2990)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
