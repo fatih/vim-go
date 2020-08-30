@@ -1717,6 +1717,13 @@ Applicable to Neovim and Vim with `terminal` feature only.
 >
   let g:go_term_mode = "vsplit"
 <
+                                                          *'g:go_term_reuse'*
+
+Reuse the terminal window when |'g:go_term_enabled'| is set. By default it's
+disabled.
+>
+  let g:go_term_reuse = 0
+<
                                                           *'g:go_term_height'*
                                                            *'g:go_term_width'*
 
