@@ -4,9 +4,9 @@ set cpo&vim
 
 function! go#lint#Gometa(bang, autosave, ...) abort
   if a:0 == 0
-    let goargs = [expand('%:p:h')]
+    let l:goargs = [expand('%:p:h')]
   else
-    let goargs = a:000
+    let l:goargs = a:000
   endif
 
   let l:metalinter = go#config#MetalinterCommand()
@@ -34,7 +34,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     redraw
 
     if l:metalinter == "golangci-lint"
-      let goargs[0] = expand('%:p:h')
+      let l:goargs[0] = expand('%:p:h')
     endif
   endif
 
@@ -44,7 +44,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let cmd += ["--deadline=" . deadline]
   endif
 
-  let cmd += goargs
+  let cmd += l:goargs
 
   let errformat = s:errorformat(l:metalinter)
 
