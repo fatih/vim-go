@@ -1874,6 +1874,24 @@ is `v:null`.
   let g:go_gopls_local = v:null
 <
 
+                                                       *'g:go_gopls_gofumpt'*
+
+Specifies whether `gopls` should use `gofumpt` for formatting. When it is
+`v:null`, `gopls`' default will be used.  By default it is `v:null`.
+>
+  let g:go_gopls_gofumpt = v:null
+<
+
+                                                      *'g:go_gopls_settings'*
+
+Specifies `gopls` workspace settings for `gopls` that are not yet officially
+supported by vim-go. Any value in the dictionary will be overridden by values
+provided in the specific options supported by vim-go (e.g.
+g:go_gopls_staticcheck) or settings statically configured by vim-go to ensure
+expected behavior. By default it is `v:null`.
+>
+  let g:go_gopls_settings = v:null
+<
                                                  *'g:go_diagnostics_enabled'*
 
 Specifies whether `gopls` diagnostics are enabled. Only the diagnostics for

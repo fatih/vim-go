@@ -269,6 +269,8 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:tempModfile = go#config#GoplsTempModfile()
     let l:analyses = go#config#GoplsAnalyses()
     let l:local = go#config#GoplsLocal()
+    let l:gofumpt = go#config#GoplsGofumpt()
+    let l:settings = go#config#GoplsSettings()
 
     if l:deepCompletion isnot v:null
       if l:deepCompletion
@@ -320,6 +322,14 @@ function! go#lsp#message#ConfigurationResult(items) abort
 
     if l:local isnot v:null
       let l:config.local = l:local
+    endif
+
+    if l:gofumpt isnot v:null
+      let l:config.gofumpt = l:local
+    endif
+
+    if l:settings isnot v:null
+      let l:config = extend(l:config, l:settings, 'keep')
     endif
 
     let l:result = add(l:result, l:config)

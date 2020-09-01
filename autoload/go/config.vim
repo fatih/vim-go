@@ -550,6 +550,14 @@ function! go#config#GoplsLocal() abort
   return get(g:, 'go_gopls_local', v:null)
 endfunction
 
+function! go#config#GoplsGofumpt() abort
+  return get(g:, 'go_gopls_gofumpt', v:null)
+endfunction
+
+function! go#config#GoplsSettings() abort
+  return get(g:, 'go_gopls_settings', v:null)
+endfunction
+
 function! go#config#GoplsEnabled() abort
   return get(g:, 'go_gopls_enabled', 1)
 endfunction
