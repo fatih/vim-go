@@ -325,7 +325,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
     endif
 
     if l:gofumpt isnot v:null
-      let l:config.gofumpt = l:local
+      let l:config.gofumpt = l:gofumpt
     endif
 
     if l:settings isnot v:null
