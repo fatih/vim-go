@@ -800,7 +800,7 @@ CTRL-t
     You can define a constant value instead of the default field based value.
     For example the following command will add ``valid:"1"`` to all fields.
 >
-      :GoAddTags valid=1
+      :GoAddTags valid:1
 <
                                                                *:GoRemoveTags*
 :[range]GoRemoveTags [key],[option] [key1],[option1] ...
