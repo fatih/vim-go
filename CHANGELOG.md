@@ -62,6 +62,11 @@ IMPROVEMENTS:
   [[GH-2989]](https://github.com/fatih/vim-go/pull/2989)
 * Add `g:go_term_reuse` option to allow the reuse of a terminal window.
   [[GH-2990]](https://github.com/fatih/vim-go/pull/2990)
+* Add official support for using `gopls`' `gofumpt` workspace setting.
+  [[GH-2994]](https://github.com/fatih/vim-go/pull/2994)
+* Add support for using `gopls`' workspace settings that are otherwise not yet
+  officially supported by vim-go.
+  [[GH-2994]](https://github.com/fatih/vim-go/pull/2994)
 
 BUG FIXES:
 * Fix call to non-existent function in terminal mode edge case.
