@@ -62,7 +62,8 @@ IMPROVEMENTS:
   [[GH-2989]](https://github.com/fatih/vim-go/pull/2989)
 * Add `g:go_term_reuse` option to allow the reuse of a terminal window.
   [[GH-2990]](https://github.com/fatih/vim-go/pull/2990)
-* Add official support for using `gopls`' `gofumpt` workspace setting.
+* Add official support for using `gopls`' `gofumpt` workspace setting via
+  `g:go_gopls_gofumpt`.
   [[GH-2994]](https://github.com/fatih/vim-go/pull/2994)
   [[GH-3005]](https://github.com/fatih/vim-go/pull/3005)
 * Add support for using `gopls`' workspace settings that are otherwise not yet
