@@ -58,6 +58,22 @@ func! Test_Format() abort
   endtry
 endfunc
 
+func! Test_Format_SingleNewline() abort
+  try
+    let expected = join(readfile("test-fixtures/lsp/fmt/format_golden.go"), "\n")
+    let l:tmp = gotest#load_fixture('lsp/fmt/newline.go')
+
+    call go#lsp#Format()
+
+    " this should now contain the formatted code
+    let actual = join(go#util#GetLines(), "\n")
+
+    call assert_equal(expected, actual)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 func! Test_Imports() abort
   try
     let expected = join(readfile("test-fixtures/lsp/imports/imports_golden.go"), "\n")
