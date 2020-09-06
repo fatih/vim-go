@@ -104,6 +104,9 @@ BUG FIXES:
 * Correct documentation in for `:GoModifyTags` when adding a specific tag
   value.
   [[GH-3001]](https://github.com/fatih/vim-go/pull/3001)
+* Fix the path given to `gopls` when `let g:go_metalinter='gopls'` and
+  `:GoMetaLinter` is called without any arguments.
+  [[GH-2992]](https://github.com/fatih/vim-go/pull/2992)
 
 ## v1.23 - (May 16, 2020)
 
