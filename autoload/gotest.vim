@@ -58,7 +58,7 @@ fun! gotest#load_fixture(path) abort
 
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
   call go#util#Chdir(l:dir . '/src')
-  silent exe 'noautocmd e ' . a:path
+  silent exe 'noautocmd e! ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
   if go#util#has_job()
