@@ -64,6 +64,7 @@ IMPROVEMENTS:
   [[GH-2990]](https://github.com/fatih/vim-go/pull/2990)
 * Add official support for using `gopls`' `gofumpt` workspace setting.
   [[GH-2994]](https://github.com/fatih/vim-go/pull/2994)
+  [[GH-3005]](https://github.com/fatih/vim-go/pull/3005)
 * Add support for using `gopls`' workspace settings that are otherwise not yet
   officially supported by vim-go.
   [[GH-2994]](https://github.com/fatih/vim-go/pull/2994)
