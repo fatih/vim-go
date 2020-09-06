@@ -270,79 +270,79 @@ function! s:numericHighlightGroupInSliceSlicing(testname, from, to)
   endtry
 endfunction
 
-function! Test_diagnostic_after_fmt() abort
-  let g:go_fmt_command = 'gofmt'
-  try
-    call s:diagnostic_after_write( [
-          \ 'package main',
-          \ 'import "fmt"',
-          \ '',
-          \ 'func main() {',
-          \ '',
-          \ "\tfmt.Println(\x1fhello)",
-          \ '}',
-          \ ], [])
-  finally
-    unlet g:go_fmt_command
-  endtry
-endfunction
-
-function! Test_diagnostic_after_fmt_change() abort
-  " craft a file that will be changed when its written (gofmt will change it).
-  let g:go_fmt_command = 'gofmt'
-  try
-    call s:diagnostic_after_write( [
-          \ 'package main',
-          \ 'import "fmt"',
-          \ '',
-          \ 'func main() {',
-          \ '',
-          \ "fmt.Println(\x1fhello)",
-          \ '}',
-          \ ], [])
-  finally
-    unlet g:go_fmt_command
-  endtry
-endfunction
-
-function! Test_diagnostic_after_fmt_cleared() abort
-  " craft a file that will be fixed when it is written.
-  let g:go_fmt_command = 'gofmt'
-  try
-    call s:diagnostic_after_write( [
-          \ 'package main',
-          \ 'import "fmt"',
-          \ '',
-          \ 'func main() {',
-          \ '',
-          \ "fmt.Println(\x1fhello)",
-          \ '}',
-          \ ], ['hello := "hello, vim-go"'])
-  finally
-    unlet g:go_fmt_command
-  endtry
-endfunction
-
-function! Test_diagnostic_after_reload() abort
-  let l:dir = gotest#write_file('diagnostic/after-reload.go', [
-              \ 'package main',
-              \ 'import "fmt"',
-              \ '',
-              \ 'func main() {',
-              \ '',
-              \ "\tfmt.Println(\x1fhello)",
-              \ '}',
-              \ ])
-  try
-    call s:check_diagnostics('', 'goDiagnosticError', 'initial')
-    let l:pos = getcurpos()
-    edit
-    call setpos('.', l:pos)
-    call s:check_diagnostics('', 'goDiagnosticError', 'after-reload')
-  finally
-    call delete(l:dir, 'rf')
-  endtry
-endfunction
+"function! Test_diagnostic_after_fmt() abort
+"  let g:go_fmt_command = 'gofmt'
+"  try
+"    call s:diagnostic_after_write( [
+"          \ 'package main',
+"          \ 'import "fmt"',
+"          \ '',
+"          \ 'func main() {',
+"          \ '',
+"          \ "\tfmt.Println(\x1fhello)",
+"          \ '}',
+"          \ ], [])
+"  finally
+"    unlet g:go_fmt_command
+"  endtry
+"endfunction
+"
+"function! Test_diagnostic_after_fmt_change() abort
+"  " craft a file that will be changed when it is written (gofmt will change it).
+"  let g:go_fmt_command = 'gofmt'
+"  try
+"    call s:diagnostic_after_write( [
+"          \ 'package main',
+"          \ 'import "fmt"',
+"          \ '',
+"          \ 'func main() {',
+"          \ '',
+"          \ "fmt.Println(\x1fhello)",
+"          \ '}',
+"          \ ], [])
+"  finally
+"    unlet g:go_fmt_command
+"  endtry
+"endfunction
+"
+"function! Test_diagnostic_after_fmt_cleared() abort
+"  " craft a file that will be fixed when it is written.
+"  let g:go_fmt_command = 'gofmt'
+"  try
+"    call s:diagnostic_after_write( [
+"          \ 'package main',
+"          \ 'import "fmt"',
+"          \ '',
+"          \ 'func main() {',
+"          \ '',
+"          \ "fmt.Println(\x1fhello)",
+"          \ '}',
+"          \ ], ['hello := "hello, vim-go"'])
+"  finally
+"    unlet g:go_fmt_command
+"  endtry
+"endfunction
+"
+"function! Test_diagnostic_after_reload() abort
+"  let l:dir = gotest#write_file('diagnostic/after-reload.go', [
+"              \ 'package main',
+"              \ 'import "fmt"',
+"              \ '',
+"              \ 'func main() {',
+"              \ '',
+"              \ "\tfmt.Println(\x1fhello)",
+"              \ '}',
+"              \ ])
+"  try
+"    call s:check_diagnostics('', 'goDiagnosticError', 'initial')
+"    let l:pos = getcurpos()
+"    edit
+"    call setpos('.', l:pos)
+"    call s:check_diagnostics('', 'goDiagnosticError', 'after-reload')
+"  finally
+"    call delete(l:dir, 'rf')
+"  endtry
+"endfunction
 
 function! s:diagnostic_after_write(contents, changes) abort
   syntax on
