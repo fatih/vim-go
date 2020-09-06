@@ -112,6 +112,9 @@ BUG FIXES:
 * Fix the path given to `gopls` when `let g:go_metalinter='gopls'` and
   `:GoMetaLinter` is called without any arguments.
   [[GH-2992]](https://github.com/fatih/vim-go/pull/2992)
+* Do not override a user's configuration for `GoDebugBreakpoint` or
+  `GoDebugCurrent` highlight groups.
+  [[GH-2998]](https://github.com/fatih/vim-go/pull/2998)
 
 ## v1.23 - (May 16, 2020)
 
