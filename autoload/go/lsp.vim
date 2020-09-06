@@ -1536,7 +1536,7 @@ function s:applyTextEdits(msg) abort
     " TODO(bc): deal with folds
 
     call s:deleteline(l:startline, l:endline)
-    for l:line in split(l:text, "\n")
+    for l:line in split(l:text, "\n", 1)
       call append(l:startline-1, l:line)
       let l:startline += 1
     endfor
