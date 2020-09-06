@@ -101,6 +101,9 @@ BUG FIXES:
 * Make sure debugging commands are configured when debugging a second time
   within a single Vim session.
   [[GH-2985]](https://github.com/fatih/vim-go/pull/2985)
+* Correct documentation in for `:GoModifyTags` when adding a specific tag
+  value.
+  [[GH-3001]](https://github.com/fatih/vim-go/pull/3001)
 
 ## v1.23 - (May 16, 2020)
 
