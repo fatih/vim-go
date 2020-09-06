@@ -1,6 +1,6 @@
-FROM golang:1.14.0-buster
+FROM golang:1.15.1
 
-RUN apt-get update -y && \
+RUN apt-get update -y --allow-insecure-repositories && \
   apt-get install -y build-essential curl git libncurses5-dev python3-pip && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
