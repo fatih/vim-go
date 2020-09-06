@@ -115,6 +115,8 @@ BUG FIXES:
 * Do not override a user's configuration for `GoDebugBreakpoint` or
   `GoDebugCurrent` highlight groups.
   [[GH-2998]](https://github.com/fatih/vim-go/pull/2998)
+* Apply `gopls` text edits correctly that insert solitary newlines.
+  [[GH-3000]](https://github.com/fatih/vim-go/pull/3000)
 
 ## v1.23 - (May 16, 2020)
 
