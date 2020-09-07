@@ -710,6 +710,27 @@ function! go#util#Chdir(dir) abort
   return chdir(a:dir)
 endfunction
 
+" go#util#TestName returns the name of the test function that preceeds the
+" cursor.
+function go#util#TestName() abort
+  " search flags legend (used only)
+  " 'b' search backward instead of forward
+  " 'c' accept a match at the cursor position
+  " 'n' do Not move the cursor
+  " 'W' don't wrap around the end of the file
+  "
+  " for the full list
+  " :help search
+  let l:line = search('func \(Test\|Example\)', "bcnW")
+
+  if l:line == 0
+    return ''
+  endif
+
+  let l:decl = getline(l:line)
+  return split(split(l:decl, " ")[1], "(")[0]
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

@@ -106,24 +106,12 @@ endfunction
 " Testfunc runs a single test that surrounds the current cursor position.
 " Arguments are passed to the `go test` command.
 function! go#test#Func(bang, ...) abort
-  " search flags legend (used only)
-  " 'b' search backward instead of forward
-  " 'c' accept a match at the cursor position
-  " 'n' do Not move the cursor
-  " 'W' don't wrap around the end of the file
-  "
-  " for the full list
-  " :help search
-  let test = search('func \(Test\|Example\)', "bcnW")
-
-  if test == 0
-    echo "vim-go: [test] no test found immediate to cursor"
+  let l:test = go#util#TestName()
+  if l:test is ''
+    call go#util#EchoWarning("[test] no test found immediate to cursor")
     return
-  end
-
-  let line = getline(test)
-  let name = split(split(line, " ")[1], "(")[0]
-  let args = [a:bang, 0, "-run", name . "$"]
+  endif
+  let args = [a:bang, 0, "-run", l:test . "$"]
 
   if a:0
     call extend(args, a:000)
