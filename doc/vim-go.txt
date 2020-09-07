@@ -424,10 +424,6 @@ CTRL-t
 
     If [!] is not given the first error is jumped to.
 
-    If using neovim `:GoTestFunc` will run in a new terminal or run
-    asynchronously in the background according to |'g:go_term_enabled'|. You
-    can set the mode of the new terminal with |'g:go_term_mode'|.
-
                                                               *:GoTestCompile*
 :GoTestCompile[!] [expand]
 
@@ -438,10 +434,6 @@ CTRL-t
     create test binary.
 
     If [!] is not given the first error is jumped to.
-
-    If using neovim `:GoTestCompile` will run in a new terminal or run
-    asynchronously in the background according to |'g:go_term_enabled'|. You
-    can set the mode of the new terminal with |'g:go_term_mode'|.
 
                                                                  *:GoCoverage*
 :GoCoverage[!] [options]
