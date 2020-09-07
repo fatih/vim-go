@@ -20,6 +20,7 @@ if !exists('g:test_verbose')
   let g:test_verbose = 0
 endif
 let g:go_echo_command_info = 0
+let g:go_gopls_options = []
 
 function! s:logmessages() abort
   " Add all messages (usually errors).
