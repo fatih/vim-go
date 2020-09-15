@@ -1,5 +1,7 @@
 ## unplanned
 
+## v1.24 - (September 15, 2020)
+
 IMPROVEMENTS:
 * Clarify how `g:go_imports_autosave` and `g:go_fmt_autosave` interact.
   [[GH-2893]](https://github.com/fatih/vim-go/pull/2893)
