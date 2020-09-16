@@ -155,6 +155,17 @@ function! s:newlsp() abort
       let l:resp = go#lsp#message#ConfigurationResult(a:req.params.items)
     elseif a:req.method == 'client/registerCapability' && has_key(a:req, 'params') && has_key(a:req.params, 'registrations')
       let l:resp = v:null
+    elseif a:req.method == 'workspace/applyEdit'
+      try
+        let l:ok = v:true
+        for l:change in a:req.params.edit.documentChanges
+          call s:applyDocumentChanges(a:req.params.edit.documentChanges)
+        endfor
+      catch
+        call go#util#EchoError(printf('could not apply edit: %s', v:exception))
+        let l:ok = v:false
+      endtry
+      let l:resp = go#lsp#message#ApplyWorkspaceEditResponse(l:ok)
     else
       return
     endif
@@ -1232,7 +1243,7 @@ function! s:debugasync(timer) abort
 endfunction
 
 function! s:debug(event, data) abort
-  let l:shouldStart = len(s:log) > 0
+  let l:shouldStart = len(s:log) == 0
   let s:log = add(s:log, [a:event, a:data])
 
   if l:shouldStart
@@ -1439,7 +1450,7 @@ function! go#lsp#Imports() abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('')
-  let l:handler = go#promise#New(function('s:handleCodeAction', [], l:state), 10000, '')
+  let l:handler = go#promise#New(function('s:handleCodeAction', ['source.organizeImports', ''], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
   let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
@@ -1449,6 +1460,41 @@ function! go#lsp#Imports() abort
   " await the result to avoid any race conditions among autocmds (e.g.
   " BufWritePre and BufWritePost)
   call l:handler.await()
+endfunction
+
+" FillStruct executes the refactor.rewrite code action for the current buffer
+" and configures the handler to only apply the fillstruct command for the
+" current location.
+function! go#lsp#FillStruct() abort
+  let l:fname = expand('%:p')
+  " send the current file so that TextEdits will be relative to the current
+  " state of the buffer.
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('')
+  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.rewrite', 'fill_struct'], l:state), 10000, '')
+  let l:state.handleResult = l:handler.wrapper
+  let l:state.error = l:handler.wrapper
+  let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
+
+  let [l:line, l:col] = go#lsp#lsp#Position()
+  let l:msg = go#lsp#message#CodeActionFillStruct(l:fname, l:line, l:col)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  " await the result to avoid any race conditions among autocmds (e.g.
+  " BufWritePre and BufWritePost)
+  call l:handler.await()
+endfunction
+
+function! s:executeCommand(cmd, args) abort
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('')
+
+  let l:msg = go#lsp#message#ExecuteCommand(a:cmd, a:args)
+  call l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
 function! s:handleFormat(msg) abort dict
@@ -1461,7 +1507,7 @@ function! s:handleFormat(msg) abort dict
   call s:applyTextEdits(a:msg)
 endfunction
 
-function! s:handleCodeAction(msg) abort dict
+function! s:handleCodeAction(kind, cmd, msg) abort dict
   if type(a:msg) is type('')
     call self.handleError(a:msg)
     return
@@ -1472,10 +1518,18 @@ function! s:handleCodeAction(msg) abort dict
   endif
 
   for l:item in a:msg
-    if get(l:item, 'kind', '') is 'source.organizeImports'
+    if get(l:item, 'kind', '') is a:kind
       if !has_key(l:item, 'edit')
         continue
       endif
+
+      if has_key(l:item, 'command')
+        if has_key(l:item.command, 'command') && l:item.command.command is a:cmd
+          call s:executeCommand(l:item.command.command, l:item.command.arguments)
+          continue
+        endif
+      endif
+
       if !has_key(l:item.edit, 'documentChanges')
         continue
       endif

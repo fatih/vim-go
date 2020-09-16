@@ -1474,6 +1474,14 @@ and `guru`.
 >
   let g:go_def_mode = 'gopls'
 <
+                                                      *'g:go_fillstruct_mode'*
+
+Use this option to define the command to be used for |:GoFillStruct|. By
+default `fillstruct` is used. Valid values are `fillstruct` and `gopls`. By
+default it is `fillstruct`.
+>
+  let g:go_fillstruct_mode = 'fillstruct'
+<
                                                        *'g:go_referrers_mode'*
 
 Use this option to define the command to be used for |:GoReferrers|. By
