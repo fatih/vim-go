@@ -1479,17 +1479,22 @@ function! s:handleCodeAction(msg) abort dict
       if !has_key(l:item.edit, 'documentChanges')
         continue
       endif
-      for l:change in l:item.edit.documentChanges
-        if !has_key(l:change, 'edits')
-          continue
-        endif
-        " TODO(bc): change to the buffer for l:change.textDocument.uri
-        call s:applyTextEdits(l:change.edits)
-      endfor
+      call s:applyDocumentChanges(l:item.edit.documentChanges)
     endif
   endfor
 endfunction
 
+function s:applyDocumentChanges(changes)
+  for l:change in a:changes
+    if !has_key(l:change, 'edits')
+      continue
+    endif
+    " TODO(bc): change to the buffer for l:change.textDocument.uri
+    call s:applyTextEdits(l:change.edits)
+  endfor
+endfunction
+
+" s:applyTextEdit applies the list of WorkspaceEdit values in msg.
 function s:applyTextEdits(msg) abort
   if a:msg is v:null
     return
