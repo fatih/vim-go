@@ -1,5 +1,9 @@
 ## unplanned
 
+IMPROVEMENTS:
+* Clarify allowed values for `gopls` related configuration options.
+  [[GH-3016]](https://github.com/fatih/vim-go/pull/3016)
+
 ## v1.24 - (September 15, 2020)
 
 IMPROVEMENTS:
