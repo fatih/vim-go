@@ -1789,9 +1789,10 @@ options may also need to be adjusted.
 
                                                         *'g:go_gopls_options'*
 
-The commandline arguments to pass to gopls. By default, it's `-remote=auto`.
+The commandline arguments to pass to gopls. By default, it is
+`['-remote=auto']`.
 >
-  let g:go_gopls_options = []
+  let g:go_gopls_options = ['-remote=auto']
 <
 
                                                        *'g:go_gopls_analyses'*
