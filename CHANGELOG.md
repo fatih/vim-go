@@ -3,6 +3,7 @@
 IMPROVEMENTS:
 * Clarify allowed values for `gopls` related configuration options.
   [[GH-3016]](https://github.com/fatih/vim-go/pull/3016)
+  [[GH-3017]](https://github.com/fatih/vim-go/pull/3017)
 * Add `g:go_fillstruct_mode` to allow `:GoFillStruct` to be satisfied by either
   `fillstruct` or by `gopls`.
   [[GH-3018]](https://github.com/fatih/vim-go/pull/3018)
@@ -13,6 +14,8 @@ BUG FIXES:
 * Correct documentation to clearly show the default value for
   `g:go_gopls_options`.
   [[GH-3019]](https://github.com/fatih/vim-go/pull/3019)
+* Allow truthy values for `g:go_gopls_gofumpt`.
+  [[GH-3017]](https://github.com/fatih/vim-go/pull/3017)
 
 ## v1.24 - (September 15, 2020)
 
