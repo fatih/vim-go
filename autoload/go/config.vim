@@ -570,6 +570,10 @@ function! go#config#GoplsOptions() abort
   return get(g:, 'go_gopls_options', ['-remote=auto'])
 endfunction
 
+function! go#config#FillStructMode() abort
+  return get(g:, 'go_fillstruct_mode', 'fillstruct')
+endfunction
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1

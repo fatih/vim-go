@@ -29,7 +29,7 @@ function! go#lsp#message#Initialize(wd) abort
                 \ 'codeAction': {
                 \   'codeActionLiteralSupport': {
                 \     'codeActionKind': {
-                \       'valueSet': ['source.organizeImports'],
+                \       'valueSet': ['source.organizeImports', 'refactor.rewrite'],
                 \     },
                 \   },
                 \ },
@@ -74,6 +74,27 @@ function! go#lsp#message#CodeActionImports(file) abort
   return s:codeAction('source.organizeImports', a:file)
 endfunction
 
+function! go#lsp#message#CodeActionFillStruct(file, line, col) abort
+  return go#lsp#message#CodeActionRefactorRewrite(a:file, a:line, a:col, a:line, a:col)
+endfunction
+
+function! go#lsp#message#CodeActionRefactorRewrite(file, startline, startcol, endline, endcol) abort
+  let l:startpos = s:position(a:startline, a:startcol)
+  let l:endpos = s:position(a:endline, a:endcol)
+
+  let l:request = s:codeAction('refactor.rewrite', a:file)
+
+  let l:request.params = extend(l:request.params,
+        \ {
+          \ 'range': {
+            \ 'start': l:startpos,
+            \ 'end': l:endpos,
+          \ }
+        \ })
+
+  return l:request
+endfunction
+
 function! s:codeAction(name, file) abort
   return {
           \ 'notification': 0,
@@ -83,8 +104,8 @@ function! s:codeAction(name, file) abort
           \       'uri': go#path#ToURI(a:file)
           \   },
           \   'range': {
-          \     'start': {'line': 0, 'character': 0},
-          \     'end': {'line': line('$'), 'character': 0},
+          \     'start': s:position(0, 0),
+          \     'end': s:position(line('$'), 0),
           \   },
           \   'context': {
           \     'only': [a:name],
@@ -336,6 +357,23 @@ function! go#lsp#message#ConfigurationResult(items) abort
   endfor
 
   return l:result
+endfunction
+
+function go#lsp#message#ExecuteCommand(cmd, args) abort
+  return {
+          \ 'notification': 0,
+          \ 'method': 'workspace/executeCommand',
+          \ 'params': {
+          \   'command': a:cmd,
+          \   'arguments': a:args,
+          \ }
+       \ }
+endfunction
+
+function go#lsp#message#ApplyWorkspaceEditResponse(ok) abort
+  return {
+          \ 'applied': a:ok,
+       \ }
 endfunction
 
 function s:workspaceFolder(key, val) abort
