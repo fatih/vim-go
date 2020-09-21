@@ -408,7 +408,11 @@ function! s:newlsp() abort
       return
     endif
 
-    call ch_sendraw(self.job, l:data)
+    try
+      call ch_sendraw(self.job, l:data)
+    catch
+      call go#util#EchoError(printf('could not send message: %s', v:exception))
+    endtry
   endfunction
 
   function! l:lsp.exit_cb(job, exit_status) dict
