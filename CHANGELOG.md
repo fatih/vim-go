@@ -3,6 +3,9 @@
 IMPROVEMENTS:
 * Clarify allowed values for `gopls` related configuration options.
   [[GH-3016]](https://github.com/fatih/vim-go/pull/3016)
+* Add `g:go_fillstruct_mode` to allow `:GoFillStruct` to be satisfied by either
+  `fillstruct` or by `gopls`.
+  [[GH-3018]](https://github.com/fatih/vim-go/pull/3018)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
