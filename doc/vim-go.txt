@@ -2340,6 +2340,14 @@ The rest of the commands and mappings become available after executing
     Use `-test.flag` to pass flags to `go test` when debugging a test; for
     example `-test.v` or `-test.run TestFoo`
 
+                                                            *:GoDebugTestFunc*
+:GoDebugTestFunc [expand]
+
+    Behaves the same as |:GoDebugTest| and implicitly adds `-test.run` to run
+    the nearest test or example function (i.e the nearest function declaration
+    that matches `func Test` or `func Example`) at or previous to the cursor.
+    Search will not wrap around when at the top of the file.
+
                                                              *:GoDebugRestart*
 :GoDebugRestart
 

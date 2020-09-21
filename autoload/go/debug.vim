@@ -282,6 +282,7 @@ function! go#debug#Stop() abort
   endfor
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start('debug', <f-args>)
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start('test', <f-args>)
+  command! -nargs=* GoDebugTestFunc  call go#debug#TestFunc(<f-args>)
   command! -nargs=1 GoDebugAttach call go#debug#Start('attach', <f-args>)
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
 
@@ -689,6 +690,15 @@ function! s:handleRPCResult(resp) abort
   endtry
 endfunction
 
+function! go#debug#TestFunc(...) abort
+  let l:test = go#util#TestName()
+  if l:test is ''
+    call go#util#Warn("vim-go: [debug] no test found immediate to cursor")
+    return
+  endif
+  call call('go#debug#Start', extend(['test', '.', '-test.run', printf('%s$', l:test)], a:000))
+endfunction
+
 " Start the debug mode. The first argument is the package name to compile and
 " debug, anything else will be passed to the running program.
 function! go#debug#Start(mode, ...) abort
@@ -770,9 +780,9 @@ endfunction
 
 " s:package returns the import path of package name of a :GoDebug(Start|Test)
 " call as a list so that the package can be appended to a command list using
-" extend(). args is expected to be a (potentially empty_ list. The first
+" extend(). args is expected to be a (potentially empty) list. The first
 " element in args (if there are any) is expected to be a package path. An
-" emnpty list is returned when either args is an empty list or the import path
+" empty list is returned when either args is an empty list or the import path
 " cannot be determined.
 function! s:package(args)
   if len(a:args) == 0

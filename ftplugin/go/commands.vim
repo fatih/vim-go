@@ -107,6 +107,7 @@ command! -nargs=0 GoFillStruct call go#fillstruct#FillStruct()
 if !exists(':GoDebugStart')
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start('debug', <f-args>)
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start('test', <f-args>)
+  command! -nargs=* GoDebugTestFunc  call go#debug#TestFunc(<f-args>)
   command! -nargs=1 GoDebugAttach call go#debug#Start('attach', <f-args>)
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
 endif
