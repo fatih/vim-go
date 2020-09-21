@@ -7,7 +7,9 @@ IMPROVEMENTS:
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
   [[GH-3010]](https://github.com/fatih/vim-go/pull/3010)
-
+* Correct documentation to clearly show the default value for
+  `g:go_gopls_options`.
+  [[GH-3019]](https://github.com/fatih/vim-go/pull/3019)
 
 ## v1.24 - (September 15, 2020)
 
