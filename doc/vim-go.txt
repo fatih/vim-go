@@ -1787,9 +1787,12 @@ same.
 
                                                         *'g:go_gopls_enabled'*
 
-Specifies whether `gopls` can be used by vim-go. By default gopls is enabled.
-When gopls is disabled completion will not work and other configuration
+Specifies whether `gopls` can be used by vim-go.
+
+Completion will not work when gopls is disabled and other configuration
 options may also need to be adjusted.
+
+By default gopls is enabled.
 
 >
   let g:go_gopls_enabled = 1
@@ -1797,16 +1800,21 @@ options may also need to be adjusted.
 
                                                         *'g:go_gopls_options'*
 
-The commandline arguments to pass to gopls. By default, it is
-`['-remote=auto']`.
+The commandline arguments to pass to gopls.
+
+By default, it is `['-remote=auto']`.
 >
   let g:go_gopls_options = ['-remote=auto']
 <
 
                                                        *'g:go_gopls_analyses'*
 
-The analyses settings for `gopls`. By default, it's `v:null`. Valid map values
-are `v:true` and `v:false`.
+The analyses settings for `gopls`.
+
+The Expected value is either `v:null` or a dictionary. The dictionary will be
+provided to `gopls` via json-rpc, so dictionary values need to be of the
+appropriate type for Vim to convert to JSON (e.g. truthy dictionary values
+should be `v:true` or `v:false`). By default, it is `v:null`.
 >
   let g:go_gopls_analyses = v:null
 <
@@ -1815,8 +1823,7 @@ are `v:true` and `v:false`.
 
 Specifies whether `gopls` should include suggestions from unimported packages.
 
-Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
-`gopls`' default will be used. By default it is `v:null`.
+When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_complete_unimported = v:null
 <
@@ -1825,9 +1832,7 @@ Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
 
 Specifies whether `gopls` should use deep completion.
 
-Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
-`gopls`' default will be used. By default it is `v:null`.
-
+When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_deep_completion = v:null
 <
@@ -1846,8 +1851,7 @@ Valid values are `v:null`, `fuzzy`, and `caseSensitive`. When it is `v:null`,
 
 Specifies whether `gopls` should run staticcheck checks.
 
-Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
-`gopls`' default will be used. By default it is `v:null`.
+When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_staticcheck = v:null
 <
@@ -1859,9 +1863,7 @@ struct fields. When set, completion items will be treated as anonymous
 snippets if UltiSnips is installed and configured to be used as
 |'g:go_snippet_engine'|.
 
-Valid values are `v:null`, `v:false`, and `v:true`.
-When it is `v:null`, `gopls`' default will be used.  By default it is
-`v:null`.
+When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_use_placeholders = v:null
 <
@@ -1871,8 +1873,7 @@ When it is `v:null`, `gopls`' default will be used.  By default it is
 Specifies whether `gopls` should use a temp modfile and suggest edits rather
 than modifying the ambient go.mod file.
 
-Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
-`gopls`' default will be used. By default it is `v:null`.
+When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_temp_modfile = v:null
 <
@@ -1880,8 +1881,9 @@ Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
                                                          *'g:go_gopls_local'*
 
 Specifies the prefix for imports that `gopls` should consider group
-separately. When it is `v:null`, `gopls`' default will be used. Valid values
-are `v:true`, `v:false`, and `v:null`. By default it is `v:null`.
+separately.
+
+When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_local = v:null
 <
@@ -1890,8 +1892,7 @@ are `v:true`, `v:false`, and `v:null`. By default it is `v:null`.
 
 Specifies whether `gopls` should use `gofumpt` for formatting.
 
-Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
-`gopls`' default will be used. By default it is `v:null`.
+When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >
   let g:go_gopls_gofumpt = v:null
 <
@@ -1899,16 +1900,12 @@ Valid values are `v:null`, `v:false`, and `v:true`. When it is `v:null`,
                                                       *'g:go_gopls_settings'*
 
 Specifies `gopls` workspace settings for `gopls` that are not yet officially
-supported by vim-go. Any value in the dictionary will be overridden by values
-provided in the specific options supported by vim-go (e.g.
-g:go_gopls_staticcheck) or settings statically configured by vim-go to ensure
-expected behavior.
+supported by vim-go.
 
-The dictionary will be converted to JSON using Vim's native JSON translation.
-Therefore, boolean values should use Vim's `v:true` or `v:false` values. See
-`json_encode()`.
-
-By default it is `v:null`.
+Any value in the dictionary will be overridden by values provided in the
+specific options supported by vim-go (e.g.  g:go_gopls_staticcheck) or
+settings statically configured by vim-go to ensure expected behavior. By
+default it is `v:null`.
 >
   let g:go_gopls_settings = v:null
 <
@@ -1916,7 +1913,9 @@ By default it is `v:null`.
 
 Specifies whether `gopls` diagnostics are enabled. Only the diagnostics for
 the current buffer will be processed when it is not set; all others will be
-ignored. By default it is disabled.
+ignored.
+
+By default it is disabled.
 >
   let g:go_diagnostics_enabled = 0
 <
