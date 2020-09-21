@@ -346,7 +346,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
     endif
 
     if l:gofumpt isnot v:null
-      if l:config.gofumpt
+      if l:gofumpt
         let l:config.gofumpt = v:true
       else
         let l:config.gofumpt = v:false
