@@ -19,6 +19,7 @@ BUG FIXES:
   [[GH-3019]](https://github.com/fatih/vim-go/pull/3019)
 * Allow truthy values for `g:go_gopls_gofumpt`.
   [[GH-3017]](https://github.com/fatih/vim-go/pull/3017)
+  [[GH-3022]](https://github.com/fatih/vim-go/pull/3022)
 
 ## v1.24 - (September 15, 2020)
 
