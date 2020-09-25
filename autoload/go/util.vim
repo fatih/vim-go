@@ -133,12 +133,23 @@ function! go#util#hostosarch() abort
 endfunction
 
 " go#util#ModuleRoot returns the root directory of the module of the current
-" buffer.
-function! go#util#ModuleRoot() abort
-  let [l:out, l:err] = go#util#ExecInDir(['go', 'env', 'GOMOD'])
-  if l:err != 0
-    return -1
+" buffer. An optional argument is can be provided to check an arbitrary
+" directory.
+function! go#util#ModuleRoot(...) abort
+  let l:wd = ''
+  if a:0 > 0
+    let l:wd = go#util#Chdir(a:1)
   endif
+  try
+    let [l:out, l:err] = go#util#ExecInDir(['go', 'env', 'GOMOD'])
+    if l:err != 0
+      return -1
+    endif
+  finally
+    if l:wd != ''
+      call go#util#Chdir(l:wd)
+    endif
+  endtry
 
   let l:module = split(l:out, '\n', 1)[0]
 
