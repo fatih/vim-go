@@ -643,6 +643,8 @@ function! go#lsp#DidOpen(fname) abort
     let l:lsp.notificationQueue[l:fname] = []
   endif
 
+  call s:ensureWorkspace(fnamemodify(l:fname, ':h'))
+
   let l:lsp.fileVersions[l:fname] = getbufvar(l:fname, 'changedtick')
 
   let l:msg = go#lsp#message#DidOpen(l:fname, join(go#util#GetLines(), "\n") . "\n", l:lsp.fileVersions[l:fname])
@@ -1111,7 +1113,7 @@ function! go#lsp#AddWorkspaceDirectory(...) abort
 
   let l:lsp = s:lspfactory.get()
   let l:state = s:newHandlerState('')
-  let l:lsp.workspaceDirectories = extend(l:lsp.workspaceDirectories, l:workspaces)
+  let l:lsp.workspaceDirectories = s:dedup(extend(l:lsp.workspaceDirectories, l:workspaces))
   let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:workspaces, [])
   call l:lsp.sendMessage(l:msg, l:state)
 
@@ -1139,7 +1141,7 @@ function! go#lsp#CleanWorkspaces() abort
   endif
 
   let l:state = s:newHandlerState('')
-  let l:msg = go#lsp#message#ChangeWorkspaceFolders([], l:missing)
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders([], s:dedup(l:missing))
   call l:lsp.sendMessage(l:msg, l:state)
 
   return 0
@@ -1155,7 +1157,7 @@ function! go#lsp#ResetWorkspaceDirectories() abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('')
-  let l:msg = go#lsp#message#ChangeWorkspaceFolders(l:lsp.workspaceDirectories, l:lsp.workspaceDirectories)
+  let l:msg = go#lsp#message#ChangeWorkspaceFolders(s:dedup(l:lsp.workspaceDirectories), s:dedup(l:lsp.workspaceDirectories))
   call l:lsp.sendMessage(l:msg, l:state)
 
   return 0
@@ -1654,6 +1656,31 @@ function! s:deleteline(start, end) abort
   else
     call execute(printf('%d,%d d_', a:start, a:end))
   endif
+endfunction
+
+function! s:ensureWorkspace(dir)
+  let l:modroot = go#util#ModuleRoot(a:dir)
+  if l:modroot is -1 || l:modroot is ''
+    return
+  endif
+
+  let l:lsp = s:lspfactory.get()
+  for l:dir in l:lsp.workspaceDirectories
+    if l:dir == l:modroot
+      return
+    endif
+  endfor
+
+  call go#lsp#AddWorkspaceDirectory(l:modroot)
+endfunction
+
+function! s:dedup(list)
+  let l:dict = {}
+  for l:item in a:list
+    let l:dict[l:item] = 1
+  endfor
+
+  return sort(keys(l:dict))
 endfunction
 
 " restore Vi compatibility settings
