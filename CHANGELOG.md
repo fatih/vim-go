@@ -10,6 +10,8 @@ IMPROVEMENTS:
 * Add `:GoDebugTestFunc` to debug the test function surrounding the current
   cursor location.
   [[GH-3011]](https://github.com/fatih/vim-go/pull/3011)
+* Implicitly add a workspace when a file from a module is opened.
+  [[GH-3028]](https://github.com/fatih/vim-go/pull/3028)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
