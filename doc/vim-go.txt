@@ -2489,7 +2489,7 @@ Show only variables on the right-hand side: >
         \ 'vars':  'rightbelow 60vnew',
   \ }
 
-                                                        *'g:go_debug_mappings'*
+                                                       *'g:go_debug_mappings'*
 
 Control key mappings for when the debugger is active:
 >
