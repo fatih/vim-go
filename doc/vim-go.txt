@@ -2494,21 +2494,21 @@ Show only variables on the right-hand side: >
 Control key mappings for when the debugger is active:
 >
   let g:go_debug_mappings = [
-      \['nmap <nowait>',  'c', '<Plug>(go-debug-continue)'],
-      \['nmap',           'q', '<Plug>(go-debug-stop)'],
-      \['nmap <nowait>',  'n', '<Plug>(go-debug-next)'],
-      \['nmap',           's', '<Plug>(go-debug-step)'],
+    \['nmap <nowait>',  'c', '<Plug>(go-debug-continue)'],
+    \['nmap',           'q', '<Plug>(go-debug-stop)'],
+    \['nmap <nowait>',  'n', '<Plug>(go-debug-next)'],
+    \['nmap',           's', '<Plug>(go-debug-step)'],
   \]
 <
 
 Defaults are equivalent to:
 >
   let s:default_mappings = [
-      \["nmap", "<F5>",  "<Plug>(go-debug-continue)"],
-      \["nmap", "<F6>",  "<Plug>(go-debug-print)"],
-      \["nmap", "<F9>",  "<Plug>(go-debug-breakpoint)"],
-      \["nmap", "<F10>", "<Plug>(go-debug-next)"],
-      \["nmap", "<F11>", "<Plug>(go-debug-step)"],
+    \["nmap", "<F5>",  "<Plug>(go-debug-continue)"],
+    \["nmap", "<F6>",  "<Plug>(go-debug-print)"],
+    \["nmap", "<F9>",  "<Plug>(go-debug-breakpoint)"],
+    \["nmap", "<F10>", "<Plug>(go-debug-next)"],
+    \["nmap", "<F11>", "<Plug>(go-debug-step)"],
   \]
 <
 

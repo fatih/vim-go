@@ -27,12 +27,12 @@ endif
 
 if !exists('s:default_debug_mappings')
   let s:default_debug_mappings = [
-      \["nmap", "<F5>",  "<Plug>(go-debug-continue)"],
-      \["nmap", "<F6>",  "<Plug>(go-debug-print)"],
-      \["nmap", "<F9>",  "<Plug>(go-debug-breakpoint)"],
-      \["nmap", "<F10>", "<Plug>(go-debug-next)"],
-      \["nmap", "<F11>", "<Plug>(go-debug-step)"],
-  \]
+    \["nmap", "<F5>",  "<Plug>(go-debug-continue)"],
+    \["nmap", "<F6>",  "<Plug>(go-debug-print)"],
+    \["nmap", "<F9>",  "<Plug>(go-debug-breakpoint)"],
+    \["nmap", "<F10>", "<Plug>(go-debug-next)"],
+    \["nmap", "<F11>", "<Plug>(go-debug-step)"],
+    \]
 endif
 
 function! s:goroutineID() abort
