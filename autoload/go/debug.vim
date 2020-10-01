@@ -25,6 +25,16 @@ if !exists('s:start_args')
   let s:start_args = []
 endif
 
+if !exists('s:default_debug_mappings')
+  let s:default_debug_mappings = [
+      \["nmap", "<F5>",  "<Plug>(go-debug-continue)"],
+      \["nmap", "<F6>",  "<Plug>(go-debug-print)"],
+      \["nmap", "<F9>",  "<Plug>(go-debug-breakpoint)"],
+      \["nmap", "<F10>", "<Plug>(go-debug-next)"],
+      \["nmap", "<F11>", "<Plug>(go-debug-step)"],
+  \]
+endif
+
 function! s:goroutineID() abort
   return s:state['currentThread'].goroutineID
 endfunction
@@ -271,7 +281,7 @@ function! s:stop() abort
   if has_key(s:state, 'ch')
     call remove(s:state, 'ch')
   endif
-
+  call go#debug_mode#Restore()
   call s:clearState()
 endfunction
 
@@ -308,11 +318,6 @@ function! go#debug#Stop() abort
     let &ballooneval=s:ballooneval
     let &balloonexpr=s:balloonexpr
   endif
-
-  augroup vim-go-debug
-    autocmd!
-  augroup END
-  augroup! vim-go-debug
 endfunction
 
 function! s:goto_file() abort
@@ -490,12 +495,7 @@ function! s:start_cb() abort
   nnoremap <silent> <Plug>(go-debug-continue)   :<C-u>call go#debug#Stack('continue')<CR>
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
 
-  augroup vim-go-debug
-    autocmd! * <buffer>
-    autocmd FileType go nmap <buffer> <F5>   <Plug>(go-debug-continue)
-    autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
-  augroup END
-  doautocmd vim-go-debug FileType go
+  call go#debug_mode#InitMode(s:default_debug_mappings)
 endfunction
 
 function! s:continue()
@@ -520,17 +520,6 @@ function! s:continue()
     set balloonexpr=go#debug#BalloonExpr()
     set ballooneval
   endif
-
-  augroup vim-go-debug
-    autocmd! * <buffer>
-    autocmd FileType go nmap <buffer> <F5>   <Plug>(go-debug-continue)
-    autocmd FileType go nmap <buffer> <F6>   <Plug>(go-debug-print)
-    autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
-    autocmd FileType go nmap <buffer> <F10>  <Plug>(go-debug-next)
-    autocmd FileType go nmap <buffer> <F11>  <Plug>(go-debug-step)
-    autocmd FileType go nmap <buffer> <F8>  <Plug>(go-debug-halt)
-  augroup END
-  doautocmd vim-go-debug FileType go
 endfunction
 
 function! s:err_cb(ch, msg) abort
