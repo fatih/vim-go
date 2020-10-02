@@ -264,15 +264,25 @@ function! go#config#SetTemplateAutocreate(value) abort
 endfunction
 
 function! go#config#MetalinterCommand() abort
-  return get(g:, "go_metalinter_command", "golangci-lint")
+  return get(g:, 'go_metalinter_command', 'golangci-lint')
 endfunction
 
 function! go#config#MetalinterAutosaveEnabled() abort
-  return get(g:, "go_metalinter_autosave_enabled", ["govet", "golint"])
+  let l:default = []
+  if get(g:, 'go_metalinter_command', 'golangci-lint') == 'golangci-lint'
+    let l:default = ['govet', 'golint']
+  endif
+
+  return get(g:, 'go_metalinter_autosave_enabled', l:default)
 endfunction
 
 function! go#config#MetalinterEnabled() abort
-  return get(g:, "go_metalinter_enabled", ["vet", "golint", "errcheck"])
+  let l:default = []
+  if get(g:, 'go_metalinter_command', 'golangci-lint') == 'golangci-lint'
+    let l:default = ['vet', 'golint', 'errcheck']
+  endif
+
+  return get(g:, 'go_metalinter_enabled', l:default)
 endfunction
 
 function! go#config#GolintBin() abort

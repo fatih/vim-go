@@ -6,6 +6,10 @@ func! Test_GometaGolangciLint() abort
   call s:gometa('golangci-lint')
 endfunc
 
+func! Test_GometaStaticcheck() abort
+  call s:gometa('staticcheck')
+endfunc
+
 func! s:gometa(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
   silent exe 'e! ' . $GOPATH . '/src/lint/lint.go'
@@ -13,7 +17,7 @@ func! s:gometa(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 5, 'bufnr': bufnr('%')+1, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'pattern': '', 'text': 'exported function MissingFooDoc should have comment or be unexported (golint)'}
+          \ {'lnum': 1, 'bufnr': bufnr('%')+5, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'}
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
@@ -24,7 +28,10 @@ func! s:gometa(metalinter) abort
     " clear the quickfix list
     call setqflist([], 'r')
 
-    let g:go_metalinter_enabled = ['golint']
+    let g:go_metalinter_enabled = ['ST1000']
+    if a:metalinter == 'golangci-lint'
+      let g:go_metalinter_enabled = ['golint']
+    endif
 
     call go#lint#Gometa(0, 0, $GOPATH . '/src/foo')
 
@@ -39,6 +46,7 @@ func! s:gometa(metalinter) abort
   finally
       call call(RestoreGOPATH, [])
       unlet g:go_metalinter_enabled
+      unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -75,6 +83,7 @@ func! s:gometa_shadow(metalinter) abort
   finally
       call call(RestoreGOPATH, [])
       unlet g:go_metalinter_enabled
+      unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -82,8 +91,16 @@ func! Test_GometaAutoSaveGolangciLint() abort
   call s:gometaautosave('golangci-lint', 0)
 endfunc
 
+func! Test_GometaAutoSaveStaticcheck() abort
+  call s:gometaautosave('staticcheck', 0)
+endfunc
+
 func! Test_GometaAutoSaveGolangciLintKeepsErrors() abort
   call s:gometaautosave('golangci-lint', 1)
+endfunc
+
+func! Test_GometaAutoSaveStaticcheckKeepsErrors() abort
+  call s:gometaautosave('staticcheck', 1)
 endfunc
 
 func! s:gometaautosave(metalinter, withList) abort
@@ -93,7 +110,7 @@ func! s:gometaautosave(metalinter, withList) abort
   try
     let g:go_metalinter_command = a:metalinter
     let l:expected = [
-          \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported (golint)'}
+          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'}
         \ ]
     if a:metalinter == 'golangci-lint'
       let l:expected = [
@@ -112,7 +129,10 @@ func! s:gometaautosave(metalinter, withList) abort
     " set the location list
     call setloclist(0, l:list, 'r')
 
-    let g:go_metalinter_autosave_enabled = ['golint']
+    let g:go_metalinter_autosave_enabled = ['ST1000']
+    if a:metalinter == 'golangci-lint'
+      let g:go_metalinter_autosave_enabled = ['golint']
+    endif
 
     call go#lint#Gometa(0, 1)
 
@@ -127,6 +147,7 @@ func! s:gometaautosave(metalinter, withList) abort
   finally
     call call(RestoreGOPATH, [])
     unlet g:go_metalinter_autosave_enabled
+    unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -162,6 +183,7 @@ func! s:gometa_importabs(metalinter) abort
   finally
       call call(RestoreGOPATH, [])
       unlet g:go_metalinter_enabled
+      unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -198,6 +220,7 @@ func! s:gometaautosave_importabs(metalinter) abort
   finally
     call call(RestoreGOPATH, [])
     unlet g:go_metalinter_autosave_enabled
+    unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -234,6 +257,7 @@ func! s:gometa_multiple(metalinter) abort
   finally
       call call(RestoreGOPATH, [])
       unlet g:go_metalinter_enabled
+      unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -270,6 +294,7 @@ func! s:gometaautosave_multiple(metalinter) abort
   finally
     call call(RestoreGOPATH, [])
     unlet g:go_metalinter_autosave_enabled
+    unlet g:go_metalinter_command
   endtry
 endfunc
 
