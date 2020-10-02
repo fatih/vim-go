@@ -223,12 +223,28 @@ function! s:newlsp() abort
       " TODO(bc): handle more notifications (e.g. window/showMessage).
       if a:req.method == 'textDocument/publishDiagnostics'
         call self.handleDiagnostics(a:req.params)
+      elseif a:req.method == 'window/showMessage'
+        call self.showMessage(a:req.params)
       endif
   endfunction
 
   function! l:lsp.handleDiagnostics(data) dict abort
     let self.diagnosticsQueue = add(self.diagnosticsQueue, a:data)
     call self.updateDiagnostics()
+  endfunction
+
+  function! l:lsp.showMessage(data) dict abort
+    let l:msg = a:data.message
+    if a:data.type == 1
+      call go#util#EchoError(l:msg)
+    elseif a:data.type == 2
+      call go#util#EchoWarning(l:msg)
+    elseif a:data.type == 3
+      call go#util#EchoInfo(l:msg)
+    elseif a:data.type == 4
+      " do nothing
+    endif
+    " TODO(bc): check the type and call the correct function
   endfunction
 
   " TODO(bc): process the queue asynchronously
