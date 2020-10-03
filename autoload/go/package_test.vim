@@ -6,6 +6,7 @@ func! Test_Complete_GOPATH_simple() abort
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/package'
   silent exe 'edit ' . $GOPATH . '/src/package/package.go'
   call s:complete('package', ['package'])
+  call delete(printf('%s/pkg', $GOPATH), 'rf')
 endfunc
 
 func! Test_Complete_Module_simple() abort
@@ -17,6 +18,7 @@ func! Test_Complete_GOPATH_subdirs() abort
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/package'
   silent exe 'edit ' . $GOPATH . '/src/package/package.go'
   call s:complete('package/', ['package/bar', 'package/baz'])
+  call delete(printf('%s/pkg', $GOPATH), 'rf')
 endfunc
 
 func! Test_Complete_Module_subdirs() abort
@@ -28,6 +30,7 @@ func! Test_Complete_GOPATH_baronly() abort
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/package'
   silent exe 'edit ' . $GOPATH . '/src/package/package.go'
   call s:complete('package/bar', ['package/bar'])
+  call delete(printf('%s/pkg', $GOPATH), 'rf')
 endfunc
 
 func! Test_Complete_Module_baronly() abort
@@ -39,6 +42,7 @@ func! Test_Complete_GOPATH_vendor() abort
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/package'
   silent exe 'edit ' . $GOPATH . '/src/package/package.go'
   call s:complete('foo', ['foo'])
+  call delete(printf('%s/pkg', $GOPATH), 'rf')
 endfunc
 
 func! Test_Complete_Module_vendor() abort
