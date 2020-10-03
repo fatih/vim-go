@@ -32,7 +32,7 @@ endfunction
 function! s:clearOptions() abort
   " clear all the vim-go options
   for l:k in keys(g:)
-    if l:k =~ '^go_'
+    if l:k =~ '^go_' && l:k !~ '^go_loaded_'
       call execute(printf('unlet g:%s', l:k))
     endif
   endfor
