@@ -1,4 +1,5 @@
 VIMS ?= vim-8.0 vim-8.2 nvim
+TEST_FLAGS ?=
 
 all: install lint test
 
@@ -12,7 +13,7 @@ install:
 test:
 	@echo "==> Running tests for $(VIMS)"
 	@for vim in $(VIMS); do \
-		./scripts/test $$vim; \
+		./scripts/test $(TEST_FLAGS) $$vim; \
 	done
 
 lint:
