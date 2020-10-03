@@ -22,6 +22,8 @@ BUG FIXES:
 * Allow truthy values for `g:go_gopls_gofumpt`.
   [[GH-3017]](https://github.com/fatih/vim-go/pull/3017)
   [[GH-3022]](https://github.com/fatih/vim-go/pull/3022)
+* Fix quickfix title for `:GoMetaLinter`.
+  [[GH-3040]](https://github.com/fatih/vim-go/pull/3040)
 
 ## v1.24 - (September 15, 2020)
 
