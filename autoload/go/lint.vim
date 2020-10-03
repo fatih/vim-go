@@ -87,7 +87,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let l:for = 'GoMetaLinterAutoSave'
   else
     let l:listtype = go#list#Type('GoMetaLinter')
-    let l:for = 'GoMetaLinterAuto'
+    let l:for = 'GoMetaLinter'
   endif
 
   if l:err == 0
