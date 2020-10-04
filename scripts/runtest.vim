@@ -121,6 +121,8 @@ for s:test in sort(s:tests)
     if g:test_verbose is 1
       call s:logmessages()
       call add(s:logs, printf("--- PASS %s (%ss)", s:test[:-3], s:elapsed_time))
+    else
+      silent messages clear
     endif
   endif
 endfor
