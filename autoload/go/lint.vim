@@ -100,7 +100,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     " Parse and populate our location list
 
     if a:autosave
-      call s:metalinterautosavecomplete(l:metalinter, fnamemodify(expand('%:p'), ":."), 0, 1, l:messages)
+      call s:metalinterautosavecomplete(l:metalinter, fnamemodify(expand('%:p'), ':.'), 0, 1, l:messages)
     endif
     call go#list#ParseFormat(l:listtype, errformat, l:messages, l:for, s:preserveerrors(a:autosave, l:listtype))
 
@@ -433,16 +433,17 @@ function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, mes
     return
   endif
 
-  let l:idx = len(a:messages) - 1
-  while l:idx >= 0
+  let l:idx = 0
+  for l:item in a:messages
     " leave in any messages that report errors about a:filepath or that report
     " more general problems that prevent golangci-lint from linting
     " a:filepath.
-    if a:messages[l:idx] !~# '^' . a:filepath . ':' && a:messages[l:idx] !~# '^level='
-      call remove(a:messages, l:idx)
+    if l:item =~# '^' . a:filepath . ':' || l:item =~# '^level='
+      let l:idx += 1
+      continue
     endif
-    let l:idx -= 1
-  endwhile
+    call remove(a:messages, l:idx)
+  endfor
 endfunction
 
 function! s:errorformat(metalinter) abort
