@@ -82,7 +82,7 @@ func! Test_GometaAutoSaveGolangciLint() abort
   call s:gometaautosave('golangci-lint', 0)
 endfunc
 
-func! Test_GometaAutoSaveKeepsErrors() abort
+func! Test_GometaAutoSaveGolangciLintKeepsErrors() abort
   call s:gometaautosave('golangci-lint', 1)
 endfunc
 
