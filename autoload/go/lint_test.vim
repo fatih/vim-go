@@ -104,9 +104,9 @@ func! s:gometaautosave(metalinter, withList) abort
     let l:list = []
     if a:withList
       let l:list = [
-            \ {'lnum': 1, 'bufnr': 1, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'before metalinter'}
+            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'before metalinter'}
           \ ]
-      let l:expected = extend(l:list, l:expected)
+      let l:expected = extend(copy(l:list), l:expected)
     endif
 
     " set the location lists
