@@ -12,6 +12,8 @@ IMPROVEMENTS:
   [[GH-3011]](https://github.com/fatih/vim-go/pull/3011)
 * Implicitly add a workspace when a file from a module is opened.
   [[GH-3028]](https://github.com/fatih/vim-go/pull/3028)
+* Add support for using static check as the gometalinter.
+  [[GH-3036]](https://github.com/fatih/vim-go/pull/3036)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
