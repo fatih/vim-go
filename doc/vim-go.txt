@@ -2304,7 +2304,7 @@ The program will halt on the breakpoint, at which point you can inspect the
 program state. You can go to the next line with |:GoDebugNext| (<F10>) or step
 in with |:GoDebugStep| (<F11>).
 
-The program can also be halted with `:GoDebugHalt` (<F6>).
+The program can also be halted with `:GoDebugHalt` (<F8>).
 
 The variable window in the bottom left (`GODEBUG_VARIABLES`) will display all
 local variables. Struct values are displayed as `{...}`, array/slices as
@@ -2380,7 +2380,7 @@ The rest of the commands and mappings become available after executing
 
     Halt the program.
 
-    Mapped to <F6> by default.
+    Mapped to <F8> by default.
 
                                                                 *:GoDebugStop*
                                                              *(go-debug-stop)*

@@ -528,7 +528,7 @@ function! s:continue()
     autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
     autocmd FileType go nmap <buffer> <F10>  <Plug>(go-debug-next)
     autocmd FileType go nmap <buffer> <F11>  <Plug>(go-debug-step)
-    autocmd FileType go nmap <buffer> <F6>  <Plug>(go-debug-halt)
+    autocmd FileType go nmap <buffer> <F8>  <Plug>(go-debug-halt)
   augroup END
   doautocmd vim-go-debug FileType go
 endfunction
