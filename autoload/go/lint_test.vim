@@ -21,7 +21,7 @@ func! s:gometa(metalinter) abort
           \ ]
     endif
 
-    " clear the quickfix lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     let g:go_metalinter_enabled = ['golint']
@@ -57,7 +57,7 @@ func! s:gometa_shadow(metalinter) abort
           \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'}
         \ ]
 
-    " clear the quickfix lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     let g:go_metalinter_enabled = ['golint']
@@ -109,7 +109,7 @@ func! s:gometaautosave(metalinter, withList) abort
       let l:expected = extend(copy(l:list), l:expected)
     endif
 
-    " set the location lists
+    " set the location list
     call setloclist(0, l:list, 'r')
 
     let g:go_metalinter_autosave_enabled = ['golint']
@@ -144,7 +144,7 @@ func! s:gometa_importabs(metalinter) abort
           \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
           \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'},
         \ ]
-    " clear the quickfix lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     let g:go_metalinter_enabled = ['golint']
@@ -180,7 +180,7 @@ func! s:gometaautosave_importabs(metalinter) abort
           \ {'lnum': 3, 'bufnr': bufnr('%')+1, 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'}
         \ ]
 
-    " clear the location lists
+    " clear the location list
     call setloclist(0, [], 'r')
 
     let g:go_metalinter_autosave_enabled = ['golint']
@@ -215,7 +215,8 @@ func! s:gometa_multiple(metalinter) abort
           \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] Can''t run linter golint: golint: analysis skipped: errors in package'},
           \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'},
         \ ]
-    " clear the quickfix lists
+
+    " clear the quickfix list
     call setqflist([], 'r')
 
     let g:go_metalinter_enabled = ['golint']
@@ -251,7 +252,7 @@ func! s:gometaautosave_multiple(metalinter) abort
           \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'e', 'module': '', 'text': 'Running error: golint: analysis skipped: errors in package'},
         \ ]
 
-    " clear the location lists
+    " clear the location list
     call setloclist(0, [], 'r')
 
     let g:go_metalinter_autosave_enabled = ['golint']
@@ -283,7 +284,7 @@ func! Test_Vet() abort
 
     let winnr = winnr()
 
-    " clear the location lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     call go#lint#Vet(1)
@@ -317,7 +318,7 @@ func! Test_Vet_subdir() abort
 
     let winnr = winnr()
 
-    " clear the location lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     call go#lint#Vet(1)
@@ -345,7 +346,7 @@ func! Test_Vet_compilererror() abort
 
     let winnr = winnr()
 
-    " clear the location lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     call go#lint#Vet(1)
@@ -376,7 +377,7 @@ func! Test_Lint_GOPATH() abort
 
   let winnr = winnr()
 
-  " clear the location lists
+  " clear the quickfix list
   call setqflist([], 'r')
 
   call go#lint#Golint(1)
@@ -404,7 +405,7 @@ func! Test_Lint_NullModule() abort
 
   let winnr = winnr()
 
-  " clear the location lists
+  " clear the quickfix list
   call setqflist([], 'r')
 
   call go#lint#Golint(1)
@@ -430,7 +431,7 @@ func! Test_Errcheck() abort
           \ {'lnum': 10, 'bufnr': bufnr('')+1, 'col': 9, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ":\tio.Copy(os.Stdout, os.Stdin)"},
         \ ]
 
-    " clear the location lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     call go#lint#Errcheck(1)
@@ -452,7 +453,7 @@ func! Test_Errcheck_options() abort
           \ {'lnum': 9, 'bufnr': bufnr(''), 'col': 9, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ":\tio.Copy(os.Stdout, os.Stdin)"},
         \ ]
 
-    " clear the location lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     call go#lint#Errcheck(1, '-ignoretests')
@@ -471,7 +472,7 @@ func! Test_Errcheck_compilererror() abort
     let l:bufnr = bufnr('')
     let expected = []
 
-    " clear the location lists
+    " clear the quickfix list
     call setqflist([], 'r')
 
     call go#lint#Errcheck(1)
