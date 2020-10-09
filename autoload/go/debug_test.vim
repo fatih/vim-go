@@ -35,8 +35,7 @@ function! Test_GoDebugStart_Errors() abort
 
     call assert_false(exists(':GoDebugStop'))
 
-    let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
-    execute l:cd . ' debug/compilerror'
+    call go#util#Chdir('debug/compilerror')
 
     call go#debug#Start('debug')
 
@@ -78,8 +77,7 @@ function! s:debug(...) abort
     call assert_false(exists(':GoDebugStop'))
 
     if a:0 == 0
-      let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
-      execute l:cd . ' debug/debugmain'
+      call go#util#Chdir('debug/debugmain')
       let l:job = go#debug#Start('debug')
     else
       let l:job = go#debug#Start('debug', a:1)

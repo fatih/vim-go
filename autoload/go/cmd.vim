@@ -56,10 +56,8 @@ function! go#cmd#Build(bang, ...) abort
     let l:listtype = go#list#Type("GoBuild")
     " execute make inside the source folder so we can parse the errors
     " correctly
-    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-    let dir = getcwd()
     try
-      execute cd . fnameescape(expand("%:p:h"))
+      let l:dir = go#util#Chdir(expand("%:p:h"))
       if l:listtype == "locationlist"
         silent! exe 'lmake!'
       else
@@ -67,7 +65,7 @@ function! go#cmd#Build(bang, ...) abort
       endif
       redraw!
     finally
-      execute cd . fnameescape(dir)
+      call go#util#Chdir(l:dir)
       let &makeprg = default_makeprg
     endtry
 
@@ -168,19 +166,15 @@ function! go#cmd#Run(bang, ...) abort
 
   let l:cmd = l:cmd + l:files
 
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let l:dir = getcwd()
-
   if go#util#IsWin()
+    if go#util#HasDebug('shell-commands')
+      call go#util#EchoInfo(printf('shell command: %s', string(l:cmd)))
+    endif
     try
-      if go#util#HasDebug('shell-commands')
-        call go#util#EchoInfo(printf('shell command: %s', string(l:cmd)))
-      endif
-
-      execute l:cd . fnameescape(expand("%:p:h"))
+      let l:dir = go#util#Chdir(expand("%:p:h"))
       exec printf('!%s', go#util#Shelljoin(l:cmd, 1))
     finally
-      execute l:cd . fnameescape(l:dir)
+      call go#util#Chdir(l:dir)
     endtry
 
     let l:status.state = 'success'
@@ -218,15 +212,14 @@ function! go#cmd#Run(bang, ...) abort
       call go#util#EchoInfo('shell command: ' . l:cmd)
     endif
 
-    execute l:cd . fnameescape(expand("%:p:h"))
+    let l:dir = go#util#Chddir(expand("%:p:h"))
     if l:listtype == "locationlist"
       exe 'lmake!'
     else
       exe 'make!'
     endif
   finally
-    "restore the working directory, errformat, and makeprg
-    execute cd . fnameescape(l:dir)
+    call go#util#Chdir(l:dir)
     let &errorformat = l:old_errorformat
     let &makeprg = l:default_makeprg
   endtry
@@ -270,10 +263,8 @@ function! go#cmd#Install(bang, ...) abort
   let l:listtype = go#list#Type("GoInstall")
   " execute make inside the source folder so we can parse the errors
   " correctly
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
   try
-    execute cd . fnameescape(expand("%:p:h"))
+    let l:dir = go#util#Chdir(expand("%:p:h"))
     if l:listtype == "locationlist"
       silent! exe 'lmake!'
     else
@@ -281,7 +272,7 @@ function! go#cmd#Install(bang, ...) abort
     endif
     redraw!
   finally
-    execute cd . fnameescape(dir)
+    call go#util#Chdir(l:dir)
     let &makeprg = default_makeprg
   endtry
 

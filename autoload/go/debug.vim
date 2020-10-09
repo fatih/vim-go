@@ -794,8 +794,6 @@ function! s:package(args)
   if l:pkgname[0] == '.'
     let l:pkgabspath = fnamemodify(l:pkgname, ':p')
 
-    let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
-    let l:dir = getcwd()
     let l:dir = go#util#Chdir(expand('%:p:h'))
     try
       let l:pkgname = go#package#FromPath(l:pkgabspath)

@@ -74,9 +74,7 @@ function! go#test#Test(bang, compile, ...) abort
 
   let l:listtype = go#list#Type("GoTest")
 
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
-  execute cd fnameescape(expand("%:p:h"))
+  let l:dir = go#util#Chdir(expand("%:p:h"))
 
   if l:err != 0
     let l:winid = win_getid(winnr())
@@ -100,7 +98,7 @@ function! go#test#Test(bang, compile, ...) abort
       call go#util#EchoSuccess("[test] PASS")
     endif
   endif
-  execute cd . fnameescape(dir)
+  call go#util#Chdir(l:dir)
 endfunction
 
 " Testfunc runs a single test that surrounds the current cursor position.

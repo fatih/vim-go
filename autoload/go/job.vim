@@ -209,14 +209,13 @@ function! go#job#Options(args)
 
     let out = join(self.messages, "\n")
 
-    let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
     try
       " parse the errors relative to self.jobdir
-      execute l:cd fnameescape(self.jobdir)
+      call go#util#Chdir(self.jobdir)
       call go#list#ParseFormat(l:listtype, self.errorformat, out, self.for, l:preserveerrors)
       let errors = go#list#Get(l:listtype)
     finally
-      execute l:cd fnameescape(self.dir)
+      call go#util#Chdir(self.dir)
     endtry
 
     if empty(errors)
@@ -287,7 +286,6 @@ endfunction
 " suitable for Vim8 jobs. When called from Neovim, Vim8 options will be
 " transformed to their Neovim equivalents.
 function! go#job#Start(cmd, options)
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
   let l:options = copy(a:options)
 
   if has('nvim')
@@ -309,8 +307,7 @@ function! go#job#Start(cmd, options)
   if !has_key(l:options, 'cwd')
     " pre start
     let l:manualcd = 1
-    let dir = getcwd()
-    execute l:cd fnameescape(filedir)
+    let l:dir = go#util#Chdir(filedir)
   endif
 
   if has_key(l:options, '_start')
@@ -353,7 +350,7 @@ function! go#job#Start(cmd, options)
 
   if l:manualcd
     " post start
-    execute l:cd fnameescape(l:dir)
+    call go#util#Chdir(l:dir)
   endif
 
   return job
