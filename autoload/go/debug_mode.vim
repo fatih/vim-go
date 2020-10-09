@@ -60,7 +60,7 @@ function! go#debug_mode#InitMode(default_mappings) abort
     for lhs in lhss
       let s:mappings_save[lhs] = maparg(lhs, '', 0, 1)
       let command = join([l:merged_lhs_to_map_cmd[lhs], lhs, rhs])
-      execute command
+       call execute(command)
     endfor
   endfor
 endfunction
@@ -68,7 +68,7 @@ endfunction
 function! go#debug_mode#Restore(...) abort
   for [lhs, save] in items(s:mappings_save)
     let command = s:restore_mapping(lhs, save)
-    silent! execute command
+    call execute(command)
   endfor
 endfunction
 
