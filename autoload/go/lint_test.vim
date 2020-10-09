@@ -8,7 +8,7 @@ endfunc
 
 func! s:gometa(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/lint.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/lint.go'
 
   try
     let g:go_metalinter_command = a:metalinter
@@ -48,7 +48,7 @@ endfunc
 
 func! s:gometa_shadow(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/shadow/problems.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/golangci-lint/problems/shadow/problems.go'
 
   try
     let g:go_metalinter_command = a:metalinter
@@ -82,13 +82,13 @@ func! Test_GometaAutoSaveGolangciLint() abort
   call s:gometaautosave('golangci-lint', 0)
 endfunc
 
-func! Test_GometaAutoSaveKeepsErrors() abort
+func! Test_GometaAutoSaveGolangciLintKeepsErrors() abort
   call s:gometaautosave('golangci-lint', 1)
 endfunc
 
 func! s:gometaautosave(metalinter, withList) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/lint.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/lint.go'
 
   try
     let g:go_metalinter_command = a:metalinter
@@ -104,9 +104,9 @@ func! s:gometaautosave(metalinter, withList) abort
     let l:list = []
     if a:withList
       let l:list = [
-            \ {'lnum': 1, 'bufnr': 1, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'before metalinter'}
+            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'before metalinter'}
           \ ]
-      let l:expected = extend(l:list, l:expected)
+      let l:expected = extend(copy(l:list), l:expected)
     endif
 
     " set the location lists
@@ -136,7 +136,7 @@ endfunc
 
 func! s:gometa_importabs(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/problems.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/problems.go'
 
   try
     let g:go_metalinter_command = a:metalinter
@@ -171,7 +171,7 @@ endfunc
 
 func! s:gometaautosave_importabs(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/ok.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/ok.go'
 
   try
     let g:go_metalinter_command = a:metalinter
@@ -207,7 +207,7 @@ endfunc
 
 func! s:gometa_multiple(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/multiple/problems.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/golangci-lint/problems/multiple/problems.go'
 
   try
     let g:go_metalinter_command = a:metalinter
@@ -242,7 +242,7 @@ endfunc
 
 func! s:gometaautosave_multiple(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/golangci-lint/problems/multiple/problems.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/golangci-lint/problems/multiple/problems.go'
 
   try
     let g:go_metalinter_command = a:metalinter
@@ -366,7 +366,7 @@ endfunc
 func! Test_Lint_GOPATH() abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
 
-  silent exe 'e ' . $GOPATH . '/src/lint/lint.go'
+  silent exe 'e! ' . $GOPATH . '/src/lint/lint.go'
   compiler go
 
   let expected = [
@@ -394,7 +394,7 @@ func! Test_Lint_GOPATH() abort
 endfunc
 
 func! Test_Lint_NullModule() abort
-  silent exe 'e ' . fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint/src/lint/lint.go'
+  silent exe 'e! ' . fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint/src/lint/lint.go'
   compiler go
 
   let expected = [
@@ -421,7 +421,7 @@ endfunc
 
 func! Test_Errcheck() abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/errcheck/errcheck.go'
+  silent exe 'e! ' . $GOPATH . '/src/errcheck/errcheck.go'
 
   try
     let l:bufnr = bufnr('')
@@ -444,7 +444,7 @@ endfunc
 
 func! Test_Errcheck_options() abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/errcheck/errcheck.go'
+  silent exe 'e! ' . $GOPATH . '/src/errcheck/errcheck.go'
 
   try
     let l:bufnr = bufnr('')

@@ -219,7 +219,6 @@ function! go#job#Options(args)
       execute l:cd fnameescape(self.dir)
     endtry
 
-
     if empty(errors)
       " failed to parse errors, output the original content
       call go#util#EchoError([self.dir] + self.messages)

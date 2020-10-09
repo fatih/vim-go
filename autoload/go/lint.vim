@@ -20,21 +20,21 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     let l:goargs = a:000
   endif
 
-  let cmd = []
+  let l:cmd = []
   if l:metalinter == 'golangci-lint'
-    let linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
-    let cmd = s:metalintercmd(l:metalinter, len(linters) != 0)
-    if empty(cmd)
+    let l:linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
+    let l:cmd = s:metalintercmd(l:metalinter, len(linters) != 0)
+    if empty(l:cmd)
       return
     endif
 
     " add linters to cmd
-    for linter in linters
-      let cmd += ["--enable=".linter]
+    for l:linter in l:linters
+      let l:cmd += ["--enable=".l:linter]
     endfor
   elseif l:metalinter != 'gopls'
     " the user wants something else, let us use it.
-    let cmd = split(go#config#MetalinterCommand(), " ")
+    let l:cmd = split(go#config#MetalinterCommand(), " ")
   endif
 
   if a:autosave
@@ -48,14 +48,17 @@ function! go#lint#Gometa(bang, autosave, ...) abort
   endif
 
   " Call metalinter asynchronously.
-  let deadline = go#config#MetalinterDeadline()
-  if deadline != ''
-    let cmd += ["--deadline=" . deadline]
+
+  if l:metalinter == 'golangci-lint'
+    let l:deadline = go#config#MetalinterDeadline()
+    if l:deadline != ''
+      let l:cmd += ["--deadline=" . l:deadline]
+    endif
   endif
 
-  let cmd += l:goargs
+  let l:cmd += l:goargs
 
-  let errformat = s:errorformat(l:metalinter)
+  let l:errformat = s:errorformat(l:metalinter)
 
   if l:metalinter == 'gopls'
     if a:autosave
@@ -74,11 +77,11 @@ function! go#lint#Gometa(bang, autosave, ...) abort
         let l:for = 'GoMetaLinter'
       endif
 
-      call s:lint_job(l:metalinter, {'cmd': cmd, 'statustype': l:metalinter, 'errformat': errformat, 'for': l:for}, a:bang, a:autosave)
+      call s:lint_job(l:metalinter, {'cmd': l:cmd, 'statustype': l:metalinter, 'errformat': l:errformat, 'for': l:for}, a:bang, a:autosave)
       return
     endif
 
-    let [l:out, l:err] = go#util#Exec(cmd)
+    let [l:out, l:err] = go#util#Exec(l:cmd)
     let l:messages = split(out, "\n")
   endif
 
@@ -100,9 +103,9 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     " Parse and populate our location list
 
     if a:autosave
-      call s:metalinterautosavecomplete(l:metalinter, fnamemodify(expand('%:p'), ":."), 0, 1, l:messages)
+      call s:metalinterautosavecomplete(l:metalinter, fnamemodify(expand('%:p'), ':.'), 0, 1, l:messages)
     endif
-    call go#list#ParseFormat(l:listtype, errformat, l:messages, l:for, s:preserveerrors(a:autosave, l:listtype))
+    call go#list#ParseFormat(l:listtype, l:errformat, l:messages, l:for, s:preserveerrors(a:autosave, l:listtype))
 
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
@@ -128,7 +131,7 @@ function! go#lint#Diagnostics(bang, ...) abort
     let l:import_paths = a:000
   endif
 
-  let errformat = s:errorformat('gopls')
+  let l:errformat = s:errorformat('gopls')
 
   let l:messages = call('go#lsp#Diagnostics', l:import_paths)
 
@@ -140,7 +143,7 @@ function! go#lint#Diagnostics(bang, ...) abort
   else
     " Parse and populate the quickfix list
     let l:winid = win_getid(winnr())
-    call go#list#ParseFormat(l:listtype, errformat, l:messages, 'GoDiagnostics', 0)
+    call go#list#ParseFormat(l:listtype, l:errformat, l:messages, 'GoDiagnostics', 0)
 
     let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
@@ -397,31 +400,31 @@ endfunction
 
 function! s:metalintercmd(metalinter, haslinter)
   let l:cmd = []
-  let bin_path = go#path#CheckBinPath(a:metalinter)
-  if !empty(bin_path)
+  let l:bin_path = go#path#CheckBinPath(a:metalinter)
+  if !empty(l:bin_path)
     if a:metalinter == "golangci-lint"
       let l:cmd = s:golangcilintcmd(bin_path, a:haslinter)
     endif
   endif
 
-  return cmd
+  return l:cmd
 endfunction
 
 function! s:golangcilintcmd(bin_path, haslinter)
-  let cmd = [a:bin_path]
-  let cmd += ["run"]
-  let cmd += ["--print-issued-lines=false"]
-  let cmd += ['--build-tags', go#config#BuildTags()]
+  let l:cmd = [a:bin_path]
+  let l:cmd += ["run"]
+  let l:cmd += ["--print-issued-lines=false"]
+  let l:cmd += ['--build-tags', go#config#BuildTags()]
   " do not use the default exclude patterns, because doing so causes golint
   " problems about missing doc strings to be ignored and other things that
   " golint identifies.
-  let cmd += ["--exclude-use-default=false"]
+  let l:cmd += ["--exclude-use-default=false"]
 
   if a:haslinter
-    let cmd += ["--disable-all"]
+    let l:cmd += ["--disable-all"]
   endif
 
-  return cmd
+  return l:cmd
 endfunction
 
 function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, messages)
@@ -433,16 +436,17 @@ function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, mes
     return
   endif
 
-  let l:idx = len(a:messages) - 1
-  while l:idx >= 0
+  let l:idx = 0
+  for l:item in a:messages
     " leave in any messages that report errors about a:filepath or that report
     " more general problems that prevent golangci-lint from linting
     " a:filepath.
-    if a:messages[l:idx] !~# '^' . a:filepath . ':' && a:messages[l:idx] !~# '^level='
-      call remove(a:messages, l:idx)
+    if l:item =~# '^' . a:filepath . ':' || l:item =~# '^level='
+      let l:idx += 1
+      continue
     endif
-    let l:idx -= 1
-  endwhile
+    call remove(a:messages, l:idx)
+  endfor
 endfunction
 
 function! s:errorformat(metalinter) abort
