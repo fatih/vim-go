@@ -7,7 +7,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
 
   if a:0 == 0
     let l:goargs = [expand('%:p:h')]
-    if l:metalinter == 'gopls'
+    if l:metalinter == 'gopls' || l:metalinter == 'staticcheck'
       let l:pkg = go#package#ImportPath()
       if l:pkg == -1
         call go#util#EchoError('could not determine package name')
@@ -21,8 +21,8 @@ function! go#lint#Gometa(bang, autosave, ...) abort
   endif
 
   let l:cmd = []
+  let l:linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
   if l:metalinter == 'golangci-lint'
-    let l:linters = a:autosave ? go#config#MetalinterAutosaveEnabled() : go#config#MetalinterEnabled()
     let l:cmd = s:metalintercmd(l:metalinter, len(linters) != 0)
     if empty(l:cmd)
       return
@@ -32,6 +32,12 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     for l:linter in l:linters
       let l:cmd += ["--enable=".l:linter]
     endfor
+  elseif l:metalinter == 'staticcheck'
+    let l:cmd = s:metalintercmd(l:metalinter, 0)
+
+    if len(l:linters) > 0
+      let l:cmd += [printf('-checks=%s', join(l:linters, ',' ))]
+    endif
   elseif l:metalinter != 'gopls'
     " the user wants something else, let us use it.
     let l:cmd = split(go#config#MetalinterCommand(), " ")
@@ -42,6 +48,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     " will be cleared
     redraw
 
+    let l:goargs[0] = expand('%:p')
     if l:metalinter == "golangci-lint"
       let l:goargs[0] = expand('%:p:h')
     endif
@@ -403,7 +410,9 @@ function! s:metalintercmd(metalinter, haslinter)
   let l:bin_path = go#path#CheckBinPath(a:metalinter)
   if !empty(l:bin_path)
     if a:metalinter == "golangci-lint"
-      let l:cmd = s:golangcilintcmd(bin_path, a:haslinter)
+      let l:cmd = s:golangcilintcmd(l:bin_path, a:haslinter)
+    elseif a:metalinter == 'staticcheck'
+      let l:cmd = [l:bin_path]
     endif
   endif
 
@@ -455,10 +464,11 @@ function! s:errorformat(metalinter) abort
     "   <file>:<line>:<column>: <message> (<linter>)
     " This can be defined by the following errorformat:
     return 'level=%tarning\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%tarning\ msg="%m",level=%trror\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%trror\ msg="%m",%f:%l:%c:\ %m,%f:%l\ %m'
+  elseif a:metalinter == 'staticcheck'
+    return '%f:%l:%c:\ %m'
   elseif a:metalinter == 'gopls'
     return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m,%f:%l::%t:\ %m'
   endif
-
 endfunction
 
 function! s:preserveerrors(autosave, listtype) abort

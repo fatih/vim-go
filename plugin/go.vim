@@ -49,6 +49,7 @@ let s:packages = {
       \ 'golint':        ['golang.org/x/lint/golint@master'],
       \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
       \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@master'],
+      \ 'staticcheck':   ['honnef.co/go/tools/cmd/staticcheck@latest'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags@master'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
       \ 'gotags':        ['github.com/jstemmer/gotags@master'],
