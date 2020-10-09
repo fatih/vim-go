@@ -2491,25 +2491,39 @@ Show only variables on the right-hand side: >
 
                                                        *'g:go_debug_mappings'*
 
-Control key mappings for when the debugger is active:
+Contains custom key mapping information to customize the active mappings
+when debugging.
+
+Only the customizations desired need to be provided; the debugger will use its
+default key mappings for any mapping not defined here.
+
+This value should be a dictionary whose keys are the plugin mapping commands
+(e.g.  `(go-debug-continue)`). The values are lists containing one or two
+items. The first item must be the `lhs` to use for the mapping. The optional
+second item is for `:map-arguments`. All mappings will always be `:map-local`,
+so there is never a need to include `"<buffer>"` in the second item. The list
+can be empty to prevent a key mapping from being applied for one of the named
+mappings.
+
 >
-  let g:go_debug_mappings = [
-    \['nmap <nowait>',  'c', '<Plug>(go-debug-continue)'],
-    \['nmap',           'q', '<Plug>(go-debug-stop)'],
-    \['nmap <nowait>',  'n', '<Plug>(go-debug-next)'],
-    \['nmap',           's', '<Plug>(go-debug-step)'],
-  \]
+  let g:go_debug_mappings = {
+    \ '(go-debug-continue)': ['c', '<nowait>'],
+    \ '(go-debug-stop)': ['q'],
+    \ '(go-debug-next)': ['n', '<nowait>'],
+    \ '(go-debug-step)': ['s'],
+  \}
 <
 
 Defaults are equivalent to:
 >
-  let s:default_mappings = [
-    \["nmap", "<F5>",  "<Plug>(go-debug-continue)"],
-    \["nmap", "<F6>",  "<Plug>(go-debug-print)"],
-    \["nmap", "<F9>",  "<Plug>(go-debug-breakpoint)"],
-    \["nmap", "<F10>", "<Plug>(go-debug-next)"],
-    \["nmap", "<F11>", "<Plug>(go-debug-step)"],
-  \]
+  let s:default_mappings = {
+     \ '(go-debug-continue)':   ['<F5>'],
+     \ '(go-debug-print)':      ['<F6>'],
+     \ '(go-debug-breakpoint)': ['<F9>'],
+     \ '(go-debug-next)':       ['<F10>'],
+     \ '(go-debug-step)':       ['<F11>'],
+     \ '(go-debug-halt)':       ['<F8>'],
+  \ }
 <
 
 Your user specified settings will be merged with the defaults.
