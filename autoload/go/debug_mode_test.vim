@@ -8,13 +8,12 @@ function! Test_GoDebugModeRemapsKeysAndRestoresThem() abort
   endif
 
   try
-    let g:go_debug_mappings = [['nmap <nowait>',  'q', '<Plug>(go-debug-continue)']]
+    let g:go_debug_mappings = {'(go-debug-continue)': ['q', '<nowait>']}
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 
     call assert_false(exists(':GoDebugStop'))
 
-    let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
-    execute l:cd . ' debug/debugmain'
+    call go#util#Chdir('debug/debugmain')
 
     call go#debug#Start('debug')
 
@@ -24,7 +23,7 @@ function! Test_GoDebugModeRemapsKeysAndRestoresThem() abort
     endwhile
 
     call assert_false(exists(':GoDebugStart'))
-    call assert_equal('<Plug>(go-debug-continue)', maparg('q'))
+    call assert_equal('<nowait> <Plug>(go-debug-continue)', maparg('q', 'n', 0))
 
     call go#debug#Stop()
     while exists(':GoDebugStop') && reltimefloat(reltime(l:start)) < 10

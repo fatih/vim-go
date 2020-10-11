@@ -2516,7 +2516,7 @@ mappings.
 
 Defaults are equivalent to:
 >
-  let s:default_mappings = {
+  let g:go_debug_mappings = {
      \ '(go-debug-continue)':   ['<F5>'],
      \ '(go-debug-print)':      ['<F6>'],
      \ '(go-debug-breakpoint)': ['<F9>'],

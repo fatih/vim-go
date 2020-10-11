@@ -25,16 +25,6 @@ if !exists('s:start_args')
   let s:start_args = []
 endif
 
-if !exists('s:default_debug_mappings')
-  let s:default_debug_mappings = [
-    \["nmap", "<F5>",  "<Plug>(go-debug-continue)"],
-    \["nmap", "<F6>",  "<Plug>(go-debug-print)"],
-    \["nmap", "<F9>",  "<Plug>(go-debug-breakpoint)"],
-    \["nmap", "<F10>", "<Plug>(go-debug-next)"],
-    \["nmap", "<F11>", "<Plug>(go-debug-step)"],
-    \]
-endif
-
 function! s:goroutineID() abort
   return s:state['currentThread'].goroutineID
 endfunction
@@ -281,7 +271,6 @@ function! s:stop() abort
   if has_key(s:state, 'ch')
     call remove(s:state, 'ch')
   endif
-  call go#debug_mode#Restore()
   call s:clearState()
 endfunction
 
@@ -300,6 +289,8 @@ function! go#debug#Stop() abort
   for k in map(split(execute('map <Plug>(go-debug-'), "\n")[1:], 'matchstr(v:val, "^n\\s\\+\\zs\\S\\+")')
     exe 'unmap' k
   endfor
+  " Restore mappings configured prior to debugging.
+  call go#debug_mode#Restore()
 
   call s:stop()
 
@@ -318,6 +309,11 @@ function! go#debug#Stop() abort
     let &ballooneval=s:ballooneval
     let &balloonexpr=s:balloonexpr
   endif
+
+  augroup vim-go-debug
+    autocmd!
+  augroup END
+  augroup! vim-go-debug
 endfunction
 
 function! s:goto_file() abort
@@ -495,7 +491,11 @@ function! s:start_cb() abort
   nnoremap <silent> <Plug>(go-debug-continue)   :<C-u>call go#debug#Stack('continue')<CR>
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
 
-  call go#debug_mode#InitMode(s:default_debug_mappings)
+  augroup vim-go-debug
+    autocmd! * <buffer>
+    call go#debug_mode#InitMode('(go-debug-breakpoint)', '(go-debug-continue)')
+  augroup END
+  doautocmd vim-go-debug FileType go
 endfunction
 
 function! s:continue()
@@ -520,6 +520,16 @@ function! s:continue()
     set balloonexpr=go#debug#BalloonExpr()
     set ballooneval
   endif
+
+  " Some debug mappings were already added. Restore any mappings the user had
+  " before the complete mappings are configured so that the mappings are
+  " returned to the user's original state after the debugger is stopped.
+  call go#debug_mode#Restore()
+  augroup vim-go-debug
+    autocmd! * <buffer>
+    call go#debug_mode#InitMode('(go-debug-breakpint)', '(go-debug-continue)', '(go-debug-halt)', '(go-debug-next)', '(go-debug-print)', '(go-debug-step)')
+  augroup END
+  doautocmd vim-go-debug FileType go
 endfunction
 
 function! s:err_cb(ch, msg) abort
@@ -1141,7 +1151,7 @@ function! go#debug#Stack(name) abort
   endif
 
   " Add a breakpoint to the main.Main if the user didn't define any.
-  " TODO(bc): actually set set the breakpoint in main.Main
+  " TODO(bc): actually set the breakpoint in main.Main
   if len(s:list_breakpoints()) is 0
     if go#debug#Breakpoint() isnot 0
       let s:state.running = 0
@@ -1218,6 +1228,7 @@ function! go#debug#Restart() abort
   call go#cmd#autowrite()
 
   try
+    call go#debug_mode#Restore()
     call s:stop()
 
     let s:state = {
