@@ -286,8 +286,16 @@ function! go#debug#Stop() abort
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
 
   " Remove all mappings.
-  for k in map(split(execute('map <Plug>(go-debug-'), "\n")[1:], 'matchstr(v:val, "^n\\s\\+\\zs\\S\\+")')
-    exe 'unmap' k
+  " TODO(bc): this should really be part of go#debug_mode#Restore()
+  for l:mapping in values(go#config#DebugMappings())
+    let l:lhs = l:mapping[0]
+    let l:maparg = maparg(l:lhs, 'n', 0, 1)
+    if empty(l:maparg)
+      continue
+    endif
+    if l:maparg.buffer
+      call execute(printf('nunmap <buffer> %s', l:lhs))
+    endif
   endfor
   " Restore mappings configured prior to debugging.
   call go#debug_mode#Restore()
