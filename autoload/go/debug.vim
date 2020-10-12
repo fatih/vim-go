@@ -523,7 +523,7 @@ function! s:continue()
   call s:restoreMappings()
   augroup vim-go-debug
     autocmd! * <buffer>
-    call s:configureMappings('(go-debug-breakpint)', '(go-debug-continue)', '(go-debug-halt)', '(go-debug-next)', '(go-debug-print)', '(go-debug-step)')
+    call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)', '(go-debug-halt)', '(go-debug-next)', '(go-debug-print)', '(go-debug-step)')
   augroup END
   doautocmd vim-go-debug FileType go
 endfunction
