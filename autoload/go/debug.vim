@@ -288,6 +288,11 @@ function! go#debug#Stop() abort
   " Restore mappings configured prior to debugging.
   call s:restoreMappings()
 
+  " remove plug mappings
+  for k in map(split(execute('nmap <Plug>(go-debug-'), "\n"), 'matchstr(v:val, "^n\\s\\+\\zs\\S\\+")')
+    execute(printf('nunmap %s', k))
+  endfor
+
   call s:stop()
 
   let bufs = filter(map(range(1, winnr('$')), '[v:val,bufname(winbufnr(v:val))]'), 'v:val[1]=~"\.go$"')

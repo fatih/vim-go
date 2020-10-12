@@ -90,6 +90,38 @@ function! Test_GoDebugModeRemapsAndRestoresKeys() abort
   endtry
 endfunction
 
+function! Test_GoDebugStopRemovesPlugMappings() abort
+  if !go#util#has_job()
+    return
+  endif
+
+  try
+    let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
+
+    call assert_false(exists(':GoDebugStop'))
+
+    call go#util#Chdir('debug/debugmain')
+
+    call go#debug#Start('debug')
+
+    let l:start = reltime()
+    while maparg('<Plug>(go-debug-stop)') == '' && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+
+    call assert_false(exists(':GoDebugStart'))
+    call assert_equal(':<C-U>call go#debug#Stop()<CR>', maparg('<Plug>(go-debug-stop)', 'n', 0))
+
+    call go#debug#Stop()
+    while exists(':GoDebugStop') && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+    call assert_equal('', maparg('<Plug>(go-debug-stop'))
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunction
+
 " s:debug takes 2 optional arguments. The first is a package to debug. The
 " second is a flag to indicate whether to reset GOPATH after
 " gotest#load_fixture is called in order to test behavior outside of GOPATH.
