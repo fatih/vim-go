@@ -78,7 +78,7 @@ function! Test_GoDebugModeRemapsAndRestoresKeys() abort
     endwhile
 
     call assert_false(exists(':GoDebugStart'))
-    call assert_equal('<nowait> <Plug>(go-debug-continue)', maparg('q', 'n', 0))
+    call assert_equal('<Plug>(go-debug-continue)', maparg('q', 'n', 0))
 
     call go#debug#Stop()
     while exists(':GoDebugStop') && reltimefloat(reltime(l:start)) < 10
