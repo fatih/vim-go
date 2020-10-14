@@ -1505,11 +1505,11 @@ function! s:configureMappings(...) abort
     try
       call execute(printf('autocmd FileType go call s:save_maparg_for(expand(''%%''), ''%s'')', l:lhs))
 
-      let l:mapping = printf('autocmd FileType go nmap <buffer> %s', l:lhs)
+      let l:mapping = 'autocmd FileType go nmap <buffer>'
       if has_key(l:config, 'arguments')
         let l:mapping = printf('%s %s', l:mapping, l:config.arguments)
       endif
-      let l:mapping = printf('%s <Plug>%s', l:mapping, l:arg)
+      let l:mapping = printf('%s %s <Plug>%s', l:mapping, l:lhs, l:arg)
       call execute(l:mapping)
     catch
       call go#util#EchoError(printf('could not configure mapping for %s: %s', l:lhs, v:exception))
