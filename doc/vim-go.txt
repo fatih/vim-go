@@ -2505,7 +2505,8 @@ This value should be a dictionary whose keys are the plugin mapping commands
 `key` can be empty or missing to prevent a key mapping from being applied for
 one the named mappings.
 
-`arguments` is the string of `map-arguments` for the mapping (e.g. `<nowait>`).
+`arguments` is the string of `map-arguments` for the mapping (e.g.
+`<nowait>`).
 
 The first item must be the `lhs` to use for the mapping. The optional
 second item is for `:map-arguments`. All mappings will always be `:map-local`,
