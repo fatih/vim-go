@@ -2498,31 +2498,36 @@ Only the customizations desired need to be provided; the debugger will use its
 default key mappings for any mapping not defined here.
 
 This value should be a dictionary whose keys are the plugin mapping commands
-(e.g.  `(go-debug-continue)`). The values are lists containing one or two
-items. The first item must be the `lhs` to use for the mapping. The optional
-second item is for `:map-arguments`. All mappings will always be `:map-local`,
-so there is never a need to include `"<buffer>"` in the second item. The list
-can be empty to prevent a key mapping from being applied for one of the named
-mappings.
+(e.g.  `(go-debug-continue)`). The values are dictionaries with two keys.
+`key` and `attributes`.
 
+`key` is expected to be the key to map (i.e. it's the `lhs` in a mapping).
+`key` can be empty or missing to prevent a key mapping from being applied for
+one the named mappings.
+
+`arguments` is the string of `map-arguments` for the mapping (e.g. `<nowait>`).
+
+The first item must be the `lhs` to use for the mapping. The optional
+second item is for `:map-arguments`. All mappings will always be `:map-local`,
+so there is never a need to include `"<buffer>"` in the the arguments.
 >
   let g:go_debug_mappings = {
-    \ '(go-debug-continue)': ['c', '<nowait>'],
-    \ '(go-debug-stop)': ['q'],
-    \ '(go-debug-next)': ['n', '<nowait>'],
-    \ '(go-debug-step)': ['s'],
+    \ '(go-debug-continue)': {'key': 'c', 'arguments': '<nowait>'],
+    \ '(go-debug-stop)': {'key': 'q'},
+    \ '(go-debug-next)': {'key': 'n', 'arguments': '<nowait>'},
+    \ '(go-debug-step)': {'key': 's'},
   \}
 <
 
 Defaults are equivalent to:
 >
   let g:go_debug_mappings = {
-     \ '(go-debug-continue)':   ['<F5>'],
-     \ '(go-debug-print)':      ['<F6>'],
-     \ '(go-debug-breakpoint)': ['<F9>'],
-     \ '(go-debug-next)':       ['<F10>'],
-     \ '(go-debug-step)':       ['<F11>'],
-     \ '(go-debug-halt)':       ['<F8>'],
+     \ '(go-debug-continue)':   {'key': '<F5>'},
+     \ '(go-debug-print)':      {'key': '<F6>'},
+     \ '(go-debug-breakpoint)': {'key': '<F9>'},
+     \ '(go-debug-next)':       {'key': '<F10>'},
+     \ '(go-debug-step)':       {'key': '<F11>'},
+     \ '(go-debug-halt)':       {'key': '<F8>'},
   \ }
 <
 

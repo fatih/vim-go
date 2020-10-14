@@ -586,12 +586,12 @@ endfunction
 
 function! go#config#DebugMappings() abort
   let l:default = {
-     \ '(go-debug-continue)':   ['<F5>'],
-     \ '(go-debug-print)':      ['<F6>'],
-     \ '(go-debug-breakpoint)': ['<F9>'],
-     \ '(go-debug-next)':       ['<F10>'],
-     \ '(go-debug-step)':       ['<F11>'],
-     \ '(go-debug-halt)':       ['<F8>'],
+     \ '(go-debug-continue)':   {'key': '<F5>'},
+     \ '(go-debug-print)':      {'key': '<F6>'},
+     \ '(go-debug-breakpoint)': {'key': '<F9>'},
+     \ '(go-debug-next)':       {'key': '<F10>'},
+     \ '(go-debug-step)':       {'key': '<F11>'},
+     \ '(go-debug-halt)':       {'key': '<F8>'},
   \ }
 
   let l:user = get(g:, 'go_debug_mappings', {})

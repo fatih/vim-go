@@ -63,7 +63,7 @@ function! Test_GoDebugModeRemapsAndRestoresKeys() abort
   endif
 
   try
-    let g:go_debug_mappings = {'(go-debug-continue)': ['q', '<nowait>']}
+    let g:go_debug_mappings = {'(go-debug-continue)': {'key': 'q', 'arguments': '<nowait>'}}
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 
     call assert_false(exists(':GoDebugStop'))

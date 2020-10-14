@@ -1494,18 +1494,18 @@ function! s:configureMappings(...) abort
 
     let l:config = l:debug_mappings[l:arg]
 
-    " do not attempt to apply the mapping when the value is an empty list.
-    if len(l:config) == 0
+    " do not attempt to apply the mapping when the key is empty or missing.
+    if get(l:config, 'key', '') == ''
       continue
     endif
 
-    let l:lhs = l:config[0]
+    let l:lhs = l:config.key
     try
       call execute(printf('autocmd FileType go call s:save_maparg_for(expand(''%%''), ''%s'')', l:lhs))
 
       let l:mapping = printf('autocmd FileType go nmap <buffer> %s', l:lhs)
-      if len(l:config) > 1
-        let l:mapping = printf('%s %s', l:mapping, l:config[1])
+      if has_key(l:config, 'arguments')
+        let l:mapping = printf('%s %s', l:mapping, l:config.arguments)
       endif
       let l:mapping = printf('%s <Plug>%s', l:mapping, l:arg)
       call execute(l:mapping)
@@ -1540,7 +1540,10 @@ endfunction
 function! s:restoreMappings() abort
   " Remove all debugging mappings.
   for l:mapping in values(go#config#DebugMappings())
-    let l:lhs = l:mapping[0]
+    let l:lhs = get(l:mapping, 'key', '')
+    if l:lhs == ''
+      continue
+    endif
     let l:maparg = maparg(l:lhs, 'n', 0, 1)
     if empty(l:maparg)
       continue
@@ -1559,7 +1562,7 @@ function! s:restoremappingfor(bufname) abort
   endif
 
   for l:maparg in s:mapargs[a:bufname]
-    let l:mapping = s:restore_mapping(l:maparg)
+    call s:restore_mapping(l:maparg)
   endfor
   call remove(s:mapargs, a:bufname)
 endfunction
