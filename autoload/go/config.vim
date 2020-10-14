@@ -594,7 +594,7 @@ function! go#config#DebugMappings() abort
      \ '(go-debug-halt)':       {'key': '<F8>'},
   \ }
 
-  let l:user = get(g:, 'go_debug_mappings', {})
+  let l:user = deepcopy(get(g:, 'go_debug_mappings', {}))
 
   return extend(l:user, l:default, 'keep')
 endfunction
