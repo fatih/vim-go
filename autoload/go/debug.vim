@@ -25,6 +25,10 @@ if !exists('s:start_args')
   let s:start_args = []
 endif
 
+if !exists('s:mapargs')
+  let s:mapargs = {}
+endif
+
 function! s:goroutineID() abort
   return s:state['currentThread'].goroutineID
 endfunction
@@ -1477,7 +1481,6 @@ function! s:warn_stale(filename) abort
   call go#util#EchoWarning(printf('file locations may be incorrect, because  %s has changed since debugging started', a:filename))
 endfunction
 
-let s:mapargs = {}
 
 function! s:configureMappings(...) abort
   if a:0 == 0
@@ -1485,7 +1488,6 @@ function! s:configureMappings(...) abort
   endif
 
   let l:debug_mappings = go#config#DebugMappings()
-  let s:mapargs = {}
 
   for l:arg in a:000
     if !has_key(l:debug_mappings, l:arg)
