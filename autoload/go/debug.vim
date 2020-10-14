@@ -497,7 +497,7 @@ function! s:start_cb() abort
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
 
   augroup vim-go-debug
-    autocmd! * <buffer>
+    autocmd! *
     call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)')
   augroup END
   doautocmd vim-go-debug FileType go
@@ -531,7 +531,7 @@ function! s:continue()
   " returned to the user's original state after the debugger is stopped.
   call s:restoreMappings()
   augroup vim-go-debug
-    autocmd! * <buffer>
+    autocmd! *
     call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)', '(go-debug-halt)', '(go-debug-next)', '(go-debug-print)', '(go-debug-step)')
   augroup END
   doautocmd vim-go-debug FileType go
