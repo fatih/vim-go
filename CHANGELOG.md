@@ -14,6 +14,8 @@ IMPROVEMENTS:
   [[GH-3028]](https://github.com/fatih/vim-go/pull/3028)
 * Add support for using static check as the gometalinter.
   [[GH-3036]](https://github.com/fatih/vim-go/pull/3036)
+* Add `g:go_debug_mappings` to allow the debug key mappings to be customized.
+  [[GH-3035]](https://github.com/fatih/vim-go/pull/3035)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
