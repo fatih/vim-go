@@ -16,6 +16,8 @@ IMPROVEMENTS:
   [[GH-3036]](https://github.com/fatih/vim-go/pull/3036)
 * Add `g:go_debug_mappings` to allow the debug key mappings to be customized.
   [[GH-3035]](https://github.com/fatih/vim-go/pull/3035)
+* Use `gopls` as the default instead of `guru` to satisfy `:GoImplements`.
+  [[GH-3034]](https://github.com/fatih/vim-go/pull/3034)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
