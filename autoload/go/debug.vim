@@ -25,6 +25,10 @@ if !exists('s:start_args')
   let s:start_args = []
 endif
 
+if !exists('s:mapargs')
+  let s:mapargs = {}
+endif
+
 function! s:goroutineID() abort
   return s:state['currentThread'].goroutineID
 endfunction
@@ -271,7 +275,6 @@ function! s:stop() abort
   if has_key(s:state, 'ch')
     call remove(s:state, 'ch')
   endif
-
   call s:clearState()
 endfunction
 
@@ -286,9 +289,12 @@ function! go#debug#Stop() abort
   command! -nargs=1 GoDebugAttach call go#debug#Start('attach', <f-args>)
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
 
-  " Remove all mappings.
-  for k in map(split(execute('map <Plug>(go-debug-'), "\n")[1:], 'matchstr(v:val, "^n\\s\\+\\zs\\S\\+")')
-    exe 'unmap' k
+  " Restore mappings configured prior to debugging.
+  call s:restoreMappings()
+
+  " remove plug mappings
+  for k in map(split(execute('nmap <Plug>(go-debug-'), "\n"), 'matchstr(v:val, "^n\\s\\+\\zs\\S\\+")')
+    execute(printf('nunmap %s', k))
   endfor
 
   call s:stop()
@@ -491,9 +497,8 @@ function! s:start_cb() abort
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
 
   augroup vim-go-debug
-    autocmd! * <buffer>
-    autocmd FileType go nmap <buffer> <F5>   <Plug>(go-debug-continue)
-    autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
+    autocmd! *
+    call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)')
   augroup END
   doautocmd vim-go-debug FileType go
 endfunction
@@ -521,14 +526,13 @@ function! s:continue()
     set ballooneval
   endif
 
+  " Some debug mappings were already added. Restore any mappings the user had
+  " before the complete mappings are configured so that the mappings are
+  " returned to the user's original state after the debugger is stopped.
+  call s:restoreMappings()
   augroup vim-go-debug
-    autocmd! * <buffer>
-    autocmd FileType go nmap <buffer> <F5>   <Plug>(go-debug-continue)
-    autocmd FileType go nmap <buffer> <F6>   <Plug>(go-debug-print)
-    autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
-    autocmd FileType go nmap <buffer> <F10>  <Plug>(go-debug-next)
-    autocmd FileType go nmap <buffer> <F11>  <Plug>(go-debug-step)
-    autocmd FileType go nmap <buffer> <F8>  <Plug>(go-debug-halt)
+    autocmd! *
+    call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)', '(go-debug-halt)', '(go-debug-next)', '(go-debug-print)', '(go-debug-step)')
   augroup END
   doautocmd vim-go-debug FileType go
 endfunction
@@ -1152,7 +1156,7 @@ function! go#debug#Stack(name) abort
   endif
 
   " Add a breakpoint to the main.Main if the user didn't define any.
-  " TODO(bc): actually set set the breakpoint in main.Main
+  " TODO(bc): actually set the breakpoint in main.Main
   if len(s:list_breakpoints()) is 0
     if go#debug#Breakpoint() isnot 0
       let s:state.running = 0
@@ -1229,6 +1233,7 @@ function! go#debug#Restart() abort
   call go#cmd#autowrite()
 
   try
+    call s:restoreMappings()
     call s:stop()
 
     let s:state = {
@@ -1474,6 +1479,122 @@ endfunction
 
 function! s:warn_stale(filename) abort
   call go#util#EchoWarning(printf('file locations may be incorrect, because  %s has changed since debugging started', a:filename))
+endfunction
+
+
+function! s:configureMappings(...) abort
+  if a:0 == 0
+    return
+  endif
+
+  let l:debug_mappings = go#config#DebugMappings()
+
+  for l:arg in a:000
+    if !has_key(l:debug_mappings, l:arg)
+      continue
+    endif
+
+    let l:config = l:debug_mappings[l:arg]
+
+    " do not attempt to apply the mapping when the key is empty or missing.
+    if get(l:config, 'key', '') == ''
+      continue
+    endif
+
+    let l:lhs = l:config.key
+    try
+      call execute(printf('autocmd FileType go call s:save_maparg_for(expand(''%%''), ''%s'')', l:lhs))
+
+      let l:mapping = 'autocmd FileType go nmap <buffer>'
+      if has_key(l:config, 'arguments')
+        let l:mapping = printf('%s %s', l:mapping, l:config.arguments)
+      endif
+      let l:mapping = printf('%s %s <Plug>%s', l:mapping, l:lhs, l:arg)
+      call execute(l:mapping)
+    catch
+      call go#util#EchoError(printf('could not configure mapping for %s: %s', l:lhs, v:exception))
+    endtry
+  endfor
+endfunction
+
+function! s:save_maparg_for(bufname, lhs) abort
+  " make sure bufname is the active buffer.
+  if fnamemodify(a:bufname, ':p') isnot expand('%:p')
+    call go#util#EchoWarning('buffer must be active to save its mappings')
+    return
+  endif
+
+  " only normal-mode buffer-local mappings are needed, because all
+  " vim-go-debug mappings are normal-mode buffer-local mappings. Therefore,
+  " we only need to retrieve normal mode mappings that need to be saved.
+  let l:maparg = maparg(a:lhs, 'n', 0, 1)
+  if empty(l:maparg)
+    return
+  endif
+
+  if l:maparg.buffer
+    let l:bufmapargs = get(s:mapargs, a:bufname, [])
+    let l:bufmapargs = add(l:bufmapargs, l:maparg)
+    let s:mapargs[a:bufname] = l:bufmapargs
+  endif
+endfunction
+
+function! s:restoreMappings() abort
+  " Remove all debugging mappings.
+  for l:mapping in values(go#config#DebugMappings())
+    let l:lhs = get(l:mapping, 'key', '')
+    if l:lhs == ''
+      continue
+    endif
+    let l:maparg = maparg(l:lhs, 'n', 0, 1)
+    if empty(l:maparg)
+      continue
+    endif
+    if l:maparg.buffer
+      call execute(printf('nunmap <buffer> %s', l:lhs))
+    endif
+  endfor
+
+  call s:restoremappingfor(bufname(''))
+endfunction
+
+function! s:restoremappingfor(bufname) abort
+  if !has_key(s:mapargs, a:bufname)
+    return
+  endif
+
+  for l:maparg in s:mapargs[a:bufname]
+    call s:restore_mapping(l:maparg)
+  endfor
+  call remove(s:mapargs, a:bufname)
+endfunction
+
+function! s:restore_mapping(maparg)
+  if empty(a:maparg)
+    return
+  endif
+  if !exists('*mapset')
+    " see :h :map-arguments
+    let l:silent_attr = get(a:maparg, 'silent',  0) ? '<silent>' : ''
+    let l:nowait_attr = get(a:maparg, 'no_wait', 0) ? '<nowait>' : ''
+    let l:buffer_attr = get(a:maparg, 'buffer',  0) ? '<buffer>' : ''
+    let l:expr_attr   = get(a:maparg, 'expr',    0) ? '<expr>'   : ''
+    let l:unique_attr = get(a:maparg, 'unique',  0) ? '<unique>' : ''
+    let l:script_attr = get(a:maparg, 'script',  0) ? '<script>' : ''
+
+    let l:command     = [a:maparg['mode'], (get(a:maparg, 'noremap', 0) ? 'nore' : ''), 'map']
+    let l:command     = join(filter(l:command, '!empty(v:val)'), '')
+    let l:rhs         = a:maparg['rhs']
+    let l:lhs         = a:maparg['lhs']
+
+    " NOTE: most likely <buffer> should be first
+    let l:mapping = join(filter([l:command, l:buffer_attr, l:silent_attr, l:nowait_attr, l:expr_attr, l:unique_attr, l:script_attr, l:lhs, l:rhs], '!empty(v:val)'))
+    call execute(l:mapping)
+    return
+  endif
+
+  call mapset('n', 0, a:maparg)
+  return
 endfunction
 
 " restore Vi compatibility settings

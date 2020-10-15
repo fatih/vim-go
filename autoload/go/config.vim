@@ -584,6 +584,21 @@ function! go#config#FillStructMode() abort
   return get(g:, 'go_fillstruct_mode', 'fillstruct')
 endfunction
 
+function! go#config#DebugMappings() abort
+  let l:default = {
+     \ '(go-debug-continue)':   {'key': '<F5>'},
+     \ '(go-debug-print)':      {'key': '<F6>'},
+     \ '(go-debug-breakpoint)': {'key': '<F9>'},
+     \ '(go-debug-next)':       {'key': '<F10>'},
+     \ '(go-debug-step)':       {'key': '<F11>'},
+     \ '(go-debug-halt)':       {'key': '<F8>'},
+  \ }
+
+  let l:user = deepcopy(get(g:, 'go_debug_mappings', {}))
+
+  return extend(l:user, l:default, 'keep')
+endfunction
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
