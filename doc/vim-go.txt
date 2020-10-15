@@ -1496,9 +1496,9 @@ other packages. Valid options are `gopls` and `guru`. By default it's `gopls`.
 
 Use this option to define the command to be used for |:GoImplements|.
 The Implements feature in gopls is still new and being worked upon.
-Valid options are `gopls` and `guru`. By default it's `guru`.
+Valid options are `gopls` and `guru`. By default it's `gopls`.
 >
-  let g:go_implements_mode = 'guru'
+  let g:go_implements_mode = 'gopls'
 <
                                                   *'g:go_def_mapping_enabled'*
 
