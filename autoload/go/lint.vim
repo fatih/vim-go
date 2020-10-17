@@ -468,6 +468,7 @@ function! s:errorformat(metalinter) abort
   elseif a:metalinter == 'staticcheck'
     return '%f:%l:%c:\ %m'
   elseif a:metalinter == 'gopls'
+    let l:efm = ''
     let l:level = go#config#DiagnosticsLevel()
 
     if l:level == 0
