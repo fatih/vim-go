@@ -18,6 +18,9 @@ IMPROVEMENTS:
   [[GH-3035]](https://github.com/fatih/vim-go/pull/3035)
 * Use `gopls` as the default instead of `guru` to satisfy `:GoImplements`.
   [[GH-3034]](https://github.com/fatih/vim-go/pull/3034)
+* Add `g:go_diagnostics_ignore_warnings` to allow diagnostic messages at the
+  warn level to be ignored.
+  [[GH-3050]](https://github.com/fatih/vim-go/pull/3050)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
