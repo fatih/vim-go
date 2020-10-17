@@ -1931,21 +1931,20 @@ default it is `v:null`.
 <
                                                  *'g:go_diagnostics_enabled'*
 
-Specifies whether `gopls` diagnostics are enabled. Only the diagnostics for
-the current buffer will be processed when it is not set; all others will be
-ignored.
-
-By default it is disabled.
+Deprecated. See `'g:go_diagnostics_level'`. Specifies whether `gopls`
+diagnostics are enabled. Only the diagnostics for the current buffer will be
+processed when it is not set; all others will be ignored. By default it is
+disabled.
 >
   let g:go_diagnostics_enabled = 0
 <
-                                        *'g:go_diagnostics_ignore_warnings'*
+                                                  *'g:go_diagnostics_level'*
 
-Specifies whether warnings from  `gopls` diagnostics are ignored.
-
-By default it is disabled.
+Specifies the `gopls` diagnostics level. Valid values are 0, 1, and 2. 0
+ignores `gopls` diagnostics, 1 is for errors only, and 2 is for errors and
+warnings. By default it is 2.
 >
-  let g:go_diagnostics_ignore_warnings = 0
+  let g:go_diagnostics_level = 2
 <
 
                                                   *'g:go_template_autocreate'*

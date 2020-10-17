@@ -572,12 +572,19 @@ function! go#config#GoplsEnabled() abort
   return get(g:, 'go_gopls_enabled', 1)
 endfunction
 
+" TODO(bc): remove support for g:go_diagnostics_enabled;
+" g:go_diagnostics_level is the replacement.
 function! go#config#DiagnosticsEnabled() abort
   return get(g:, 'go_diagnostics_enabled', 0)
 endfunction
 
-function! go#config#DiagnosticsIgnoreWarnings() abort
-  return get(g:, 'go_diagnostics_ignore_warnings', 0)
+function! go#config#DiagnosticsLevel() abort
+  let l:default = 2
+  if has_key(g:, 'go_diagnostics_enabled') && !g:go_diagnostics_enabled
+    let l:default = 0
+  endif
+
+  return get(g:, 'go_diagnostics_level', l:default)
 endfunction
 
 function! go#config#GoplsOptions() abort

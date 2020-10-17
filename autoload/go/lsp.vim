@@ -233,6 +233,8 @@ function! s:newlsp() abort
 
   " TODO(bc): process the queue asynchronously
   function! l:lsp.updateDiagnostics() dict abort
+    let l:level = go#config#DiagnosticsLevel()
+
     for l:data in self.diagnosticsQueue
       call remove(self.diagnosticsQueue, 0)
 
@@ -246,22 +248,17 @@ function! s:newlsp() abort
         " Vim says that a buffer name can't be an absolute path.
         let l:bufname = fnamemodify(l:fname, ':.')
 
-        if len(l:data.diagnostics) > 0 && (go#config#DiagnosticsEnabled() || bufnr(l:bufname) == bufnr(''))
+        if len(l:data.diagnostics) > 0
           " make sure the buffer is listed and loaded before calling getbufline() on it
           if !bufexists(l:bufname)
-            "let l:starttime = reltime()
             call bufadd(l:bufname)
           endif
 
           if !bufloaded(l:bufname)
-            "let l:starttime = reltime()
             call bufload(l:bufname)
           endif
 
           for l:diag in l:data.diagnostics
-            " TODO(bc): cache the raw diagnostics when they're not for the
-            " current buffer so that they can be processed when it is the
-            " current buffer and highlight the areas of concern.
             let [l:error, l:matchpos] = s:errorFromDiagnostic(l:diag, l:bufname, l:fname)
             let l:diagnostics = add(l:diagnostics, l:error)
 
@@ -1383,7 +1380,9 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
     call go#util#ClearHighlights('goDiagnosticError')
     if go#config#HighlightDiagnosticErrors()
       let b:go_diagnostic_matches.errors = copy(a:errorMatches)
-      call go#util#HighlightPositions('goDiagnosticError', a:errorMatches)
+      if go#config#DiagnosticsLevel() >= 2
+        call go#util#HighlightPositions('goDiagnosticError', a:errorMatches)
+      endif
     endif
   endif
 
@@ -1393,7 +1392,7 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
     call go#util#ClearHighlights('goDiagnosticWarning')
     if go#config#HighlightDiagnosticWarnings()
       let b:go_diagnostic_matches.warnings = copy(a:warningMatches)
-      if !go#config#DiagnosticsIgnoreWarnings()
+      if go#config#DiagnosticsLevel() >= 2
         call go#util#HighlightPositions('goDiagnosticWarning', a:warningMatches)
       endif
     endif
