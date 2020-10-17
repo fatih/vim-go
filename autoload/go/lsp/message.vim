@@ -342,7 +342,12 @@ function! go#lsp#message#ConfigurationResult(items) abort
     endif
 
     if l:local isnot v:null
-      let l:config.local = l:local
+      if type(l:local) is v:t_string
+        let l:config.local = l:local
+      elseif type(l:local) is v:t_dict
+        let l:workspace = go#path#FromURI(l:item.scopeUri)
+        let l:config.local = get(l:local, l:workspace, v:null)
+      endif
     endif
 
     if l:gofumpt isnot v:null
