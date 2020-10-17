@@ -468,8 +468,13 @@ function! s:errorformat(metalinter) abort
   elseif a:metalinter == 'staticcheck'
     return '%f:%l:%c:\ %m'
   elseif a:metalinter == 'gopls'
-    let l:efm = ''
-    if go#config#DiagnosticsIgnoreWarnings()
+    let l:level = go#config#DiagnosticsLevel()
+
+    if l:level == 0
+      return '%-G%f:%l:%c:%t:\ %m,%-G%f:%l:%c::\ %m,%-G%f:%l::%t:\ %m'
+    endif
+
+    if l:level < 2
       let l:efm = '%-G%f:%l:%c:W:\ %m,%-G%f:%l::W:\ %m,'
     endif
     return l:efm . '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m,%f:%l::%t:\ %m'
