@@ -1393,7 +1393,9 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
     call go#util#ClearHighlights('goDiagnosticWarning')
     if go#config#HighlightDiagnosticWarnings()
       let b:go_diagnostic_matches.warnings = copy(a:warningMatches)
-      call go#util#HighlightPositions('goDiagnosticWarning', a:warningMatches)
+      if !go#config#DiagnosticsIgnoreWarnings()
+        call go#util#HighlightPositions('goDiagnosticWarning', a:warningMatches)
+      endif
     endif
   endif
 

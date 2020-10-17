@@ -1939,6 +1939,14 @@ By default it is disabled.
 >
   let g:go_diagnostics_enabled = 0
 <
+                                        *'g:go_diagnostics_ignore_warnings'*
+
+Specifies whether warnings from  `gopls` diagnostics are ignored.
+
+By default it is disabled.
+>
+  let g:go_diagnostics_ignore_warnings = 0
+<
 
                                                   *'g:go_template_autocreate'*
 

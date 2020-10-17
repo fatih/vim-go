@@ -576,6 +576,10 @@ function! go#config#DiagnosticsEnabled() abort
   return get(g:, 'go_diagnostics_enabled', 0)
 endfunction
 
+function! go#config#DiagnosticsIgnoreWarnings() abort
+  return get(g:, 'go_diagnostics_ignore_warnings', 0)
+endfunction
+
 function! go#config#GoplsOptions() abort
   return get(g:, 'go_gopls_options', ['-remote=auto'])
 endfunction
