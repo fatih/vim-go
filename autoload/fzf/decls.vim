@@ -29,12 +29,10 @@ function! s:sink(str) abort
   if len(a:str) < 2
     return
   endif
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
   try
     " we jump to the file directory so we can get the fullpath via fnamemodify
     " below
-    execute cd . fnameescape(s:current_dir)
+    let l:dir = go#util#Chdir(s:current_dir)
 
     let vals = matchlist(a:str[1], '|\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)|')
 
@@ -54,7 +52,7 @@ function! s:sink(str) abort
     silent! norm! zvzz
   finally
     "jump back to old dir
-    execute cd . fnameescape(dir)
+    call go#util#Chdir(l:dir)
   endtry
 endfunction
 

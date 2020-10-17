@@ -139,15 +139,12 @@ endfunction
 " directory. A relative path is returned when in a null module at or below the
 " current working directory..
 function! go#package#FromPath(arg) abort
-  let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
-  let l:dir = getcwd()
-
   let l:path = fnamemodify(a:arg, ':p')
   if !isdirectory(l:path)
     let l:path = fnamemodify(l:path, ':h')
   endif
 
-  execute l:cd fnameescape(l:path)
+  let l:dir = go#util#Chdir(l:path)
   try
     if glob("*.go") == ""
       " There's no Go code in this directory. We might be in a module directory
@@ -165,7 +162,7 @@ function! go#package#FromPath(arg) abort
 
     let l:importpath = split(l:out, '\n')[0]
   finally
-    execute l:cd fnameescape(l:dir)
+    call go#util#Chdir(l:dir)
   endtry
 
   " go list returns '_CURRENTDIRECTORY' if the directory is in a null module

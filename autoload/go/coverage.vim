@@ -33,16 +33,14 @@ function! go#coverage#Buffer(bang, ...) abort
   endif
 
   " check if there is any test file, if not we just return
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-  let dir = getcwd()
   try
-    execute cd . fnameescape(expand("%:p:h"))
+    let l:dir = go#util#Chdir(expand("%:p:h"))
     if empty(glob("*_test.go"))
       call go#util#EchoError("no test files available")
       return
     endif
   finally
-    execute cd . fnameescape(dir)
+    call go#util#Chdir(l:dir)
   endtry
 
   let s:toggle = 1

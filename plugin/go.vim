@@ -160,10 +160,8 @@ function! s:GoInstallBinaries(updateBinaries, ...)
       if l:importPath =~ "@"
         let Restore_modules = go#util#SetEnv('GO111MODULE', 'on')
         let l:tmpdir = go#util#tempdir('vim-go')
-        let l:cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
-        let l:dir = getcwd()
         try
-          execute l:cd . fnameescape(l:tmpdir)
+          let l:dir = go#util#Chdir(l:tmpdir)
           let l:get_cmd = copy(l:get_base_cmd)
 
           if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
@@ -181,7 +179,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
 
           call call(Restore_modules, [])
         finally
-          execute l:cd . fnameescape(l:dir)
+          call go#util#Chdir(l:dir)
         endtry
         call call(Restore_modules, [])
       else
