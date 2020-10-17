@@ -273,6 +273,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
 
   " results must be in the same order as the items
   for l:item in a:items
+    let l:workspace = go#path#FromURI(l:item.scopeUri)
     let l:config = {
           \ 'buildFlags': [],
           \ 'hoverKind': 'Structured',
@@ -290,6 +291,9 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:tempModfile = go#config#GoplsTempModfile()
     let l:analyses = go#config#GoplsAnalyses()
     let l:local = go#config#GoplsLocal()
+    if type(l:local) is v:t_dict
+      let l:local = get(l:local, l:workspace, v:null)
+    endif
     let l:gofumpt = go#config#GoplsGofumpt()
     let l:settings = go#config#GoplsSettings()
 
@@ -342,12 +346,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
     endif
 
     if l:local isnot v:null
-      if type(l:local) is v:t_string
         let l:config.local = l:local
-      elseif type(l:local) is v:t_dict
-        let l:workspace = go#path#FromURI(l:item.scopeUri)
-        let l:config.local = get(l:local, l:workspace, v:null)
-      endif
     endif
 
     if l:gofumpt isnot v:null
@@ -362,7 +361,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
       let l:config = extend(l:config, l:settings, 'keep')
     endif
 
-    let l:result = add(l:result, l:config)
+    let l:result = add(l:result, deepcopy(l:config))
   endfor
 
   return l:result
