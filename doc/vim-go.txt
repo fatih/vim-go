@@ -1900,8 +1900,12 @@ When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 
                                                          *'g:go_gopls_local'*
 
-Specifies the prefix for imports that `gopls` should consider group
-separately.
+Specifies the prefix for imports that `gopls` should group separately.
+
+The value can either be a string or a dictionary. When it is a string, all
+workspaces will use the same value. When it is a dictionary, the key should be
+the absolute path of the workspace and the value is the prefix to use for
+local imports within that workspace.
 
 When it is `v:null`, `gopls`' default will be used. By default it is `v:null`.
 >

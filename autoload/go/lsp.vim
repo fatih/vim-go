@@ -1101,6 +1101,9 @@ function! go#lsp#AddWorkspaceDirectory(...) abort
   let l:workspaces = []
   for l:dir in a:000
     let l:dir = fnamemodify(l:dir, ':p')
+    if len(l:dir) > 1 && l:dir[-1:] == '/'
+      let l:dir = l:dir[:-2]
+    endif
     if !isdirectory(l:dir)
       continue
     endif
