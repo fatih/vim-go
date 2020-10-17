@@ -144,15 +144,16 @@ function! go#lint#Diagnostics(bang, ...) abort
 
   let l:listtype = go#list#Type("GoDiagnostics")
 
-  if len(l:messages) == 0
+  " Parse and populate the quickfix list
+  let l:winid = win_getid(winnr())
+  call go#list#ParseFormat(l:listtype, l:errformat, l:messages, 'GoDiagnostics', 0)
+
+  let l:errors = go#list#Get(l:listtype)
+
+  if len(l:errors) == 0
     call go#list#Clean(l:listtype)
     call go#util#EchoSuccess('[diagnostics] PASS')
   else
-    " Parse and populate the quickfix list
-    let l:winid = win_getid(winnr())
-    call go#list#ParseFormat(l:listtype, l:errformat, l:messages, 'GoDiagnostics', 0)
-
-    let errors = go#list#Get(l:listtype)
     call go#list#Window(l:listtype, len(errors))
 
     if a:bang
@@ -467,7 +468,11 @@ function! s:errorformat(metalinter) abort
   elseif a:metalinter == 'staticcheck'
     return '%f:%l:%c:\ %m'
   elseif a:metalinter == 'gopls'
-    return '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m,%f:%l::%t:\ %m'
+    let l:efm = ''
+    if go#config#DiagnosticsIgnoreWarnings()
+      let l:efm = '%-G%f:%l:%c:W:\ %m,%-G%f:%l::W:\ %m,'
+    endif
+    return l:efm . '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m,%f:%l::%t:\ %m'
   endif
 endfunction
 
