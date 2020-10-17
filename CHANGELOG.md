@@ -22,6 +22,9 @@ IMPROVEMENTS:
   more finely grained control of the handling of diagnostics messages.
   [[GH-3050]](https://github.com/fatih/vim-go/pull/3050)
   [[GH-3052]](https://github.com/fatih/vim-go/pull/3052)
+* Add support for allowing `g:go_gopls_local`  to specify different local
+  imports values per workspace.
+  [[GH-3053]](https://github.com/fatih/vim-go/pull/3053)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
