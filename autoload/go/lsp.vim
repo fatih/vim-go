@@ -248,7 +248,7 @@ function! s:newlsp() abort
         " Vim says that a buffer name can't be an absolute path.
         let l:bufname = fnamemodify(l:fname, ':.')
 
-        if len(l:data.diagnostics) > 0
+        if len(l:data.diagnostics) > 0 && (l:level > 0 || bufnr(l:bufname) == bufnr(''))
           " make sure the buffer is listed and loaded before calling getbufline() on it
           if !bufexists(l:bufname)
             call bufadd(l:bufname)
