@@ -1946,9 +1946,9 @@ disabled.
 
 Specifies the `gopls` diagnostics level. Valid values are 0, 1, and 2. 0
 ignores `gopls` diagnostics, 1 is for errors only, and 2 is for errors and
-warnings. By default it is 2.
+warnings. By default it is 0.
 >
-  let g:go_diagnostics_level = 2
+  let g:go_diagnostics_level = 0
 <
 
                                                   *'g:go_template_autocreate'*

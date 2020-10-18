@@ -272,6 +272,7 @@ endfunction
 
 function! Test_diagnostic_after_fmt() abort
   let g:go_fmt_command = 'gofmt'
+  let g:go_diagnostics_level = 2
   try
     call s:diagnostic_after_write( [
           \ 'package main',
@@ -290,6 +291,7 @@ endfunction
 function! Test_diagnostic_after_fmt_change() abort
   " craft a file that will be changed when its written (gofmt will change it).
   let g:go_fmt_command = 'gofmt'
+  let g:go_diagnostics_level = 2
   try
     call s:diagnostic_after_write( [
           \ 'package main',
@@ -308,6 +310,7 @@ endfunction
 function! Test_diagnostic_after_fmt_cleared() abort
   " craft a file that will be fixed when it is written.
   let g:go_fmt_command = 'gofmt'
+  let g:go_diagnostics_level = 2
   try
     call s:diagnostic_after_write( [
           \ 'package main',
@@ -324,6 +327,7 @@ function! Test_diagnostic_after_fmt_cleared() abort
 endfunction
 
 function! Test_diagnostic_after_reload() abort
+  let g:go_diagnostics_level = 2
   let l:dir = gotest#write_file('diagnostic/after-reload.go', [
               \ 'package main',
               \ 'import "fmt"',
@@ -347,6 +351,7 @@ endfunction
 function! s:diagnostic_after_write(contents, changes) abort
   syntax on
 
+  let g:go_diagnostics_level = 2
   let l:dir = gotest#write_file('diagnostic/after-write.go', a:contents)
 
   try

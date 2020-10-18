@@ -579,9 +579,9 @@ function! go#config#DiagnosticsEnabled() abort
 endfunction
 
 function! go#config#DiagnosticsLevel() abort
-  let l:default = 2
-  if has_key(g:, 'go_diagnostics_enabled') && !g:go_diagnostics_enabled
-    let l:default = 0
+  let l:default = 0
+  if has_key(g:, 'go_diagnostics_enabled') && g:go_diagnostics_enabled
+    let l:default = 2
   endif
 
   return get(g:, 'go_diagnostics_level', l:default)
