@@ -203,6 +203,7 @@ function! go#cmd#Run(bang, ...) abort
 
   let l:status.state = 'success'
 
+  let l:dir = go#util#Chdir(expand("%:p:h"))
   try
     " backup user's errorformat, will be restored once we are finished
     let l:old_errorformat = &errorformat
@@ -212,7 +213,6 @@ function! go#cmd#Run(bang, ...) abort
       call go#util#EchoInfo('shell command: ' . l:cmd)
     endif
 
-    let l:dir = go#util#Chddir(expand("%:p:h"))
     if l:listtype == "locationlist"
       exe 'lmake!'
     else
