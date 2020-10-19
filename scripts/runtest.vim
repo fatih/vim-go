@@ -87,7 +87,7 @@ for s:test in sort(s:tests)
     " in 'stream closed' errors when the events were run _after_ gopls exited.
     sleep 50m
   catch
-    let v:errors += [v:exception]
+    call assert_report(printf('at %s: %s', v:throwpoint, v:exception))
   finally
     call s:clearOptions()
   endtry
