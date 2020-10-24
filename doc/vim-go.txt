@@ -2481,7 +2481,8 @@ DEBUGGER SETTINGS~
 Controls the window layout for debugging mode. This is a |dict| with four
 possible keys: "vars", "stack", "goroutines", and "out"; each of the new
 windows will be created in that that order with the commands in the value. The
-current window is made the only window before creating the debug windows.
+current window is made the only window before creating the debug windows
+unless `g:go_debug_windows` is empty.
 
 A window will not be created if a key is missing or empty.
 
