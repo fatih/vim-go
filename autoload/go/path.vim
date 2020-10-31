@@ -76,6 +76,12 @@ endfunction
 function! go#path#Detect() abort
   let gopath = go#path#Default()
 
+  " do nothing when in a module.
+  let l:wd = go#util#ModuleRoot()
+  if l:wd != -1 && filereadable(fnamemodify(printf('%s/go.mod', l:wd), ':p'))
+    return gopath
+  endif
+
   let current_dir = fnameescape(expand('%:p:h'))
 
   " TODO(arslan): this should be changed so folders or files should be
