@@ -1530,7 +1530,7 @@ function! s:handleCodeAction(kind, cmd, msg) abort dict
       endif
 
       if has_key(l:item, 'command')
-        if has_key(l:item.command, 'command') && l:item.command.command is a:cmd
+        if has_key(l:item.command, 'command') && (l:item.command.command is a:cmd || l:item.command.command is printf('gopls.%s', a:cmd))
           call s:executeCommand(l:item.command.command, l:item.command.arguments)
           continue
         endif
