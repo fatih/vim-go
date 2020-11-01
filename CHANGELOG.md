@@ -1,5 +1,9 @@
 ## unplanned
 
+BACKWARDS INCOMPATIBILITIES:
+* Remove g:go_autodetect_gopath.
+  [[GH-3078]](https://github.com/fatih/vim-go/pull/3078)
+
 IMPROVEMENTS:
 * Clarify allowed values for `gopls` related configuration options.
   [[GH-3016]](https://github.com/fatih/vim-go/pull/3016)
