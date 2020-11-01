@@ -124,19 +124,6 @@ augroup vim-go-buffer
     " previous buffer's diagnostics aren't used.
     "autocmd BufWinEnter <buffer> call go#lsp#ClearDiagnosticHighlights()
   endif
-
-  autocmd BufEnter <buffer>
-        \  if go#config#AutodetectGopath() && !exists('b:old_gopath')
-        \|   let b:old_gopath = exists('$GOPATH') ? $GOPATH : -1
-        \|   let $GOPATH = go#path#Detect()
-        \| endif
-  autocmd BufLeave <buffer>
-        \  if exists('b:old_gopath')
-        \|   if b:old_gopath isnot -1
-        \|     let $GOPATH = b:old_gopath
-        \|   endif
-        \|   unlet b:old_gopath
-        \| endif
 augroup end
 
 " restore Vi compatibility settings

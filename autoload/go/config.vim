@@ -2,10 +2,6 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! go#config#AutodetectGopath() abort
-	return get(g:, 'go_autodetect_gopath', 0)
-endfunction
-
 function! go#config#ListTypeCommands() abort
   return get(g:, 'go_list_type_commands', {})
 endfunction
