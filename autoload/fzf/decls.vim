@@ -118,11 +118,11 @@ function! s:source(mode,...) abort
           \ decl.line,
           \ decl.col
           \)
-    call add(ret_decls, printf("%s\t%s %s\t%s",
+    call add(ret_decls, printf("%s\t%s\t%s\t%s",
           \ s:color(decl.ident . space, "goDeclsFzfFunction"),
           \ s:color(decl.keyword, "goDeclsFzfKeyword"),
-          \ s:color(pos, "goDeclsFzfSpecialComment"),
           \ s:color(decl.full, "goDeclsFzfComment"),
+          \ s:color(pos, "goDeclsFzfSpecialComment"),
           \))
   endfor
 
@@ -143,7 +143,7 @@ function! fzf#decls#cmd(...) abort
         \)
   call fzf#run(fzf#wrap('GoDecls', {
         \ 'source': call('<sid>source', a:000),
-        \ 'options': '-n 1 --ansi --prompt "GoDecls> " --expect=ctrl-t,ctrl-v,ctrl-x'.colors,
+        \ 'options': printf('-n 1 --with-nth 1..3 --delimiter=$''\t'' --no-preview --ansi --prompt "GoDecls> " --expect=ctrl-t,ctrl-v,ctrl-x%s', colors),
         \ 'sink*': function('s:sink')
         \ }))
 endfunction
