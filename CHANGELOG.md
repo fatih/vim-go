@@ -29,6 +29,8 @@ IMPROVEMENTS:
 * Add support for allowing `g:go_gopls_local`  to specify different local
   imports values per workspace.
   [[GH-3053]](https://github.com/fatih/vim-go/pull/3053)
+* Improve `:GoDecls` and `:GoDeclsDir` display.
+  [[GH-3081]](https://github.com/fatih/vim-go/pull/3081)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
