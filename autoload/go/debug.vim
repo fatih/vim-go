@@ -502,7 +502,7 @@ function! s:start_cb() abort
     autocmd! *
     call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)')
   augroup END
-  doautocmd vim-go-debug FileType go
+  doautocmd vim-go-debug BufWinEnter *.go
 endfunction
 
 function! s:continue()
@@ -536,7 +536,7 @@ function! s:continue()
     autocmd! *
     call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)', '(go-debug-halt)', '(go-debug-next)', '(go-debug-print)', '(go-debug-step)')
   augroup END
-  doautocmd vim-go-debug FileType go
+  doautocmd vim-go-debug BufWinEnter *.go
 endfunction
 
 function! s:err_cb(ch, msg) abort
@@ -1503,9 +1503,10 @@ function! s:configureMappings(...) abort
 
     let l:lhs = l:config.key
     try
-      call execute(printf('autocmd FileType go call s:save_maparg_for(expand(''%%''), ''%s'')', l:lhs))
+      call execute(printf('autocmd BufWinEnter *.go call s:save_maparg_for(expand(''%%''), ''%s'')', l:lhs))
+      call execute('autocmd BufWinLeave  *.go call s:restoreMappings()')
 
-      let l:mapping = 'autocmd FileType go nmap <buffer>'
+      let l:mapping = 'autocmd BufWinEnter *.go nmap <buffer>'
       if has_key(l:config, 'arguments')
         let l:mapping = printf('%s %s', l:mapping, l:config.arguments)
       endif
