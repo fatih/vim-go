@@ -440,16 +440,18 @@ endfunction
 
 function! s:start_cb() abort
   let l:winid = win_getid()
-  silent! only!
+  let l:debugwindows = go#config#DebugWindows()
+  if !empty(l:debugwindows)
+    silent! only!
+  endif
 
   let winnum = bufwinnr(bufnr('__GODEBUG_STACKTRACE__'))
   if winnum != -1
     return
   endif
 
-  let debugwindows = go#config#DebugWindows()
-  if has_key(debugwindows, "vars") && debugwindows['vars'] != ''
-    exe 'silent ' . debugwindows['vars']
+  if has_key(l:debugwindows, "vars") && l:debugwindows['vars'] != ''
+    exe 'silent ' . l:debugwindows['vars']
     silent file `='__GODEBUG_VARIABLES__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugvariables
@@ -458,8 +460,8 @@ function! s:start_cb() abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  if has_key(debugwindows, "stack") && debugwindows['stack'] != ''
-    exe 'silent ' . debugwindows['stack']
+  if has_key(l:debugwindows, "stack") && l:debugwindows['stack'] != ''
+    exe 'silent ' . l:debugwindows['stack']
     silent file `='__GODEBUG_STACKTRACE__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugstacktrace
@@ -467,8 +469,8 @@ function! s:start_cb() abort
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
 
-  if has_key(debugwindows, "goroutines") && debugwindows['goroutines'] != ''
-    exe 'silent ' . debugwindows['goroutines']
+  if has_key(l:debugwindows, "goroutines") && l:debugwindows['goroutines'] != ''
+    exe 'silent ' . l:debugwindows['goroutines']
     silent file `='__GODEBUG_GOROUTINES__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugvariables
@@ -476,8 +478,8 @@ function! s:start_cb() abort
     nmap <buffer> <silent> <cr> :<c-u>call go#debug#Goroutine()<cr>
   endif
 
-  if has_key(debugwindows, "out") && debugwindows['out'] != ''
-    exe 'silent ' . debugwindows['out']
+  if has_key(l:debugwindows, "out") && l:debugwindows['out'] != ''
+    exe 'silent ' . l:debugwindows['out']
     silent file `='__GODEBUG_OUTPUT__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugoutput
