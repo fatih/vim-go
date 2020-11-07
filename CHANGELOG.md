@@ -31,6 +31,9 @@ IMPROVEMENTS:
   [[GH-3053]](https://github.com/fatih/vim-go/pull/3053)
 * Improve `:GoDecls` and `:GoDeclsDir` display.
   [[GH-3081]](https://github.com/fatih/vim-go/pull/3081)
+* Preserve existing window layout when debugging and `g:go_debug_windows` is
+  empty.
+  [[GH-3068]](https://github.com/fatih/vim-go/pull/3068)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
