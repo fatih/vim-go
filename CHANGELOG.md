@@ -51,6 +51,8 @@ BUG FIXES:
   [[GH-3047]](https://github.com/fatih/vim-go/pull/3047)
 * Handle gopls v0.5.2 addition of a prefix on the expected code actions names.
   [[GH-3077]](https://github.com/fatih/vim-go/pull/3077)
+* Make sure all buffers' mappings are restored when debugging stops.
+  [[GH-3048]](https://github.com/fatih/vim-go/pull/3048)
 
 ## v1.24 - (September 15, 2020)
 
