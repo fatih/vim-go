@@ -34,6 +34,8 @@ IMPROVEMENTS:
 * Preserve existing window layout when debugging and `g:go_debug_windows` is
   empty.
   [[GH-3068]](https://github.com/fatih/vim-go/pull/3068)
+* Show identifier in fzf's preview window with `:GoDecls` and `:GoDeclsDir`.
+  [[GH-3083]](https://github.com/fatih/vim-go/pull/3083)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
