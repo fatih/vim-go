@@ -40,6 +40,7 @@ IMPROVEMENTS:
   [[GH-2704]](https://github.com/fatih/vim-go/pull/2704)
 * Use `gopls` for `:GoCallers`.
   [[GH-3088]](https://github.com/fatih/vim-go/pull/3088)
+  [[GH-3090]](https://github.com/fatih/vim-go/pull/3090)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
@@ -59,6 +60,8 @@ BUG FIXES:
   [[GH-3077]](https://github.com/fatih/vim-go/pull/3077)
 * Make sure all buffers' mappings are restored when debugging stops.
   [[GH-3048]](https://github.com/fatih/vim-go/pull/3048)
+* Return early when `g:go_referrers_modes` is `gopls` and `gopls` is disabled.
+  [[GH-3090]](https://github.com/fatih/vim-go/pull/3090)
 
 ## v1.24 - (September 15, 2020)
 
