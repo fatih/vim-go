@@ -406,6 +406,8 @@ function! go#guru#Referrers(selected) abort
   call s:run_guru(args)
 endfunction
 
+" TODO(bc) factor into a new file, sameids.vim and get rid of the guru adapter
+" in lsp.vim.
 function! go#guru#SameIds(showstatus) abort
   " check if the version of Vim being tested supports matchaddpos()
   if !exists("*matchaddpos")
@@ -573,138 +575,6 @@ function! go#guru#Scope(...) abort
   else
     call go#util#EchoSuccess("current guru scope: ". join(scope, ","))
   endif
-endfunction
-
-function! go#guru#DescribeBalloon() abort
-  " don't even try if async isn't available.
-  if !go#util#has_job()
-    return
-  endif
-
-  " check if the version of Vim being tested supports json_decode()
-  if !exists("*json_decode")
-    call go#util#EchoError("GoDescribeBalloon requires 'json_decode'. Update your Vim/Neovim version.")
-    return
-  endif
-
-  " change the active window to the window where the cursor is.
-  let l:winid = win_getid(winnr())
-  call win_gotoid(v:beval_winid)
-
-  let l:args = {
-        \ 'mode': 'describe',
-        \ 'format': 'json',
-        \ 'selected': -1,
-        \ 'needs_scope': 0,
-        \ 'custom_parse': function('s:describe_balloon'),
-        \ 'disable_progress': 1,
-        \ 'postype': 'balloon',
-        \ }
-
-  call s:async_guru(args)
-
-  " make the starting window active again
-  call win_gotoid(l:winid)
-
-  return ''
-endfunction
-
-function! s:describe_balloon(exit_val, output, mode)
-  if a:exit_val != 0
-    return
-  endif
-
-  if a:output[0] !=# '{'
-    return
-  endif
-
-  if empty(a:output) || type(a:output) != type("")
-    return
-  endif
-
-  let l:result = json_decode(a:output)
-  if type(l:result) != type({})
-    call go#util#EchoError(printf('malformed output from guru: %s', a:output))
-    return
-  endif
-
-  let l:info = []
-  if has_key(l:result, 'desc')
-    if l:result['desc'] != 'identifier'
-      let l:info = add(l:info, l:result['desc'])
-    endif
-  endif
-
-  if has_key(l:result, 'detail')
-    let l:detail = l:result['detail']
-
-    " guru gives different information based on the detail mode. Let try to
-    " extract the most useful information
-
-    if l:detail == 'value'
-      if !has_key(l:result, 'value')
-        call go#util#EchoError('value key is missing. Please open a bug report on vim-go repo.')
-        return
-      endif
-
-      let l:val = l:result['value']
-      if !has_key(l:val, 'type')
-        call go#util#EchoError('type key is missing (value.type). Please open a bug report on vim-go repo.')
-        return
-      endif
-
-      let l:info = add(l:info, printf('type: %s', l:val['type']))
-      if has_key(l:val, 'value')
-        let l:info = add(l:info, printf('value: %s', l:val['value']))
-      endif
-    elseif l:detail == 'type'
-      if !has_key(l:result, 'type')
-        call go#util#EchoError('type key is missing. Please open a bug report on vim-go repo.')
-        return
-      endif
-
-      let l:type = l:result['type']
-      if !has_key(l:type, 'type')
-        call go#util#EchoError('type key is missing (type.type). Please open a bug report on vim-go repo.')
-        return
-      endif
-
-      let l:info = add(l:info, printf('type: %s', l:type['type']))
-
-      if has_key(l:type, 'methods')
-        let l:info = add(l:info, 'methods:')
-        for l:m in l:type.methods
-          let l:info = add(l:info, printf("\t%s", l:m['name']))
-        endfor
-      endif
-    elseif l:detail == 'package'
-      if !has_key(l:result, 'package')
-        call go#util#EchoError('package key is missing. Please open a bug report on vim-go repo.')
-        return
-      endif
-
-      let l:package = result['package']
-      if !has_key(l:package, 'path')
-        call go#util#EchoError('path key is missing (package.path). Please open a bug report on vim-go repo.')
-        return
-      endif
-
-      let l:info = add(l:info, printf('package: %s', l:package["path"]))
-    elseif l:detail == 'unknown'
-      " the description is already included in l:info, and there's no other
-      " information on unknowns.
-    else
-      call go#util#EchoError(printf('unknown detail mode (%s) found. Please open a bug report on vim-go repo', l:detail))
-      return
-    endif
-  endif
-
-  if has('balloon_eval')
-    call balloon_show(join(l:info, "\n"))
-    return
-  endif
-
-  call balloon_show(l:info)
 endfunction
 
 " restore Vi compatibility settings
