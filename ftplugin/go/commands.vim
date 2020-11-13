@@ -22,7 +22,7 @@ command! -range=0 GoSameIdsToggle call go#guru#ToggleSameIds()
 command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToggleSameIds()
 
 " -- calls
-command! -range=0 GoCallers call go#calls#Callers(<count>)
+command! -nargs=0 GoCallers call go#calls#Callers()
 
 " -- tags
 command! -nargs=* -range GoAddTags call go#tags#Add(<line1>, <line2>, <count>, <f-args>)
