@@ -14,7 +14,11 @@ set cpo&vim
 " example output:
 "  {'cmd' : ['guru', '-json', 'implements', 'demo/demo.go:#66']}
 function! s:guru_cmd(args) range abort
+  if !go#package#InGOPATH()
+    return {'err': 'guru only supports packages within GOPATH'}
+  endif
   let mode = a:args.mode
+
   let format = a:args.format
   let needs_scope = a:args.needs_scope
   let selected = a:args.selected
