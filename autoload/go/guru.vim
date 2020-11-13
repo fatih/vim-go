@@ -352,18 +352,6 @@ function! go#guru#Callees(selected) abort
   call s:run_guru(args)
 endfunction
 
-" Show possible callers of selected function
-function! go#guru#Callers(selected) abort
-  let args = {
-        \ 'mode': 'callers',
-        \ 'format': 'plain',
-        \ 'selected': a:selected,
-        \ 'needs_scope': 1,
-        \ }
-
-  call s:run_guru(args)
-endfunction
-
 " Show path from callgraph root to selected function
 function! go#guru#Callstack(selected) abort
   let args = {

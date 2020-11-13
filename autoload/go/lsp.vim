@@ -610,7 +610,7 @@ function! go#lsp#TypeDef(fname, line, col, handler) abort
   let l:state = s:newHandlerState('type definition')
   let l:msg = go#lsp#message#TypeDefinition(fnamemodify(a:fname, ':p'), a:line, a:col)
   let l:state.handleResult = funcref('s:typeDefinitionHandler', [function(a:handler, [], l:state)], l:state)
-  return  l:lsp.sendMessage(l:msg, l:state)
+  return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
 function! s:typeDefinitionHandler(next, msg) abort dict
@@ -622,6 +622,59 @@ function! s:typeDefinitionHandler(next, msg) abort dict
   let l:msg = a:msg[0]
   let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(getline(l:msg.range.start.line+1), l:msg.range.start.character), 'lsp does not supply a description')]]
   call call(a:next, l:args)
+endfunction
+
+" go#lsp#Callers calls gopls to get callers of the identifier at
+" line and col in fname. handler should be a dictionary function that takes a
+" list of strings in the form 'file:line:col: message'. handler will be
+" attached to a dictionary that manages state (statuslines, sets the winid,
+" etc.)
+function! go#lsp#Callers(fname, line, col, handler) abort
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:state = s:newHandlerState('callers')
+  let l:msg = go#lsp#message#PrepareCallHierarchy(fnamemodify(a:fname, ':p'), a:line, a:col)
+  let l:state.handleResult = funcref('s:prepareCallHierarchyHandler', [function(a:handler, [], l:state)], l:state)
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:prepareCallHierarchyHandler(next, msg) abort dict
+  if a:msg is v:null || len(a:msg) == 0
+    return
+  endif
+
+  let l:lsp = s:lspfactory.get()
+  let l:state = s:newHandlerState('callers')
+  let l:msg = go#lsp#message#IncomingCalls(a:msg[0])
+  let l:state.handleResult = funcref('s:incomingCallsHandler', [function(a:next, [], l:state)], l:state)
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
+function! s:incomingCallsHandler(next, msg) abort dict
+  if a:msg is v:null || len(a:msg) == 0
+    return
+  endif
+
+  let l:locations = []
+  for l:item in a:msg
+    try
+      let l:fname = go#path#FromURI(l:item.from.uri)
+
+      for l:fromRange in l:item.fromRanges
+        let l:line = l:fromRange.start.line+1
+        let l:content = s:lineinfile(l:fname, l:line)
+        if l:content is -1
+          continue
+        endif
+        let l:locations = add(l:locations, printf('%s:%s:%s: %s', l:fname, l:line, go#lsp#lsp#PositionOf(content, l:fromRange.start.character), l:item.from.name))
+      endfor
+    catch
+    endtry
+  endfor
+
+  call call(a:next, [l:locations])
+  return
 endfunction
 
 function! go#lsp#DidOpen(fname) abort
@@ -852,26 +905,12 @@ function! s:handleLocations(next, msg) abort
   for l:loc in l:msg
     let l:fname = go#path#FromURI(l:loc.uri)
     let l:line = l:loc.range.start.line+1
-    let l:bufnr = bufnr(l:fname)
-    let l:bufinfo = getbufinfo(l:fname)
+    let l:content = s:lineinfile(l:fname, l:line)
+    if l:content is -1
+      continue
+    endif
 
-    try
-      if l:bufnr == -1 || len(l:bufinfo) == 0 || l:bufinfo[0].loaded == 0
-        let l:filecontents = readfile(l:fname, '', l:line)
-      else
-        let l:filecontents = getbufline(l:fname, l:line)
-      endif
-
-      if len(l:filecontents) == 0
-        continue
-      endif
-
-      let l:content = l:filecontents[-1]
-    catch
-      call go#util#EchoError(printf('%s (line %s): %s at %s', l:fname, l:line, v:exception, v:throwpoint))
-    endtry
-
-    let l:item = printf('%s:%s:%s: %s', go#path#FromURI(l:loc.uri), l:line, go#lsp#lsp#PositionOf(l:content, l:loc.range.start.character), l:content)
+    let l:item = printf('%s:%s:%s: %s', l:fname, l:line, go#lsp#lsp#PositionOf(l:content, l:loc.range.start.character), l:content)
 
     let l:result = add(l:result, l:item)
   endfor
@@ -1685,6 +1724,28 @@ function! s:dedup(list)
   endfor
 
   return sort(keys(l:dict))
+endfunction
+
+function! s:lineinfile(fname, line) abort
+  let l:bufnr = bufnr(a:fname)
+  let l:bufinfo = getbufinfo(a:fname)
+
+  try
+    if l:bufnr == -1 || len(l:bufinfo) == 0 || l:bufinfo[0].loaded == 0
+      let l:filecontents = readfile(a:fname, '', a:line)
+    else
+      let l:filecontents = getbufline(a:fname, a:line)
+    endif
+
+    if len(l:filecontents) == 0
+      return -1
+    endif
+
+    return l:filecontents[-1]
+  catch
+    call go#util#EchoError(printf('%s (line %s): %s at %s', a:fname, a:line, v:exception, v:throwpoint))
+    return -1
+  endtry
 endfunction
 
 " restore Vi compatibility settings

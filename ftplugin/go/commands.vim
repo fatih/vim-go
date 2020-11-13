@@ -9,7 +9,6 @@ if go#package#InGOPATH()
   command! -range=% GoWhicherrs call go#guru#Whicherrs(<count>)
   command! -range=% GoCallees call go#guru#Callees(<count>)
   command! -range=% GoDescribe call go#guru#Describe(<count>)
-  command! -range=% GoCallers call go#guru#Callers(<count>)
   command! -range=% GoCallstack call go#guru#Callstack(<count>)
   command! -range=% GoFreevars call go#guru#Freevars(<count>)
   command! -range=% GoChannelPeers call go#guru#ChannelPeers(<count>)
@@ -21,6 +20,9 @@ command! -range=0 GoSameIds call go#guru#SameIds(1)
 command! -range=0 GoSameIdsClear call go#guru#ClearSameIds()
 command! -range=0 GoSameIdsToggle call go#guru#ToggleSameIds()
 command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToggleSameIds()
+
+" -- calls
+command! -range=0 GoCallers call go#calls#Callers(<count>)
 
 " -- tags
 command! -nargs=* -range GoAddTags call go#tags#Add(<line1>, <line2>, <count>, <f-args>)
