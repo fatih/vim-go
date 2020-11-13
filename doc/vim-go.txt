@@ -1560,9 +1560,9 @@ default this is enabled.
                                                            *'g:go_guru_scope'*
 
 Use this option to define the scope of the analysis to be passed for guru
-related commands, such as |:GoImplements|, |:GoCallers|, etc. You can change
-it on-the-fly with |:GoGuruScope|. The input should be a a list of package
-pattern. An example input might be:
+related commands, such as |:GoImplements|, |:GoChannelPeers|, etc. You can
+change it on-the-fly with |:GoGuruScope|. The input should be a a list of
+package pattern. An example input might be:
 `["github.com/fatih/color","github.com/fatih/structs"]`
 
 Also see |go-guru-scope|.

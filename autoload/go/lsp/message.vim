@@ -238,6 +238,29 @@ function! go#lsp#message#References(file, line, col) abort
        \ }
 endfunction
 
+function! go#lsp#message#PrepareCallHierarchy(file, line, col) abort
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/prepareCallHierarchy',
+          \ 'params': {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:file)
+          \   },
+          \   'position': s:position(a:line, a:col),
+          \ }
+       \ }
+endfunction
+
+function! go#lsp#message#IncomingCalls(item) abort
+  return {
+          \ 'notification': 0,
+          \ 'method': 'callHierarchy/incomingCalls',
+          \ 'params': {
+          \   'item': a:item,
+          \ }
+       \ }
+endfunction
+
 function! go#lsp#message#Hover(file, line, col) abort
   return {
           \ 'notification': 0,
@@ -367,7 +390,7 @@ function! go#lsp#message#ConfigurationResult(items) abort
   return l:result
 endfunction
 
-function go#lsp#message#ExecuteCommand(cmd, args) abort
+function! go#lsp#message#ExecuteCommand(cmd, args) abort
   return {
           \ 'notification': 0,
           \ 'method': 'workspace/executeCommand',
@@ -378,13 +401,13 @@ function go#lsp#message#ExecuteCommand(cmd, args) abort
        \ }
 endfunction
 
-function go#lsp#message#ApplyWorkspaceEditResponse(ok) abort
+function! go#lsp#message#ApplyWorkspaceEditResponse(ok) abort
   return {
           \ 'applied': a:ok,
        \ }
 endfunction
 
-function s:workspaceFolder(key, val) abort
+function! s:workspaceFolder(key, val) abort
   return {'uri': go#path#ToURI(a:val), 'name': a:val}
 endfunction
 
