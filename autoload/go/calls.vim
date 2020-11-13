@@ -4,7 +4,8 @@ set cpo&vim
 
 function! go#calls#Callers() abort
   if !go#config#GoplsEnabled()
-    call go#util#EchoError("go_referrers_mode is 'gopls', but gopls is disabled")
+    call go#util#EchoError("gopls is disabled")
+    return
   endif
   let [l:line, l:col] = getpos('.')[1:2]
   let [l:line, l:col] = go#lsp#lsp#Position(l:line, l:col)
