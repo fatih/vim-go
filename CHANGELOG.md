@@ -36,6 +36,8 @@ IMPROVEMENTS:
   [[GH-3068]](https://github.com/fatih/vim-go/pull/3068)
 * Show identifier in fzf's preview window with `:GoDecls` and `:GoDeclsDir`.
   [[GH-3083]](https://github.com/fatih/vim-go/pull/3083)
+* Do not hookup commands that require guru when not in GOPATH mode.
+  [[GH-2704]](https://github.com/fatih/vim-go/pull/2704)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
