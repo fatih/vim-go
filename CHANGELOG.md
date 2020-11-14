@@ -62,6 +62,8 @@ BUG FIXES:
   [[GH-3048]](https://github.com/fatih/vim-go/pull/3048)
 * Return early when `g:go_referrers_modes` is `gopls` and `gopls` is disabled.
   [[GH-3090]](https://github.com/fatih/vim-go/pull/3090)
+* Handle yet another error format produced by golangci-lint.
+  [[GH-3094]](https://github.com/fatih/vim-go/pull/3094)
 
 ## v1.24 - (September 15, 2020)
 
