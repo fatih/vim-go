@@ -3,7 +3,7 @@ command! -nargs=? -complete=customlist,go#rename#Complete GoRename call go#renam
 
 " -- guru
 " do not configure commands that _require_ guru when not in GOPATH mode.
-if go#package#InGOPATH()
+"if go#package#InGOPATH()
   command! -nargs=* -complete=customlist,go#package#Complete GoGuruScope call go#guru#Scope(<f-args>)
   command! -range=% GoPointsTo call go#guru#PointsTo(<count>)
   command! -range=% GoWhicherrs call go#guru#Whicherrs(<count>)
@@ -12,7 +12,7 @@ if go#package#InGOPATH()
   command! -range=% GoCallstack call go#guru#Callstack(<count>)
   command! -range=% GoFreevars call go#guru#Freevars(<count>)
   command! -range=% GoChannelPeers call go#guru#ChannelPeers(<count>)
-endif
+"endif
 
 command! -range=% GoImplements call go#implements#Implements(<count>)
 command! -range=% GoReferrers call go#referrers#Referrers(<count>)
