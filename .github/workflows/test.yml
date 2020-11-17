@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - name: set up python
-      uses: actions/setup-python@v1.2.0
+      uses: actions/setup-python@v2.1.4
       with:
         python-version: 3.6
     - name: install vim-vint
@@ -35,7 +35,7 @@ jobs:
       with:
         go-version: ${{ matrix.go }}
     - name: set up python
-      uses: actions/setup-python@v1.2.0
+      uses: actions/setup-python@v2.1.4
       with:
         python-version: 3.6
     - name: install covimerage
