@@ -2515,7 +2515,7 @@ second item is for `:map-arguments`. All mappings will always be `:map-local`,
 so there is never a need to include `"<buffer>"` in the the arguments.
 >
   let g:go_debug_mappings = {
-    \ '(go-debug-continue)': {'key': 'c', 'arguments': '<nowait>'],
+    \ '(go-debug-continue)': {'key': 'c', 'arguments': '<nowait>'},
     \ '(go-debug-stop)': {'key': 'q'},
     \ '(go-debug-next)': {'key': 'n', 'arguments': '<nowait>'},
     \ '(go-debug-step)': {'key': 's'},
