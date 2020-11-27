@@ -8,6 +8,7 @@ set cpo&vim
 au BufRead,BufNewFile *.go setfiletype go
 au BufRead,BufNewFile *.s setfiletype asm
 au BufRead,BufNewFile *.tmpl setfiletype gohtmltmpl
+au BufRead,BufNewFile go.sum set filetype=gosum
 
 " remove the autocommands for modsim3, and lprolog files so that their
 " highlight groups, syntax, etc. will not be loaded. *.MOD is included, so
