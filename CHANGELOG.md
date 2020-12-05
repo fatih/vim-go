@@ -41,6 +41,8 @@ IMPROVEMENTS:
   [[GH-3090]](https://github.com/fatih/vim-go/pull/3090)
 * Update denite integration to work with python3.9.
   [[GH-3097]](https://github.com/fatih/vim-go/pull/3097)
+* Add syntax highlighting for go.sum files.
+  [[GH-3102]](https://github.com/fatih/vim-go/pull/3102)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
