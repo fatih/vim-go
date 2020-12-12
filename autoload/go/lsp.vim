@@ -1027,11 +1027,21 @@ function! s:docLinkFromHoverResult(msg) abort dict
   endif
 
   if a:msg is v:null || !has_key(a:msg, 'contents')
-    return
+    return ['', 0]
+  endif
+  let l:doc = json_decode(a:msg.contents.value)
+
+  "for backward compatibility with older gopls
+  if has_key(l:doc, 'link')
+    let l:link = l:doc.link
+    return [l:doc.link, 0]
   endif
 
-  let l:doc = json_decode(a:msg.contents.value)
-  return [l:doc.link, '']
+  if !has_key(l:doc, 'linkPath') || empty(l:doc.linkPath)
+    return ['', 0]
+  endif
+  let l:link = l:doc.linkPath . "#" . l:doc.linkAnchor
+  return [l:link, 0]
 endfunction
 
 function! go#lsp#Info(showstatus)
