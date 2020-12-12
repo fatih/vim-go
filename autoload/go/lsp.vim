@@ -1031,7 +1031,7 @@ function! s:docLinkFromHoverResult(msg) abort dict
   endif
   let l:doc = json_decode(a:msg.contents.value)
 
-  "for backward compatibility with older gopls
+  " for backward compatibility with older gopls
   if has_key(l:doc, 'link')
     let l:link = l:doc.link
     return [l:doc.link, 0]

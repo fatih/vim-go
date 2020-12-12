@@ -19,7 +19,7 @@ function! go#doc#OpenBrowser(...) abort
     endif
 
     if len(l:out) == 0
-      call go#util#EchoWarning("Could not find path for doc URL")
+      call go#util#EchoWarning("could not find path for doc URL")
       return
     endif
 
