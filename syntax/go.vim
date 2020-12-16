@@ -73,7 +73,7 @@ hi def link     goTodo              Todo
 
 if go#config#HighlightGenerateTags()
   syn match       goGenerateVariables contained /\%(\$GOARCH\|\$GOOS\|\$GOFILE\|\$GOLINE\|\$GOPACKAGE\|\$DOLLAR\)\>/
-  syn region      goGenerate          start="^\s*//go:generate" end="$" contains=goGenerateVariables
+  syn region      goGenerate          start="go:generate" end="$" contains=goGenerateVariables
   hi def link     goGenerate          PreProc
   hi def link     goGenerateVariables Special
 endif
@@ -362,10 +362,14 @@ if go#config#HighlightBuildConstraints()
   " instead of the matchgroup so it will be highlighted as a goBuildKeyword.
   syn region  goBuildComment      matchgroup=goBuildCommentStart
         \ start="//\s*+build\s"rs=s+2 end="$"
-        \ contains=goBuildKeyword,goBuildDirectives
+        \ contains=goBuildKeyword,goBuildDirectives,goBuildOperators
   hi def link goBuildCommentStart Comment
   hi def link goBuildDirectives   Type
   hi def link goBuildKeyword      PreProc
+  if go#config#HighlightOperators()
+    syn match   goBuildOperators display contained /,\|!/
+    hi def link goBuildOperators Operator
+  endif
 endif
 
 if go#config#HighlightBuildConstraints() || go#config#FoldEnable('package_comment')
