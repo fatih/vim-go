@@ -2154,7 +2154,8 @@ Highlight trailing white space. >
 <
                                                   *'g:go_highlight_operators'*
 
-Highlight operators such as `:=` , `==`, `-=`, etc.
+Highlight operators such as `:=` , `==`, `-=`, etc. Also works for `,` and `!`
+on +build directives.
 >
   let g:go_highlight_operators = 0
 <
