@@ -259,6 +259,9 @@ function! s:newlsp() abort
           endif
 
           for l:diag in l:data.diagnostics
+            if l:level < l:diag.severity
+              continue
+            endif
             let [l:error, l:matchpos] = s:errorFromDiagnostic(l:diag, l:bufname, l:fname)
             let l:diagnostics = add(l:diagnostics, l:error)
 
