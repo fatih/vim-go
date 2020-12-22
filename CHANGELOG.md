@@ -26,6 +26,7 @@ IMPROVEMENTS:
   more finely grained control of the handling of diagnostics messages.
   [[GH-3050]](https://github.com/fatih/vim-go/pull/3050)
   [[GH-3052]](https://github.com/fatih/vim-go/pull/3052)
+  [[GH-3119]](https://github.com/fatih/vim-go/pull/3119)
 * Add support for allowing `g:go_gopls_local`  to specify different local
   imports values per workspace.
   [[GH-3053]](https://github.com/fatih/vim-go/pull/3053)
