@@ -16,8 +16,11 @@ func! s:gometa(metalinter) abort
 
   try
     let g:go_metalinter_command = a:metalinter
+    let l:vim = s:vimdir()
     let expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'}
+          \ {'lnum': 1, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ''},
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'Run ''/tmp/vim-go-test/' . l:vim . '-install/bin/staticcheck -explain <check>'' or visit https://staticcheck.io/docs/checks for documentation on checks.'}
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
@@ -116,8 +119,11 @@ func! s:gometaautosave(metalinter, withList) abort
 
   try
     let g:go_metalinter_command = a:metalinter
+    let l:vim = s:vimdir()
     let l:expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'}
+          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ''},
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'Run ''/tmp/vim-go-test/' . l:vim . '-install/bin/staticcheck -explain <check>'' or visit https://staticcheck.io/docs/checks for documentation on checks.'}
         \ ]
     if a:metalinter == 'gopls'
       let l:expected = [
@@ -518,6 +524,17 @@ func! Test_Errcheck_compilererror() abort
   finally
     call delete(l:tmp, 'rf')
   endtry
+endfunc
+
+func! s:vimdir()
+  let l:vim = "vim-8.2"
+  if has('nvim')
+    let l:vim = 'nvim'
+  elseif v:version == 800
+    let l:vim = 'vim-8.0'
+  endif
+
+  return l:vim
 endfunc
 
 " restore Vi compatibility settings
