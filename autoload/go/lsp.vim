@@ -259,6 +259,9 @@ function! s:newlsp() abort
           endif
 
           for l:diag in l:data.diagnostics
+            if l:level < l:diag.severity
+              continue
+            endif
             let [l:error, l:matchpos] = s:errorFromDiagnostic(l:diag, l:bufname, l:fname)
             let l:diagnostics = add(l:diagnostics, l:error)
 
@@ -1428,11 +1431,13 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
 
   if hlexists('goDiagnosticError')
     " clear the old matches just before adding the new ones to keep flicker
-    " to a minimum.
+    " to a minimum and clear before checking the level so that if the user
+    " changed the level since the last highlighting, the highlighting will be
+    " be properly cleared.
     call go#util#ClearHighlights('goDiagnosticError')
-    if go#config#HighlightDiagnosticErrors()
+    if go#config#DiagnosticsLevel() >= 2
       let b:go_diagnostic_matches.errors = copy(a:errorMatches)
-      if go#config#DiagnosticsLevel() >= 2
+      if go#config#HighlightDiagnosticErrors()
         call go#util#HighlightPositions('goDiagnosticError', a:errorMatches)
       endif
     endif
@@ -1440,11 +1445,13 @@ function! s:highlightMatches(errorMatches, warningMatches) abort
 
   if hlexists('goDiagnosticWarning')
     " clear the old matches just before adding the new ones to keep flicker
-    " to a minimum.
+    " to a minimum and clear before checking the level so that if the user
+    " changed the level since the last highlighting, the highlighting will be
+    " be properly cleared.
     call go#util#ClearHighlights('goDiagnosticWarning')
-    if go#config#HighlightDiagnosticWarnings()
+    if go#config#DiagnosticsLevel() >= 2
       let b:go_diagnostic_matches.warnings = copy(a:warningMatches)
-      if go#config#DiagnosticsLevel() >= 2
+      if go#config#HighlightDiagnosticWarnings()
         call go#util#HighlightPositions('goDiagnosticWarning', a:warningMatches)
       endif
     endif
