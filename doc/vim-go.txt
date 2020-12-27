@@ -2599,6 +2599,13 @@ instance with other LSP plugins. 'g:go_gopls_options' can be used to configure
 how vim-go starts `gopls` so that the instance can be shared with other
 plugins and vim-go user's can leverage the full power of vim-go.
 
+I only want vim-go's syntax highlighting~
+
+Usually when users ask for this, they want to disable vim-go's features that
+take some action when a buffer is written to disk. The options that control
+those actions can be found in the vim-go help file. They all contain the
+string _auto in their names and most are suffixed with _autosave.
+
 I get a "Unknown function: go#config#..." error~
 
 This often happens to vim-polyglot users when new config options are added to
