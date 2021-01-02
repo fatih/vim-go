@@ -459,10 +459,7 @@ function! s:start_cb() abort
   let l:debugwindows = go#config#DebugWindows()
   let l:debugpreservelayout = go#config#DebugPreserveLayout()
 
-  " If g:go_debug_preserve_layout is not explicitly set, for backwards
-  " compatibility defer to g:go_debug_windows for :only behavior (ie if
-  " empty, preserve layout).
-  if (l:debugpreservelayout == -1 && !empty(l:debugwindows)) || l:debugpreservelayout == 0
+  if !(empty(l:debugwindows) || l:debugpreservelayout)
     silent! only!
   endif
 
