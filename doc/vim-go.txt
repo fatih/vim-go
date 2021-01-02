@@ -2494,10 +2494,12 @@ Show only variables on the right-hand side: >
 
                                                 *'g:go_debug_preserve_layout'*
 
-Preserve window layout in debugging mode. If explicitly set, it will override
-the preserving behavior when |'g:go_debug_windows'| is empty.
+Preserve window layout in debugging mode. Valid values are -1, 0, 1. Defaults
+to -1 which, for backwards compatibility, defers to |'g:go_debug_windows'| for
+preserving behavior (if `g:go_debug_windows` is empty, preserve layout). If
+set to 0 or 1, it takes precedence over `g:go_debug_windows`.
 >
-  let g:go_debug_preserve_layout = 0
+  let g:go_debug_preserve_layout = -1
 <
                                                        *'g:go_debug_mappings'*
 
