@@ -1639,14 +1639,15 @@ an empty list; `staticcheck`'s `-checks` flag will not be used.
   let g:go_metalinter_autosave_enabled = ['all']
 <
 
-When `g:go_metalinter_command is set to `golangci-lint'`, the default value is
+When `g:go_metalinter_command` is set to `golangci-lint'`, the default value
+is
 >
   let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 <
                                                    *'g:go_metalinter_command'*
 
 Overrides the command to be executed when |:GoMetaLinter| is called. By
-default it's `golangci-lint`. Valid options are `golangci-lint, `gopls`, and
+default it's `staticcheck`. Valid options are `golangci-lint`, `gopls`, and
 `staticcheck`..
 
 When the value is `gopls`, users may want to consider setting
