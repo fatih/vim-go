@@ -269,7 +269,7 @@ g<C-LeftMouse>
     vim-go also keeps a per-window location stack, roughly analogous to how
     Vim's internal |tags| functionality works. This is pushed to every time a
     jump is made using the GoDef functionality. In essence, this is a LIFO
-    list of file locations you have visited with :GoDef that is retained to
+    list of file locations you have visited with |:GoDef| that is retained to
     help you navigate software.
 
     The per-window location stack is shared with |:GoDefType|.
@@ -1511,8 +1511,8 @@ Default is enabled. >
 <
                                                      *'g:go_def_reuse_buffer'*
 
-Use this option to jump to an existing buffer for the split, vsplit and tab
-mappings of |:GoDef|. By default it's disabled. >
+Use this option to jump to an existing buffer for `:GoDef`, `:GoDefType`, and
+their mapping variants that cause splits. By default it's disabled. >
 
   let g:go_def_reuse_buffer = 0
 <
