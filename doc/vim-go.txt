@@ -2107,6 +2107,41 @@ Currently accepted values:
       let g:go_debug = []
 <
 
+                                                     *'g:go_debug_use_getcwd'*
+
+Pass vim's getcwd() to delve's --wd parameter.  This will allow the vim
+current working directory to be used as the working directory for the debugged
+program. By default it is disabled and the directory of the executable will
+be used.
+>
+      let g:go_debug_use_cwd = 1
+<
+
+
+                                                   *'g:go_debug_maxstringlen'*
+
+Set the max string length to be returned from debug when requesting variables.
+By default it is 20
+>
+      let g:go_debug_maxstringlen = 20
+<
+
+                                                 *'g:go_debug_maxarrayvalues'*
+
+Set the max array values to be returned from debug when requesting variables.
+By default it is 20
+>
+      let g:go_debug_maxarrayvalues = 20
+<
+
+                                               *'g:go_debug_maxvariablerecur'*
+
+Set the max recursion of nested variables to be returned from debug when
+requesting variables. By default it is 10
+>
+      let g:go_debug_maxvariablerecur = 10
+<
+
 ==============================================================================
 SYNTAX HIGHLIGHTING                                 *ft-go-syntax* *go-syntax*
 
