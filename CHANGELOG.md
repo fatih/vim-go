@@ -71,6 +71,9 @@ BUG FIXES:
   [[GH-3094]](https://github.com/fatih/vim-go/pull/3094)
 * Handle additional ways that gopls can provide links for godoc.
   [[GH-3112]](https://github.com/fatih/vim-go/pull/3112)
+* Remove implication that `g:go_def_reuse_buffer` only applies to split variant
+  of jumping to a definition.
+  [[GH-3128]](https://github.com/fatih/vim-go/pull/3128)
 
 ## v1.24 - (September 15, 2020)
 
