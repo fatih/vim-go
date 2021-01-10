@@ -49,7 +49,7 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     redraw
 
     let l:goargs[0] = expand('%:p')
-    if l:metalinter == "golangci-lint"
+    if l:metalinter == 'staticcheck' || l:metalinter == "golangci-lint"
       let l:goargs[0] = expand('%:p:h')
     endif
   endif
@@ -395,7 +395,7 @@ function! s:lint_job(metalinter, args, bang, autosave)
 
   if a:autosave
     let l:opts.for = 'GoMetaLinterAutoSave'
-    " s:metalinterautosavecomplete is really only needed for golangci-lint
+    " s:metalinterautosavecomplete is needed for staticcheck and golangci-lint
     let l:opts.complete = funcref('s:metalinterautosavecomplete', [a:metalinter, expand('%:p:t')])
     let l:opts.preserveerrors = funcref('s:preserveerrors', [a:autosave])
   endif
@@ -438,7 +438,7 @@ function! s:golangcilintcmd(bin_path, haslinter)
 endfunction
 
 function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, messages)
-  if a:metalinter != 'golangci-lint'
+  if !(a:metalinter == 'golangci-lint' || a:metalinter == 'staticcheck')
     return
   endif
 
@@ -451,7 +451,7 @@ function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, mes
     " leave in any messages that report errors about a:filepath or that report
     " more general problems that prevent golangci-lint from linting
     " a:filepath.
-    if l:item =~# '^' . a:filepath . ':' || l:item =~# '^level='
+    if l:item =~# '^' . a:filepath . ':' || (a:metalinter == 'golangci-lint' && l:item =~# '^level=')
       let l:idx += 1
       continue
     endif

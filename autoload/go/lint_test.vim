@@ -122,8 +122,6 @@ func! s:gometaautosave(metalinter, withList) abort
     let l:vim = s:vimdir()
     let l:expected = [
           \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': ''},
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'Run ''/tmp/vim-go-test/' . l:vim . '-install/bin/staticcheck -explain <check>'' or visit https://staticcheck.io/docs/checks for documentation on checks.'}
         \ ]
     if a:metalinter == 'gopls'
       let l:expected = [
