@@ -138,10 +138,10 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let ident = 0
   let filename = parts[0]
   if len(parts) > 1
-    let line = parts[1]
+    let line = str2nr(parts[1])
   endif
   if len(parts) > 2
-    let col = parts[2]
+    let col = str2nr(parts[2])
   endif
   if len(parts) > 3
     let ident = parts[3]
