@@ -47,6 +47,9 @@ IMPROVEMENTS:
   [[GH-3102]](https://github.com/fatih/vim-go/pull/3102)
 * Change the default from metalinter to staticcheck.
   [[GH-3126]](https://github.com/fatih/vim-go/pull/3126)
+* Add `g:go_debug_preserve_layout` to prevent `:GoDebug` and friends from
+  closing windows.
+  [[GH-3125]](https://github.com/fatih/vim-go/pull/3125)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
