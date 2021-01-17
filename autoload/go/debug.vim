@@ -305,10 +305,26 @@ function! go#debug#Stop() abort
   else
     wincmd p
   endif
-  silent! exe bufwinnr(bufnr('__GODEBUG_STACKTRACE__')) 'wincmd c'
-  silent! exe bufwinnr(bufnr('__GODEBUG_VARIABLES__')) 'wincmd c'
-  silent! exe bufwinnr(bufnr('__GODEBUG_OUTPUT__')) 'wincmd c'
-  silent! exe bufwinnr(bufnr('__GODEBUG_GOROUTINES__')) 'wincmd c'
+
+  let stackbufnr = bufnr('__GODEBUG_STACKTRACE__')
+  if stackbufnr != -1
+    silent! exe bufwinnr(stackbufnr) 'wincmd c'
+  endif
+
+  let varbufnr = bufnr('__GODEBUG_VARIABLES__')
+  if varbufnr != -1
+    silent! exe bufwinnr(varbufnr) 'wincmd c'
+  endif
+
+  let outbufnr = bufnr('__GODEBUG_OUTPUT__')
+  if outbufnr != -1
+    silent! exe bufwinnr(outbufnr) 'wincmd c'
+  endif
+
+  let gorobufnr = bufnr('__GODEBUG_GOROUTINES__')
+  if gorobufnr != -1
+    silent! exe bufwinnr(gorobufnr) 'wincmd c'
+  endif
 
   if has('balloon_eval')
     let &ballooneval=s:ballooneval
@@ -441,7 +457,9 @@ endfunction
 function! s:start_cb() abort
   let l:winid = win_getid()
   let l:debugwindows = go#config#DebugWindows()
-  if !empty(l:debugwindows)
+  let l:debugpreservelayout = go#config#DebugPreserveLayout()
+
+  if !(empty(l:debugwindows) || l:debugpreservelayout)
     silent! only!
   endif
 

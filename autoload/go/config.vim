@@ -211,6 +211,10 @@ function! go#config#DebugWindows() abort
 
 endfunction
 
+function! go#config#DebugPreserveLayout() abort
+  return get(g:, 'go_debug_preserve_layout', 0)
+endfunction
+
 function! go#config#DebugAddress() abort
   return get(g:, 'go_debug_address', '127.0.0.1:8181')
 endfunction

@@ -2473,7 +2473,7 @@ Controls the window layout for debugging mode. This is a |dict| with four
 possible keys: "vars", "stack", "goroutines", and "out"; each of the new
 windows will be created in that that order with the commands in the value. The
 current window is made the only window before creating the debug windows
-unless `g:go_debug_windows` is empty.
+unless `g:go_debug_windows` is empty. See also |'g:go_debug_preserve_layout'|.
 
 A window will not be created if a key is missing or empty.
 
@@ -2491,7 +2491,15 @@ Show only variables on the right-hand side: >
   let g:go_debug_windows = {
         \ 'vars':  'rightbelow 60vnew',
   \ }
+<
 
+                                                *'g:go_debug_preserve_layout'*
+
+Preserve window layout in debugging mode. This setting is considered only when
+|'g:go_debug_windows'| is not empty.
+>
+  let g:go_debug_preserve_layout = 0
+<
                                                        *'g:go_debug_mappings'*
 
 Contains custom key mapping information to customize the active mappings
