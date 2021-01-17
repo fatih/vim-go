@@ -242,9 +242,8 @@ function! s:newlsp() abort
     elseif a:data.type == 3
       call go#util#EchoInfo(l:msg)
     elseif a:data.type == 4
-      " do nothing
+      " do nothing for Log messages
     endif
-    " TODO(bc): check the type and call the correct function
   endfunction
 
   " TODO(bc): process the queue asynchronously
