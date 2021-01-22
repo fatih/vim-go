@@ -41,6 +41,7 @@ IMPROVEMENTS:
 * Use `gopls` for `:GoCallers`.
   [[GH-3088]](https://github.com/fatih/vim-go/pull/3088)
   [[GH-3090]](https://github.com/fatih/vim-go/pull/3090)
+  [[GH-3141]](https://github.com/fatih/vim-go/pull/3141)
 * Update denite integration to work with python3.9.
   [[GH-3097]](https://github.com/fatih/vim-go/pull/3097)
 * Add syntax highlighting for go.sum files.
