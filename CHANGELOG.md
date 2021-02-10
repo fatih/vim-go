@@ -21,6 +21,7 @@ IMPROVEMENTS:
   [[GH-3133]](https://github.com/fatih/vim-go/pull/3133)
 * Add `g:go_debug_mappings` to allow the debug key mappings to be customized.
   [[GH-3035]](https://github.com/fatih/vim-go/pull/3035)
+  [[GH-3143]](https://github.com/fatih/vim-go/pull/3143)
 * Use `gopls` as the default instead of `guru` to satisfy `:GoImplements`.
   [[GH-3034]](https://github.com/fatih/vim-go/pull/3034)
 * Deprecate g:go_diagnostics_enabled` and add `g:go_diagnostics_level` to allow
