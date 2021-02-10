@@ -35,7 +35,7 @@ function! go#fmt#Format(withGoimport) abort
 
   if l:bin_name == 'gopls'
     if !go#config#GoplsEnabled()
-      call go#util#EchoError("go_def_mode is 'gopls', but gopls is disabled")
+      call go#util#EchoError("go_fmt_command is 'gopls', but gopls is disabled")
       return
     endif
     call go#lsp#Format()
