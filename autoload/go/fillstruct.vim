@@ -16,6 +16,11 @@ function! go#fillstruct#FillStruct() abort
       " Needs: https://github.com/davidrjenni/reftools/pull/14
       "\ '-tags', go#config#BuildTags()]
 
+  let l:buildtags = go#config#BuildTags()
+  if l:buildtags isnot ''
+    let l:cmd += ['-tags', l:buildtags]
+  endif
+
   " Read from stdin if modified.
   if &modified
     call add(l:cmd, '-modified')
