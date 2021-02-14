@@ -210,7 +210,7 @@ function! go#cmd#Run(bang, ...) abort
     let &errorformat = s:runerrorformat()
 
     if go#util#HasDebug('shell-commands')
-      call go#util#EchoInfo('shell command: ' . l:cmd)
+      call go#util#EchoInfo(printf('shell command: %s', string(l:cmd)))
     endif
 
     if l:listtype == "locationlist"
