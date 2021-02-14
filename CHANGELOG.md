@@ -53,6 +53,8 @@ IMPROVEMENTS:
 * Add `g:go_debug_preserve_layout` to prevent `:GoDebug` and friends from
   closing windows.
   [[GH-3125]](https://github.com/fatih/vim-go/pull/3125)
+* Add support for `fillstruct`'s new `-tags` flag.
+  [[GH-3156]](https://github.com/fatih/vim-go/pull/3156)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
