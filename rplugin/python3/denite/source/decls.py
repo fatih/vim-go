@@ -26,6 +26,7 @@ DECLS_SYNTAX_HIGHLIGHT = [
      're': r'type ', 'conceal': True},
     ]
 
+
 class Source(Base):
 
     def __init__(self, vim):
