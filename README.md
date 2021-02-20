@@ -1,4 +1,4 @@
-# vim-go [![Build Status](http://img.shields.io/travis/fatih/vim-go.svg?style=flat-square)](https://travis-ci.org/fatih/vim-go) [![GitHub Actions Status](https://github.com/fatih/vim-go/workflows/test/badge.svg)](https://github.com/fatih/vim-go/actions)
+# vim-go [![GitHub Actions Status](https://github.com/fatih/vim-go/workflows/test/badge.svg)](https://github.com/fatih/vim-go/actions)
 
 
 
