@@ -13,12 +13,14 @@ syntax keyword gomodGo      go      contained
 syntax keyword gomodRequire require
 syntax keyword gomodExclude exclude
 syntax keyword gomodReplace replace
+syntax keyword gomodRetract retract
 
-" require, exclude, replace, and go can be also grouped into block
-syntax region gomodRequire start='require (' end=')' transparent contains=gomodRequire,gomodVersion
-syntax region gomodExclude start='exclude (' end=')' transparent contains=gomodExclude,gomodVersion
-syntax region gomodReplace start='replace (' end=')' transparent contains=gomodReplace,gomodVersion
-syntax match  gomodGo            '^go .*$'           transparent contains=gomodGo,gomodGoVersion
+" require, exclude, replace, retract, and go can be also grouped into block
+syntax region gomodRequire start='require (' end=')'   transparent contains=gomodRequire,gomodVersion
+syntax region gomodExclude start='exclude (' end=')'   transparent contains=gomodExclude,gomodVersion
+syntax region gomodReplace start='replace (' end=')'   transparent contains=gomodReplace,gomodVersion
+syntax region gomodRetract start='retract \[' end='\]' transparent contains=gomodRetract,gomodVersion
+syntax match  gomodGo            '^go .*$'             transparent contains=gomodGo,gomodGoVersion
 
 " set highlights
 highlight default link gomodModule  Keyword
@@ -26,6 +28,7 @@ highlight default link gomodGo      Keyword
 highlight default link gomodRequire Keyword
 highlight default link gomodExclude Keyword
 highlight default link gomodReplace Keyword
+highlight default link gomodRetract Keyword
 
 " comments are always in form of // ...
 syntax region gomodComment  start="//" end="$" contains=@Spell
