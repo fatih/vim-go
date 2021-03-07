@@ -7,17 +7,22 @@ endif
 
 syntax case match
 
+" Reference documentation:
+" https://golang.org/ref/mod#go-mod-file-grammar
+
 " match keywords
 syntax keyword gomodModule  module
 syntax keyword gomodGo      go      contained
 syntax keyword gomodRequire require
 syntax keyword gomodExclude exclude
 syntax keyword gomodReplace replace
+syntax keyword gomodRetract retract
 
 " require, exclude, replace, and go can be also grouped into block
 syntax region gomodRequire start='require (' end=')' transparent contains=gomodRequire,gomodVersion
 syntax region gomodExclude start='exclude (' end=')' transparent contains=gomodExclude,gomodVersion
 syntax region gomodReplace start='replace (' end=')' transparent contains=gomodReplace,gomodVersion
+syntax region gomodRetract start='retract (' end=')' transparent contains=gomodVersionRange,gomodVersion
 syntax match  gomodGo            '^go .*$'           transparent contains=gomodGo,gomodGoVersion
 
 " set highlights
@@ -26,6 +31,7 @@ highlight default link gomodGo      Keyword
 highlight default link gomodRequire Keyword
 highlight default link gomodExclude Keyword
 highlight default link gomodReplace Keyword
+highlight default link gomodRetract Keyword
 
 " comments are always in form of // ...
 syntax region gomodComment  start="//" end="$" contains=@Spell
@@ -42,7 +48,6 @@ highlight default link gomodReplaceOperator Operator
 " match go versions
 syntax match gomodGoVersion "1\.\d\+" contained
 highlight default link gomodGoVersion Identifier
-
 
 " highlight versions:
 "  * vX.Y.Z-pre
@@ -88,5 +93,16 @@ syntax match gomodVersion "v[2-9]\{1}\d*\.\d\+\.\d\+-\%([0-9A-Za-z-]\+\)\%(\.[0-
 syntax match gomodVersion "v[2-9]\{1}\d*\.\d\+\.\d\+\%(+\%([0-9A-Za-z-]\+\)\%(\.[0-9A-Za-z-]\+\)*\)\?-0\.\d\{14}-\x\++incompatible"
 "                          ^------- version -------^^---------------- metadata ---------------------^
 highlight default link gomodVersion Identifier
+
+" match go version ranges in retract directive
+" https://golang.org/ref/mod#go-mod-file-retract
+syntax region gomodVersionRange start="\[" end="\]" transparent matchgroup=gomodVersionRangeBracket contains=gomodVersion,gomodVersionRangeSeparator
+highlight default link gomodVersionRange Operator
+syntax match gomodVersionRangeBracket "\[" contained
+syntax match gomodVersionRangeBracket "\]" contained
+highlight default link gomodVersionRangeBracket Operator
+syntax match gomodVersionRangeSeparator "," contained
+highlight default link gomodVersionRangeSeparator Operator
+
 
 let b:current_syntax = "gomod"
