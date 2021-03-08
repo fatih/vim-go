@@ -115,10 +115,8 @@ func! Test_gopls_fillstruct() abort
     endwhile
 
     call gotest#assert_buffer(1, [
-          \ 'var addr = mail.Address{',
-          \ '\tName:    "",',
-          \ '\tAddress: "",',
-          \ '}'])
+          \ 'var addr = mail.Address{}',
+         \ ])
   finally
     unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
@@ -141,10 +139,8 @@ func! Test_gopls_fillstruct_line() abort
     endwhile
 
     call gotest#assert_buffer(1, [
-          \ 'var addr = mail.Address{',
-          \ '\tName:    "",',
-          \ '\tAddress: "",',
-          \ '}'])
+          \ 'var addr = mail.Address{}',
+         \ ])
   finally
     unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
@@ -207,15 +203,14 @@ func! Test_gopls_fillstruct_two_cursor() abort
           \ '"fmt"',
           \ '"net/mail"',
           \ ')',
-          \ 'func x() { fmt.Println(mail.Address{}, mail.Address{',
-          \ '\tName:    "",',
-          \ '\tAddress: "",',
-          \ '}) }'])
+          \ 'func x() { fmt.Println(mail.Address{}, mail.Address{}) }',
+         \ ])
   finally
     unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
