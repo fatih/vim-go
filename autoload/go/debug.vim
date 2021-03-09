@@ -867,7 +867,7 @@ function! s:reflect_kind(k)
   \ ][a:k]
 endfunction
 
-function! s:eval_tree(var, nest, isMapKey) abort
+function! s:eval_tree(var, nest, isMapOrSliceChild) abort
   if a:var.name =~ '^\~'
     return ''
   endif
@@ -875,8 +875,8 @@ function! s:eval_tree(var, nest, isMapKey) abort
   let v = ''
   let kind = s:reflect_kind(a:var.kind)
 
-  if !empty(a:var.name) || a:isMapKey == 1
-    if a:isMapKey == 0
+  if !empty(a:var.name) || a:isMapOrSliceChild is 1
+    if a:isMapOrSliceChild == 0
       let v .= repeat(' ', nest) . a:var.name . ': '
     endif
 
@@ -912,10 +912,9 @@ function! s:eval_tree(var, nest, isMapKey) abort
     else
       let v .= printf("%s(%s)", a:var.type, a:var.value)
     endif
-    if a:isMapKey == 1
-      let v = printf('%s%s: ', repeat(' ', nest), v)
+    if a:isMapOrSliceChild == 0
+      let v = printf("%s\n", v)
     endif
-    let v = printf("%s\n", v)
   else
     let nest -= 1
   endif
@@ -923,15 +922,20 @@ function! s:eval_tree(var, nest, isMapKey) abort
   if index(['Chan', 'Complex64', 'Complex128'], kind) == -1 && a:var.type != 'error'
     let l:idx = 0
     for c in a:var.children
-      " Maps alternate children between keys and values. Keys will be even
-      " number indexes.
-      let l:isMapKey = 0
-      let l:nextNest = l:nest + 1
       if kind == 'Map'
+        " Maps alternate children between keys and values. Keys will be even
+        " number indexes.
         let l:isMapKey = (l:idx % 2) is 0
-        let l:nextNest = l:nest + 1 + (l:idx % 2)
+        if l:isMapKey == 1
+          let v .= printf("%s%s:\n", repeat(' ', nest + 1), s:eval_tree(c, 0, 1))
+        else
+          let v .= printf("%s%s\n", repeat(' ', nest + 2), s:eval_tree(c, 0, 1))
+        endif
+      elseif kind == 'Slice'
+        let v .= printf("%d: %s\n", l:idx, s:eval_tree(c, nest + 1, 1))
+      else
+        let v .= s:eval_tree(c, nest + 1, 0)
       endif
-      let v .= s:eval_tree(c, l:nextNest, l:isMapKey)
       let l:idx += 1
     endfor
   endif
