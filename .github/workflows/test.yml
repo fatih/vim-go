@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: ['1.14','1.15']
+        go: ['1.15','1.16']
         vim: ['vim-8.0', 'vim-8.2', 'nvim']
     steps:
     - name: setup Go
