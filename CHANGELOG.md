@@ -58,6 +58,8 @@ IMPROVEMENTS:
 * Display map key and slice elements more usefully in the local vars window in
   debug mode.
   [[GH-3170]](https://github.com/fatih/vim-go/pull/3170)
+* Add support for go.mod's `retract` directive.
+  [[GH-3166]](https://github.com/fatih/vim-go/pull/3166)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
