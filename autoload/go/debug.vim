@@ -227,7 +227,7 @@ function! s:show_variables() abort
     let v += ['# Local Variables']
     if type(get(s:state, 'localVars', [])) is type([])
       for c in s:state['localVars']
-        let v += split(s:eval_tree(c, 0), "\n")
+        let v += split(s:eval_tree(c, 0, 0), "\n")
       endfor
     endif
 
@@ -235,7 +235,7 @@ function! s:show_variables() abort
     let v += ['# Function Arguments']
     if type(get(s:state, 'functionArgs', [])) is type([])
       for c in s:state['functionArgs']
-        let v += split(s:eval_tree(c, 0), "\n")
+        let v += split(s:eval_tree(c, 0, 0), "\n")
       endfor
     endif
 
@@ -867,55 +867,76 @@ function! s:reflect_kind(k)
   \ ][a:k]
 endfunction
 
-function! s:eval_tree(var, nest) abort
+function! s:eval_tree(var, nest, isMapOrSliceChild) abort
   if a:var.name =~ '^\~'
     return ''
   endif
   let nest = a:nest
   let v = ''
   let kind = s:reflect_kind(a:var.kind)
-  if !empty(a:var.name)
-    let v .= repeat(' ', nest) . a:var.name . ': '
+
+  if !empty(a:var.name) || a:isMapOrSliceChild is 1
+    if a:isMapOrSliceChild == 0
+      let v .= repeat(' ', nest) . a:var.name . ': '
+    endif
 
     if kind == 'Bool'
-      let v .= printf("%s\n", a:var.value)
+      let v .= printf("%s", a:var.value)
 
     elseif kind == 'Struct'
       " Anonymous struct
       if a:var.type[:8] == 'struct { '
-        let v .= printf("%s\n", a:var.type)
+        let v .= printf("%s", a:var.type)
       else
-        let v .= printf("%s{...}\n", a:var.type)
+        let v .= printf("%s{...}", a:var.type)
       endif
 
     elseif kind == 'String'
-      let v .= printf("%s[%d]%s\n", a:var.type, a:var.len,
+      let v .= printf("%s[%d]%s", a:var.type, a:var.len,
             \ len(a:var.value) > 0 ? ': ' . a:var.value : '')
 
     elseif kind == 'Slice' || kind == 'String' || kind == 'Map' || kind == 'Array'
-      let v .= printf("%s[%d]\n", a:var.type, a:var.len)
+      let v .= printf("%s[%d]", a:var.type, a:var.len)
 
     elseif kind == 'Chan' || kind == 'Func' || kind == 'Interface'
-      let v .= printf("%s\n", a:var.type)
+      let v .= printf("%s", a:var.type)
 
     elseif kind == 'Ptr'
       " TODO: We can do something more useful here.
-      let v .= printf("%s\n", a:var.type)
+      let v .= printf("%s", a:var.type)
 
     elseif kind == 'Complex64' || kind == 'Complex128'
-      let v .= printf("%s%s\n", a:var.type, a:var.value)
+      let v .= printf("%s%s", a:var.type, a:var.value)
 
     " Int, Float
     else
-      let v .= printf("%s(%s)\n", a:var.type, a:var.value)
+      let v .= printf("%s(%s)", a:var.type, a:var.value)
+    endif
+    if a:isMapOrSliceChild == 0
+      let v = printf("%s\n", v)
     endif
   else
     let nest -= 1
   endif
 
   if index(['Chan', 'Complex64', 'Complex128'], kind) == -1 && a:var.type != 'error'
+    let l:idx = 0
     for c in a:var.children
-      let v .= s:eval_tree(c, nest+1)
+      if kind == 'Map'
+        " Maps alternate children between keys and values. Keys will be even
+        " number indexes.
+        let l:isMapKey = (l:idx % 2) is 0
+        if l:isMapKey == 1
+          let v .= printf("%s%s:\n", repeat(' ', nest + 1), s:eval_tree(c, 0, 1))
+        else
+          let v .= printf("%s%s\n", repeat(' ', nest + 2), s:eval_tree(c, 0, 1))
+        endif
+      elseif kind == 'Slice'
+        let v .= printf("%d: %s\n", l:idx, s:eval_tree(c, nest + 1, 1))
+      else
+        let v .= s:eval_tree(c, nest + 1, 0)
+      endif
+      let l:idx += 1
     endfor
   endif
   return v
@@ -934,7 +955,7 @@ function! s:eval(arg) abort
 
     let l:res = l:promise.await()
 
-    return s:eval_tree(l:res.result.Variable, 0)
+    return s:eval_tree(l:res.result.Variable, 0, 0)
   catch
     call go#util#EchoError(printf('evaluation failed: %s', v:exception))
     return ''
