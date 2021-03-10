@@ -131,4 +131,7 @@ command! -nargs=* -bang GoDiagnostics call go#lint#Diagnostics(<bang>0, <f-args>
 " -- term
 command! GoToggleTermCloseOnExit call go#term#ToggleCloseOnExit()
 
+" -- cyclo
+command! GoCyclo call go#cyclo#Cyclo()
+
 " vim: sw=2 ts=2 et

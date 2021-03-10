@@ -151,6 +151,7 @@ let s:default_list_type_commands = {
       \ "GoDiagnostics":        "quickfix",
       \ "GoDebug":              "quickfix",
       \ "GoErrCheck":           "quickfix",
+      \ "GoCyclo":              "quickfix",
       \ "GoFmt":                "locationlist",
       \ "GoGenerate":           "quickfix",
       \ "GoInstall":            "quickfix",
