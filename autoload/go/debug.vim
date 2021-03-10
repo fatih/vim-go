@@ -760,6 +760,8 @@ function! go#debug#Start(mode, ...) abort
     elseif a:mode is 'attach'
       let l:cmd = add(l:cmd, a:1)
       let s:state['kill_on_detach'] = v:false
+    elseif a:mode is 'connect'
+      let l:cmd = add(l:cmd, a:1)
     else
       call go#util#EchoError('Unknown dlv command')
     endif
