@@ -55,6 +55,9 @@ IMPROVEMENTS:
   [[GH-3125]](https://github.com/fatih/vim-go/pull/3125)
 * Add support for `fillstruct`'s new `-tags` flag.
   [[GH-3156]](https://github.com/fatih/vim-go/pull/3156)
+* Display map key and slice elements more usefully in the local vars window in
+  debug mode.
+  [[GH-3170]](https://github.com/fatih/vim-go/pull/3170)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
