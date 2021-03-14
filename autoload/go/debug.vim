@@ -285,6 +285,7 @@ function! go#debug#Stop() abort
   endfor
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start('debug', <f-args>)
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start('test', <f-args>)
+  command! -nargs=? GoDebugConnect call go#debug#Start('connect', <f-args>)
   command! -nargs=* GoDebugTestFunc  call go#debug#TestFunc(<f-args>)
   command! -nargs=1 GoDebugAttach call go#debug#Start('attach', <f-args>)
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
@@ -507,7 +508,9 @@ function! s:start_cb() abort
 
   silent! delcommand GoDebugStart
   silent! delcommand GoDebugTest
+  silent! delcommand GoDebugTestFunc
   silent! delcommand GoDebugAttach
+  silent! delcommand GoDebugConnect
 
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
@@ -575,44 +578,52 @@ function! s:out_cb(ch, msg) abort
   let s:state['message'] += [a:msg]
 
   if stridx(a:msg, go#config#DebugAddress()) != -1
-    let s:state['data'] = []
-    let l:state = {'databuf': ''}
-
-    " explicitly bind callback to state so that within it, self will
-    " always refer to state. See :help Partial for more information.
-    let l:state.on_data = function('s:on_data', [], l:state)
-
-    if has('nvim')
-      let l:ch = sockconnect('tcp', go#config#DebugAddress(), {'on_data': l:state.on_data, 'state': l:state})
-      if l:ch == 0
-        call go#util#EchoError("could not connect to debugger")
-        call go#job#Stop(s:state['job'])
-        return
-      endif
-    else
-      let l:ch = ch_open(go#config#DebugAddress(), {'mode': 'raw', 'timeout': 20000, 'callback': l:state.on_data})
-      if ch_status(l:ch) !=# 'open'
-        call go#util#EchoError("could not connect to debugger")
-        call go#job#Stop(s:state['job'])
-        return
-      endif
-    endif
-
-    let s:state['ch'] = l:ch
-
-    " After this block executes, Delve will be running with all the
-    " breakpoints setup, so this callback doesn't have to run again; just log
-    " future messages.
-    let s:state['ready'] = 1
-
-    " replace all the breakpoints set before delve started so that the ids won't overlap.
-    for l:bt in s:list_breakpoints()
-      call s:sign_unplace(l:bt.id, l:bt.file)
-      call go#debug#Breakpoint(l:bt.line, l:bt.file)
-    endfor
-
-    call s:start_cb()
+    call s:connect(go#config#DebugAddress())
   endif
+endfunction
+
+function! s:connect(addr) abort
+  let s:state['data'] = []
+  let l:state = {'databuf': ''}
+
+  " explicitly bind callback to state so that within it, self will
+  " always refer to state. See :help Partial for more information.
+  let l:state.on_data = function('s:on_data', [], l:state)
+
+  if has('nvim')
+    let l:ch = sockconnect('tcp', a:addr, {'on_data': l:state.on_data, 'state': l:state})
+    if l:ch == 0
+      call go#util#EchoError("could not connect to debugger")
+      if has_key(s:state, 'job')
+        call go#job#Stop(s:state['job'])
+      endif
+      return
+    endif
+  else
+    let l:ch = ch_open(a:addr, {'mode': 'raw', 'timeout': 20000, 'callback': l:state.on_data})
+    if ch_status(l:ch) !=# 'open'
+      call go#util#EchoError("could not connect to debugger")
+      if has_key(s:state, 'job')
+        call go#job#Stop(s:state['job'])
+      endif
+      return
+    endif
+  endif
+
+  let s:state['ch'] = l:ch
+
+  " After this block executes, Delve will be running with all the
+  " breakpoints setup, so this callback doesn't have to run again; just log
+  " future messages.
+  let s:state['ready'] = 1
+
+  " replace all the breakpoints set before delve started so that the ids won't overlap.
+  for l:bt in s:list_breakpoints()
+    call s:sign_unplace(l:bt.id, l:bt.file)
+    call go#debug#Breakpoint(l:bt.line, l:bt.file)
+  endfor
+
+  call s:start_cb()
 endfunction
 
 " s:on_data's third optional argument is provided, but not used, so that the
@@ -750,58 +761,64 @@ function! go#debug#Start(mode, ...) abort
   endif
 
   try
-
-    let l:cmd = [dlv, a:mode]
-
-    let s:state['kill_on_detach'] = v:true
-    if a:mode is 'debug' || a:mode is 'test'
-      let l:cmd = extend(l:cmd, s:package(a:000))
-      let l:cmd = extend(l:cmd, ['--output', tempname()])
-    elseif a:mode is 'attach'
-      let l:cmd = add(l:cmd, a:1)
+    if a:mode is 'connect'
+      let l:addr = go#config#DebugAddress()
+      if len(a:0) > 0
+        let l:addr = a:1
+      endif
       let s:state['kill_on_detach'] = v:false
-    elseif a:mode is 'connect'
-      let l:cmd = add(l:cmd, a:1)
+
+      call s:connect(l:addr)
     else
-      call go#util#EchoError('Unknown dlv command')
+      let l:cmd = [dlv, a:mode]
+
+      let s:state['kill_on_detach'] = v:true
+      if a:mode is 'debug' || a:mode is 'test'
+        let l:cmd = extend(l:cmd, s:package(a:000))
+        let l:cmd = extend(l:cmd, ['--output', tempname()])
+      elseif a:mode is 'attach'
+        let l:cmd = add(l:cmd, a:1)
+        let s:state['kill_on_detach'] = v:false
+      else
+        call go#util#EchoError('Unknown dlv command')
+      endif
+
+      let l:cmd += [
+            \ '--headless',
+            \ '--api-version', '2',
+            \ '--listen', go#config#DebugAddress(),
+      \]
+      let l:debugLogOutput = go#config#DebugLogOutput()
+      if l:debugLogOutput != ''
+        let cmd += ['--log', '--log-output', l:debugLogOutput]
+      endif
+
+      let l:buildtags = go#config#BuildTags()
+      if buildtags isnot ''
+        let l:cmd += ['--build-flags', '--tags=' . buildtags]
+      endif
+
+      if len(a:000) > 1
+        let l:cmd += ['--'] + a:000[1:]
+      endif
+
+      let s:state['message'] = []
+      let l:opts = {
+            \ 'for': 'GoDebug',
+            \ 'statustype': 'debug',
+            \ 'complete': function('s:complete'),
+            \ }
+      let l:opts = go#job#Options(l:opts)
+      let l:opts.out_cb = function('s:out_cb')
+      let l:opts.err_cb = function('s:err_cb')
+      let l:opts.stoponexit = 'kill'
+
+      let s:state['job'] = go#job#Start(l:cmd, l:opts)
+      return s:state['job']
     endif
-
-    let l:cmd += [
-          \ '--headless',
-          \ '--api-version', '2',
-          \ '--listen', go#config#DebugAddress(),
-    \]
-    let l:debugLogOutput = go#config#DebugLogOutput()
-    if l:debugLogOutput != ''
-      let cmd += ['--log', '--log-output', l:debugLogOutput]
-    endif
-
-    let l:buildtags = go#config#BuildTags()
-    if buildtags isnot ''
-      let l:cmd += ['--build-flags', '--tags=' . buildtags]
-    endif
-
-    if len(a:000) > 1
-      let l:cmd += ['--'] + a:000[1:]
-    endif
-
-    let s:state['message'] = []
-    let l:opts = {
-          \ 'for': 'GoDebug',
-          \ 'statustype': 'debug',
-          \ 'complete': function('s:complete'),
-          \ }
-    let l:opts = go#job#Options(l:opts)
-    let l:opts.out_cb = function('s:out_cb')
-    let l:opts.err_cb = function('s:err_cb')
-    let l:opts.stoponexit = 'kill'
-
-    let s:state['job'] = go#job#Start(l:cmd, l:opts)
   catch
     call go#util#EchoError(printf('could not start debugger: %s', v:exception))
   endtry
-
-  return s:state['job']
 endfunction
 
 " s:package returns the import path of package name of a :GoDebug(Start|Test)
@@ -1294,9 +1311,9 @@ function! go#debug#Restart() abort
   endtry
 endfunction
 
-" Report if debugger mode is active.
-function! s:isActive()
-  return len(s:state['message']) > 0
+" Report if debugger mode is ready.
+function! s:isReady()
+  return get(s:state, 'ready', 0) != 0
 endfunction
 
 " Change Goroutine
@@ -1348,13 +1365,13 @@ function! go#debug#Breakpoint(...) abort
     " Remove breakpoint.
     if type(l:found) == v:t_dict && !empty(l:found)
       call s:sign_unplace(l:found.id, l:found.file)
-      if s:isActive()
+      if s:isReady()
         let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
         call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.ClearBreakpoint', {'id': l:found.id})
         let res = l:promise.await()
       endif
     else " Add breakpoint
-      if s:isActive()
+      if s:isReady()
         let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
         call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.CreateBreakpoint', {'Breakpoint': {'file': l:filename, 'line': l:linenr}})
         let l:res = l:promise.await()

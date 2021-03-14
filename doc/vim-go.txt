@@ -2324,21 +2324,10 @@ the `dlv` process, or |:GoDebugRestart| to recompile the code.
                                                            *go-debug-commands*
 DEBUGGER COMMANDS~
 
-Only |:GoDebugAttach|, |:GoDebugStart|, |:GoDebugTest|, and
-|:GoDebugBreakpoint| are available by default. |:GoDebugContinue| becomes
-available after running |:GoDebugAttach|, |:GoDebugStart| or |:GoDebugTest|.
-The rest of the commands and mappings become available after executing
+Only the commands to start the client or toggle breakpoints are available by
+default. |:GoDebugContinue| becomes available after starting the client.  The
+rest of the commands and mappings become available after executing
 |:GoDebugContinue|.
-
-                                                             *:GoDebugAttach*
-:GoDebugAttach pid
-
-    Start the debug mode for pid; this does several things:
-
-      * Setup the debug windows according to |'g:go_debug_windows'|.
-      * Make the `:GoDebug*` commands and `(go-debug-*)` mappings available.
-
-    Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
 
                                                                *:GoDebugStart*
 :GoDebugStart [pkg] [program-args]
@@ -2352,6 +2341,28 @@ The rest of the commands and mappings become available after executing
     arguments will be passed to the program.
 
     Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
+
+                                                             *:GoDebugAttach*
+:GoDebugAttach pid
+
+    Start the debug mode for pid; this does several things:
+
+      * Setup the debug windows according to |'g:go_debug_windows'|.
+      * Make the `:GoDebug*` commands and `(go-debug-*)` mappings available.
+
+    Use |:GoDebugStop| to stop `dlv` and exit debugging mode.
+
+                                                             *:GoDebugConnect*
+:GoDebugConnect [addr]
+
+  Connect to a running instance of delve. If addr is not supplied, then
+  |'g:go_debug_address'| will be used.
+
+  The debug windows will be setup according to |'g:go_debug_windows'|, and the
+  `:GoDebug*` commands and `(go-debug-*)` mappings will be available.
+
+  Use |:GoDebugStop| to exit debugging mode.
+
 
                                                                 *:GoDebugTest*
 :GoDebugTest [pkg] [program-args]
