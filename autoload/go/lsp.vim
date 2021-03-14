@@ -1585,6 +1585,11 @@ function! s:handleCodeAction(kind, cmd, msg) abort dict
         continue
       endif
 
+      if has_key(l:item, 'disabled') && get(l:item.disabled, 'reason', '') isnot ''
+        call go#util#EchoWarning(printf('code action is disabled: %s', l:item.disabled.reason))
+        continue
+      endif
+
       if has_key(l:item, 'command')
         if has_key(l:item.command, 'command') && (l:item.command.command is a:cmd || l:item.command.command is printf('gopls.%s', a:cmd))
           call s:executeCommand(l:item.command.command, l:item.command.arguments)
