@@ -60,6 +60,8 @@ IMPROVEMENTS:
   [[GH-3170]](https://github.com/fatih/vim-go/pull/3170)
 * Add support for go.mod's `retract` directive.
   [[GH-3166]](https://github.com/fatih/vim-go/pull/3166)
+* Do not execute disabled code actions.
+  [[GH-3155]](https://github.com/fatih/vim-go/pull/3155)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
