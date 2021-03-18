@@ -53,7 +53,10 @@ function! GoIndent(lnum) abort
     endif
   endfor
 
-  if prevl =~ '[({]\s*$'
+  let num_parenthases = s:CountIndent(prevl, '(', ')')
+  let num_brackets = s:CountIndent(prevl, '{', '}')
+
+  if num_parenthases > 0 || num_brackets > 0
     " previous line opened a block
     let ind += shiftwidth()
   endif
@@ -63,7 +66,10 @@ function! GoIndent(lnum) abort
   endif
   " TODO: handle if the previous line is a label.
 
-  if thisl =~ '^\s*[)}]'
+  let num_parenthases = s:CountIndent(thisl, '(', ')')
+  let num_brackets = s:CountIndent(thisl, '{', '}')
+
+  if num_parenthases < 0 || num_brackets < 0
     " this line closed a block
     let ind -= shiftwidth()
   endif
@@ -77,6 +83,50 @@ function! GoIndent(lnum) abort
   endif
 
   return ind
+endfunction
+
+" Returns the indent level after the given line.
+" Line comments are handled before this is called,
+" so this function does not check for them. It does
+" check for strings and block comments.
+function! s:CountIndent(line, open_char, close_char)
+  let in_string = 0
+  let in_comment = 0
+  let level = 0
+  let prev_c = ''
+
+  " Iterate through all characters in line
+  for c in split(a:line, '\zs')
+    " Strings cannot start within a comment,
+    " and comments cannot start/stop in a string.
+    if !in_comment
+      " Make sure strings don't effect indent
+      if c == '"' || c == '`'
+        let in_string = !in_string
+      end
+    endif
+
+    if !in_string
+      " Make sure block comments don't effect indent
+      if prev_c == '/' && c == '*'
+        let in_comment = 1
+      endif
+      if prev_c == '*' && c == '/'
+        let in_comment = 0
+      endif
+    endif
+
+    if !in_string && !in_comment
+      if c == a:open_char
+        let level += 1
+      elseif c == a:close_char
+        let level -= 1
+      endif
+    endif
+    let prev_c = c
+  endfor
+
+  return level
 endfunction
 
 " restore Vi compatibility settings
