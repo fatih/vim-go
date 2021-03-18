@@ -57,7 +57,7 @@ function! GoIndent(lnum) abort
   let num_brackets = s:CountIndent(prevl, '{', '}')
 
   " The } check is for else and else if statements
-  if num_parenthases > 0 || num_brackets > 0 || prevl =~ '^\s*}'
+  if num_parenthases > 0 || num_brackets > 0 || (prevl =~ '^\s*}' && num_brackets == 0)
     " previous line opened a block
     let ind += shiftwidth()
   endif
@@ -70,7 +70,8 @@ function! GoIndent(lnum) abort
   let num_parenthases = s:CountIndent(thisl, '(', ')')
   let num_brackets = s:CountIndent(thisl, '{', '}')
 
-  if num_parenthases < 0 || num_brackets < 0
+  " The } check is for else and else if statements
+  if num_parenthases < 0 || num_brackets < 0 || (thisl =~ '^\s*}' && num_brackets == 0)
     " this line closed a block
     let ind -= shiftwidth()
   endif
