@@ -15,6 +15,9 @@ function! go#lsp#message#Initialize(wd) abort
                 \ 'didChangeConfiguration': {
                   \ 'dynamicRegistration': v:true,
                 \ },
+                \ 'workspaceEdit': {
+                \   'documentChanges': v:true,
+                \ },
                 \ 'configuration': v:true,
               \ },
               \ 'textDocument': {
@@ -126,41 +129,29 @@ function! go#lsp#message#WorkspaceFoldersResult(dirs) abort
 endfunction
 
 function! go#lsp#message#Definition(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/definition',
-          \ 'params': {
-          \   'textDocument': {
-          \       'uri': go#path#ToURI(a:file)
-          \   },
-          \   'position': s:position(a:line, a:col)
-          \ }
+          \ 'params': l:params,
        \ }
 endfunction
 
 function! go#lsp#message#TypeDefinition(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/typeDefinition',
-          \ 'params': {
-          \   'textDocument': {
-          \       'uri': go#path#ToURI(a:file)
-          \   },
-          \   'position': s:position(a:line, a:col)
-          \ }
+          \ 'params': l:params,
        \ }
 endfunction
 
 function! go#lsp#message#Implementation(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/implementation',
-          \ 'params': {
-          \   'textDocument': {
-          \       'uri': go#path#ToURI(a:file)
-          \   },
-          \   'position': s:position(a:line, a:col)
-          \ }
+          \ 'params': l:params,
        \ }
 endfunction
 
@@ -210,44 +201,30 @@ function! go#lsp#message#DidClose(file) abort
 endfunction
 
 function! go#lsp#message#Completion(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/completion',
-          \ 'params': {
-          \   'textDocument': {
-          \       'uri': go#path#ToURI(a:file)
-          \   },
-          \   'position': s:position(a:line, a:col),
-          \ }
+          \ 'params': l:params,
        \ }
 endfunction
 
 function! go#lsp#message#References(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
+  let l:params.context = {'includeDeclaration': v:true}
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/references',
-          \ 'params': {
-          \   'textDocument': {
-          \       'uri': go#path#ToURI(a:file)
-          \   },
-          \   'position': s:position(a:line, a:col),
-          \   'context': {
-          \       'includeDeclaration': v:true,
-          \   },
-          \ }
+          \ 'params': l:params,
        \ }
 endfunction
 
 function! go#lsp#message#PrepareCallHierarchy(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/prepareCallHierarchy',
-          \ 'params': {
-          \   'textDocument': {
-          \       'uri': go#path#ToURI(a:file)
-          \   },
-          \   'position': s:position(a:line, a:col),
-          \ }
+          \ 'params': l:params,
        \ }
 endfunction
 
@@ -262,15 +239,21 @@ function! go#lsp#message#IncomingCalls(item) abort
 endfunction
 
 function! go#lsp#message#Hover(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
   return {
           \ 'notification': 0,
           \ 'method': 'textDocument/hover',
-          \ 'params': {
-          \   'textDocument': {
-          \       'uri': go#path#ToURI(a:file)
-          \   },
-          \   'position': s:position(a:line, a:col),
-          \ }
+          \ 'params': l:params,
+       \ }
+endfunction
+
+function! go#lsp#message#Rename(file, line, col, newName) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
+  let l:params.newName = a:newName
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/rename',
+          \ 'params': l:params,
        \ }
 endfunction
 
@@ -413,6 +396,15 @@ endfunction
 
 function! s:position(line, col) abort
   return {'line': a:line, 'character': a:col}
+endfunction
+
+function! s:textDocumentPositionParams(fname, line, col) abort
+  return {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:fname)
+          \   },
+          \   'position': s:position(a:line, a:col),
+       \ }
 endfunction
 
 " restore Vi compatibility settings

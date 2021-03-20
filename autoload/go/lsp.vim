@@ -1566,7 +1566,7 @@ function! s:handleFormat(msg) abort dict
     call self.handleError(a:msg)
     return
   endif
-  call s:applyTextEdits(a:msg)
+  call s:applyTextEdits(bufnr(''), a:msg)
 endfunction
 
 function! s:handleCodeAction(kind, cmd, msg) abort dict
@@ -1606,20 +1606,65 @@ function! s:handleCodeAction(kind, cmd, msg) abort dict
 endfunction
 
 function s:applyDocumentChanges(changes)
+  let l:bufnr = bufnr('')
+
   for l:change in a:changes
     if !has_key(l:change, 'edits')
       continue
     endif
-    " TODO(bc): change to the buffer for l:change.textDocument.uri
-    call s:applyTextEdits(l:change.edits)
+    let l:fname = go#path#FromURI(l:change.textDocument.uri)
+
+    " get the buffer name relative to the current directory, because
+    " Vim says that a buffer name can't be an absolute path.
+    let l:bufname = fnamemodify(l:fname, ':.')
+
+    let l:bufadded = 0
+    let l:bufloaded = 0
+
+    let l:editbufnr = bufnr(l:bufname)
+    if l:editbufnr != bufnr('')
+      " make sure the buffer is listed and loaded before applying text edits
+      if !bufexists(l:bufname)
+        call bufadd(l:bufname)
+        let l:bufadded = 1
+      endif
+
+      if !bufloaded(l:bufname)
+        call bufload(l:bufname)
+        let l:bufloaded = 1
+      endif
+
+      let l:editbufnr = bufnr(l:bufname)
+      if l:editbufnr == -1
+        call go#util#EchoWarn(printf('could not apply changes to %s', l:fname))
+        continue
+      endif
+
+       " TODO(bc): do not edit the buffer when vim-go drops support for Vim
+       " 8.0. Instead, use the functions to modify a buffer (e.g.
+       " appendbufline, getbufline, deletebufline).
+       execute printf('keepalt keepjumps buffer! %d', l:editbufnr)
+    endif
+    call s:applyTextEdits(l:editbufnr, l:change.edits)
+
+    " TODO(bc): save the buffer?
+    " TODO(bc): unload and/or delete a buffer that was loaded or added,
+    " respectively?
   endfor
+  if bufnr('') != l:bufnr
+    execute printf('keepalt keepjumps buffer! %d', l:bufnr)
+  endif
 endfunction
 
 " s:applyTextEdit applies the list of WorkspaceEdit values in msg.
-function s:applyTextEdits(msg) abort
+function s:applyTextEdits(bufnr, msg) abort
   if a:msg is v:null
     return
   endif
+
+  " TODO(bc): start using the functions to modify a buffer (e.g. appendbufline,
+  " deletebufline, etc) instead of operating on the current buffer when vim-go
+  " drops support from Vim 8.0.
 
   " process the TextEdit list in reverse order, because the positions are
   " based on the current line numbers; processing in forward order would
@@ -1665,6 +1710,7 @@ function s:applyTextEdits(msg) abort
     " TODO(bc): deal with the undo file
     " TODO(bc): deal with folds
 
+    " TODO(bc): can we use appendbufline instead of deleting and appending?
     call s:deleteline(l:startline, l:endline)
     for l:line in split(l:text, "\n", 1)
       call append(l:startline-1, l:line)
