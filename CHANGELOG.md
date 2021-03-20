@@ -92,6 +92,8 @@ BUG FIXES:
   [[GH-3128]](https://github.com/fatih/vim-go/pull/3128)
 * Organize imports correctly when `gopls` formatting uses `gofumpt`.
   [[GH-3154]](https://github.com/fatih/vim-go/pull/3154)
+* Rename all instances of an identifier when `g:go_rename_mode` is `gopls`.
+  [[GH-3181]](https://github.com/fatih/vim-go/pull/3181)
 
 ## v1.24 - (September 15, 2020)
 
