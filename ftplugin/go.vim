@@ -101,6 +101,8 @@ augroup vim-go-buffer
   autocmd BufWritePre <buffer> call go#auto#fmt_autosave()
   autocmd BufWritePost <buffer> call go#auto#metalinter_autosave()
 
+  " TODO(bc): autocmd BufWinLeave call go#lsp#DidChange(expand('<afile>:p'))
+
   if !has('textprop')
     "TODO(bc): how to clear sameids and diagnostics when a non-go buffer is
     " loaded into a window and the previously loaded buffer is still loaded in

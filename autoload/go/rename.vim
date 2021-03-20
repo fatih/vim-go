@@ -32,12 +32,14 @@ function! go#rename#Rename(bang, ...) abort
   let pos = go#util#OffsetCursor()
   let offset = printf('%s:#%d', fname, pos)
 
+  if l:bin == 'gopls'
+    call go#lsp#Rename(to_identifier)
+    return
+  endif
+
   let args = []
   if l:bin == 'gorename'
     let l:args = extend(l:args, ['-tags', go#config#BuildTags(), '-offset', offset, '-to', to_identifier])
-  elseif l:bin == 'gopls'
-    " TODO(bc): use -tags when gopls supports it
-    let l:args = extend(l:args, ['rename', '-w', l:offset, to_identifier])
   else
     call go#util#EchoWarning('unexpected rename command')
   endif

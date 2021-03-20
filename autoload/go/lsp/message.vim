@@ -390,6 +390,15 @@ function! go#lsp#message#ApplyWorkspaceEditResponse(ok) abort
        \ }
 endfunction
 
+function! go#lsp#message#PrepareRename(file, line, col) abort
+  let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/prepareRename',
+          \ 'params': l:params,
+       \ }
+endfunction
+
 function! s:workspaceFolder(key, val) abort
   return {'uri': go#path#ToURI(a:val), 'name': a:val}
 endfunction
