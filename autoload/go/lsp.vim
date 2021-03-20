@@ -1550,6 +1550,50 @@ function! go#lsp#FillStruct() abort
   call l:handler.await()
 endfunction
 
+function! go#lsp#Rename(newName) abort
+  let l:fname = expand('%:p')
+  let [l:line, l:col] = go#lsp#lsp#Position()
+
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#PrepareRename(l:fname, l:line, l:col)
+  let l:state = s:newHandlerState('rename')
+  let l:resultHandler = go#promise#New(function('s:rename', [l:fname, l:line, l:col, a:newName], l:state), 10000, '')
+
+  let l:state.handleResult = l:resultHandler.wrapper
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return l:resultHandler.await()
+endfunction
+
+function! s:rename(fname, line, col, newName, msg) abort
+  if a:msg is v:null
+    call go#util#EchoWarning('cannot rename the identifier at the requested position')
+    return
+  endif
+
+  call go#lsp#DidChange(a:fname)
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#Rename(a:fname, a:line, a:col, a:newName)
+  let l:state = s:newHandlerState('rename')
+  let l:resultHandler = go#promise#New(function('s:handleRename', [], l:state), 10000, '')
+
+  let l:state.handleResult = l:resultHandler.wrapper
+  let l:state.error = l:resultHandler.wrapper
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  return l:resultHandler.await()
+endfunction
+
+function! s:handleRename(msg) abort dict
+  if a:msg is v:null
+    return
+  endif
+  call s:applyDocumentChanges(a:msg.documentChanges)
+endfunction
+
 function! s:executeCommand(cmd, args) abort
   let l:lsp = s:lspfactory.get()
 
