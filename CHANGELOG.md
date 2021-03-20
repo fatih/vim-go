@@ -62,6 +62,9 @@ IMPROVEMENTS:
   [[GH-3166]](https://github.com/fatih/vim-go/pull/3166)
 * Do not execute disabled code actions.
   [[GH-3155]](https://github.com/fatih/vim-go/pull/3155)
+* Add `:GoDebugConnect` to support connecting to an instance of delve started
+  outside of vim-go.
+  [[GH-3179]](https://github.com/fatih/vim-go/pull/3179)
 
 BUG FIXES:
 * Remove implications that terminal mode is only applied for Neovim.
