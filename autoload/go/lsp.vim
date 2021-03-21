@@ -1564,12 +1564,19 @@ function! go#lsp#Rename(newName) abort
   let l:resultHandler = go#promise#New(function('s:rename', [l:fname, l:line, l:col, a:newName], l:state), 10000, '')
 
   let l:state.handleResult = l:resultHandler.wrapper
+  let l:state.error = l:resultHandler.wrapper
+  let l:state.handleError = function('s:handleRenameError', [], l:state)
   call l:lsp.sendMessage(l:msg, l:state)
 
   return l:resultHandler.await()
 endfunction
 
-function! s:rename(fname, line, col, newName, msg) abort
+function! s:rename(fname, line, col, newName, msg) abort dict
+  if type(a:msg) is type('')
+    call self.handleError(a:msg)
+    return
+  endif
+
   if a:msg is v:null
     call go#util#EchoWarning('cannot rename the identifier at the requested position')
     return
@@ -1584,12 +1591,18 @@ function! s:rename(fname, line, col, newName, msg) abort
 
   let l:state.handleResult = l:resultHandler.wrapper
   let l:state.error = l:resultHandler.wrapper
+  let l:state.handleError = function('s:handleRenameError', [], l:state)
   call l:lsp.sendMessage(l:msg, l:state)
 
   return l:resultHandler.await()
 endfunction
 
 function! s:handleRename(msg) abort dict
+  if type(a:msg) is type('')
+    call self.handleError(a:msg)
+    return
+  endif
+
   if a:msg is v:null
     return
   endif
@@ -1781,6 +1794,10 @@ endfunction
 
 function! s:handleCodeActionError(filename, msg) abort dict
   " TODO(bc): handle the error?
+endfunction
+
+function! s:handleRenameError(msg) abort dict
+  call go#util#EchoError(a:msg)
 endfunction
 
 function! s:textEditLess(left, right) abort
