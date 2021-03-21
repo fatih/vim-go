@@ -533,6 +533,8 @@ function! s:requestComplete(ok) abort dict
   endif
 
   if go#config#EchoCommandInfo()
+    " redraw to avoid messages piling up
+    redraw
     let prefix = '[' . self.statustype . '] '
     if a:ok
       call go#util#EchoSuccess(prefix . "SUCCESS")
