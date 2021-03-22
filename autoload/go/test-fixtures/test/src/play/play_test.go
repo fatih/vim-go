@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"play/mock"
+	"vim-go.test/play/mock"
 )
 
 func TestTopSubHelper(t *testing.T) {

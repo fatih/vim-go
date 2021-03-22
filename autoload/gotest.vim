@@ -2,10 +2,18 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-" Write a Go file to a temporary directory and append this directory to $GOPATH.
+" Write a Go file to a temporary directory and append this directory to
+" $GOPATH.
 "
-" The file will written to a:path, which is relative to the temporary directory,
-" and this file will be loaded as the current buffer.
+" The file will written to a:path, which is relative to the temporary
+" directory, and this file will be loaded as the current buffer.
+"
+" A Go module will be configured in the first segment of a:path within the
+" temporary directory. The module's name will be prefixed with vim-go.test/
+" followed by the first segment in a:path.
+"
+" The current directory will be changed to the parent directory of module
+" root.
 "
 " The cursor will be placed on the character before any 0x1f byte.
 "
@@ -18,7 +26,7 @@ fun! gotest#write_file(path, contents) abort
 
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
   call writefile(a:contents, l:full_path)
-  call go#util#Chdir(l:dir . '/src')
+  call s:setupproject(printf('%s/src', l:dir), a:path)
 
   silent exe 'e! ' . a:path
 
@@ -48,6 +56,13 @@ endfun
 "
 " The file will be copied to a new GOPATH-compliant temporary directory and
 " loaded as the current buffer.
+"
+" A Go module will be configured in the first segment of a:path within the
+" temporary directory. The module's name will be prefixed with vim-go.test/
+" followed by the first segment in a:path.
+"
+" The current directory will be changed to the parent directory of module
+" root.
 fun! gotest#load_fixture(path) abort
   if go#util#has_job()
     call go#lsp#CleanWorkspaces()
@@ -57,7 +72,7 @@ fun! gotest#load_fixture(path) abort
   let l:full_path = l:dir . '/src/' . a:path
 
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
-  call go#util#Chdir(l:dir . '/src')
+  call s:setupproject(printf('%s/src', l:dir), a:path)
   silent exe 'noautocmd e! ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
@@ -145,6 +160,33 @@ func! gotest#assert_quickfix(got, want) abort
   endwhile
 
   return l:retval
+endfunc
+
+" s:setupproject sets up a Go module in dir rooted at the first segment of
+" path and changes the current directory to the parent directory of the
+" project root.
+func! s:setupproject(dir, path) abort
+  let l:projectdir = s:projectdir(a:path)
+  let l:mod = printf('vim-go.test/%s', l:projectdir)
+  let l:modroot = printf('%s/%s', a:dir, l:projectdir)
+  call s:creategomod(l:mod, l:modroot)
+  call go#util#Chdir(a:dir)
+endfunc
+
+func! s:creategomod(modname, dir) abort
+  call go#util#ExecInWorkDir(['go', 'mod', 'init', a:modname], a:dir)
+endfunc
+
+" s:project dir returns the first element of path.
+func! s:projectdir(path) abort
+  let l:path = a:path
+  let l:next = fnamemodify(l:path, ':h')
+  while l:next isnot '.'
+    let l:path = l:next
+    let l:next = fnamemodify(l:path, ':h')
+  endwhile
+
+  return l:path
 endfunc
 
 " restore Vi compatibility settings

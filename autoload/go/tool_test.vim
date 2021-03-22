@@ -5,7 +5,9 @@ set cpo&vim
 func! Test_ExecuteInDir() abort
   let l:tmp = gotest#write_file('a/a.go', ['package a'])
   try
+    let l:cwd = go#util#Exec(['pwd'])
     let l:out = go#util#ExecInDir(['pwd'])
+    call assert_notequal(l:cwd, l:out)
     call assert_equal([l:tmp . "/src/a\n", 0], l:out)
   finally
     call delete(l:tmp, 'rf')

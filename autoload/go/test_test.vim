@@ -101,6 +101,7 @@ endfunc
 
 func! s:test(file, expected, ...) abort
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/test'
+  call go#util#Chdir(printf('%s/src/%s', $GOPATH, fnamemodify(a:file, ':h')))
   silent exe 'e ' . $GOPATH . '/src/' . a:file
 
   " clear the quickfix lists
