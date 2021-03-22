@@ -12,17 +12,18 @@ endfunc
 
 func! s:gometa(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e! ' . $GOPATH . '/src/lint/lint.go'
+  call go#util#Chdir('test-fixtures/lint/src/foo')
+  silent exe 'e! ' . $GOPATH . '/src/foo/foo.go'
 
   try
     let g:go_metalinter_command = a:metalinter
     let l:vim = s:vimdir()
     let expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
+          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
-            \ {'lnum': 5, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
+            \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
           \ ]
     endif
 

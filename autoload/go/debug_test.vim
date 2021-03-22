@@ -15,7 +15,7 @@ function! Test_GoDebugStart_RelativePackage_NullModule() abort
 endfunction
 
 function! Test_GoDebugStart_Package() abort
-  call s:debug('debug/debugmain')
+  call s:debug('vim-go.test/debug/debugmain')
 endfunction
 
 function! Test_GoDebugStart_Errors() abort
@@ -27,7 +27,7 @@ function! Test_GoDebugStart_Errors() abort
     let l:tmp = gotest#load_fixture('debug/compilerror/main.go')
 
     let l:expected = [
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': '# debug/compilerror'},
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': '# vim-go.test/debug/compilerror'},
           \ {'lnum': 6, 'bufnr': bufnr('%'), 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': ' syntax error: unexpected newline, expecting comma or )'},
           \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exit status 2'}
           \]
@@ -142,7 +142,7 @@ function! s:debug(...) abort
     call assert_false(exists(':GoDebugStop'))
 
     if a:0 == 0
-      call go#util#Chdir('debug/debugmain')
+      call go#util#Chdir(printf('%s/src/debug/debugmain', l:tmp))
       let l:job = go#debug#Start('debug')
     else
       let l:job = go#debug#Start('debug', a:1)

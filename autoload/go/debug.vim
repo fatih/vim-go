@@ -734,8 +734,8 @@ function! go#debug#TestFunc(...) abort
   call call('go#debug#Start', extend(['test', '.', '-test.run', printf('%s$', l:test)], a:000))
 endfunction
 
-" Start the debug mode. The first argument is the package name to compile and
-" debug, anything else will be passed to the running program.
+" Start the debug mode. The first variadic argument is the package name to
+" compile and debug, anything else will be passed to the running program.
 function! go#debug#Start(mode, ...) abort
   call go#cmd#autowrite()
 

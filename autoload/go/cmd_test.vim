@@ -6,7 +6,6 @@ func! Test_GoBuildErrors()
   try
     let l:filename = 'cmd/bad.go'
     let l:tmp = gotest#load_fixture(l:filename)
-    exe 'cd ' . l:tmp . '/src/cmd'
 
     " set the compiler type so that the errorformat option will be set
     " correctly.
