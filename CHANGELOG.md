@@ -98,6 +98,8 @@ BUG FIXES:
 * Rename all instances of an identifier when `g:go_rename_mode` is `gopls`.
   [[GH-3181]](https://github.com/fatih/vim-go/pull/3181)
   [[GH-3182]](https://github.com/fatih/vim-go/pull/3182)
+* Terminate a case statement in the select snippet with a colon.
+  [[GH-3185]](https://github.com/fatih/vim-go/pull/3185)
 
 ## v1.24 - (September 15, 2020)
 
