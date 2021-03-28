@@ -7,7 +7,7 @@ set cpo&vim
 " Note: should not use augroup in ftdetect (see :help ftdetect)
 au BufRead,BufNewFile *.go setfiletype go
 au BufRead,BufNewFile *.s setfiletype asm
-au BufRead,BufNewFile *.tmpl setfiletype gohtmltmpl
+au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
 au BufRead,BufNewFile go.sum set filetype=gosum
 
 " remove the autocommands for modsim3, and lprolog files so that their
