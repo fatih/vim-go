@@ -73,9 +73,7 @@ hi def link     gotplFunctions      Function
 hi def link     goTplVariable       Special
 
 syn region gotplAction start="{{" end="}}" contains=@gotplLiteral,gotplControl,gotplFunctions,gotplVariable,goTplIdentifier display
-syn region gotplAction start="\[\[" end="\]\]" contains=@gotplLiteral,gotplControl,gotplFunctions,gotplVariable display
 syn region goTplComment start="{{\(- \)\?/\*" end="\*/\( -\)\?}}" display
-syn region goTplComment start="\[\[\(- \)\?/\*" end="\*/\( -\)\?\]\]" display
 
 hi def link gotplAction PreProc
 hi def link goTplComment Comment
