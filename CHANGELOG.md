@@ -104,6 +104,8 @@ BUG FIXES:
   [[GH-3182]](https://github.com/fatih/vim-go/pull/3182)
 * Terminate a case statement in the select snippet with a colon.
   [[GH-3185]](https://github.com/fatih/vim-go/pull/3185)
+* Fix syntax highlighting in template files.
+  [[GH-3189]](https://github.com/fatih/vim-go/pull/3189)
 
 ## v1.24 - (September 15, 2020)
 
