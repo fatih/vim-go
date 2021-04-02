@@ -426,7 +426,7 @@ function! go#util#EchoWarning(msg)
 endfunction
 function! go#util#EchoProgress(msg)
   redraw
-  call s:echo(a:msg, 'Identifier')
+  call s:echo(a:msg, 'ModeMsg')
 endfunction
 function! go#util#EchoInfo(msg)
   call s:echo(a:msg, 'Debug')
