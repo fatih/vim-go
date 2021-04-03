@@ -6,7 +6,12 @@ function! go#lint#Gometa(bang, autosave, ...) abort
   let l:metalinter = go#config#MetalinterCommand()
 
   if a:0 == 0
-    let l:goargs = [expand('%:p:h')]
+    let l:filepath = expand('%:p:h')
+    if l:metalinter == 'golangci-lint'
+      let l:filepath = printf('%s/...', l:filepath)
+    endif
+
+    let l:goargs = [l:filepath]
     if l:metalinter == 'gopls' || l:metalinter == 'staticcheck'
       let l:pkg = go#package#ImportPath()
       if l:pkg == -1
