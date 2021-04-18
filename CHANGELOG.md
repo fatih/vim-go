@@ -1,5 +1,7 @@
 ## unplanned
 
+## v1.25 - (April 18, 2021)
+
 BACKWARDS INCOMPATIBILITIES:
 * Remove g:go_autodetect_gopath.
   [[GH-3078]](https://github.com/fatih/vim-go/pull/3078)
