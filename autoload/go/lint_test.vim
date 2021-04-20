@@ -284,6 +284,7 @@ func! s:gometaautosave_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
           \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'}
         \ ]
 
