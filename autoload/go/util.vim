@@ -90,26 +90,32 @@ function! go#util#env(key) abort
   return l:var
 endfunction
 
+" gobin returns 'go env GOBIN'. This is an internal function and shouldn't be
+" used. Use go#util#env('gobin') instead.
+function! go#util#gobin() abort
+  return substitute(s:exec(['go', 'env', 'GOBIN'])[0], '\n', '', 'g')
+endfunction
+
 " goarch returns 'go env GOARCH'. This is an internal function and shouldn't
-" be used. Instead use 'go#util#env("goarch")'
+" be used. Use go#util#env('goarch') instead.
 function! go#util#goarch() abort
   return substitute(s:exec(['go', 'env', 'GOARCH'])[0], '\n', '', 'g')
 endfunction
 
-" goos returns 'go env GOOS'. This is an internal function and shouldn't
-" be used. Instead use 'go#util#env("goos")'
+" goos returns 'go env GOOS'. This is an internal function and shouldn't be
+" used. Use go#util#env('goos') instead.
 function! go#util#goos() abort
   return substitute(s:exec(['go', 'env', 'GOOS'])[0], '\n', '', 'g')
 endfunction
 
 " goroot returns 'go env GOROOT'. This is an internal function and shouldn't
-" be used. Instead use 'go#util#env("goroot")'
+" be used. Use go#util#env('goroot') instead.
 function! go#util#goroot() abort
   return substitute(s:exec(['go', 'env', 'GOROOT'])[0], '\n', '', 'g')
 endfunction
 
 " gopath returns 'go env GOPATH'. This is an internal function and shouldn't
-" be used. Instead use 'go#util#env("gopath")'
+" be used. Use go#util#env('gopath') instead.
 function! go#util#gopath() abort
   return substitute(s:exec(['go', 'env', 'GOPATH'])[0], '\n', '', 'g')
 endfunction
@@ -120,7 +126,8 @@ function! go#util#gomod() abort
   return substitute(s:exec(['go', 'env', 'GOMOD'])[0], '\n', '', 'g')
 endfunction
 
-" gomodcache returns 'go env GOMODCACHE'. Instead use 'go#util#env("gomodcache")'
+" gomodcache returns 'go env GOMODCACHE'. Use go#util#env('gomodcache')
+" instead.
 function! go#util#gomodcache() abort
   return substitute(s:exec(['go', 'env', 'GOMODCACHE'])[0], '\n', '', 'g')
 endfunction
