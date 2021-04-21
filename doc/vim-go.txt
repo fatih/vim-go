@@ -1519,7 +1519,7 @@ their mapping variants that cause splits. By default it's disabled. >
                                                              *'g:go_bin_path'*
 
 Use this option to change default path for vim-go tools when using
-|:GoInstallBinaries| and |:GoUpdateBinaries|. If not set `$GOBIN` or
+|:GoInstallBinaries| and |:GoUpdateBinaries|. If not set `go env GOBIN` or
 `$GOPATH/bin` is used. >
 
   let g:go_bin_path = ""
