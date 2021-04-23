@@ -34,6 +34,7 @@ nnoremap <silent> <Plug>(go-deps) :<C-u>call go#tool#Deps()<CR>
 nnoremap <silent> <Plug>(go-info) :<C-u>call go#tool#Info(1)<CR>
 nnoremap <silent> <Plug>(go-import) :<C-u>call go#import#SwitchImport(1, '', expand('<cword>'), '')<CR>
 nnoremap <silent> <Plug>(go-imports) :<C-u>call go#fmt#Format(1)<CR>
+nnoremap <silent> <Plug>(go-fmt) :<C-u>call go#fmt#Format(0)<CR>
 
 nnoremap <silent> <Plug>(go-implements) :<C-u>call go#implements#Implements(-1)<CR>
 nnoremap <silent> <Plug>(go-callees) :<C-u>call go#guru#Callees(-1)<CR>

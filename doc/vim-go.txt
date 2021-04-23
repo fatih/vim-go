@@ -994,6 +994,9 @@ Calls `go test -coverprofile-temp.out` for the current package and shows the
 coverage annotation. If run again it acts as a toggle and clears the
 annotation.
 
+                                                                    *(go-fmt)*
+
+Format the current buffer.
                                                                 *(go-imports)*
 
 Adjust imports for the current buffer.

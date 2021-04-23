@@ -70,7 +70,7 @@ command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc call go#
 command! -nargs=* -range -complete=customlist,go#package#Complete GoDocBrowser call go#doc#OpenBrowser(<f-args>)
 
 " -- fmt
-command! -nargs=0 GoFmt call go#fmt#Format(-1)
+command! -nargs=0 GoFmt call go#fmt#Format(0)
 command! -nargs=0 GoFmtAutoSaveToggle call go#fmt#ToggleFmtAutoSave()
 command! -nargs=0 GoImports call go#fmt#Format(1)
 
