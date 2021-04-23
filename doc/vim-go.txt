@@ -227,10 +227,9 @@ COMMANDS                                                         *go-commands*
                                                                   *:GoImports*
 :GoImports
 
-    Filter the current Go buffer through goimports (needs to be installed).
-    `goimports` automatically discards/add import path based on the code. Like
-    |:GoFmt|, It tries to preserve cursor position and avoids replacing the
-    buffer with stderr output.
+    Adjust imports using the setting of `g:go_imports_mode`. Like |:GoFmt|, It
+    tries to preserve cursor position and avoids replacing the buffer with
+    stderr output.
 
                                                                      *:GoPlay*
 :[range]GoPlay
@@ -935,7 +934,7 @@ documentation in the |go-commands| section. Available <Plug> keys are:
 
                                                                     *(go-run)*
 
-Calls `go run` for the current main package
+Calls `go run` for the current main package.
 
                                                                 *(go-run-tab)*
 
@@ -954,23 +953,23 @@ This option is neovim only.
 
                                                                   *(go-build)*
 
-Calls `go build` for the current package
+Calls `go build` for the current package.
 
                                                                *(go-generate)*
 
-Calls `go generate` for the current package
+Calls `go generate` for the current package.
 
                                                                    *(go-info)*
 
-Shows type information for the word under the cursor
+Shows type information for the word under the cursor.
 
                                                                 *(go-install)*
 
-Calls `go install` for the current package
+Calls `go install` for the current package.
 
                                                                    *(go-test)*
 
-Calls `go test` for the current package
+Calls `go test` for the current package.
 
                                                               *(go-test-func)*
 
@@ -978,7 +977,7 @@ Calls `go test -run '...'` for the test function immediate to cursor
 
                                                            *(go-test-compile)*
 
-Calls `go test -c` for the current package
+Calls `go test -c` for the current package.
 
                                                                *(go-coverage)*
 
@@ -987,7 +986,7 @@ coverage annotation.
 
                                                          *(go-coverage-clear)*
 
-Clears the coverage annotation
+Clears the coverage annotation.
 
                                                         *(go-coverage-toggle)*
 
@@ -995,27 +994,30 @@ Calls `go test -coverprofile-temp.out` for the current package and shows the
 coverage annotation. If run again it acts as a toggle and clears the
 annotation.
 
+                                                                    *(go-fmt)*
+
+Format the current buffer.
                                                                 *(go-imports)*
 
-Calls `goimports` for the current package
+Adjust imports for the current buffer.
 
                                                                    *(go-lint)*
 
-Calls `golint` for the current package
+Calls `golint` for the current package.
 
                                                                     *(go-vet)*
 
-Calls `go vet` for the current package
+Calls `go vet` for the current package.
 
 
                                                                   *(go-files)*
 
-Show source files that depends for the current package
+Show source files that depends for the current package.
 
 
                                                                    *(go-deps)*
 
-Show dependencies for the current package
+Show dependencies for the current package.
 
                                                                     *(go-doc)*
 
