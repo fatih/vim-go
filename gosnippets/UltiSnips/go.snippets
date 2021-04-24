@@ -436,6 +436,13 @@ func Test${1:Function}(t *testing.T) {
 }
 endsnippet
 
+# test t.Run
+snippet tr "t.Run(XYZ, func(t *testing.T){ ... })"
+t.Run("${0}", func(t *testing){
+
+})
+endsnippet
+
 # test table snippet
 snippet tt
 var tests = []struct {

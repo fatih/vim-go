@@ -315,6 +315,12 @@ abbr func TestXYZ(t *testing.T) { ... }
 	func Test${1:Function}(t *testing.T) {
 		${0}
 	}
+# test t.Run
+snippet tr
+abbr t.Run("test name", func(t *testing.T){ ... })
+  t.Run("${0}", func(t *testing){
+
+  })
 # test table snippet
 snippet tt
 abbr var test = {...}{...} for {t.Run(){...}}
