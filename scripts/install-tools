@@ -18,7 +18,7 @@ installdir="/tmp/vim-go-test/$1-install"
 echo "Installing Go binaries"
 export GOPATH=$installdir
 export GO111MODULE=on
-export PATH=${GOPATH}/bin:$PATH
+export PATH="${GOPATH}/bin:$PATH"
 "$vimgodir/scripts/run-vim" $vim +':silent :GoUpdateBinaries' +':qa'
 
 echo "Installing lint tools"
