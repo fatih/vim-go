@@ -24,7 +24,7 @@ fi
 dir="/tmp/vim-go-test/$1-install"
 export GOPATH=$dir
 export GO111MODULE=on
-export PATH=${GOPATH}/bin:$PATH
+export PATH="${GOPATH}/bin:$PATH"
 shift
 
 if [ ! -f "$dir/bin/vim" ]; then
