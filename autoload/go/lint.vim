@@ -221,6 +221,7 @@ function! go#lint#Vet(bang, ...) abort
   call go#cmd#autowrite()
 
   let l:cmd = ['go', 'vet']
+  let l:cmd = add(l:cmd, '-vettool=' . go#util#env('gopath') . '/bin/shadow')
 
   let buildtags = go#config#BuildTags()
   if buildtags isnot ''

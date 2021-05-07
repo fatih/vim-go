@@ -58,6 +58,7 @@ let s:packages = {
       \ 'keyify':        ['honnef.co/go/tools/cmd/keyify@master'],
       \ 'motion':        ['github.com/fatih/motion@master'],
       \ 'iferr':         ['github.com/koron/iferr@master'],
+      \ 'shadow':        ['golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@master'],
 \ }
 
 " These commands are available on any filetypes
