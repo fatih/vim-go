@@ -7,6 +7,7 @@ IMPROVEMENTS:
   [[GH-3209]](https://github.com/fatih/vim-go/pull/3209)
 * Add `tr` snippet for `"testing.T".Run`.
   [[GH-3210]](https://github.com/fatih/vim-go/pull/3210)
+  [[GH-3220]](https://github.com/fatih/vim-go/pull/3220)
 * Use `go env GOBIN` to determine `GOBIN`'s value.
   [[GH-3207]](https://github.com/fatih/vim-go/pull/3207)
 
