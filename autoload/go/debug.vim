@@ -11,6 +11,7 @@ if !exists('s:state')
         \ 'currentThread': {},
         \ 'localVars': {},
         \ 'functionArgs': {},
+        \ 'registers': {},
         \ 'message': [],
         \ 'resultHandlers': {},
         \ 'kill_on_detach': v:true,
@@ -218,7 +219,6 @@ function! s:show_variables() abort
 
   let l:cur_win = bufwinnr('')
   exe l:var_win 'wincmd w'
-
   try
     setlocal modifiable
     silent %delete _
@@ -239,6 +239,14 @@ function! s:show_variables() abort
       endfor
     endif
 
+    let v += ['']
+    let v += ['# Registers']
+    if type(get(s:state, 'registers', [])) is type([])
+      for c in s:state['registers']
+        let v += [printf("%s = %s", c.Name, c.Value)]
+      endfor
+    endif
+
     call setline(1, v)
   finally
     setlocal nomodifiable
@@ -251,6 +259,7 @@ function! s:clearState() abort
   let s:state['currentThread'] = {}
   let s:state['localVars'] = {}
   let s:state['functionArgs'] = {}
+  let s:state['registers'] = {}
   let s:state['message'] = []
 
   silent! sign unplace 9999
@@ -474,7 +483,7 @@ function! s:start_cb() abort
     silent file `='__GODEBUG_VARIABLES__'`
     setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
     setlocal filetype=godebugvariables
-    call append(0, ["# Local Variables", "", "# Function Arguments"])
+    call append(0, ["# Local Variables", "", "# Function Arguments", "", "# Registers"])
     nmap <buffer> <silent> <cr> :<c-u>call <SID>expand_var()<cr>
     nmap <buffer> q <Plug>(go-debug-stop)
   endif
@@ -1117,6 +1126,12 @@ function! s:update_variables() abort
     call go#util#EchoError(printf('could not list function arguments: %s', v:exception))
   endtry
 
+  try
+    call s:call_jsonrpc(function('s:handle_list_registers'), 'RPCServer.ListRegisters', l:cfg)
+  catch
+    call go#util#EchoError(printf('could not list registers: %s', v:exception))
+  endtry
+
 endfunction
 
 function! s:handle_list_local_vars(check_errors, res) abort
@@ -1142,6 +1157,20 @@ function! s:handle_list_function_args(check_errors, res) abort
     endif
   catch
     call go#util#EchoWarning(printf('could not list function arguments: %s', v:exception))
+  endtry
+
+  call s:show_variables()
+endfunction
+
+function! s:handle_list_registers(check_errors, res) abort
+  let s:state['registers'] = {}
+  try
+    call a:check_errors()
+    if type(a:res) is type({}) && has_key(a:res, 'result') && !empty(a:res.result)
+      let s:state['registers'] = a:res.result['Regs']
+    endif
+  catch
+    call go#util#EchoWarning(printf('could not list registers: %s', v:exception))
   endtry
 
   call s:show_variables()
@@ -1300,6 +1329,7 @@ function! go#debug#Restart() abort
           \ 'currentThread': {},
           \ 'localVars': {},
           \ 'functionArgs': {},
+          \ 'registers': {},
           \ 'message': [],
           \ 'resultHandlers': {},
           \ 'kill_on_detach': s:state['kill_on_detach'],
