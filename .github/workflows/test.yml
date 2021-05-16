@@ -41,7 +41,7 @@ jobs:
     - name: install covimerage
       run: |
         python -m pip install --upgrade pip
-        pip install covimerage==0.2.1 codecov pathlib
+        pip install click==7.1.2 covimerage==0.2.1 codecov pathlib
     - name: checkout
       uses: actions/checkout@v2.1.0
     - name: install vim
