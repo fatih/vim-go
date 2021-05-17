@@ -40,23 +40,23 @@ call s:checkVersion()
 
 " NOTE(bc): varying the binary name and the tail of the import path does not yet work in module aware mode.
 let s:packages = {
-      \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt@master'],
-      \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv@master'],
-      \ 'errcheck':      ['github.com/kisielk/errcheck@master'],
+      \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt@latest'],
+      \ 'dlv':           ['github.com/go-delve/delve/cmd/dlv@latest'],
+      \ 'errcheck':      ['github.com/kisielk/errcheck@latest'],
       \ 'fillstruct':    ['github.com/davidrjenni/reftools/cmd/fillstruct@master'],
-      \ 'godef':         ['github.com/rogpeppe/godef@master'],
+      \ 'godef':         ['github.com/rogpeppe/godef@latest'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
       \ 'golint':        ['golang.org/x/lint/golint@master'],
       \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
-      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@master'],
+      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@latest'],
       \ 'staticcheck':   ['honnef.co/go/tools/cmd/staticcheck@latest'],
-      \ 'gomodifytags':  ['github.com/fatih/gomodifytags@master'],
+      \ 'gomodifytags':  ['github.com/fatih/gomodifytags@latest'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
       \ 'gotags':        ['github.com/jstemmer/gotags@master'],
       \ 'guru':          ['golang.org/x/tools/cmd/guru@master'],
       \ 'impl':          ['github.com/josharian/impl@master'],
       \ 'keyify':        ['honnef.co/go/tools/cmd/keyify@master'],
-      \ 'motion':        ['github.com/fatih/motion@master'],
+      \ 'motion':        ['github.com/fatih/motion@latest'],
       \ 'iferr':         ['github.com/koron/iferr@master'],
 \ }
 
