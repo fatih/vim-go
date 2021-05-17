@@ -23,6 +23,7 @@ func! s:gometa(metalinter) abort
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
+            \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
             \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
           \ ]
     endif
@@ -123,11 +124,13 @@ func! s:gometaautosave(metalinter, withList) abort
           \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
         \ ]
     if a:metalinter == 'gopls'
-      let l:expected = [
-            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'W', 'module': '', 'text': 'at least one file in a package should have a package comment'}
-          \ ]
+      let l:expected = []
+"      let l:expected = [
+"            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'W', 'module': '', 'text': 'at least one file in a package should have a package comment'}
+"          \ ]
     elseif a:metalinter == 'golangci-lint'
       let l:expected = [
+            \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
             \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingDoc` should have comment or be unexported (golint)'}
           \ ]
     endif
@@ -175,8 +178,10 @@ func! s:gometa_importabs(metalinter) abort
 
   try
     let g:go_metalinter_command = a:metalinter
+
     let expected = [
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"/quux" imported but not used (typecheck)'}
+          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"/quux" imported but not used (typecheck)'},
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
         \ ]
     " clear the quickfix list
     call setqflist([], 'r')
@@ -248,6 +253,8 @@ func! s:gometa_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
           \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'}
         \ ]
 
@@ -284,6 +291,7 @@ func! s:gometaautosave_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
           \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
           \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'}
         \ ]
