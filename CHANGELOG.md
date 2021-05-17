@@ -10,11 +10,12 @@ IMPROVEMENTS:
   [[GH-3220]](https://github.com/fatih/vim-go/pull/3220)
 * Use `go env GOBIN` to determine `GOBIN`'s value.
   [[GH-3207]](https://github.com/fatih/vim-go/pull/3207)
+* List register in the debugger.
+  [[GH-3221]](https://github.com/fatih/vim-go/pull/3221)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
   [[GH-3216]](https://github.com/fatih/vim-go/pull/3216)
-
 
 ## v1.25 - (April 18, 2021)
 
