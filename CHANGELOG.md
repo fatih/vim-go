@@ -12,6 +12,9 @@ IMPROVEMENTS:
   [[GH-3207]](https://github.com/fatih/vim-go/pull/3207)
 * List register in the debugger.
   [[GH-3221]](https://github.com/fatih/vim-go/pull/3221)
+* Install the latest release of tools that seem to be using tags to do releases
+  instead of installing from their master/main branch.
+  [[GH-3227]](https://github.com/fatih/vim-go/pull/3227)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
