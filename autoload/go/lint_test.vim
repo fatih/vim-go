@@ -42,8 +42,13 @@ func! s:gometa(metalinter) abort
     let start = reltime()
     while len(actual) == 0 && reltimefloat(reltime(start)) < 10
       sleep 100m
-      let actual = getqflist()
+      let actual = copy(getqflist())
     endwhile
+
+    " sort the results, because golangci-lint seems to be returning the golint
+    " deprecation notice in a non-deterministic order.
+    call sort(l:actual)
+    call sort(l:expected)
 
     call gotest#assert_quickfix(actual, expected)
   finally
@@ -157,8 +162,13 @@ func! s:gometaautosave(metalinter, withList) abort
     let l:start = reltime()
     while len(l:actual) != len(l:expected) && reltimefloat(reltime(l:start)) < 10
       sleep 100m
-      let l:actual = getloclist(0)
+      let l:actual = copy(getloclist(0))
     endwhile
+
+    " sort the results, because golangci-lint seems to be returning the golint
+    " deprecation notice in a non-deterministic order.
+    call sort(l:actual)
+    call sort(l:expected)
 
     call gotest#assert_quickfix(l:actual, l:expected)
   finally
@@ -194,8 +204,13 @@ func! s:gometa_importabs(metalinter) abort
     let start = reltime()
     while len(actual) == 0 && reltimefloat(reltime(start)) < 10
       sleep 100m
-      let actual = getqflist()
+      let actual = copy(getqflist())
     endwhile
+
+    " sort the results, because golangci-lint seems to be returning the golint
+    " deprecation notice in a non-deterministic order.
+    call sort(l:actual)
+    call sort(l:expected)
 
     call gotest#assert_quickfix(actual, expected)
   finally
@@ -269,8 +284,13 @@ func! s:gometa_multiple(metalinter) abort
     let start = reltime()
     while len(actual) == 0 && reltimefloat(reltime(start)) < 10
       sleep 100m
-      let actual = getqflist()
+      let actual = copy(getqflist())
     endwhile
+
+    " sort the results, because golangci-lint seems to be returning the golint
+    " deprecation notice in a non-deterministic order.
+    call sort(l:actual)
+    call sort(l:expected)
 
     call gotest#assert_quickfix(actual, expected)
   finally
@@ -307,8 +327,13 @@ func! s:gometaautosave_multiple(metalinter) abort
     let start = reltime()
     while len(actual) == 0 && reltimefloat(reltime(start)) < 10
       sleep 100m
-      let actual = getloclist(0)
+      let actual = copy(getloclist(0))
     endwhile
+
+    " sort the results, because golangci-lint seems to be returning the golint
+    " deprecation notice in a non-deterministic order.
+    call sort(l:actual)
+    call sort(l:expected)
 
     call gotest#assert_quickfix(actual, expected)
   finally
