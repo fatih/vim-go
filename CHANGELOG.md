@@ -19,6 +19,8 @@ IMPROVEMENTS:
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
   [[GH-3216]](https://github.com/fatih/vim-go/pull/3216)
+* Fix applying text edits from gopls.
+  [[GH-3231]](https://github.com/fatih/vim-go/pull/3231)
 
 ## v1.25 - (April 18, 2021)
 
