@@ -1488,9 +1488,7 @@ default it is `fillstruct`.
 
 Use this option to define the command to be used for |:GoReferrers|. By
 default `gopls` is used, because it is the fastest and works with Go modules.
-One might also use `guru` for its ability to show references from other
-packages.  This option will be removed after `gopls` can show references from
-other packages. Valid options are `gopls` and `guru`. By default it's `gopls`.
+Valid options are `gopls` and `guru`. By default it's `gopls`.
 >
   let g:go_referrers_mode = 'gopls'
 <
