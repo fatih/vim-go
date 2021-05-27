@@ -93,7 +93,7 @@ function! go#coverage#Browser(bang, ...) abort
   let l:tmpname = tempname()
   if go#util#has_job()
     call s:coverage_job({
-          \ 'cmd': ['go', 'test', '-tags', go#config#BuildTags(), '-coverprofile', l:tmpname],
+          \ 'cmd': ['go', 'test', '-tags', go#config#BuildTags(), '-coverprofile', l:tmpname] + a:000,
           \ 'complete': function('s:coverage_browser_callback', [l:tmpname]),
           \ 'bang': a:bang,
           \ 'for': 'GoTest',
