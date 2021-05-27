@@ -21,6 +21,8 @@ BUG FIXES:
   [[GH-3216]](https://github.com/fatih/vim-go/pull/3216)
 * Fix applying text edits from gopls.
   [[GH-3231]](https://github.com/fatih/vim-go/pull/3231)
+* Apply arguments to `:GoCoverageBrowser`.
+  [[GH-4031]](https://github.com/fatih/vim-go/pull/4031)
 
 ## v1.25 - (April 18, 2021)
 
