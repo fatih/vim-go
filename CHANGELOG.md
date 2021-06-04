@@ -15,6 +15,9 @@ IMPROVEMENTS:
 * Install the latest release of tools that seem to be using tags to do releases
   instead of installing from their master/main branch.
   [[GH-3227]](https://github.com/fatih/vim-go/pull/3227)
+* Expose error message when `gopls` cannot be found and
+  `g:go_echo_command_info` is set.
+  [[GH-3244]](https://github.com/fatih/vim-go/pull/3244)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
