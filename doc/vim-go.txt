@@ -1625,7 +1625,7 @@ an empty list; `staticcheck`'s `-checks` flag will not be used.
 
 When `g:go_metalinter_command is set to `golangci-lint'`, the default value is
 >
-  let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+  let g:go_metalinter_autosave_enabled = ['vet', 'revive']
 <
                                                    *'g:go_metalinter_enabled'*
 
@@ -1642,7 +1642,7 @@ an empty list; `staticcheck`'s `-checks` flag will not be used.
 When `g:go_metalinter_command` is set to `golangci-lint'`, the default value
 is
 >
-  let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
+  let g:go_metalinter_enabled = ['vet', 'revive', 'errcheck']
 <
                                                    *'g:go_metalinter_command'*
 
