@@ -459,6 +459,10 @@ func! Test_Lint_GOPATH() abort
     let actual = getqflist()
   endwhile
 
+  " sort the results for deterministic ordering
+  call sort(actual)
+  call sort(expected)
+
   call gotest#assert_quickfix(actual, expected)
 
   "call assert_report(execute('ls'))
@@ -491,6 +495,10 @@ func! Test_Lint_NullModule() abort
     sleep 100m
     let actual = getqflist()
   endwhile
+
+  " sort the results for deterministic ordering
+  call sort(actual)
+  call sort(expected)
 
   call gotest#assert_quickfix(actual, expected)
   call call(RestoreGO111MODULE, [])

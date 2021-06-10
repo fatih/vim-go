@@ -287,7 +287,7 @@ function! go#config#MetalinterEnabled() abort
 endfunction
 
 function! go#config#GolintBin() abort
-  return get(g:, "go_golint_bin", "golint")
+  return get(g:, "go_golint_bin", "revive")
 endfunction
 
 function! go#config#ErrcheckBin() abort
