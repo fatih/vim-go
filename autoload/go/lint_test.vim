@@ -23,8 +23,7 @@ func! s:gometa(metalinter) abort
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
-            \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
-            \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
+            \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'exported: exported function MissingFooDoc should have comment or be unexported (revive)'}
           \ ]
     endif
 
@@ -33,7 +32,7 @@ func! s:gometa(metalinter) abort
 
     let g:go_metalinter_enabled = ['ST1000']
     if a:metalinter == 'golangci-lint'
-      let g:go_metalinter_enabled = ['golint']
+      let g:go_metalinter_enabled = ['revive']
     endif
 
     call go#lint#Gometa(0, 0, $GOPATH . '/src/foo')
@@ -135,8 +134,7 @@ func! s:gometaautosave(metalinter, withList) abort
 "          \ ]
     elseif a:metalinter == 'golangci-lint'
       let l:expected = [
-            \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
-            \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingDoc` should have comment or be unexported (golint)'}
+            \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'exported: exported function MissingDoc should have comment or be unexported (revive)'}
           \ ]
     endif
 
@@ -153,7 +151,7 @@ func! s:gometaautosave(metalinter, withList) abort
 
     let g:go_metalinter_autosave_enabled = ['ST1000']
     if a:metalinter == 'golangci-lint'
-      let g:go_metalinter_autosave_enabled = ['golint']
+      let g:go_metalinter_autosave_enabled = ['revive']
     endif
 
     call go#lint#Gometa(0, 1)
@@ -276,7 +274,7 @@ func! s:gometa_multiple(metalinter) abort
     " clear the quickfix list
     call setqflist([], 'r')
 
-    let g:go_metalinter_enabled = ['golint']
+    let g:go_metalinter_enabled = ['revive']
 
     call go#lint#Gometa(0, 0)
 
@@ -461,6 +459,10 @@ func! Test_Lint_GOPATH() abort
     let actual = getqflist()
   endwhile
 
+  " sort the results for deterministic ordering
+  call sort(actual)
+  call sort(expected)
+
   call gotest#assert_quickfix(actual, expected)
 
   "call assert_report(execute('ls'))
@@ -493,6 +495,10 @@ func! Test_Lint_NullModule() abort
     sleep 100m
     let actual = getqflist()
   endwhile
+
+  " sort the results for deterministic ordering
+  call sort(actual)
+  call sort(expected)
 
   call gotest#assert_quickfix(actual, expected)
   call call(RestoreGO111MODULE, [])

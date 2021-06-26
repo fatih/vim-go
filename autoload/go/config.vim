@@ -271,7 +271,7 @@ endfunction
 function! go#config#MetalinterAutosaveEnabled() abort
   let l:default = []
   if get(g:, 'go_metalinter_command', s:default_metalinter) == 'golangci-lint'
-    let l:default = ['govet', 'golint']
+    let l:default = ['govet', 'revive']
   endif
 
   return get(g:, 'go_metalinter_autosave_enabled', l:default)
@@ -280,14 +280,14 @@ endfunction
 function! go#config#MetalinterEnabled() abort
   let l:default = []
   if get(g:, 'go_metalinter_command', s:default_metalinter) == 'golangci-lint'
-    let l:default = ['vet', 'golint', 'errcheck']
+    let l:default = ['vet', 'revive', 'errcheck']
   endif
 
   return get(g:, 'go_metalinter_enabled', l:default)
 endfunction
 
 function! go#config#GolintBin() abort
-  return get(g:, "go_golint_bin", "golint")
+  return get(g:, "go_golint_bin", "revive")
 endfunction
 
 function! go#config#ErrcheckBin() abort
