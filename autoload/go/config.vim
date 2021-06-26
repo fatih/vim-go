@@ -611,6 +611,10 @@ function! go#config#DebugMappings() abort
   return extend(l:user, l:default, 'keep')
 endfunction
 
+function! go#config#DocBalloon() abort
+  return get(g:, 'go_doc_balloon', 0)
+endfunction
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1

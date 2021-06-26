@@ -970,8 +970,18 @@ function! s:hoverHandler(next, msg) abort dict
 
   try
     let l:value = json_decode(a:msg.contents.value)
-    let l:args = [l:value.signature]
-    call call(a:next, l:args)
+
+    let l:signature = split(l:value.signature, "\n")
+    let l:msg = l:signature
+    if go#config#DocBalloon()
+      " use synopsis instead of fullDocumentation to keep the hover window
+      " small.
+      let l:doc = l:value.synopsis
+      if len(l:doc) isnot 0
+        let l:msg = l:signature + ['', l:doc]
+      endif
+    endif
+    call call(a:next, [l:msg])
   catch
     " TODO(bc): log the message and/or show an error message.
   endtry
