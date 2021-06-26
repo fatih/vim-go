@@ -52,6 +52,8 @@ for popular package managers:
 
 * [Vim 8 packages](http://vimhelp.appspot.com/repeat.txt.html#packages)
   * `git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go`
+* [Neovim packages](https://neovim.io/doc/user/repeat.html#packages)
+  * `git clone https://github.com/fatih/vim-go.git ~/.local/share/nvim/site/pack/plugins/start/vim-go`
 * [Pathogen](https://github.com/tpope/vim-pathogen)
   * `git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go`
 * [vim-plug](https://github.com/junegunn/vim-plug)
