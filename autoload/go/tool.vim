@@ -134,8 +134,6 @@ function! s:balloon(msg)
   if has('balloon_eval')
     if has('balloon_multiline')
       let l:msg = join(a:msg, "\n")
-    else
-      let l:msg = substitute(join(map(deepcopy(a:msg), 'substitute(v:val, "\t", "", "")'), '; '), '{;', '{', '')
     endif
   endif
 
