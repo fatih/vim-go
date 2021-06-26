@@ -3,11 +3,91 @@
 " license that can be found in the LICENSE file.
 "
 " go.vim: Vim syntax file for Go.
+" Language:             Go
+" Maintainer:           Billie Cleek <bhcleek@gmail.com>
+" Latest Revision:      2021-06-26
+" License:              BSD-style. See LICENSE file in source repository.
+" Repository:           https://github.com/fatih/vim-go
 
 " Quit when a (custom) syntax file was already loaded
 if exists("b:current_syntax")
   finish
 endif
+
+function! s:FoldEnable(...) abort
+  if a:0 > 0
+    return index(s:FoldEnable(), a:1) > -1
+  endif
+  return get(g:, 'go_fold_enable', ['block', 'import', 'varconst', 'package_comment'])
+endfunction
+
+function! s:HighlightArrayWhitespaceError() abort
+  return get(g:, 'go_highlight_array_whitespace_error', 0)
+endfunction
+
+function! s:HighlightChanWhitespaceError() abort
+  return get(g:, 'go_highlight_chan_whitespace_error', 0)
+endfunction
+
+function! s:HighlightExtraTypes() abort
+  return get(g:, 'go_highlight_extra_types', 0)
+endfunction
+
+function! s:HighlightSpaceTabError() abort
+  return get(g:, 'go_highlight_space_tab_error', 0)
+endfunction
+
+function! s:HighlightTrailingWhitespaceError() abort
+  return get(g:, 'go_highlight_trailing_whitespace_error', 0)
+endfunction
+
+function! s:HighlightOperators() abort
+  return get(g:, 'go_highlight_operators', 0)
+endfunction
+
+function! s:HighlightFunctions() abort
+  return get(g:, 'go_highlight_functions', 0)
+endfunction
+
+function! s:HighlightFunctionParameters() abort
+  return get(g:, 'go_highlight_function_parameters', 0)
+endfunction
+
+function! s:HighlightFunctionCalls() abort
+  return get(g:, 'go_highlight_function_calls', 0)
+endfunction
+
+function! s:HighlightFields() abort
+  return get(g:, 'go_highlight_fields', 0)
+endfunction
+
+function! s:HighlightTypes() abort
+  return get(g:, 'go_highlight_types', 0)
+endfunction
+
+function! s:HighlightBuildConstraints() abort
+  return get(g:, 'go_highlight_build_constraints', 0)
+endfunction
+
+function! s:HighlightStringSpellcheck() abort
+  return get(g:, 'go_highlight_string_spellcheck', 1)
+endfunction
+
+function! s:HighlightFormatStrings() abort
+  return get(g:, 'go_highlight_format_strings', 1)
+endfunction
+
+function! s:HighlightGenerateTags() abort
+  return get(g:, 'go_highlight_generate_tags', 0)
+endfunction
+
+function! s:HighlightVariableAssignments() abort
+  return get(g:, 'go_highlight_variable_assignments', 0)
+endfunction
+
+function! s:HighlightVariableDeclarations() abort
+  return get(g:, 'go_highlight_variable_declarations', 0)
+endfunction
 
 syn case match
 
@@ -61,7 +141,7 @@ syn keyword     goTodo              contained TODO FIXME XXX BUG
 syn cluster     goCommentGroup      contains=goTodo
 
 syn region      goComment           start="//" end="$" contains=goGenerate,@goCommentGroup,@Spell
-if go#config#FoldEnable('comment')
+if s:FoldEnable('comment')
   syn region    goComment           start="/\*" end="\*/" contains=@goCommentGroup,@Spell fold
   syn match     goComment           "\v(^\s*//.*\n)+" contains=goGenerate,@goCommentGroup,@Spell fold
 else
@@ -71,7 +151,7 @@ endif
 hi def link     goComment           Comment
 hi def link     goTodo              Todo
 
-if go#config#HighlightGenerateTags()
+if s:HighlightGenerateTags()
   syn match       goGenerateVariables contained /\%(\$GOARCH\|\$GOOS\|\$GOFILE\|\$GOLINE\|\$GOPACKAGE\|\$DOLLAR\)\>/
   syn region      goGenerate          start="^\s*//go:generate" end="$" contains=goGenerateVariables
   hi def link     goGenerate          PreProc
@@ -96,7 +176,7 @@ hi def link     goEscapeError       Error
 
 " Strings and their contents
 syn cluster     goStringGroup       contains=goEscapeOctal,goEscapeC,goEscapeX,goEscapeU,goEscapeBigU,goEscapeError
-if go#config#HighlightStringSpellcheck()
+if s:HighlightStringSpellcheck()
   syn region      goString            start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup,@Spell
   syn region      goRawString         start=+`+ end=+`+ contains=@Spell
 else
@@ -104,7 +184,7 @@ else
   syn region      goRawString         start=+`+ end=+`+
 endif
 
-if go#config#HighlightFormatStrings()
+if s:HighlightFormatStrings()
   " [n] notation is valid for specifying explicit argument indexes
   " 1. Match a literal % not preceded by a %.
   " 2. Match any number of -, #, 0, space, or +
@@ -132,21 +212,21 @@ hi def link     goCharacter         Character
 
 " Regions
 syn region      goParen             start='(' end=')' transparent
-if go#config#FoldEnable('block')
+if s:FoldEnable('block')
   syn region    goBlock             start="{" end="}" transparent fold
 else
   syn region    goBlock             start="{" end="}" transparent
 endif
 
 " import
-if go#config#FoldEnable('import')
+if s:FoldEnable('import')
   syn region    goImport            start='import (' end=')' transparent fold contains=goImport,goString,goComment
 else
   syn region    goImport            start='import (' end=')' transparent contains=goImport,goString,goComment
 endif
 
 " var, const
-if go#config#FoldEnable('varconst')
+if s:FoldEnable('varconst')
   syn region    goVar               start='var ('   end='^\s*)$' transparent fold
                         \ contains=ALLBUT,goParen,goBlock,goFunction,goTypeName,goReceiverType,goReceiverVar,goParamName,goParamType,goSimpleParams,goPointerOperator
   syn region    goConst             start='const (' end='^\s*)$' transparent fold
@@ -197,12 +277,12 @@ hi def link     goImaginary         Number
 hi def link     goImaginaryFloat    Float
 
 " Spaces after "[]"
-if go#config#HighlightArrayWhitespaceError()
+if s:HighlightArrayWhitespaceError()
   syn match goSpaceError display "\%(\[\]\)\@<=\s\+"
 endif
 
 " Spacing errors around the 'chan' keyword
-if go#config#HighlightChanWhitespaceError()
+if s:HighlightChanWhitespaceError()
   " receive-only annotation on chan type
   "
   " \(\<chan\>\)\@<!<-  (only pick arrow when it doesn't come after a chan)
@@ -220,7 +300,7 @@ if go#config#HighlightChanWhitespaceError()
 endif
 
 " Extra types commonly seen
-if go#config#HighlightExtraTypes()
+if s:HighlightExtraTypes()
   syn match goExtraType /\<bytes\.\%(Buffer\)\>/
   syn match goExtraType /\<context\.\%(Context\)\>/
   syn match goExtraType /\<io\.\%(Reader\|ReadSeeker\|ReadWriter\|ReadCloser\|ReadWriteCloser\|Writer\|WriteCloser\|Seeker\)\>/
@@ -229,12 +309,12 @@ if go#config#HighlightExtraTypes()
 endif
 
 " Space-tab error
-if go#config#HighlightSpaceTabError()
+if s:HighlightSpaceTabError()
   syn match goSpaceError display " \+\t"me=e-1
 endif
 
 " Trailing white space error
-if go#config#HighlightTrailingWhitespaceError()
+if s:HighlightTrailingWhitespaceError()
   syn match goSpaceError display excludenl "\s\+$"
 endif
 
@@ -252,7 +332,7 @@ hi def link     goTodo              Todo
 syn match goVarArgs /\.\.\./
 
 " Operators;
-if go#config#HighlightOperators()
+if s:HighlightOperators()
   " match single-char operators:          - + % < > ! & | ^ * =
   " and corresponding two-char operators: -= += %= <= >= != &= |= ^= *= ==
   syn match goOperator /[-+%<>!&|^*=]=\?/
@@ -271,13 +351,13 @@ endif
 hi def link     goOperator          Operator
 
 " Functions;
-if go#config#HighlightFunctions() || go#config#HighlightFunctionParameters()
+if s:HighlightFunctions() || s:HighlightFunctionParameters()
   syn match goDeclaration       /\<func\>/ nextgroup=goReceiver,goFunction,goSimpleParams skipwhite skipnl
   syn match goReceiverVar       /\w\+\ze\s\+\%(\w\|\*\)/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goFunction          /\w\+/ nextgroup=goSimpleParams contained skipwhite skipnl
   syn match goReceiverType      /\w\+/ contained
-  if go#config#HighlightFunctionParameters()
+  if s:HighlightFunctionParameters()
     syn match goSimpleParams      /(\%(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType nextgroup=goFunctionReturn skipwhite skipnl
     syn match goFunctionReturn   /(\%(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType skipwhite skipnl
     syn match goParamName        /\w\+\%(\s*,\s*\w\+\)*\ze\s\+\%(\w\|\.\|\*\|\[\)/ contained nextgroup=goParamType skipwhite skipnl
@@ -293,13 +373,13 @@ endif
 hi def link     goFunction          Function
 
 " Function calls;
-if go#config#HighlightFunctionCalls()
+if s:HighlightFunctionCalls()
   syn match goFunctionCall      /\w\+\ze(/ contains=goBuiltins,goDeclaration
 endif
 hi def link     goFunctionCall      Type
 
 " Fields;
-if go#config#HighlightFields()
+if s:HighlightFields()
   " 1. Match a sequence of word characters coming after a '.'
   " 2. Require the following but dont match it: ( \@= see :h E59)
   "    - The symbols: / - + * %   OR
@@ -318,7 +398,7 @@ endif
 hi def link    goField              Identifier
 
 " Structs & Interfaces;
-if go#config#HighlightTypes()
+if s:HighlightTypes()
   syn match goTypeConstructor      /\<\w\+{\@=/
   syn match goTypeDecl             /\<type\>/ nextgroup=goTypeName skipwhite skipnl
   syn match goTypeName             /\w\+/ contained nextgroup=goDeclType skipwhite skipnl
@@ -334,19 +414,19 @@ hi def link     goTypeDecl          Keyword
 hi def link     goDeclType          Keyword
 
 " Variable Assignments
-if go#config#HighlightVariableAssignments()
+if s:HighlightVariableAssignments()
   syn match goVarAssign /\v[_.[:alnum:]]+(,\s*[_.[:alnum:]]+)*\ze(\s*([-^+|^\/%&]|\*|\<\<|\>\>|\&\^)?\=[^=])/
   hi def link   goVarAssign         Special
 endif
 
 " Variable Declarations
-if go#config#HighlightVariableDeclarations()
+if s:HighlightVariableDeclarations()
   syn match goVarDefs /\v\w+(,\s*\w+)*\ze(\s*:\=)/
   hi def link   goVarDefs           Special
 endif
 
 " Build Constraints
-if go#config#HighlightBuildConstraints()
+if s:HighlightBuildConstraints()
   syn match   goBuildKeyword      display contained "+build"
   " Highlight the known values of GOOS, GOARCH, and other +build options.
   syn keyword goBuildDirectives   contained
@@ -368,7 +448,7 @@ if go#config#HighlightBuildConstraints()
   hi def link goBuildKeyword      PreProc
 endif
 
-if go#config#HighlightBuildConstraints() || go#config#FoldEnable('package_comment')
+if s:HighlightBuildConstraints() || s:FoldEnable('package_comment')
   " One or more line comments that are followed immediately by a "package"
   " declaration are treated like package documentation, so these must be
   " matched as comments to avoid looking like working build constraints.
@@ -377,61 +457,16 @@ if go#config#HighlightBuildConstraints() || go#config#FoldEnable('package_commen
   exe 'syn region  goPackageComment    start=/\v(\/\/.*\n)+\s*package/'
         \ . ' end=/\v\n\s*package/he=e-7,me=e-7,re=e-7'
         \ . ' contains=@goCommentGroup,@Spell'
-        \ . (go#config#FoldEnable('package_comment') ? ' fold' : '')
+        \ . (s:FoldEnable('package_comment') ? ' fold' : '')
   exe 'syn region  goPackageComment    start=/\v^\s*\/\*.*\n(.*\n)*\s*\*\/\npackage/'
         \ . ' end=/\v\*\/\n\s*package/he=e-7,me=e-7,re=e-7'
         \ . ' contains=@goCommentGroup,@Spell'
-        \ . (go#config#FoldEnable('package_comment') ? ' fold' : '')
+        \ . (s:FoldEnable('package_comment') ? ' fold' : '')
   hi def link goPackageComment    Comment
 endif
 
 " :GoCoverage commands
 hi def link goCoverageNormalText Comment
-
-function! s:hi()
-  hi def link goSameId Search
-  hi def link goDiagnosticError SpellBad
-  hi def link goDiagnosticWarning SpellRare
-
-  " TODO(bc): is it appropriate to define text properties in a syntax file?
-  " The highlight groups need to be defined before the text properties types
-  " are added, and when users have syntax enabled in their vimrc after
-  " filetype plugin on, the highlight groups won't be defined when
-  " ftplugin/go.vim is executed when the first go file is opened.
-  " See https://github.com/fatih/vim-go/issues/2658.
-  if has('textprop')
-    if empty(prop_type_get('goSameId'))
-      call prop_type_add('goSameId', {'highlight': 'goSameId'})
-    endif
-    if empty(prop_type_get('goDiagnosticError'))
-      call prop_type_add('goDiagnosticError', {'highlight': 'goDiagnosticError'})
-    endif
-    if empty(prop_type_get('goDiagnosticWarning'))
-      call prop_type_add('goDiagnosticWarning', {'highlight': 'goDiagnosticWarning'})
-    endif
-  endif
-
-  hi def link goDeclsFzfKeyword        Keyword
-  hi def link goDeclsFzfFunction       Function
-  hi def link goDeclsFzfSpecialComment SpecialComment
-  hi def link goDeclsFzfComment        Comment
-
-  " :GoCoverage commands
-  hi def      goCoverageCovered    ctermfg=green guifg=#A6E22E
-  hi def      goCoverageUncover    ctermfg=red guifg=#F92672
-
-  " :GoDebug commands
-  if go#config#HighlightDebug()
-    hi def GoDebugBreakpoint term=standout ctermbg=117 ctermfg=0 guibg=#BAD4F5  guifg=Black
-    hi def GoDebugCurrent term=reverse  ctermbg=12  ctermfg=7 guibg=DarkBlue guifg=White
-  endif
-endfunction
-
-augroup vim-go-hi
-  autocmd!
-  autocmd ColorScheme * call s:hi()
-augroup end
-call s:hi()
 
 " Search backwards for a global declaration to start processing the syntax.
 "syn sync match goSync grouphere NONE /^\(const\|var\|type\|func\)\>/
