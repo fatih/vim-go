@@ -295,7 +295,7 @@ function! s:newlsp() abort
           call remove(self.notificationQueue[l:fname], 0)
         endif
       catch
-        call go#util#EchoError(printf('%s: %s', v:throwpoint, v:exception))
+        "call go#util#EchoError(printf('%s: %s', v:throwpoint, v:exception))
       endtry
     endfor
   endfunction
@@ -1874,7 +1874,7 @@ function! s:lineinfile(fname, line) abort
 
     return l:filecontents[-1]
   catch
-    call go#util#EchoError(printf('%s (line %s): %s at %s', a:fname, a:line, v:exception, v:throwpoint))
+    "call go#util#EchoError(printf('%s (line %s): %s at %s', a:fname, a:line, v:exception, v:throwpoint))
     return -1
   endtry
 endfunction
