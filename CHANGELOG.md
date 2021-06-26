@@ -22,6 +22,8 @@ IMPROVEMENTS:
   [[GH-3226]](https://github.com/fatih/vim-go/pull/3226)
 * Add `g:go_doc_balloon` to allow godoc to be displayed in hover balloons.
   [[GH-3252]](https://github.com/fatih/vim-go/pull/3252)
+* Default to using `revive` in place of `golint`.
+  [[GH-3248]](https://github.com/fatih/vim-go/pull/3248)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
