@@ -20,6 +20,8 @@ IMPROVEMENTS:
   [[GH-3244]](https://github.com/fatih/vim-go/pull/3244)
 * Install all tools in module aware mode in preparation for Go 1.17 release.
   [[GH-3226]](https://github.com/fatih/vim-go/pull/3226)
+* Add `g:go_doc_balloon` to allow godoc to be displayed in hover balloons.
+  [[GH-3252]](https://github.com/fatih/vim-go/pull/3252)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
