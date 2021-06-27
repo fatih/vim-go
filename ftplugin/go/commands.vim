@@ -103,7 +103,9 @@ command! -nargs=* -complete=customlist,go#impl#Complete GoImpl call go#impl#Impl
 command! -nargs=0 GoTemplateAutoCreateToggle call go#template#ToggleAutoCreate()
 
 " -- keyify
-command! -nargs=0 GoKeyify call go#keyify#Keyify()
+if go#package#InGOPATH()
+  command! -nargs=0 GoKeyify call go#keyify#Keyify()
+endif
 
 " -- fillstruct
 command! -nargs=0 GoFillStruct call go#fillstruct#FillStruct()
