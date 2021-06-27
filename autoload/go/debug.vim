@@ -975,21 +975,65 @@ function! s:eval(arg) abort
     let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
     call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.State')
     let l:res = l:promise.await()
-    let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
-    call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.Eval', {
+
+    let l:cmd = 'RPCServer.Eval'
+    let l:args = {
           \ 'expr':  a:arg,
           \ 'scope': {'GoroutineID': l:res.result.State.currentThread.goroutineID}
-      \ })
+      \ }
+
+    let l:ResultFn = funcref('s:evalResult', [])
+    if a:arg =~ '^call '
+      let l:cmd = 'RPCServer.Command'
+      let l:args = {
+            \ 'name': 'call',
+            \ 'Expr': a:arg[5:],
+            \ 'ReturnInfoLoadConfig': {
+              \ 'FollowPointers': v:false,
+              \ 'MaxVariableRecurse': 10,
+              \ 'MaxStringLen': 80,
+              \ 'MaxArrayValues': 10,
+              \ 'MaxStructFields': 10,
+            \ },
+          \ }
+
+      let l:ResultFn = funcref('s:callResult', [])
+    endif
+
+    let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
+    call s:call_jsonrpc(l:promise.wrapper, l:cmd, l:args)
 
     let l:res = l:promise.await()
 
-    return s:eval_tree(l:res.result.Variable, 0, 0)
+    let l:result = call(l:ResultFn, [l:res.result])
+
+    " l:result will be a list when evaluating a call expression.
+    if type(l:result) is type([])
+      let l:result = map(l:result, funcref('s:renameEvalReturnValue'))
+      if len(l:result) isnot 1
+        return map(l:result, 's:eval_tree(v:val, 0, 0)')
+      endif
+      let l:result = l:result[0]
+    endif
+    return s:eval_tree(l:result, 0, 0)
   catch
     call go#util#EchoError(printf('evaluation failed: %s', v:exception))
     return ''
   endtry
 endfunction
 
+function! s:callResult(res) abort
+  return a:res.State.currentThread.ReturnValues
+endfunction
+
+function! s:evalResult(res) abort
+  return a:res.Variable
+endfunction
+
+function! s:renameEvalReturnValue(key, val) abort
+  let a:val.name = printf('[%s]', string(a:key))
+  return a:val
+endfunction
 
 function! go#debug#BalloonExpr() abort
   silent! let l:v = s:eval(v:beval_text)
@@ -998,7 +1042,14 @@ endfunction
 
 function! go#debug#Print(arg) abort
   try
-    echo substitute(s:eval(a:arg), "\n$", "", 0)
+    let l:result = s:eval(a:arg)
+    if type(l:result) is type([])
+      echo join(map(l:result, 'substitute(v:val, "\n$", "", '''')'), "\n")
+      return
+    elseif type(l:result) isnot type('')
+      throw 'unexpected result'
+    endif
+    echo substitute(l:result, "\n$", "", '')
   catch
     call go#util#EchoError(printf('could not print: %s', v:exception))
   endtry
