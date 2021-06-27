@@ -28,6 +28,8 @@ IMPROVEMENTS:
   [[GH-3256]](https://github.com/fatih/vim-go/pull/3256)
 * Do not enable keyify unless in GOPATH.
   [[GH-3095]](https://github.com/fatih/vim-go/pull/3095)
+* Show LSP messages to users.
+  [[GH-3058]](https://github.com/fatih/vim-go/pull/3058)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
