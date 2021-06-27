@@ -26,6 +26,8 @@ IMPROVEMENTS:
   [[GH-3248]](https://github.com/fatih/vim-go/pull/3248)
 * Teach `:GoDebugPrint` to show function call return values.
   [[GH-3256]](https://github.com/fatih/vim-go/pull/3256)
+* Do not enable keyify unless in GOPATH.
+  [[GH-3095]](https://github.com/fatih/vim-go/pull/3095)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
