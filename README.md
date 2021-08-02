@@ -77,7 +77,7 @@ Depending on your installation method, you may have to generate the plugin's
 [`help tags`](http://vimhelp.appspot.com/helphelp.txt.html#%3Ahelptags)
 manually (e.g. `:helptags ALL`).
 
-We also have an [official vim-go tutorial](https://github.com/fatih/vim-go/wiki).
+We also have a [tutorial](https://github.com/fatih/vim-go/wiki/Tutorial) in the [official vim-go wiki](https://github.com/fatih/vim-go/wiki).
 
 ## FAQ and troubleshooting
 
