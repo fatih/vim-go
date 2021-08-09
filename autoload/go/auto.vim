@@ -12,6 +12,10 @@ function! go#auto#template_autocreate()
 endfunction
 
 function! go#auto#complete_done()
+  if &omnifunc isnot 'go#complete#Complete'
+    return
+  endif
+
   call s:echo_go_info()
   call s:ExpandSnippet()
 endfunction
