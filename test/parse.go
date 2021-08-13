@@ -11,8 +11,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
-
-	a "golang.org/x/net/html/atom"
+	"golang.org/x/net/html/atom"
 )
 
 // A parser implements the HTML5 parsing algorithm:
