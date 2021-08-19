@@ -592,6 +592,10 @@ function! go#config#GoplsOptions() abort
   return get(g:, 'go_gopls_options', ['-remote=auto'])
 endfunction
 
+function! go#config#GoplsBinary() abort
+  return get(g:, 'go_gopls_binary', 'gopls')
+endfunction
+
 function! go#config#FillStructMode() abort
   return get(g:, 'go_fillstruct_mode', 'fillstruct')
 endfunction

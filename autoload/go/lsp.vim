@@ -490,7 +490,7 @@ function! s:newlsp() abort
         \ 'cwd': getcwd(),
         \}
 
-  let l:bin_path = go#path#CheckBinPath("gopls")
+  let l:bin_path = go#path#CheckBinPath(go#config#GoplsBinary())
   if empty(l:bin_path)
     let l:lsp.sendMessage = funcref('s:noop')
     return l:lsp
@@ -984,7 +984,19 @@ function! s:hoverHandler(next, msg) abort dict
   endif
 
   try
-    let l:value = json_decode(a:msg.contents.value)
+    let l:hasStructured = 0
+    try
+      let l:value = json_decode(a:msg.contents.value)
+      let l:hasStructured = 1
+    catch /.*/
+      " json_decode failed; assume lsp doesn't support structured hover
+      " response.
+    endtry
+
+    if l:hasStructured == 0
+      call call(a:next, [a:msg.contents.value])
+      return
+    endif
 
     let l:signature = split(l:value.signature, "\n")
     let l:msg = l:signature
@@ -1027,7 +1039,13 @@ function! s:docFromHoverResult(msg) abort dict
     return ['Undocumented', 0]
   endif
 
-  let l:value = json_decode(a:msg.contents.value)
+  try
+    let l:value = json_decode(a:msg.contents.value)
+  catc /.*/
+      " json_decode failed; assume lsp doesn't support structured hover
+      " response.
+    return [a:msg.contents.value, 0]
+  endtry
   let l:doc = l:value.fullDocumentation
   if len(l:doc) is 0
     let l:doc = 'Undocumented'
@@ -1060,7 +1078,13 @@ function! s:docLinkFromHoverResult(msg) abort dict
   if a:msg is v:null || !has_key(a:msg, 'contents')
     return ['', 0]
   endif
-  let l:doc = json_decode(a:msg.contents.value)
+  try
+    let l:doc = json_decode(a:msg.contents.value)
+  catch /.*/
+      " json_decode failed; assume lsp doesn't support structured hover
+      " response.
+    return ['', 0]
+  endtry
 
   " for backward compatibility with older gopls
   if has_key(l:doc, 'link')
@@ -1145,9 +1169,16 @@ function! s:info(show, msg) abort dict
     return
   endif
 
-  let l:value = json_decode(a:msg.contents.value)
-  let l:content = [l:value.singleLine]
-  let l:content = s:infoFromHoverContent(l:content)
+  let l:content = a:msg.contents.value
+
+  try
+    let l:value = json_decode(a:msg.contents.value)
+    let l:content = [l:value.singleLine]
+    let l:content = s:infoFromHoverContent(l:content)
+  catch /.*/
+    " json_decode failed; assume lsp doesn't support structured hover
+    " response.
+  endtry
 
   if a:show
     call go#util#ShowInfo(l:content)
