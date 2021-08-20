@@ -984,19 +984,14 @@ function! s:hoverHandler(next, msg) abort dict
   endif
 
   try
-    let l:hasStructured = 0
     try
       let l:value = json_decode(a:msg.contents.value)
-      let l:hasStructured = 1
     catch /.*/
       " json_decode failed; assume lsp doesn't support structured hover
       " response.
-    endtry
-
-    if l:hasStructured == 0
       call call(a:next, [a:msg.contents.value])
       return
-    endif
+    endtry
 
     let l:signature = split(l:value.signature, "\n")
     let l:msg = l:signature
