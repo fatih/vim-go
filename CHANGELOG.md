@@ -42,6 +42,8 @@ BUG FIXES:
   [[GH-3240]](https://github.com/fatih/vim-go/pull/3240)
 * Fix `:GoFillStruct` when `g:go_fillstruct_mode` is `gopls`.
   [[GH-3279]](https://github.com/fatih/vim-go/pull/3279)
+* Fix example in `g:go_metalinter_enabled` documentation.
+  [[GH-3291]](https://github.com/fatih/vim-go/pull/3291)
 
 ## v1.25 - (April 18, 2021)
 
