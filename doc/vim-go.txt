@@ -1643,7 +1643,7 @@ metalinter.
 When `g:go_metalinter_command` is set to `staticcheck`, the default value is
 an empty list; `staticcheck`'s `-checks` flag will not be used.
 >
-  let g:go_metalinter_autosave_enabled = ['all']
+  let g:go_metalinter_enabled = ['all']
 <
 
 When `g:go_metalinter_command` is set to `golangci-lint'`, the default value
