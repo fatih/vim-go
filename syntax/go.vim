@@ -345,6 +345,12 @@ if go#config#HighlightVariableDeclarations()
   hi def link   goVarDefs           Special
 endif
 
+" Build Constraints in new format //go:build ...
+if go#config#HighlightBuildConstraintsNewFormat()
+  syn region      goGenerate          start="^\s*//go:build" end="$" contains=goBuildKeyword,goBuildDirectives
+  hi def link     goGenerate          PreProc
+endif
+
 " Build Constraints
 if go#config#HighlightBuildConstraints()
   syn match   goBuildKeyword      display contained "+build"

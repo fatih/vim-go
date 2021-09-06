@@ -454,6 +454,10 @@ function! go#config#HighlightTypes() abort
   return get(g:, 'go_highlight_types', 0)
 endfunction
 
+function! go#config#HighlightBuildConstraintsNewFormat() abort
+  return get(g:, 'go_highlight_build_constraints_new_format', 0)
+endfunction
+
 function! go#config#HighlightBuildConstraints() abort
   return get(g:, 'go_highlight_build_constraints', 0)
 endfunction
