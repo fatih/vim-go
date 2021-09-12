@@ -32,6 +32,8 @@ IMPROVEMENTS:
   [[GH-3058]](https://github.com/fatih/vim-go/pull/3058)
 * Check omnifunc's value before executing actions on CompletedDone event.
   [[GH-3274]](https://github.com/fatih/vim-go/pull/3274)
+* Highligh new form of build constraints.
+  [[GH-3292]](https://github.com/fatih/vim-go/pull/3292)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
