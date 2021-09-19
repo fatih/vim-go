@@ -14,6 +14,9 @@ if exists("b:current_syntax")
   finish
 endif
 
+let s:keepcpo = &cpo
+set cpo&vim
+
 function! s:FoldEnable(...) abort
   if a:0 > 0
     return index(s:FoldEnable(), a:1) > -1
@@ -477,4 +480,7 @@ syn sync minlines=500
 
 let b:current_syntax = "go"
 
-" vim: sw=2 ts=2 et
+let &cpo = s:keepcpo
+unlet s:keepcpo
+
+" vim: sw=2 sts=2 et
