@@ -749,6 +749,22 @@ function go#util#TestName() abort
   return split(split(l:decl, " ")[1], "(")[0]
 endfunction
 
+function go#util#ExpandPattern(...) abort
+  let l:packages = []
+  for l:pattern in a:000
+    let l:pkgs = go#tool#List(l:pattern)
+    if l:pkgs is -1
+      call go#util#EchoError('could not expand package pattern')
+      continue
+    endif
+
+    let l:packages = extend(l:packages, l:pkgs)
+    call go#util#EchoInfo(printf("l:packages = %s, l:pkgs = %s", l:packages, l:pkgs))
+  endfor
+
+  return uniq(sort(l:packages))
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
