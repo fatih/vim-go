@@ -34,6 +34,8 @@ IMPROVEMENTS:
   [[GH-3274]](https://github.com/fatih/vim-go/pull/3274)
 * Highligh new form of build constraints.
   [[GH-3292]](https://github.com/fatih/vim-go/pull/3292)
+* Teach `:GoDiagnostics` to handle package pattern arguments.
+  [[GH-3297]](https://github.com/fatih/vim-go/pull/3297)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
