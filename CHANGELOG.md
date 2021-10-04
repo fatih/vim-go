@@ -48,6 +48,8 @@ BUG FIXES:
   [[GH-3279]](https://github.com/fatih/vim-go/pull/3279)
 * Fix example in `g:go_metalinter_enabled` documentation.
   [[GH-3291]](https://github.com/fatih/vim-go/pull/3291)
+* Fix changing directories in older Vims.
+  [[GH-3299]](https://github.com/fatih/vim-go/pull/3299)
 
 ## v1.25 - (April 18, 2021)
 
