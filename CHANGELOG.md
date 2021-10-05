@@ -32,7 +32,7 @@ IMPROVEMENTS:
   [[GH-3058]](https://github.com/fatih/vim-go/pull/3058)
 * Check omnifunc's value before executing actions on CompletedDone event.
   [[GH-3274]](https://github.com/fatih/vim-go/pull/3274)
-* Highligh new form of build constraints.
+* Highlight new form of build constraints.
   [[GH-3292]](https://github.com/fatih/vim-go/pull/3292)
 * Teach `:GoDiagnostics` to handle package pattern arguments.
   [[GH-3297]](https://github.com/fatih/vim-go/pull/3297)
