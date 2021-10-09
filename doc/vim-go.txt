@@ -2518,6 +2518,17 @@ Preserve window layout in debugging mode. This setting is considered only when
 >
   let g:go_debug_preserve_layout = 0
 <
+                                               *'g:go_debug_substitute_paths'*
+
+Substitute paths in the debugger. This is a list of lists where each element
+is a list wherein the remote path (the from side) is the first element and the
+local path (the to side) is the second element. These are necessary when the
+binary being debugged was not built from the same location that its source
+resides locally. By default it is empty.
+
+>
+  let g:go_debug_substitute_paths = [['/compiled/from', '/cloned/to']]
+<
                                                        *'g:go_debug_mappings'*
 
 Contains custom key mapping information to customize the active mappings
