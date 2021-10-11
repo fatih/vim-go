@@ -211,6 +211,10 @@ function! go#config#DebugWindows() abort
 
 endfunction
 
+function! go#config#DebugSubstitutePaths() abort
+  return get(g:, 'go_debug_substitute_paths', [])
+endfunction
+
 function! go#config#DebugPreserveLayout() abort
   return get(g:, 'go_debug_preserve_layout', 0)
 endfunction

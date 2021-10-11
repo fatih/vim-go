@@ -158,7 +158,7 @@ function! s:update_breakpoint(res) abort
   endif
 
   exe bufs[0][0] 'wincmd w'
-  let filename = state.currentThread.file
+  let filename = s:substituteRemotePath(state.currentThread.file)
   let linenr = state.currentThread.line
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
   if oldfile != filename
@@ -202,7 +202,7 @@ function! s:show_stacktrace(check_errors, res) abort
       if loc.file is# '?' || !has_key(loc, 'function')
         continue
       endif
-      call setline(i+1, printf('%s - %s:%d', loc.function.name, fnamemodify(loc.file, ':p'), loc.line))
+      call setline(i+1, printf('%s - %s:%d', loc.function.name, s:substituteRemotePath(fnamemodify(loc.file, ':p')), loc.line))
     endfor
   finally
     setlocal nomodifiable
@@ -357,7 +357,7 @@ function! s:goto_file() abort
     return
   endif
   exe bufs[0][0] 'wincmd w'
-  let filename = m[1]
+  let filename = s:substituteLocalPath(m[1])
   let linenr = m[2]
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
   if oldfile != filename
@@ -1140,9 +1140,9 @@ function! s:show_goroutines(currentGoroutineID, res) abort
       " lines is modified, then make sure that go#debug#Goroutine is also
       " changed if needed.
       if l:goroutine.id == a:currentGoroutineID
-        let l:g = printf("* Goroutine %s - %s: %s:%s %s (thread: %s)", l:goroutine.id, l:goroutineType, l:loc.file, l:loc.line, l:loc.function.name, l:goroutine.threadID)
+        let l:g = printf("* Goroutine %s - %s: %s:%s %s (thread: %s)", l:goroutine.id, l:goroutineType, s:substituteRemotePath(l:loc.file), l:loc.line, l:loc.function.name, l:goroutine.threadID)
       else
-        let l:g = printf("  Goroutine %s - %s: %s:%s %s (thread: %s)", l:goroutine.id, l:goroutineType, l:loc.file, l:loc.line, l:loc.function.name, l:goroutine.threadID)
+        let l:g = printf("  Goroutine %s - %s: %s:%s %s (thread: %s)", l:goroutine.id, l:goroutineType, s:substituteRemotePath(l:loc.file), l:loc.line, l:loc.function.name, l:goroutine.threadID)
       endif
       let v += [l:g]
     endfor
@@ -1454,10 +1454,10 @@ function! go#debug#Breakpoint(...) abort
     else " Add breakpoint
       if s:isReady()
         let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
-        call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.CreateBreakpoint', {'Breakpoint': {'file': l:filename, 'line': l:linenr}})
+        call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.CreateBreakpoint', {'Breakpoint': {'file': s:substituteLocalPath(l:filename), 'line': l:linenr}})
         let l:res = l:promise.await()
         let l:bt = l:res.result.Breakpoint
-        call s:sign_place(l:bt.id, l:bt.file, l:bt.line)
+        call s:sign_place(l:bt.id, s:substituteRemotePath(l:bt.file), l:bt.line)
       else
         let l:id = len(s:list_breakpoints()) + 1
         call s:sign_place(l:id, l:filename, l:linenr)
@@ -1617,7 +1617,7 @@ function! s:handle_staleness_check_response(filename, check_errors, res) abort
 endfunction
 
 function! s:warn_stale(filename) abort
-  call go#util#EchoWarning(printf('file locations may be incorrect, because  %s has changed since debugging started', a:filename))
+  call go#util#EchoWarning(printf('file locations may be incorrect, because %s has changed since debugging started', a:filename))
 endfunction
 
 
@@ -1735,6 +1735,29 @@ function! s:restore_mapping(maparg)
 
   call mapset('n', 0, a:maparg)
   return
+endfunction
+
+function! s:substituteRemotePath(path) abort
+  return s:substitutePath(a:path, go#config#DebugSubstitutePaths())
+endfunction
+
+function! s:substituteLocalPath(path) abort
+  return s:substitutePath(a:path, map(deepcopy(go#config#DebugSubstitutePaths()), '[v:val[1], v:val[0]]'))
+endfunction
+
+function! s:substitutePath(path, substitutions) abort
+  for [l:from, l:to] in a:substitutions
+    if len(a:path) < len(l:from)
+      continue
+    endif
+    if a:path[0:len(l:from)-1] != l:from
+      continue
+    endif
+
+    return printf('%s%s', l:to, a:path[len(l:from):-1])
+  endfor
+
+  return a:path
 endfunction
 
 " restore Vi compatibility settings
