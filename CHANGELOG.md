@@ -36,6 +36,10 @@ IMPROVEMENTS:
   [[GH-3292]](https://github.com/fatih/vim-go/pull/3292)
 * Teach `:GoDiagnostics` to handle package pattern arguments.
   [[GH-3297]](https://github.com/fatih/vim-go/pull/3297)
+* Add `g:go_debug_subsitute_paths` to support debugging applications when the
+  source is hosted in a local location that is different from where the binary
+  was compiled.
+  [[GH-3301]](https://github.com/fatih/vim-go/pull/3301)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
