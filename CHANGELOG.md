@@ -54,9 +54,6 @@ BUG FIXES:
   [[GH-3291]](https://github.com/fatih/vim-go/pull/3291)
 * Fix changing directories in older Vims.
   [[GH-3299]](https://github.com/fatih/vim-go/pull/3299)
-* Highlight the receive type when method declarations that omit the receiver
-  identifier.
-  [[GH-3304]](https://github.com/fatih/vim-go/pull/3304)
 
 ## v1.25 - (April 18, 2021)
 
