@@ -118,7 +118,6 @@ if !exists(':GoDebugStart')
   command! -nargs=1 GoDebugAttach call go#debug#Start('attach', <f-args>)
   command! -nargs=? GoDebugConnect call go#debug#Start('connect', <f-args>)
   command! -nargs=? GoDebugBreakpoint call go#debug#Breakpoint(<f-args>)
-  command! -nargs=2 GoDebugSubstitutePaths call go#debug#SubstitutePaths(<f-args>)
 endif
 
 " -- issue

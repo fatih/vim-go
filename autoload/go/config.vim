@@ -215,15 +215,6 @@ function! go#config#DebugSubstitutePaths() abort
   return get(g:, 'go_debug_substitute_paths', [])
 endfunction
 
-function! go#config#SetDebugSubstitutePaths(value) abort
-  if empty(a:value)
-    silent! unlet g:go_debug_substitute_paths
-    return
-  endif
-
-  let g:go_debug_substitute_paths = a:value
-endfunction
-
 function! go#config#DebugPreserveLayout() abort
   return get(g:, 'go_debug_preserve_layout', 0)
 endfunction
