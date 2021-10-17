@@ -1760,6 +1760,43 @@ function! s:substitutePath(path, substitutions) abort
   return a:path
 endfunction
 
+" SubstitutePaths sets or shows the current debug substitute paths
+function! go#debug#SubstitutePaths(...) abort
+  if a:0
+    let v = a:1
+    if (a:0 == 1)
+      if (v == '""' || v == "''")
+        let v = []
+      endif
+    endif
+
+    if v isnot [] && a:0%2 != 0
+      call go#util#EchoFailure("substitutions could not be set; unexpected number of arguments")
+      return
+    endif
+
+    " TODO(bc): convert substitutions from expected input form.
+    call go#config#SetDebugSubstitutePaths(v)
+    let substitutions = go#config#DebugSubstitutePaths()
+    if empty(l:substitutions)
+      call go#util#EchoSuccess("substitutions are cleared")
+    else
+      " TODO(bc): convert substitutions to expected output form
+      call go#util#EchoSuccess("substitutions are changed to: " . l:substitutions)
+    endif
+
+    return
+  endif
+
+  let l:substitutions = go#config#SubstitutePaths()
+  if empty(l:substitutions)
+    call go#util#EchoSuccess("substitutions are not set")
+  else
+    " TODO(bc): convert substitutions to expected output form.
+    call go#util#EchoSuccess("current substitutions: " . l:substitutions)
+  endif
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

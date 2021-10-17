@@ -919,6 +919,15 @@ CTRL-t
 
     Open a browser to see gopls debugging information.
 
+                                                    *:GoDebugSubstitutePaths*
+:GoDebugSubstitutePaths [from to] ...
+
+    The substitution paths are cleared (unset) if `""` is  given. The current
+    substitution paths are prints if no arguments are given.
+
+    When not clearing the substitution paths, an even number of arguments must
+    be supplied and they are paired up to provide the from and to substitution
+    paths.
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
 
@@ -2525,6 +2534,9 @@ is a list wherein the remote path (the from side) is the first element and the
 local path (the to side) is the second element. These are necessary when the
 binary being debugged was not built from the same location that its source
 resides locally. By default it is empty.
+
+There is also the |:GoDebugSubstitutePaths| convenience command to change or
+remove subtitution paths.
 
 >
   let g:go_debug_substitute_paths = [['/compiled/from', '/cloned/to']]
