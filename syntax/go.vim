@@ -286,7 +286,7 @@ if go#config#HighlightFunctions() || go#config#HighlightFunctionParameters()
     hi def link   goReceiverVar    goParamName
     hi def link   goParamName      Identifier
   endif
-  syn match goReceiver          /(\s*\w\+\%(\s\+\*\?\s*\w\+\)\?\s*)\ze\s*\w/ contained nextgroup=goFunction contains=goReceiverVar skipwhite skipnl
+  syn match goReceiver          /(\s*\%(\w\+\s\+\)\?\%(\*\?\s*\w\+\)\?\s*)\ze\s*\w/ contained nextgroup=goFunction contains=goReceiverType skipwhite skipnl
 else
   syn keyword goDeclaration func
 endif
