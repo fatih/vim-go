@@ -422,6 +422,51 @@ function! s:check_diagnostics(actual, expected, when)
 
   call assert_equal(a:expected, l:actual, a:when)
 endfunction
+
+function! Test_goStringHighlight() abort
+  syntax on
+
+  let l:dir = gotest#write_file('highlight/gostring.go', [
+        \ 'package highlight',
+        \ '',
+        \ 'import (',
+        \ printf("\t%s", '"fmt"'),
+        \ ')',
+        \ '',
+        \ printf('var s = "%s"', "gostring\x1f"),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    call assert_equal('goString', l:actual)
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
+function! Test_goImportStringHighlight() abort
+  syntax on
+
+  let l:dir = gotest#write_file('highlight/import.go', [
+        \ 'package highlight',
+        \ '',
+        \ 'import (',
+        \ printf('%s"%s"', "\t", "fmt\x1f"),
+        \ ')',
+        \ '',
+        \ 'var s = fmt.Sprint("gostring")',
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    call assert_equal('goImportString', l:actual, getline('.'))
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

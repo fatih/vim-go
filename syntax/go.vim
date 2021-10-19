@@ -104,6 +104,8 @@ else
   syn region      goRawString         start=+`+ end=+`+
 endif
 
+syn match       goImportString      /^\%(\s\+\|import \)\zs"[^"]\+"$/ contained containedin=goImport
+
 if go#config#HighlightFormatStrings()
   " [n] notation is valid for specifying explicit argument indexes
   " 1. Match a literal % not preceded by a %.
@@ -121,6 +123,7 @@ if go#config#HighlightFormatStrings()
   hi def link     goFormatSpecifier   goSpecialString
 endif
 
+hi def link     goImportString      String
 hi def link     goString            String
 hi def link     goRawString         String
 
@@ -140,9 +143,9 @@ endif
 
 " import
 if go#config#FoldEnable('import')
-  syn region    goImport            start='import (' end=')' transparent fold contains=goImport,goString,goComment
+  syn region    goImport            start='import (' end=')' transparent fold contains=goImport,goImportString,goComment
 else
-  syn region    goImport            start='import (' end=')' transparent contains=goImport,goString,goComment
+  syn region    goImport            start='import (' end=')' transparent contains=goImport,goImportString,goComment
 endif
 
 " var, const
