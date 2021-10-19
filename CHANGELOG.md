@@ -57,6 +57,8 @@ BUG FIXES:
 * Highlight the receive type when method declarations that omit the receiver
   identifier.
   [[GH-3306]](https://github.com/fatih/vim-go/pull/3306)
+* Do not highlight misspellings in import paths.
+  [[GH-3308]](https://github.com/fatih/vim-go/pull/3308)
 
 ## v1.25 - (April 18, 2021)
 
