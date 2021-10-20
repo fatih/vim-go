@@ -609,7 +609,7 @@ function! s:connect(addr) abort
       return
     endif
   else
-    let l:ch = ch_open(a:addr, {'mode': 'raw', 'timeout': 20000, 'callback': l:state.on_data})
+    let l:ch = ch_open(a:addr, {'mode': 'raw', 'waittime': 5000, 'timeout': 20000, 'callback': l:state.on_data})
     if ch_status(l:ch) !=# 'open'
       call go#util#EchoError("could not connect to debugger")
       if has_key(s:state, 'job')
