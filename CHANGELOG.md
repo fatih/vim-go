@@ -40,6 +40,8 @@ IMPROVEMENTS:
   source is hosted in a local location that is different from where the binary
   was compiled.
   [[GH-3301]](https://github.com/fatih/vim-go/pull/3301)
+* Wrap text in the fzf preview window by default.
+  [[GH-3310]](https://github.com/fatih/vim-go/pull/3310)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
