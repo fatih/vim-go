@@ -143,7 +143,7 @@ function! fzf#decls#cmd(...) abort
         \)
   call fzf#run(fzf#wrap('GoDecls', {
         \ 'source': call('<sid>source', a:000),
-        \ 'options': printf('-n 1 --with-nth 1,2 --delimiter=$''\t'' --preview "echo {3}" --ansi --prompt "GoDecls> " --expect=ctrl-t,ctrl-v,ctrl-x%s', colors),
+        \ 'options': printf('-n 1 --with-nth 1,2 --delimiter=$''\t'' --preview "echo {3}" --preview-window "wrap" --ansi --prompt "GoDecls> " --expect=ctrl-t,ctrl-v,ctrl-x%s', colors),
         \ 'sink*': function('s:sink')
         \ }))
 endfunction
