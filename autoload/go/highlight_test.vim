@@ -452,7 +452,7 @@ function! Test_goImportStringHighlight() abort
         \ 'package highlight',
         \ '',
         \ 'import (',
-        \ printf('%s"%s"', "\t", "fmt\x1f"),
+        \ printf('%s"%s"', "\t", "\x1ffmt"),
         \ ')',
         \ '',
         \ 'var s = fmt.Sprint("gostring")',
@@ -461,7 +461,45 @@ function! Test_goImportStringHighlight() abort
   try
     let l:pos = getcurpos()
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
-    call assert_equal('goImportString', l:actual, getline('.'))
+    call assert_equal('goImportString', l:actual)
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
+function! Test_goReceiverHighlight() abort
+  syntax on
+
+  let l:tests = {
+      \ 'PointerReceiverVar': {'group': 'goReceiverVar', 'value': "\x1ft *T"},
+      \ 'ValueReceiverVar': {'group': 'goReceiverVar', 'value': "\x1ft T"},
+      \ 'PointerReceiverType': {'group': 'goReceiverType', 'value': "t *\x1fT"},
+      \ 'ValueReceiverType': {'group': 'goReceiverType', 'value': "t \x1fT"},
+      \ 'PointerReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "*\x1fT"},
+      \ 'ValueReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "\x1fT"},
+      \ }
+
+  let g:go_highlight_function_parameters = 1
+  for l:kv in items(l:tests)
+    let l:actual = s:receiverHighlightGroup(l:kv[0], l:kv[1].value)
+    call assert_equal(l:kv[1].group, l:actual, l:kv[0])
+  endfor
+  unlet g:go_highlight_function_parameters
+endfunc
+
+function! s:receiverHighlightGroup(testname, value)
+  let l:package = tolower(a:testname)
+  let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
+        \ printf('package %s', l:package),
+        \ '',
+        \ 'type T struct{}',
+        \ printf('func (%s) Foo() {}', a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
   finally
     call delete(l:dir, 'rf')
   endtry
