@@ -42,6 +42,8 @@ IMPROVEMENTS:
   [[GH-3301]](https://github.com/fatih/vim-go/pull/3301)
 * Wrap text in the fzf preview window by default.
   [[GH-3310]](https://github.com/fatih/vim-go/pull/3310)
+* Wait for up to five seconds when opening a connection to a remote debugger.
+  [[GH-3312]](https://github.com/fatih/vim-go/pull/3312)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
