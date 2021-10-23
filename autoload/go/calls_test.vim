@@ -14,7 +14,7 @@ func! Test_Callers() abort
           \ 'func Quux() {}',
           \ '',
           \ 'func main() {',
-          \ "\tQuux()",
+          \ "\tQ\x1fuux()",
           \ "\tQuux()",
           \ '',
           \ "\tfmt.Println(\"vim-go\")",

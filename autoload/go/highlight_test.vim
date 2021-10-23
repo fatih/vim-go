@@ -192,7 +192,7 @@ function! s:numericHighlightGroupInSliceElement(testname, value)
   let l:dir = gotest#write_file(printf('numeric/slice-element/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
-        \ printf("v := []int{\x1f%s}", a:value),
+        \ printf("v := []int{%s\x1f}", a:value),
         \ ])
 
   try
@@ -208,7 +208,7 @@ function! s:numericHighlightGroupInMultidimensionalSliceElement(testname, value)
   let l:dir = gotest#write_file(printf('numeric/slice-multidimensional-element/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
-        \ printf("v := [][]int{{\x1f%s},{%s}}", a:value, a:value),
+        \ printf("v := [][]int{{%s\x1f},{%s}}", a:value, a:value),
         \ ])
 
   try
@@ -225,7 +225,7 @@ function! s:numericHighlightGroupInSliceIndex(testname, value)
         \ 'package numeric',
         \ '',
         \ 'var sl []int',
-        \ printf("println(sl[\x1f%s])", a:value),
+        \ printf("println(sl[%s\x1f])", a:value),
         \ ])
 
   try
@@ -242,7 +242,7 @@ function! s:numericHighlightGroupInMultidimensionalSliceIndex(testname, first, s
         \ 'package numeric',
         \ '',
         \ 'var sl [][]int',
-        \ printf("println(sl[\x1f%s][%s])", a:first, a:second),
+        \ printf("println(sl[%s\x1f][%s])", a:first, a:second),
         \ ])
 
   try
@@ -259,7 +259,7 @@ function! s:numericHighlightGroupInSliceSlicing(testname, from, to)
         \ 'package numeric',
         \ '',
         \ 'var sl = []int{1,2}',
-        \ printf("println(sl[\x1f%s:%s])", a:from, a:to),
+        \ printf("println(sl[%s\x1f:%s])", a:from, a:to),
         \ ])
   try
     let l:pos = getcurpos()
@@ -280,7 +280,7 @@ function! Test_diagnostic_after_fmt() abort
           \ '',
           \ 'func main() {',
           \ '',
-          \ "\tfmt.Println(\x1fhello)",
+          \ "\tfmt.Println(h\x1fello)",
           \ '}',
           \ ], [])
   finally
@@ -299,7 +299,7 @@ function! Test_diagnostic_after_fmt_change() abort
           \ '',
           \ 'func main() {',
           \ '',
-          \ "fmt.Println(\x1fhello)",
+          \ "fmt.Println(h\x1fello)",
           \ '}',
           \ ], [])
   finally
@@ -318,7 +318,7 @@ function! Test_diagnostic_after_fmt_cleared() abort
           \ '',
           \ 'func main() {',
           \ '',
-          \ "fmt.Println(\x1fhello)",
+          \ "fmt.Println(h\x1fello)",
           \ '}',
           \ ], ['hello := "hello, vim-go"'])
   finally
@@ -334,7 +334,7 @@ function! Test_diagnostic_after_reload() abort
               \ '',
               \ 'func main() {',
               \ '',
-              \ "\tfmt.Println(\x1fhello)",
+              \ "\tfmt.Println(h\x1fello)",
               \ '}',
               \ ])
   try
@@ -452,7 +452,7 @@ function! Test_goImportStringHighlight() abort
         \ 'package highlight',
         \ '',
         \ 'import (',
-        \ printf('%s"%s"', "\t", "\x1ffmt"),
+        \ printf('%s"%s"', "\t", "f\x1fmt"),
         \ ')',
         \ '',
         \ 'var s = fmt.Sprint("gostring")',
@@ -471,12 +471,12 @@ function! Test_goReceiverHighlight() abort
   syntax on
 
   let l:tests = {
-      \ 'PointerReceiverVar': {'group': 'goReceiverVar', 'value': "\x1ft *T"},
-      \ 'ValueReceiverVar': {'group': 'goReceiverVar', 'value': "\x1ft T"},
-      \ 'PointerReceiverType': {'group': 'goReceiverType', 'value': "t *\x1fT"},
-      \ 'ValueReceiverType': {'group': 'goReceiverType', 'value': "t \x1fT"},
-      \ 'PointerReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "*\x1fT"},
-      \ 'ValueReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "\x1fT"},
+      \ 'PointerReceiverVar': {'group': 'goReceiverVar', 'value': "t\x1f *T"},
+      \ 'ValueReceiverVar': {'group': 'goReceiverVar', 'value': "t\x1f T"},
+      \ 'PointerReceiverType': {'group': 'goReceiverType', 'value': "t *T\x1f"},
+      \ 'ValueReceiverType': {'group': 'goReceiverType', 'value': "t T\x1f"},
+      \ 'PointerReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "*T\x1f"},
+      \ 'ValueReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "T\x1f"},
       \ }
 
   let g:go_highlight_function_parameters = 1
