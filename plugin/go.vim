@@ -142,15 +142,12 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     " mode and then do the legacy method.
     let bin_setting_name = "go_" . l:binary . "_bin"
 
-    if exists("g:{bin_setting_name}")
-      let bin = g:{bin_setting_name}
-    else
-      if go#util#IsWin()
-        let bin = l:binary . '.exe'
-      else
-        let bin = l:binary
-      endif
+    let l:extension = ''
+    if go#util#IsWin()
+      let l:extension = '.exe'
     endif
+
+    let bin = get(g:, bin_setting_name, l:binary . l:extension)
 
     if !executable(bin) || a:updateBinaries == 1
       if a:updateBinaries == 1
