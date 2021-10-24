@@ -159,28 +159,26 @@ function! s:GoInstallBinaries(updateBinaries, ...)
         echo "vim-go: ". l:binary ." not found. Installing ". importPath . " to folder " . go_bin_path
       endif
 
-      if l:importPath =~ "@"
-        let l:tmpdir = go#util#tempdir('vim-go')
-        try
-          let l:dir = go#util#Chdir(l:tmpdir)
-          let l:get_cmd = copy(l:get_base_cmd)
+      let l:tmpdir = go#util#tempdir('vim-go')
+      try
+        let l:dir = go#util#Chdir(l:tmpdir)
+        let l:get_cmd = copy(l:get_base_cmd)
 
-          if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
-            let l:get_cmd += get(l:pkg[1], l:platform, [])
-          endif
+        if len(l:pkg) > 1 && get(l:pkg[1], l:platform, []) isnot []
+          let l:get_cmd += get(l:pkg[1], l:platform, [])
+        endif
 
-          " TODO(bc): how to install the bin to a different name than the
-          " binary path? go get does not support -o
-          " let l:get_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin)]
+        " TODO(bc): how to install the bin to a different name than the binary
+        " path? go install does not support -o
+        "let l:get_cmd += ['-o', printf('%s%s%s', go_bin_path, go#util#PathSep(), bin)]
 
-          let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
-          if l:err
-            call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
-          endif
-        finally
-          call go#util#Chdir(l:dir)
-        endtry
-      endif
+        let [l:out, l:err] = go#util#Exec(l:get_cmd + [l:importPath])
+        if l:err
+          call go#util#EchoError(printf('Error installing %s: %s', l:importPath, l:out))
+        endif
+      finally
+        call go#util#Chdir(l:dir)
+      endtry
 
       if len(l:pkg) > 2
         call call(get(l:pkg[2], 'after', function('s:noop', [])), [])
