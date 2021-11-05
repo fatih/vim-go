@@ -25,37 +25,6 @@ function! s:color(str, group) abort
   return printf("\x1b[%sm%s\x1b[m", color, a:str)
 endfunction
 
-function! s:sink(str) abort
-  if len(a:str) < 2
-    return
-  endif
-  try
-    " we jump to the file directory so we can get the fullpath via fnamemodify
-    " below
-    let l:dir = go#util#Chdir(s:current_dir)
-
-    let vals = matchlist(a:str[1], '|\(.\{-}\):\(\d\+\):\(\d\+\)\s*\(.*\)|')
-
-    " i.e: main.go
-    let filename =  vals[1]
-    let line =  vals[2]
-    let col =  vals[3]
-
-    " i.e: /Users/fatih/vim-go/main.go
-    let filepath =  fnamemodify(filename, ":p")
-
-    let cmd = get({'ctrl-x': 'split',
-          \ 'ctrl-v': 'vertical split',
-          \ 'ctrl-t': 'tabe'}, a:str[0], 'e')
-    execute cmd fnameescape(filepath)
-    call cursor(line, col)
-    silent! norm! zvzz
-  finally
-    "jump back to old dir
-    call go#util#Chdir(l:dir)
-  endtry
-endfunction
-
 function! s:source(mode,...) abort
   let s:current_dir = expand('%:p:h')
   let ret_decls = []
@@ -144,7 +113,7 @@ function! fzf#decls#cmd(...) abort
   call fzf#run(fzf#wrap('GoDecls', {
         \ 'source': call('<sid>source', a:000),
         \ 'options': printf('-n 1 --with-nth 1,2 --delimiter=$''\t'' --preview "echo {3}" --preview-window "wrap" --ansi --prompt "GoDecls> " --expect=ctrl-t,ctrl-v,ctrl-x%s', colors),
-        \ 'sink*': function('s:sink')
+        \ 'sink*': function('fzf#fzf#sink')
         \ }))
 endfunction
 

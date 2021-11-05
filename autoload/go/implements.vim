@@ -16,6 +16,12 @@ function! go#implements#Implements(selected) abort
     let l:fname = expand('%:p')
     call go#lsp#Implements(l:fname, l:line, l:col, funcref('s:parse_output'))
     return
+  elseif l:mode == 'fzf'
+    if !go#config#GoplsEnabled()
+      call go#util#EchoError("go_implements_mode is 'fzf', but gopls is disabled")
+    endif
+    call fzf#implements#cmd() 
+    return
   else
     call go#util#EchoWarning('unknown value for g:go_implements_mode')
   endif
