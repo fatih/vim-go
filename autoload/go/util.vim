@@ -194,8 +194,8 @@ function! s:system(cmd, ...) abort
     if executable($COMSPEC)
       let &shell = $COMSPEC
       set shellcmdflag=/C
-      set shellquote=
-      set shellxquote=\"
+      set shellquote&
+      set shellxquote&
     endif
   endif
 
