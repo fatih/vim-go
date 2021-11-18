@@ -62,13 +62,15 @@ cd "$srcdir"
 
 # Neovim build requires more deps than Vim and is annoying, so we use the
 # binary.
-# 0.2.0 doesn't have a binary build for Linux, so we use 0.2.1-dev for now.
 if [ "$1" = "nvim" ]; then
 
-  # TODO: Use macOS binaries on macOS
-  curl -Ls https://github.com/neovim/neovim/releases/download/$tag/nvim-linux64.tar.gz |
+  case "$(uname -s)" in
+    Darwin*)  arch=osx64    uri=macos;;
+    *)        arch=linux64  uri=linux64
+  esac
+  curl -Ls https://github.com/neovim/neovim/releases/download/$tag/nvim-$uri.tar.gz |
     tar xzf - -C /tmp/vim-go-test/
-  mv /tmp/vim-go-test/nvim-linux64 /tmp/vim-go-test/nvim-install
+  mv /tmp/vim-go-test/nvim-$arch /tmp/vim-go-test/nvim-install
   mkdir -p "$installdir/share/nvim/runtime/pack/vim-go/start"
   ln -s "$vimgodir" "$installdir/share/nvim/runtime/pack/vim-go/start/vim-go"
 

@@ -490,6 +490,10 @@ function! go#util#tempdir(prefix) abort
     return
   endif
 
+  " $TEMPDIR on macos has / in the end of the path.
+  " Use substitute() for backwards compatibility, as trim() was added to vim v8.0.1630
+  let l:dir = substitute(l:dir, '/$', '', '')
+
   " Not great randomness, but "good enough" for our purpose here.
   let l:rnd = sha256(printf('%s%s', reltimestr(reltime()), fnamemodify(bufname(''), ":p")))
   let l:tmp = printf("%s/%s%s", l:dir, a:prefix, l:rnd)
