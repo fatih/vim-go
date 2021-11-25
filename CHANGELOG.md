@@ -46,6 +46,8 @@ IMPROVEMENTS:
   [[GH-3312]](https://github.com/fatih/vim-go/pull/3312)
 * Install tools with `go install` instead of `go get`.
   [[GH-3317]](https://github.com/fatih/vim-go/pull/3317)
+* Update `:GoPlay` to use `go.dev/play` instead of `play.golang.org`.
+  [[GH-3331]](https://github.com/fatih/vim-go/pull/3331)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
