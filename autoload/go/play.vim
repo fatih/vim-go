@@ -12,7 +12,7 @@ function! go#play#Share(count, line1, line2) abort
   let share_file = tempname()
   call writefile(split(content, "\n"), share_file, "b")
 
-  let l:cmd = ['curl', '-s', '-X', 'POST', 'https://play.golang.org/share',
+  let l:cmd = ['curl', '-s', '-X', 'POST', 'https://go.dev/_/share',
         \ '--data-binary', '@' . l:share_file]
   let [l:snippet_id, l:err] = go#util#Exec(l:cmd)
 
@@ -24,7 +24,7 @@ function! go#play#Share(count, line1, line2) abort
     return
   endif
 
-  let url = "http://play.golang.org/p/".snippet_id
+  let url = printf("http://go.dev/play/%s", snippet_id)
 
   " copy to clipboard
   if has('unix') && !has('xterm_clipboard') && !has('clipboard')
