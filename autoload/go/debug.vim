@@ -1162,7 +1162,7 @@ function! s:update_variables() abort
   " MaxStructFields is the maximum number of fields read from a struct, -1 will read all fields.
   let l:cfg = {
         \ 'scope': {'GoroutineID': s:goroutineID()},
-        \ 'cfg':   {'MaxStringLen': 20, 'MaxArrayValues': 20}
+        \ 'cfg':   {'MaxStringLen': 20, 'MaxArrayValues': 20, 'MaxVariableRecurse': 10}
         \ }
 
   try
