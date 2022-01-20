@@ -1863,12 +1863,26 @@ function! s:ensureWorkspace(dir)
     return
   endif
 
+
   let l:lsp = s:lspfactory.get()
+
   for l:dir in l:lsp.workspaceDirectories
     if l:dir == l:modroot
       return
     endif
   endfor
+
+  " Do not add directories that reside in the module cache if there's any
+  " other directories already in the workspace. In such a case, adding a
+  " module directory can potentially break jumping to definitions and finding
+  " references if the module in the cache has a replace directive in it the
+  " refers to a relative path.
+  if len(l:lsp.workspaceDirectories) > 0
+    let l:modcache = go#util#env('gomodcache')
+    if l:modroot[0:len(l:modcache)-1] ==# l:modcache
+      return
+    endif
+  endif
 
   call go#lsp#AddWorkspaceDirectory(l:modroot)
 endfunction
