@@ -72,6 +72,9 @@ BUG FIXES:
   [[GH-3321]](https://github.com/fatih/vim-go/pull/3321)
 * Handle shell quoting when execing.
   [[GH-3323]](https://github.com/fatih/vim-go/pull/3323)
+* Do not automatically add directories from the module cache into the LSP
+  workspace.
+  [[GH-3343]](https://github.com/fatih/vim-go/pull/3343)
 
 ## v1.25 - (April 18, 2021)
 
