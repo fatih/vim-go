@@ -126,8 +126,8 @@ function! go#util#gomod() abort
   return substitute(s:exec(['go', 'env', 'GOMOD'])[0], '\n', '', 'g')
 endfunction
 
-" gomodcache returns 'go env GOMODCACHE'. Use go#util#env('gomodcache')
-" instead.
+" gomodcache returns 'go env GOMODCACHE'. This is an internal function and
+" shouldn't be used. Use go#util#env('gomodcache') instead.
 function! go#util#gomodcache() abort
   return substitute(s:exec(['go', 'env', 'GOMODCACHE'])[0], '\n', '', 'g')
 endfunction
