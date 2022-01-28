@@ -26,7 +26,7 @@ function! go#play#Share(count, line1, line2) abort
     return
   endif
 
-  let url = printf("http://go.dev/play/p/%s", snippet_id)
+  let url = printf("https://go.dev/play/p/%s", snippet_id)
 
   " copy to clipboard
   if has('unix') && !has('xterm_clipboard') && !has('clipboard')
