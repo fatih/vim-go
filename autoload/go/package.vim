@@ -151,10 +151,15 @@ function! go#package#InGOPATH() abort
       return 0
     endif
 
-    let l:importpath = split(l:out, '\n')[0]
-    if len(l:importpath) > 0
-      let s:in_gopath[l:dir] = l:importpath
-    endif
+    try
+      let l:importpath = split(l:out, '\n')[0]
+      if len(l:importpath) > 0
+        let s:in_gopath[l:dir] = l:importpath
+      endif
+    catch
+      call go#util#EchoError(printf('go list in %s returned [%s, %d]', expand('%:p:h'), l:out, l:err))
+      return 0
+    endtry
   finally
     call call(Restore_modules, [])
   endtry
