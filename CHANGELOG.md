@@ -51,6 +51,8 @@ IMPROVEMENTS:
   [[GH-3348]](https://github.com/fatih/vim-go/pull/3348)
 * Recurse local variables more deeply when debugging.
   [[GH-3344]](https://github.com/fatih/vim-go/pull/3344)
+* Add syntax elements for `any` and `comparable` types.
+  [[GH-3351]](https://github.com/fatih/vim-go/pull/3351)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
