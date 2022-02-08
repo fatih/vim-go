@@ -78,6 +78,8 @@ BUG FIXES:
 * Do not automatically add directories from the module cache into the LSP
   workspace.
   [[GH-3343]](https://github.com/fatih/vim-go/pull/3343)
+* Resolve symlinks in autocmd events.
+  [[GH-3353]](https://github.com/fatih/vim-go/pull/3353)
 
 ## v1.25 - (April 18, 2021)
 
