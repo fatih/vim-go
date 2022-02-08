@@ -245,7 +245,9 @@ function! s:register()
     return
   endif
 
-  call go#lsp#DidOpen(expand('<afile>:p'))
+  " Resolve any symlinks in <afile> so that the filename will match what Vim
+  " will ultimately and usually produce.
+  call go#lsp#DidOpen(resolve(expand('<afile>:p')))
 endfunction
 
 function! s:noop(...) abort

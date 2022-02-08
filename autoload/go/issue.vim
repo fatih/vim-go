@@ -2,7 +2,7 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-let s:templatepath = go#util#Join(expand('<sfile>:p:h:h:h'), '.github', 'ISSUE_TEMPLATE.md')
+let s:templatepath = go#util#Join(resolve(expand('<sfile>:p:h:h:h')), '.github', 'ISSUE_TEMPLATE.md')
 
 function! go#issue#New() abort
   let body = go#uri#Encode(s:issuebody())

@@ -2,7 +2,7 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-let s:current_file = expand("<sfile>")
+let s:current_file = resolve(expand("<sfile>"))
 
 function! go#template#create() abort
   let l:go_template_use_pkg = go#config#TemplateUsePkg()
