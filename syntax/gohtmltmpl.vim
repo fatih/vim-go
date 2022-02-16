@@ -2,8 +2,8 @@ if exists("b:current_syntax")
   finish
 endif
 
-if !exists("g:main_syntax")
-  let g:main_syntax = 'html'
+if !exists("b:main_syntax")
+  let b:main_syntax = 'html'
 endif
 
 runtime! syntax/gotexttmpl.vim
