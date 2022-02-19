@@ -137,7 +137,7 @@ let s:in_gopath = {}
 " InGOPATH returns TRUE when the package of the current buffer is within
 " GOPATH.
 function! go#package#InGOPATH() abort
-  let l:dir = expand("%:p:h")
+  let l:dir = resolve(expand("%:p:h"))
   if has_key(s:in_gopath, dir)
     return s:in_gopath[l:dir][0] !=#  '_'
   endif
