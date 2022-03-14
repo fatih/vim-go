@@ -108,7 +108,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     set noshellslash
   endif
 
-  let l:get_base_cmd = ['go', 'install', '-v']
+  let l:get_base_cmd = ['go', 'install', '-v', '-mod=readonly']
 
   " Filter packages from arguments (if any).
   let l:packages = {}
