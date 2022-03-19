@@ -54,6 +54,8 @@ IMPROVEMENTS:
   [[GH-3344]](https://github.com/fatih/vim-go/pull/3344)
 * Add syntax elements for `any` and `comparable` types.
   [[GH-3351]](https://github.com/fatih/vim-go/pull/3351)
+* Add syntax support for go.work files.
+  [[GH-3375]](https://github.com/fatih/vim-go/pull/3375)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
