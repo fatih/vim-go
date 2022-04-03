@@ -24,6 +24,9 @@ augroup vim-go-gomod-buffer
   autocmd! * <buffer>
 
   autocmd BufWritePre <buffer> call go#auto#modfmt_autosave()
+  if go#util#has_job()
+    autocmd BufWritePost,FileChangedShellPost <buffer> call go#lsp#ModReload(resolve(expand(<'afile>:p')))
+  endif
 augroup end
 
 " restore Vi compatibility settings

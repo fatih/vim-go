@@ -1597,6 +1597,35 @@ function! go#lsp#Rename(newName) abort
   return l:resultHandler.await()
 endfunction
 
+function! go#lsp#ModReload(...) abort
+  let l:gomod = 'go.mod'
+  if a:0 is 0
+    let l:modroot = go#util#ModuleRoot()
+    if l:modroot is -1
+      call go#util#EchoError('go module not found')
+      return
+    endif
+    let l:gomod = printf('%s/%s', l:modroot, 'go.mod')
+  else
+    let l:gomod = a:1
+  endif
+
+  if l:gomod !~ 'go.mod$'
+    let l:gomod = printf('%s/%s', l:gomod, 'go.mod')
+  endif
+  let l:gomod = fnamemodify(l:gomod, ':p')
+
+  if !filereadable(l:gomod)
+    call go#util#EchoError('go.mod does not exist')
+    return
+  endif
+
+  let l:lsp = s:lspfactory.get()
+  let l:msg = go#lsp#message#DidChangeWatchedFile(l:gomod, 'Changed')
+  let l:state = s:newHandlerState('')
+  return l:lsp.sendMessage(l:msg, l:state)
+endfunction
+
 function! s:rename(fname, line, col, newName, msg) abort dict
   if type(a:msg) is type('')
     call self.handleError(a:msg)

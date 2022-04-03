@@ -188,6 +188,21 @@ function! go#lsp#message#DidChange(file, content, version) abort
        \ }
 endfunction
 
+function! go#lsp#message#DidChangeWatchedFile(file, ct) abort
+  return {
+          \ 'notification': 1,
+          \ 'method': 'workspace/didChangeWatchedFiles',
+          \ 'params': {
+          \     'changes': [
+          \       {
+          \         'uri': go#path#ToURI(a:file),
+          \         'type': go#lsp#filechangetype#FileChangeType(a:ct),
+          \       },
+          \     ],
+          \ }
+       \ }
+endfunction
+
 function! go#lsp#message#DidClose(file) abort
   return {
           \ 'notification': 1,

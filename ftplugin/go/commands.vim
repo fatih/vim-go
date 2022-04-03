@@ -130,6 +130,7 @@ command! -nargs=0 GoIfErr call go#iferr#Generate()
 command! -nargs=+ -complete=dir GoAddWorkspace call go#lsp#AddWorkspaceDirectory(<f-args>)
 command! -nargs=0 GoLSPDebugBrowser call go#lsp#DebugBrowser()
 command! -nargs=* -bang GoDiagnostics call go#lint#Diagnostics(<bang>0, <f-args>)
+command! -nargs=? GoModReload call go#lsp#ModReload()
 
 " -- term
 command! GoToggleTermCloseOnExit call go#term#ToggleCloseOnExit()
