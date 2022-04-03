@@ -528,12 +528,42 @@ function! s:neocb(mode, ch, buf, data, callback)
     if a:mode == 'raw' && l:i < l:last
       let l:msg = l:msg . "\n"
     endif
-    call a:callback(a:ch, l:msg)
+    if a:mode == 'raw'
+      call s:queueneocb(function(a:callback, [a:ch, l:msg]))
+    else
+      call a:callback(a:ch, l:msg)
+    endif
 
     let l:i += 1
   endwhile
 
   return l:buf
+endfunction
+
+" s:neocbs is used to workaround limitations of how Neovim limits the use of
+" callbacks. This is particularly important when dealing with a raw channel
+" whose data triggers further communication and more data on the channel and
+" both the original response handler and the next response handler are
+" awaited using go#promise (e.g. as is the case with go#lsp#Rename).
+let s:neocbs = []
+function! s:dequeueneocbs(timer) abort
+  for l:Fn in s:neocbs
+    try
+      call remove(s:neocbs, 0)
+      call call(l:Fn, [])
+    finally
+    endtry
+  endfor
+endfunction
+
+function! s:queueneocb(fn) abort
+  let l:shouldStart = len(s:neocbs) == 0
+
+  let s:neocbs = add(s:neocbs, a:fn)
+
+  if l:shouldStart
+    call timer_start(10, function('s:dequeueneocbs', []))
+  endif
 endfunction
 
 " restore Vi compatibility settings
