@@ -140,7 +140,7 @@ function! go#util#hostosarch() abort
 endfunction
 
 " go#util#ModuleRoot returns the root directory of the module of the current
-" buffer. An optional argument is can be provided to check an arbitrary
+" buffer. An optional argument can be provided to check an arbitrary
 " directory.
 function! go#util#ModuleRoot(...) abort
   let l:wd = ''

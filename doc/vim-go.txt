@@ -908,6 +908,11 @@ CTRL-t
     Filter the current go.mod buffer through "go mod edit -fmt" command.  It
     tries to preserve cursor position and avoids replacing the buffer with
     stderr output.
+                                                               *:GoModReload*
+:GoModReload [go.mod]
+
+    Force `gopls` to reload the go.mod file. When not explicitly provided, the
+    go.mod file ambient to the current buffer will be used.
 
                                                             *:GoAddWorkspace*
 :GoAddWorkspace [dir] ...
