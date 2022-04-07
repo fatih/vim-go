@@ -61,6 +61,7 @@ IMPROVEMENTS:
 * Add `:GoModReload` and autocmd events to reload go.mod when it changes on
   disk and is open in a buffer.
   [[GH-3387]](https://github.com/fatih/vim-go/pull/3387)
+  [[GH-3391]](https://github.com/fatih/vim-go/pull/3391)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
