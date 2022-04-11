@@ -296,16 +296,16 @@ hi def link     goOperator          Operator
 "                               ||  |  |    |   | |     |      | | |     | || | |      | | -> at least one of those non-counting groups, as many as possible
 "                               ||  |  |    |   | | --------   | | |     | || | |      | | | -> type constraint closing bracket
 "                               ||  |  |    |   | ||        |  | | |     | || | |      | | | |
-syn match goTypeParams        /\[\%(\w\+\s\+\%(\~\?\%(\[]\)\?\w\%(\w\||\)\)*\%(,\s*\)\?\)\+\]/ nextgroup=goSimpleParams contained
+syn match goTypeParams        /\[\%(\w\+\s\+\%(\~\?\%(\[]\)\?\w\%(\w\||\)\)*\%(,\s*\)\?\)\+\]/ nextgroup=goSimpleParams,goDeclType contained
 
 " Functions;
 if go#config#HighlightFunctions() || go#config#HighlightFunctionParameters()
   syn match goDeclaration       /\<func\>/ nextgroup=goReceiver,goFunction,goSimpleParams skipwhite skipnl
-  syn match goReceiverDecl      /(\s*\zs\%(\%(\w\+\s\+\)\?\*\?\w\+\)\ze\s*)/ contained contains=goReceiverVar,goReceiverType,goPointerOperator
+  syn match goReceiverDecl      /(\s*\zs\%(\%(\w\+\s\+\)\?\*\?\w\+\%(\[\%(\%(\[\]\)\?\w\+\%(,\s*\)\?\)\+\]\)\?\)\ze\s*)/ contained contains=goReceiverVar,goReceiverType,goPointerOperator
   syn match goReceiverVar       /\w\+\ze\s\+\%(\w\|\*\)/ nextgroup=goPointerOperator,goReceiverType skipwhite skipnl contained
   syn match goPointerOperator   /\*/ nextgroup=goReceiverType contained skipwhite skipnl
   syn match goFunction          /\w\+/ nextgroup=goSimpleParams,goTypeParams contained skipwhite skipnl
-  syn match goReceiverType      /\w\+\ze\s*)/ contained
+  syn match goReceiverType      /\w\+\%(\[\%(\%(\[\]\)\?\w\+\%(,\s*\)\?\)\+\]\)\?\ze\s*)/ contained
   if go#config#HighlightFunctionParameters()
     syn match goSimpleParams      /(\%(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType nextgroup=goFunctionReturn skipwhite skipnl
     syn match goFunctionReturn   /(\%(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType skipwhite skipnl
@@ -315,7 +315,7 @@ if go#config#HighlightFunctions() || go#config#HighlightFunctionParameters()
     hi def link   goReceiverVar    goParamName
     hi def link   goParamName      Identifier
   endif
-  syn match goReceiver          /(\s*\%(\w\+\s\+\)\?\*\?\s*\w\+\s*)\ze\s*\w/ contained nextgroup=goFunction contains=goReceiverDecl skipwhite skipnl
+  syn match goReceiver          /(\s*\%(\w\+\s\+\)\?\*\?\s*\w\+\%(\[\%(\%(\[\]\)\?\w\+\%(,\s*\)\?\)\+\]\)\?\s*)\ze\s*\w/ contained nextgroup=goFunction contains=goReceiverDecl skipwhite skipnl
 else
   syn keyword goDeclaration func
 endif
@@ -350,7 +350,7 @@ hi def link    goField              Identifier
 if go#config#HighlightTypes()
   syn match goTypeConstructor      /\<\w\+{\@=/
   syn match goTypeDecl             /\<type\>/ nextgroup=goTypeName skipwhite skipnl
-  syn match goTypeName             /\w\+/ contained nextgroup=goDeclType skipwhite skipnl
+  syn match goTypeName             /\w\+/ contained nextgroup=goDeclType,goTypeParams skipwhite skipnl
   syn match goDeclType             /\<\%(interface\|struct\)\>/ skipwhite skipnl
   hi def link     goReceiverType      Type
 else
