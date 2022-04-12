@@ -772,7 +772,7 @@ function! go#debug#Start(mode, ...) abort
   try
     if a:mode is 'connect'
       let l:addr = go#config#DebugAddress()
-      if len(a:0) > 0
+      if a:0 > 0
         let l:addr = a:1
       endif
       let s:state['kill_on_detach'] = v:false
