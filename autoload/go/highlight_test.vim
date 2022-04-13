@@ -512,6 +512,39 @@ function! s:receiverHighlightGroup(testname, value)
   endtry
 endfunc
 
+function! Test_GoTypeHighlight() abort
+  syntax on
+
+  let l:tests = {
+      \ 'StandardType': {'group': 'goTypeName', 'value': "T\x1f"},
+      \ 'GenericType': {'group': 'goTypeName', 'value': "G\x1f[T any]"},
+      \ }
+
+  let g:go_highlight_types = 1
+  for l:kv in items(l:tests)
+    let l:actual = s:typeHighlightGroup(l:kv[0], l:kv[1].value)
+    call assert_equal(l:kv[1].group, l:actual, l:kv[0])
+  endfor
+  unlet g:go_highlight_types
+endfunc
+
+function! s:typeHighlightGroup(testname, value)
+  let l:package = tolower(a:testname)
+  let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
+        \ printf('package %s', l:package),
+        \ '',
+        \ printf('type %s struct{}', a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
