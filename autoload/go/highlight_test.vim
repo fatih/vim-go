@@ -477,6 +477,12 @@ function! Test_goReceiverHighlight() abort
       \ 'ValueReceiverType': {'group': 'goReceiverType', 'value': "t T\x1f"},
       \ 'PointerReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "*T\x1f"},
       \ 'ValueReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "T\x1f"},
+      \ 'GenericPointerReceiverVar': {'group': 'goReceiverVar', 'value': "g\x1f *G[int]"},
+      \ 'GenericValueReceiverVar': {'group': 'goReceiverVar', 'value': "g\x1f G[int]"},
+      \ 'GenericPointerReceiverType': {'group': 'goReceiverType', 'value': "g *G\x1f[int]"},
+      \ 'GenericValueReceiverType': {'group': 'goReceiverType', 'value': "g G\x1f[int]"},
+      \ 'GenericPointerReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "*G\x1f[int]"},
+      \ 'GenericValueReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "G\x1f[int]"},
       \ }
 
   let g:go_highlight_function_parameters = 1
@@ -493,7 +499,111 @@ function! s:receiverHighlightGroup(testname, value)
         \ printf('package %s', l:package),
         \ '',
         \ 'type T struct{}',
+        \ 'type G[T any] struct{}',
         \ printf('func (%s) Foo() {}', a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
+function! Test_GoTypeHighlight() abort
+  syntax on
+
+  let l:tests = {
+      \ 'StandardType': {'group': 'goTypeName', 'value': "T\x1f"},
+      \ 'GenericType': {'group': 'goTypeName', 'value': "G\x1f[T any]"},
+      \ }
+
+  let g:go_highlight_types = 1
+  for l:kv in items(l:tests)
+    let l:actual = s:typeHighlightGroup(l:kv[0], l:kv[1].value)
+    call assert_equal(l:kv[1].group, l:actual, l:kv[0])
+  endfor
+  unlet g:go_highlight_types
+endfunc
+
+function! s:typeHighlightGroup(testname, value)
+  let l:package = tolower(a:testname)
+  let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
+        \ printf('package %s', l:package),
+        \ '',
+        \ printf('type %s struct{}', a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
+function! Test_goFunction() abort
+  syntax on
+
+  let l:tests = {
+        \ 'StandardFunction': {'group': 'goFunction', 'value': "F\x1f(){}"},
+        \ 'GenericFunction': {'group': 'goFunction', 'value': "G\x1f[T any](_ T){}"},
+      \ }
+
+  let g:go_highlight_functions = 1
+  for l:kv in items(l:tests)
+    let l:actual = s:functionHighlightGroup(l:kv[0], l:kv[1].value)
+    call assert_equal(l:kv[1].group, l:actual, l:kv[0])
+  endfor
+  unlet g:go_highlight_functions
+endfunc
+
+function! s:functionHighlightGroup(testname, value)
+  let l:package = tolower(a:testname)
+  let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
+        \ printf('package %s', l:package),
+        \ '',
+        \ printf('func %s', a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
+function! Test_goFunctionCall() abort
+  syntax on
+
+  let l:tests = {
+      \ 'StandardFunctionCall': {'group': 'goFunctionCall', 'value': "f\x1f()"},
+      \ 'GenericFunctionCall': {'group': 'goFunctionCall', 'value': "g\x1f[int](i)"},
+      \ }
+
+  let g:go_highlight_function_calls = 1
+  for l:kv in items(l:tests)
+    let l:actual = s:functionCallHighlightGroup(l:kv[0], l:kv[1].value)
+    call assert_equal(l:kv[1].group, l:actual, l:kv[0])
+  endfor
+  unlet g:go_highlight_function_calls
+endfunc
+
+function! s:functionCallHighlightGroup(testname, value)
+  let l:package = tolower(a:testname)
+  let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
+        \ printf('package %s', l:package),
+        \ '',
+        \ 'func f() {}',
+        \ 'func g[T any](i T) {}',
+        \ 'func init() {',
+        \ printf("\t%s", a:value),
+        \ '}',
         \ ])
 
   try
