@@ -200,7 +200,7 @@ COMMANDS                                                         *go-commands*
                                                                      *:GoLint*
 :GoLint! [packages]
 
-    Run golint for the directory under your current file, or for the given
+    Run the linter for the directory under your current file, or for the given
     packages.
 
     If [!] is not given the first error is jumped to.
@@ -1008,7 +1008,7 @@ Adjust imports for the current buffer.
 
                                                                    *(go-lint)*
 
-Calls `golint` for the current package.
+Lints for the current package.
 
                                                                     *(go-vet)*
 
