@@ -63,6 +63,8 @@ IMPROVEMENTS:
   disk and is open in a buffer.
   [[GH-3387]](https://github.com/fatih/vim-go/pull/3387)
   [[GH-3391]](https://github.com/fatih/vim-go/pull/3391)
+* Add syntax support for generics.
+  [[GH-3397]](https://github.com/fatih/vim-go/pull/3397)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
