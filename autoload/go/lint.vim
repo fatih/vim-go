@@ -169,7 +169,7 @@ endfunction
 function! go#lint#Golint(bang, ...) abort
   call go#cmd#autowrite()
 
-  let l:type = 'golint'
+  let l:type = 'lint'
   let l:status = {
         \ 'desc': 'current status',
         \ 'type': l:type,
