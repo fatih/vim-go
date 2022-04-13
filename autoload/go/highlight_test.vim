@@ -477,6 +477,12 @@ function! Test_goReceiverHighlight() abort
       \ 'ValueReceiverType': {'group': 'goReceiverType', 'value': "t T\x1f"},
       \ 'PointerReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "*T\x1f"},
       \ 'ValueReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "T\x1f"},
+      \ 'GenericPointerReceiverVar': {'group': 'goReceiverVar', 'value': "g\x1f *G[int]"},
+      \ 'GenericValueReceiverVar': {'group': 'goReceiverVar', 'value': "g\x1f G[int]"},
+      \ 'GenericPointerReceiverType': {'group': 'goReceiverType', 'value': "g *G\x1f[int]"},
+      \ 'GenericValueReceiverType': {'group': 'goReceiverType', 'value': "g G\x1f[int]"},
+      \ 'GenericPointerReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "*G\x1f[int]"},
+      \ 'GenericValueReceiverTypeOmittedVar': {'group': 'goReceiverType', 'value': "G\x1f[int]"},
       \ }
 
   let g:go_highlight_function_parameters = 1
@@ -493,6 +499,7 @@ function! s:receiverHighlightGroup(testname, value)
         \ printf('package %s', l:package),
         \ '',
         \ 'type T struct{}',
+        \ 'type G[T any] struct{}',
         \ printf('func (%s) Foo() {}', a:value),
         \ ])
 
