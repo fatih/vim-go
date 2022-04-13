@@ -91,6 +91,8 @@ BUG FIXES:
   [[GH-3353]](https://github.com/fatih/vim-go/pull/3353)
 * Fix `:GoRename` in Neovim so that it does not take 10 seconds to complete.
   [[GH-3386]](https://github.com/fatih/vim-go/pull/3386)
+* Fix `:GoDebugConnect` argument handling.
+  [[GH-3400]](https://github.com/fatih/vim-go/pull/3400)
 
 ## v1.25 - (April 18, 2021)
 
