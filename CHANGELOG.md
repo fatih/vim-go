@@ -65,6 +65,8 @@ IMPROVEMENTS:
   [[GH-3391]](https://github.com/fatih/vim-go/pull/3391)
 * Add syntax support for generics.
   [[GH-3397]](https://github.com/fatih/vim-go/pull/3397)
+* Remove invalid numeric literal highlighting.
+  [[GH-3404]](https://github.com/fatih/vim-go/pull/3404)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
@@ -96,8 +98,6 @@ BUG FIXES:
   [[GH-3386]](https://github.com/fatih/vim-go/pull/3386)
 * Fix `:GoDebugConnect` argument handling.
   [[GH-3400]](https://github.com/fatih/vim-go/pull/3400)
-* Fix syntax highlighting of some numeric error matches.
-  [[GH-3403]](https://github.com/fatih/vim-go/pull/3403)
 
 ## v1.25 - (April 18, 2021)
 
