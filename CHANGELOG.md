@@ -3,6 +3,14 @@
 BACKWARDS INCOMPATIBILITIES:
 
 IMPROVEMENTS:
+
+BUG FIXES:
+
+## v1.26 - (April 23, 2022)
+
+BACKWARDS INCOMPATIBILITIES:
+
+IMPROVEMENTS:
 * Add mapping for formatting, `(go-fmt)`.
   [[GH-3209]](https://github.com/fatih/vim-go/pull/3209)
 * Add `tr` snippet for `"testing.T".Run`.
