@@ -63,7 +63,7 @@ for popular package managers:
 
 You will also need to install all the necessary binaries. vim-go makes it easy
 to install all of them by providing a command, `:GoInstallBinaries`, which will
-`go get` all the required binaries.
+`go install` all the required binaries.
 
 Check out the Install section in [the documentation](doc/vim-go.txt) for more
 detailed instructions (`:help go-install`).
