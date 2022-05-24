@@ -122,8 +122,8 @@ manager's install command.
 
 You will also need to install all the necessary binaries. vim-go makes it easy
 to install all of them by providing a command, |:GoInstallBinaries|, to
-`go get` all the required binaries. The binaries will be installed to $GOBIN
-or $GOPATH/bin (default: $HOME/go/bin). It requires `git`.
+`go install` all the required binaries. The binaries will be installed to
+$GOBIN or $GOPATH/bin (default: $HOME/go/bin). It requires `git`.
 
 Depending on your installation method, you may have to generate the plugin's
 |:helptags| manually (e.g. `:helptags ALL`).
@@ -2748,9 +2748,9 @@ If you see errors like this:
 <
 that means your local Go setup is broken or the remote website is down. For
 example sometimes code.google.com times out. To test, just execute a simple
-`go get`:
+`go install`:
 >
-  go get golang.org/x/tools/cmd/goimports
+  go install golang.org/x/tools/cmd/goimports@latest
 <
 You'll see a more detailed error. If this works, vim-go will work too.
 
