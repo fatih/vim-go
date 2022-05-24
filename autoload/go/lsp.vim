@@ -277,8 +277,8 @@ function! s:newlsp() abort
             if l:level < l:diag.severity
               continue
             endif
-            let [l:error, l:matchpos] = s:errorFromDiagnostic(l:diag, l:bufname, l:fname)
-            let l:diagnostics = add(l:diagnostics, l:error)
+            let [l:diagnostic, l:matchpos] = s:processDiagnostic(l:diag, l:bufname, l:fname)
+            let l:diagnostics = add(l:diagnostics, l:diagnostic)
 
             if empty(l:matchpos)
               continue
@@ -973,33 +973,66 @@ function! go#lsp#Hover(fname, line, col, handler) abort
   let l:lsp = s:lspfactory.get()
   let l:msg = go#lsp#message#Hover(a:fname, a:line, a:col)
   let l:state = s:newHandlerState('')
-  let l:state.handleResult = funcref('s:hoverHandler', [function(a:handler, [], l:state)], l:state)
-  let l:state.error = funcref('s:noop')
+  let l:diagnosticMsg = ''
+
+  if has_key(l:lsp.diagnostics, a:fname)
+    for l:diagnostic in l:lsp.diagnostics[a:fname]
+      if !s:within(l:diagnostic.range, a:line, a:col)
+        continue
+      endif
+
+      let l:diagnosticMsg = l:diagnostic.message
+      break
+    endfor
+  endif
+  let l:state.handleResult = funcref('s:hoverHandler', [function(a:handler, [], l:state), l:diagnosticMsg], l:state)
+  let l:state.error = funcref('s:hoverError', [function(a:handler, [], l:state), l:diagnosticMsg], l:state)
   return l:lsp.sendMessage(l:msg, l:state)
 endfunction
 
-function! s:hoverHandler(next, msg) abort dict
+function! s:hoverHandler(next, diagnostic, msg) abort dict
   if a:msg is v:null || !has_key(a:msg, 'contents')
+    if len(a:diagnostic) > 0
+      call call(a:next, [a:diagnostic])
+    endif
     return
   endif
 
   try
     let l:value = json_decode(a:msg.contents.value)
 
+    let l:msg = []
+    if len(a:diagnostic) > 0
+      let l:msg = split(a:diagnostic, "\n")
+      let l:msg = add(l:msg, '')
+    endif
     let l:signature = split(l:value.signature, "\n")
-    let l:msg = l:signature
+    let l:msg = extend(l:msg, l:signature)
     if go#config#DocBalloon()
       " use synopsis instead of fullDocumentation to keep the hover window
       " small.
       let l:doc = l:value.synopsis
       if len(l:doc) isnot 0
-        let l:msg = l:signature + ['', l:doc]
+        let l:msg = extend(l:msg, ['', l:doc])
       endif
     endif
+
     call call(a:next, [l:msg])
   catch
     " TODO(bc): log the message and/or show an error message.
   endtry
+endfunction
+
+function! s:hoverError(next, diagnostic, msg) abort dict
+  try
+    if len(a:diagnostic) > 0
+      let l:msg = split(a:diagnostic, "\n")
+      call call(a:next, [l:msg])
+    endif
+  catch
+  endtry
+
+  return
 endfunction
 
 function! go#lsp#Doc() abort
@@ -1379,7 +1412,7 @@ function! go#lsp#Diagnostics(...) abort
 
     for l:arg in a:000
       if l:arg == l:pkg || l:arg == 'all'
-        let l:diagnostics = extend(l:diagnostics, l:val)
+        let l:diagnostics = extend(l:diagnostics, map(l:val, 'v:val["error"]'))
       endif
     endfor
   endfor
@@ -1399,7 +1432,7 @@ function! go#lsp#AnalyzeFile(fname) abort
 
   let l:version = get(l:lsp.fileVersions, a:fname, 0)
   if l:version == getbufvar(a:fname, 'changedtick')
-    return l:lastdiagnostics
+    return map(l:lastdiagnostics, 'v:val["error"]')
   endif
 
   call go#lsp#DidChange(a:fname)
@@ -1410,47 +1443,75 @@ function! go#lsp#AnalyzeFile(fname) abort
 endfunction
 
 function! s:setDiagnostics(...) abort
-  return a:000
+  return map(a:000, 'v:val["error"]')
 endfunction
 
-" s:processDiagnostic converts a diagnostic into an error string. It returns
-" the errors string and the match position described in the diagnostic. The
-" match position will be an empty list when bufname is not a valid name for
-" the current buffer.
-function! s:errorFromDiagnostic(diagnostic, bufname, fname) abort
+" s:processDiagnostic converts a diagnostic from LSP into useful values for
+" Vim. It returns the a value with the original message, the diagnostic range
+" as expressed by LSP, an error string, and the Vim match position described
+" in the diagnostic. The match position will be an empty list when bufname is
+" not a valid name for the current buffer.
+function! s:processDiagnostic(diagnostic, bufname, fname) abort
   let l:range = a:diagnostic.range
 
+  let l:diagnostic = {
+        \ "message": a:diagnostic.message,
+        \ "range": {
+          \ "start": {
+            \ "line": l:range.start.line,
+            \ "character": l:range.start.character,
+          \ },
+          \ "end": {
+            \ "line": l:range.end.line,
+            \ "character": l:range.end.character,
+          \ },
+        \ },
+      \ }
+
   let l:line = l:range.start.line + 1
+  let l:endline = l:range.end.line + 1
+
   let l:buflines = getbufline(a:bufname, l:line)
   let l:col = ''
   if len(l:buflines) > 0
     let l:col = go#lsp#lsp#PositionOf(l:buflines[0], l:range.start.character)
   endif
-  let l:error = printf('%s:%s:%s:%s: %s', a:fname, l:line, l:col, go#lsp#lsp#SeverityToErrorType(a:diagnostic.severity), a:diagnostic.message)
+
+  let l:severity = go#lsp#lsp#SeverityToErrorType(a:diagnostic.severity)
+  let l:diagnostic.error = printf('%s:%s:%s:%s: %s', a:fname, l:line, l:col, l:severity, l:diagnostic.message)
 
   if !(a:diagnostic.severity == 1 || a:diagnostic.severity == 2)
-    return [l:error, []]
+    return [l:diagnostic, []]
   endif
 
   " return when the diagnostic is not for the current buffer.
   if bufnr(a:bufname) != bufnr('')
-    return [l:error, []]
+    return [l:diagnostic, []]
   end
 
-  let l:endline = l:range.end.line + 1
   " don't bother trying to highlight errors or warnings that span
   " the whole file (e.g when there's missing package documentation).
   if l:line == 1 && (l:endline) == line('$')
-    return [l:error, []]
+    return [l:diagnostic, []]
   endif
-  let l:endcol = go#lsp#lsp#PositionOf(getline(l:endline), l:range.end.character)
+
+  if len(l:buflines) == 0
+    return [l:diagnostic, []]
+  endif
+
+  let l:buflines = getbufline(a:bufname, l:endline)
+  if len(l:buflines) > 0
+    let l:endcol = go#lsp#lsp#PositionOf(l:buflines[0], l:range.end.character)
+  else
+    return [l:diagnostic, []]
+  endif
 
   " the length of the match is the number of bytes between the start of
   " the match and the end of the match.
   let l:matchLength = line2byte(l:endline) + l:endcol - (line2byte(l:line) + l:col)
   let l:pos = [l:line, l:col, l:matchLength]
 
-  return [l:error, l:pos]
+  return [l:diagnostic, l:pos]
 endfunction
 
 function! s:highlightMatches(errorMatches, warningMatches) abort
@@ -1945,6 +2006,26 @@ function! s:lineinfile(fname, line) abort
     "call go#util#EchoError(printf('%s (line %s): %s at %s', a:fname, a:line, v:exception, v:throwpoint))
     return -1
   endtry
+endfunction
+
+function! s:within(range, line, character) abort
+  if a:line < a:range.start.line
+    return 0
+  endif
+
+  if a:line > a:range.end.line
+    return 0
+  endif
+
+  if a:line == a:range.start.line && a:character < a:range.start.character
+    return 0
+  endif
+
+  if a:line == a:range.end.line && a:character > a:range.end.character
+    return 0
+  endif
+
+  return 1
 endfunction
 
 " restore Vi compatibility settings
