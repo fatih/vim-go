@@ -1235,8 +1235,9 @@ Uses `gopls` for autocompletion. By default, it is hooked up to 'omnifunc'.
                                                    *go#tool#DescribeBalloon()*
 
 Suitable to be used as an expression to show the evaluation balloon. By
-default only the type information is shown. |'g:go_doc_balloon'| can be used
-to also included partial documentation. See `help balloonexpr`.
+default only relevant diagnostics and the type information is shown.
+|'g:go_doc_balloon'| can be used to also included partial documentation. See
+`help balloonexpr`.
 
 ==============================================================================
 SETTINGS                                                        *go-settings*
