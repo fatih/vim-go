@@ -3,6 +3,8 @@
 BACKWARDS INCOMPATIBILITIES:
 
 IMPROVEMENTS:
+* Update documentation for installing tools.
+  [[GH-3413]](https://github.com/fatih/vim-go/pull/3413)
 
 BUG FIXES:
 
