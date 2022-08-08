@@ -165,14 +165,10 @@ endif
 syn match       goSingleDecl        /\%(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
 
 " Integers
-syn match       goDecimalInt        "\<-\=\(0\|[1-9]_\?\(\d\|\d\+_\?\d\+\)*\)\%([Ee][-+]\=\d\+\)\=\>"
-"syn match       goDecimalError      "\<-\=\(_\(\d\+_*\)\+\|\([1-9]\d*_*\)\+__\(\d\+_*\)\+\|\([1-9]\d*_*\)\+_\+\)\%([Ee][-+]\=\d\+\)\=\>"
-syn match       goHexadecimalInt    "\<-\=0[xX]_\?\(\x\+_\?\)\+\>"
-"syn match       goHexadecimalError  "\<-\=0[xX]_\?\(\x\+_\?\)*\(\([^-+%&|^*/ \t0-9A-Fa-f_)]\|__\)\S*\|_\)\>"
-syn match       goOctalInt          "\<-\=0[oO]\?_\?\(\o\+_\?\)\+\>"
-"syn match       goOctalError        "\<-\=0[0-7oO_]*\(\([^-+%&|^*/ \t0-7oOxX_/)\]\}\:;]\|[oO]\{2,\}\|__\)\S*\|_\|[oOxX]\)\>"
-syn match       goBinaryInt         "\<-\=0[bB]_\?\([01]\+_\?\)\+\>"
-"syn match       goBinaryError       "\<-\=0[bB]_\?[01_]*\([^-+%&|^*/ \t01_)]\S*\|__\S*\|_\)\>"
+syn match       goDecimalInt        "\<-\=\%(0\|\%(\d\|\d_\d\)\+\)\>"
+syn match       goHexadecimalInt    "\<-\=0[xX]_\?\%(\x\|\x_\x\)\+\>"
+syn match       goOctalInt          "\<-\=0[oO]\?_\?\%(\o\|\o_\o\)\+\>"
+syn match       goBinaryInt         "\<-\=0[bB]_\?\%([01]\|[01]_[01]\)\+\>"
 
 hi def link     goDecimalInt        Integer
 hi def link     goDecimalError      Error
