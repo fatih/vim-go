@@ -44,8 +44,8 @@ func! s:gometa(metalinter) abort
       let actual = copy(getqflist())
     endwhile
 
-    " sort the results, because golangci-lint seems to be returning the golint
-    " deprecation notice in a non-deterministic order.
+    " sort the results, because golangci-lint doesn't always return notices in
+    " a deterministic order.
     call sort(l:actual)
     call sort(l:expected)
 
@@ -163,8 +163,8 @@ func! s:gometaautosave(metalinter, withList) abort
       let l:actual = copy(getloclist(0))
     endwhile
 
-    " sort the results, because golangci-lint seems to be returning the golint
-    " deprecation notice in a non-deterministic order.
+    " sort the results, because golangci-lint doesn't always return notices in
+    " a deterministic order.
     call sort(l:actual)
     call sort(l:expected)
 
@@ -189,12 +189,11 @@ func! s:gometa_importabs(metalinter) abort
 
     let expected = [
           \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"/quux" imported but not used (typecheck)'},
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
         \ ]
     " clear the quickfix list
     call setqflist([], 'r')
 
-    let g:go_metalinter_enabled = ['golint']
+    let g:go_metalinter_enabled = ['revive']
 
     call go#lint#Gometa(0, 0)
 
@@ -205,8 +204,8 @@ func! s:gometa_importabs(metalinter) abort
       let actual = copy(getqflist())
     endwhile
 
-    " sort the results, because golangci-lint seems to be returning the golint
-    " deprecation notice in a non-deterministic order.
+    " sort the results, because golangci-lint doesn't always return notices in
+    " a deterministic order.
     call sort(l:actual)
     call sort(l:expected)
 
@@ -266,7 +265,6 @@ func! s:gometa_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
           \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
           \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'}
         \ ]
@@ -285,8 +283,8 @@ func! s:gometa_multiple(metalinter) abort
       let actual = copy(getqflist())
     endwhile
 
-    " sort the results, because golangci-lint seems to be returning the golint
-    " deprecation notice in a non-deterministic order.
+    " sort the results, because golangci-lint doesn't always return notices in
+    " a deterministic order.
     call sort(l:actual)
     call sort(l:expected)
 
@@ -309,7 +307,6 @@ func! s:gometaautosave_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'module': '', 'text': '[runner] The linter ''golint'' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.'},
           \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
           \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'}
         \ ]
@@ -317,7 +314,7 @@ func! s:gometaautosave_multiple(metalinter) abort
     " clear the location list
     call setloclist(0, [], 'r')
 
-    let g:go_metalinter_autosave_enabled = ['golint']
+    let g:go_metalinter_autosave_enabled = ['revive']
 
     call go#lint#Gometa(0, 1)
 
@@ -328,8 +325,8 @@ func! s:gometaautosave_multiple(metalinter) abort
       let actual = copy(getloclist(0))
     endwhile
 
-    " sort the results, because golangci-lint seems to be returning the golint
-    " deprecation notice in a non-deterministic order.
+    " sort the results, because golangci-lint doesn't always return notices in
+    " a deterministic order.
     call sort(l:actual)
     call sort(l:expected)
 
