@@ -193,7 +193,7 @@ func! s:gometa_importabs(metalinter) abort
     " clear the quickfix list
     call setqflist([], 'r')
 
-    let g:go_metalinter_enabled = ['revive']
+    let g:go_metalinter_enabled = ['revive', 'typecheck']
 
     call go#lint#Gometa(0, 0)
 
@@ -272,7 +272,7 @@ func! s:gometa_multiple(metalinter) abort
     " clear the quickfix list
     call setqflist([], 'r')
 
-    let g:go_metalinter_enabled = ['revive']
+    let g:go_metalinter_enabled = ['revive', 'typecheck']
 
     call go#lint#Gometa(0, 0)
 
@@ -314,7 +314,7 @@ func! s:gometaautosave_multiple(metalinter) abort
     " clear the location list
     call setloclist(0, [], 'r')
 
-    let g:go_metalinter_autosave_enabled = ['revive']
+    let g:go_metalinter_autosave_enabled = ['revive', 'typecheck']
 
     call go#lint#Gometa(0, 1)
 
