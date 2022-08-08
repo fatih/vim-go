@@ -101,13 +101,16 @@ endfunc
 function! Test_numeric_literal_highlight() abort
   syntax on
 
-  let tests = {
+  let l:tests = {
         \ 'lone zero': {'group': 'goDecimalInt', 'value': '0'},
+        \ 'float loan zero': {'group': 'goFloat', 'value': '0.'},
         \ 'integer': {'group': 'goDecimalInt', 'value': '1234567890'},
         \ 'integerGrouped': {'group': 'goDecimalInt', 'value': '1_234_567_890'},
-        \ 'hexadecimal': {'group': 'goHexadecimalInt', 'value': '0x0123456789abdef'},
-        \ 'hexadecimalGrouped': {'group': 'goHexadecimalInt', 'value': '0x012_345_678_9ab_def'},
-        \ 'heXadecimal': {'group': 'goHexadecimalInt', 'value': '0X0123456789abdef'},
+        \ 'hexadecimal': {'group': 'goHexadecimalInt', 'value': '0x0123456789abcdef'},
+        \ 'hexadecimalGrouped': {'group': 'goHexadecimalInt', 'value': '0x012_345_678_9abc_def'},
+        \ 'heXadecimal': {'group': 'goHexadecimalInt', 'value': '0X0123456789abcdef'},
+        \ 'hexadecimalFloatUp': {'group': 'goHexadecimalFloat', 'value': '0x0123456789abcdef.0123456789abcdefp2'},
+        \ 'hexadecimalFloatDown': {'group': 'goHexadecimalFloat', 'value': '0x0123456789abcdef.0123456789abcdefp-2'},
         \ 'octal': {'group': 'goOctalInt', 'value': '01234567'},
         \ 'octalPrefix': {'group': 'goOctalInt', 'value': '0o1234567'},
         \ 'octalGrouped': {'group': 'goOctalInt', 'value': '0o1_234_567'},
@@ -115,11 +118,32 @@ function! Test_numeric_literal_highlight() abort
         \ 'binaryInt': {'group': 'goBinaryInt', 'value': '0b0101'},
         \ 'binaryIntGrouped': {'group': 'goBinaryInt', 'value': '0b_01_01'},
         \ 'BinaryInt': {'group': 'goBinaryInt', 'value': '0B0101'},
+        \ 'floatFractionalOnly': {'group': 'goFloat', 'value': '.1'},
+        \ 'hexadecimalFloatFractionalOnly': {'group': 'goHexadecimalFloat', 'value': '0x.1'},
+        \ 'floatIntegerOnly': {'group': 'goFloat', 'value': '1e6'},
         \ }
 
-  for kv in items(tests)
-    let l:actual = s:numericHighlightGroupInAssignment(kv[0], kv[1].value)
-    call assert_equal(kv[1].group, l:actual, kv[0])
+  for l:kv in items(copy(l:tests))
+    let l:value = deepcopy(l:kv[1])
+    let l:value.group = substitute(l:value.group, 'go', 'goImaginary', '')
+    let l:value.group = substitute(l:value.group, 'Int$', '', '')
+    let l:value.value = printf('%si', l:value.value)
+    let l:tests[printf('imaginary %s', l:kv[0])] = l:value
+  endfor
+
+  for l:kv in items(copy(l:tests))
+    let l:value = deepcopy(l:kv[1])
+    let l:value.value = printf('-%s', l:value.value)
+    let l:tests[printf('negative %s', l:kv[0])] = l:value
+  endfor
+
+  for l:kv in items(tests)
+    let l:actual = s:numericHighlightGroupInAssignment(l:kv[0], l:kv[1].value)
+    call assert_equal(l:kv[1].group, l:actual, l:kv[1].value)
+
+    let l:groupName = 'goString'
+    let l:actual = s:stringHighlightGroupInAssignment(l:kv[0], l:kv[1].value)
+    call assert_equal('goString', l:actual, printf('"%s"', l:kv[1].value))
   endfor
 endfunction
 
@@ -154,6 +178,22 @@ function! s:numericHighlightGroupInAssignment(testname, value)
         \ 'package numeric',
         \ '',
         \ printf("var v = %s\x1f", a:value),
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    return l:actual
+  finally
+    call delete(l:dir, 'rf')
+  endtry
+endfunction
+
+function! s:stringHighlightGroupInAssignment(testname, value)
+  let l:dir = gotest#write_file(printf('numeric/%s.go', a:testname), [
+        \ 'package numeric',
+        \ '',
+        \ printf("var v = \"%s\x1f\"", a:value),
         \ ])
 
   try
