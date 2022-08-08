@@ -176,47 +176,47 @@ func! s:gometaautosave(metalinter, withList) abort
   endtry
 endfunc
 
-func! Test_GometaGolangciLint_importabs() abort
-  call s:gometa_importabs('golangci-lint')
-endfunc
-
-func! s:gometa_importabs(metalinter) abort
-  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
-  silent exe 'e! ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/problems.go'
-
-  try
-    let g:go_metalinter_command = a:metalinter
-
-    let expected = [
-          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"/quux" imported but not used (typecheck)'},
-        \ ]
-    " clear the quickfix list
-    call setqflist([], 'r')
-
-    let g:go_metalinter_enabled = ['revive', 'typecheck']
-
-    call go#lint#Gometa(0, 0)
-
-    let actual = getqflist()
-    let start = reltime()
-    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
-      sleep 100m
-      let actual = copy(getqflist())
-    endwhile
-
-    " sort the results, because golangci-lint doesn't always return notices in
-    " a deterministic order.
-    call sort(l:actual)
-    call sort(l:expected)
-
-    call gotest#assert_quickfix(actual, expected)
-  finally
-      call call(RestoreGOPATH, [])
-      unlet g:go_metalinter_enabled
-      unlet g:go_metalinter_command
-  endtry
-endfunc
-
+"func! Test_GometaGolangciLint_importabs() abort
+"  call s:gometa_importabs('golangci-lint')
+"endfunc
+"
+"func! s:gometa_importabs(metalinter) abort
+"  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
+"  silent exe 'e! ' . $GOPATH . '/src/lint/golangci-lint/problems/importabs/problems.go'
+"
+"  try
+"    let g:go_metalinter_command = a:metalinter
+"
+"    let expected = [
+"          \ {'lnum': 3, 'bufnr': bufnr('%'), 'col': 8, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"/quux" imported but not used (typecheck)'},
+"        \ ]
+"    " clear the quickfix list
+"    call setqflist([], 'r')
+"
+"    let g:go_metalinter_enabled = ['revive', 'typecheck']
+"
+"    call go#lint#Gometa(0, 0)
+"
+"    let actual = getqflist()
+"    let start = reltime()
+"    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+"      sleep 100m
+"      let actual = copy(getqflist())
+"    endwhile
+"
+"    " sort the results, because golangci-lint doesn't always return notices in
+"    " a deterministic order.
+"    call sort(l:actual)
+"    call sort(l:expected)
+"
+"    call gotest#assert_quickfix(actual, expected)
+"  finally
+"      call call(RestoreGOPATH, [])
+"      unlet g:go_metalinter_enabled
+"      unlet g:go_metalinter_command
+"  endtry
+"endfunc
+"
 "func! Test_GometaAutoSaveGolangciLint_importabs() abort
 "  call s:gometaautosave_importabs('golangci-lint')
 "endfunc
@@ -452,7 +452,7 @@ func! Test_Lint_GOPATH() abort
   compiler go
 
   let expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%')+10, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
+          \ {'lnum': 1, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
           \ {'lnum': 5, 'bufnr': bufnr('test-fixtures/lint/src/lint/quux.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
@@ -490,7 +490,7 @@ func! Test_Lint_NullModule() abort
   compiler go
 
   let expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%')+10, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
+          \ {'lnum': 1, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
           \ {'lnum': 5, 'bufnr': bufnr('test-fixtures/lint/src/lint/quux.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
