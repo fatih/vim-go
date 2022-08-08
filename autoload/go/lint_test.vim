@@ -455,6 +455,7 @@ func! Test_Lint_GOPATH() abort
   compiler go
 
   let expected = [
+          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
           \ {'lnum': 5, 'bufnr': bufnr('test-fixtures/lint/src/lint/quux.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
@@ -492,6 +493,7 @@ func! Test_Lint_NullModule() abort
   compiler go
 
   let expected = [
+          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
           \ {'lnum': 5, 'bufnr': bufnr('test-fixtures/lint/src/lint/quux.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
