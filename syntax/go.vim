@@ -165,14 +165,10 @@ endif
 syn match       goSingleDecl        /\%(import\|var\|const\) [^(]\@=/ contains=goImport,goVar,goConst
 
 " Integers
-syn match       goDecimalInt        "\<-\=\(0\|[1-9]_\?\(\d\|\d\+_\?\d\+\)*\)\%([Ee][-+]\=\d\+\)\=\>"
-"syn match       goDecimalError      "\<-\=\(_\(\d\+_*\)\+\|\([1-9]\d*_*\)\+__\(\d\+_*\)\+\|\([1-9]\d*_*\)\+_\+\)\%([Ee][-+]\=\d\+\)\=\>"
-syn match       goHexadecimalInt    "\<-\=0[xX]_\?\(\x\+_\?\)\+\>"
-"syn match       goHexadecimalError  "\<-\=0[xX]_\?\(\x\+_\?\)*\(\([^-+%&|^*/ \t0-9A-Fa-f_)]\|__\)\S*\|_\)\>"
-syn match       goOctalInt          "\<-\=0[oO]\?_\?\(\o\+_\?\)\+\>"
-"syn match       goOctalError        "\<-\=0[0-7oO_]*\(\([^-+%&|^*/ \t0-7oOxX_/)\]\}\:;]\|[oO]\{2,\}\|__\)\S*\|_\|[oOxX]\)\>"
-syn match       goBinaryInt         "\<-\=0[bB]_\?\([01]\+_\?\)\+\>"
-"syn match       goBinaryError       "\<-\=0[bB]_\?[01_]*\([^-+%&|^*/ \t01_)]\S*\|__\S*\|_\)\>"
+syn match       goDecimalInt        "\<-\=\%(0\|\%(\d\|\d_\d\)\+\)\>"
+syn match       goHexadecimalInt    "\<-\=0[xX]_\?\%(\x\|\x_\x\)\+\>"
+syn match       goOctalInt          "\<-\=0[oO]\?_\?\%(\o\|\o_\o\)\+\>"
+syn match       goBinaryInt         "\<-\=0[bB]_\?\%([01]\|[01]_[01]\)\+\>"
 
 hi def link     goDecimalInt        Integer
 hi def link     goDecimalError      Error
@@ -185,19 +181,55 @@ hi def link     goBinaryError       Error
 hi def link     Integer             Number
 
 " Floating point
-syn match       goFloat             "\<-\=\d\+\.\d*\%([Ee][-+]\=\d\+\)\=\>"
-syn match       goFloat             "\<-\=\.\d\+\%([Ee][-+]\=\d\+\)\=\>"
+"float_lit         = decimal_float_lit | hex_float_lit .
+"
+"decimal_float_lit = decimal_digits "." [ decimal_digits ] [ decimal_exponent ] |
+"                    decimal_digits decimal_exponent |
+"                    "." decimal_digits [ decimal_exponent ] .
+"decimal_exponent  = ( "e" | "E" ) [ "+" | "-" ] decimal_digits .
+"
+"hex_float_lit     = "0" ( "x" | "X" ) hex_mantissa hex_exponent .
+"hex_mantissa      = [ "_" ] hex_digits "." [ hex_digits ] |
+"                    [ "_" ] hex_digits |
+"                    "." hex_digits .
+"hex_exponent      = ( "p" | "P" ) [ "+" | "-" ] decimal_digits .
+" decimal floats with a decimal point
+syn match       goFloat             "\<-\=\%(0\|\%(\d\|\d_\d\)\+\)\.\%(\%(\%(\d\|\d_\d\)\+\)\=\%([Ee][-+]\=\%(\d\|\d_\d\)\+\)\=\>\)\="
+syn match       goFloat             "\s\zs-\=\.\%(\d\|\d_\d\)\+\%(\%([Ee][-+]\=\%(\d\|\d_\d\)\+\)\>\)\="
+" decimal floats without a decimal point
+syn match       goFloat             "\<-\=\%(0\|\%(\d\|\d_\d\)\+\)[Ee][-+]\=\%(\d\|\d_\d\)\+\>"
+" hexadecimal floats with a decimal point
+syn match       goHexadecimalFloat  "\<-\=0[xX]\%(_\x\|\x\)\+\.\%(\%(\x\|\x_\x\)\+\)\=\%([Pp][-+]\=\%(\d\|\d_\d\)\+\)\=\>"
+syn match       goHexadecimalFloat  "\<-\=0[xX]\.\%(\x\|\x_\x\)\+\%([Pp][-+]\=\%(\d\|\d_\d\)\+\)\=\>"
+" hexadecimal floats without a decimal point
+syn match       goHexadecimalFloat  "\<-\=0[xX]\%(_\x\|\x\)\+[Pp][-+]\=\%(\d\|\d_\d\)\+\>"
 
 hi def link     goFloat             Float
+hi def link     goHexadecimalFloat  Float
 
 " Imaginary literals
-syn match       goImaginary         "\<-\=\d\+i\>"
-syn match       goImaginary         "\<-\=\d\+[Ee][-+]\=\d\+i\>"
-syn match       goImaginaryFloat    "\<-\=\d\+\.\d*\%([Ee][-+]\=\d\+\)\=i\>"
-syn match       goImaginaryFloat    "\<-\=\.\d\+\%([Ee][-+]\=\d\+\)\=i\>"
+syn match       goImaginaryDecimal        "\<-\=\%(0\|\%(\d\|\d_\d\)\+\)i\>"
+syn match       goImaginaryHexadecimal    "\<-\=0[xX]_\?\%(\x\|\x_\x\)\+i\>"
+syn match       goImaginaryOctal          "\<-\=0[oO]\?_\?\%(\o\|\o_\o\)\+i\>"
+syn match       goImaginaryBinary         "\<-\=0[bB]_\?\%([01]\|[01]_[01]\)\+i\>"
 
-hi def link     goImaginary         Number
-hi def link     goImaginaryFloat    Float
+" imaginary decimal floats with a decimal point
+syn match       goImaginaryFloat             "\<-\=\%(0\|\%(\d\|\d_\d\)\+\)\.\%(\%(\%(\d\|\d_\d\)\+\)\=\%([Ee][-+]\=\%(\d\|\d_\d\)\+\)\=\)\=i\>"
+syn match       goImaginaryFloat             "\s\zs-\=\.\%(\d\|\d_\d\)\+\%([Ee][-+]\=\%(\d\|\d_\d\)\+\)\=i\>"
+" imaginary decimal floats without a decimal point
+syn match       goImaginaryFloat             "\<-\=\%(0\|\%(\d\|\d_\d\)\+\)[Ee][-+]\=\%(\d\|\d_\d\)\+i\>"
+" imaginary hexadecimal floats with a decimal point
+syn match       goImaginaryHexadecimalFloat  "\<-\=0[xX]\%(_\x\|\x\)\+\.\%(\%(\x\|\x_\x\)\+\)\=\%([Pp][-+]\=\%(\d\|\d_\d\)\+\)\=i\>"
+syn match       goImaginaryHexadecimalFloat  "\<-\=0[xX]\.\%(\x\|\x_\x\)\+\%([Pp][-+]\=\%(\d\|\d_\d\)\+\)\=i\>"
+" imaginary hexadecimal floats without a decimal point
+syn match       goImaginaryHexadecimalFloat  "\<-\=0[xX]\%(_\x\|\x\)\+[Pp][-+]\=\%(\d\|\d_\d\)\+i\>"
+
+hi def link     goImaginaryDecimal             Number
+hi def link     goImaginaryHexadecimal         Number
+hi def link     goImaginaryOctal               Number
+hi def link     goImaginaryBinary              Number
+hi def link     goImaginaryFloat               Float
+hi def link     goImaginaryHexadecimalFloat    Float
 
 " Spaces after "[]"
 if go#config#HighlightArrayWhitespaceError()
