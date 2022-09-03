@@ -23,6 +23,7 @@ func! s:gometa(metalinter) abort
         \ ]
     if a:metalinter == 'golangci-lint'
       let expected = [
+            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'package-comments: should have a package comment (revive)'},
             \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'exported: exported function MissingFooDoc should have comment or be unexported (revive)'}
           \ ]
     endif
@@ -125,7 +126,7 @@ func! s:gometaautosave(metalinter, withList) abort
     let g:go_metalinter_command = a:metalinter
     let l:vim = s:vimdir()
     let l:expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
+          \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'at least one file in a package should have a package comment (ST1000)'},
         \ ]
     if a:metalinter == 'gopls'
       let l:expected = []
@@ -134,6 +135,7 @@ func! s:gometaautosave(metalinter, withList) abort
 "          \ ]
     elseif a:metalinter == 'golangci-lint'
       let l:expected = [
+            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'package-comments: should have a package comment (revive)'},
             \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'exported: exported function MissingDoc should have comment or be unexported (revive)'}
           \ ]
     endif
@@ -141,7 +143,7 @@ func! s:gometaautosave(metalinter, withList) abort
     let l:list = []
     if a:withList
       let l:list = [
-            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'before metalinter'}
+            \ {'lnum': 1, 'bufnr': bufnr('%'), 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'before metalinter'}
           \ ]
       let l:expected = extend(copy(l:list), l:expected)
     endif
@@ -452,7 +454,7 @@ func! Test_Lint_GOPATH() abort
   compiler go
 
   let expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
+          \ {'lnum': 1, 'bufnr': bufnr('%')+11, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
           \ {'lnum': 5, 'bufnr': bufnr('test-fixtures/lint/src/lint/quux.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
@@ -490,7 +492,7 @@ func! Test_Lint_NullModule() abort
   compiler go
 
   let expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('%')+9, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
+          \ {'lnum': 1, 'bufnr': bufnr('%')+11, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
           \ {'lnum': 5, 'bufnr': bufnr('test-fixtures/lint/src/lint/quux.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
       \ ]
