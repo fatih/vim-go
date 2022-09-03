@@ -18,6 +18,8 @@ IMPROVEMENTS:
 BUG FIXES:
 * Fix quoting of arguments when shell is set to pwsh on Windows.
   [[GH-3422]](https://github.com/fatih/vim-go/pull/3422)
+* Use -mod=mod instead of -mod=readonly when installing tools.
+  [[GH-3449]](https://github.com/fatih/vim-go/pull/3449)
 
 ## v1.26 - (April 23, 2022)
 
