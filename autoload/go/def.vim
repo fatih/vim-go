@@ -167,7 +167,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let old_switchbuf = &switchbuf
 
   normal! m'
-  if filename != fnamemodify(expand("%"), ':p:gs?\\?/?')
+  if go#config#DefSplitSameBuffer() || filename != fnamemodify(expand("%"), ':p:gs?\\?/?')
     " jump to existing buffer if, 1. we have enabled it, 2. the buffer is loaded
     " and 3. there is buffer window number we switch to
     if go#config#DefReuseBuffer() && bufwinnr(filename) != -1

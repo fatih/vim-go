@@ -188,6 +188,10 @@ function! go#config#DefReuseBuffer() abort
   return get(g:, 'go_def_reuse_buffer', 0)
 endfunction
 
+function! go#config#DefSplitSameBuffer() abort
+  return get(g:, 'go_def_split_same_buffer', 0)
+endfunction
+
 function! go#config#DefMode() abort
   return get(g:, 'go_def_mode', 'gopls')
 endfunction
