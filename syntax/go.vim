@@ -264,7 +264,7 @@ if go#config#HighlightExtraTypes()
   syn match goExtraType /\<bufio\.\%(Reader\|Scanner\|Writer\)\>/
   syn match goExtraType /\<os\.\%(Getenv\|Stdin\|Stdout\|Stderr\)\>/
   syn match goExtraType /\<strconv\.\%(Atoi\|ParseFloat\)\>/
-  syn match goExtraType /\<strings\.\%(Compare\|Contains\|Repeat\|Replace\|ReplaceAll\|Split\|ToLower\|ToUpper\|Trim\|TrimSpace\|)\>/
+  syn match goExtraType /\<strings\.\%(Contains\|Repeat\|Replace\|ReplaceAll\|Split\|ToLower\|ToUpper\|Trim\)\>/
   syn match goExtraType /\<sql\.\%(DB\|Row\|Rows\|Stmt\)\>/
   syn match goExtraType /\<fmt\.\%(Scan\|Scanf\|Scanln\|Sprintf\|Errorf\|Fprint\|Fprintf\|Print\|Printf\|Println\)\>/
   syn match goExtraType /\<http\.\%(Handle\|HandleFunc\|FileServer\|Request\|ResponseWriter\|Error\|ListenAndServe\|NotFound\|Redirect\|Serve\|StatusText\|Handler\|Header\|ServeMux\|Server\|Get\|Post\)\>/
