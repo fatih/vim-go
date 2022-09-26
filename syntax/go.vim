@@ -258,9 +258,22 @@ endif
 if go#config#HighlightExtraTypes()
   syn match goExtraType /\<bytes\.\%(Buffer\)\>/
   syn match goExtraType /\<context\.\%(Context\)\>/
-  syn match goExtraType /\<io\.\%(Reader\|ReadSeeker\|ReadWriter\|ReadCloser\|ReadWriteCloser\|Writer\|WriteCloser\|Seeker\)\>/
+  syn match goExtraType /\<io\.\%(Reader\|ReadSeeker\|ReadWriter\|ReadCloser\|ReadWriteCloser\|Writer\|WriteCloser\|Seeker\|Copy\|CopyBuffer\|ByteReader\|ByteScanner\|ByteWriter\)\>/
   syn match goExtraType /\<reflect\.\%(Kind\|Type\|Value\)\>/
-  syn match goExtraType /\<unsafe\.Pointer\>/
+  syn match goExtraType /\<unsafe\.\%(Pointer\)\>/
+  syn match goExtraType /\<bufio\.\%(Reader\|Scanner\|Writer\)\>/
+  syn match goExtraType /\<os\.\%(Getenv\|Stdin\|Stdout\|Stderr\)\>/
+  syn match goExtraType /\<strconv\.\%(Atoi\|ParseFloat\)\>/
+  syn match goExtraType /\<strings\.\%(Compare\|Contains\|Repeat\|Replace\|ReplaceAll\|Split\|ToLower\|ToUpper\|Trim\|TrimSpace\|)\>/
+  syn match goExtraType /\<sql\.\%(DB\|Row\|Rows\|Stmt\)\>/
+  syn match goExtraType /\<fmt\.\%(Scan\|Scanf\|Scanln\|Sprintf\|Errorf\|Fprint\|Fprintf\|Print\|Printf\|Println\)\>/
+  syn match goExtraType /\<http\.\%(Handle\|HandleFunc\|FileServer\|Request\|ResponseWriter\|Error\|ListenAndServe\|NotFound\|Redirect\|Serve\|StatusText\|Handler\|Header\|ServeMux\|Server\|Get\|Post\)\>/
+  syn match goExtraType /\<template\.\%(Template\)\>/
+  syn match goExtraType /\<log\.\%(Fatal\|Fatalf\|Fataln\|Print\|Printf\|Println\|Logger\)\>/
+  syn match goExtraType /\<json\.\%(Marshal\|Unmarshal\|Deocder\|Encoder\)\>/
+  syn match goExtraType /\<time\.\%(Sleep\|Duration\|Location\|Time\)\>/
+
+  syn match goExtraType /\<
 endif
 
 " Space-tab error
