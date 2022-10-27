@@ -167,17 +167,21 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let old_switchbuf = &switchbuf
 
   normal! m'
-  if go#config#DefSplitSameBuffer() || filename != fnamemodify(expand("%"), ':p:gs?\\?/?')
+
+  let same_file = filename == fnamemodify(expand("%"), ':p:gs?\\?/?')
+  if go#config#DefSplitSameBuffer() || !same_file
     " jump to existing buffer if, 1. we have enabled it, 2. the buffer is loaded
     " and 3. there is buffer window number we switch to
     if go#config#DefReuseBuffer() && bufwinnr(filename) != -1
       " jump to existing buffer if it exists
       call win_gotoid(bufwinid(filename))
     else
-      if &modified
-        let cmd = 'hide edit'
-      else
-        let cmd = 'edit'
+      if !same_file || a:mode == "tab"
+        if &modified
+          let cmd = 'hide edit'
+        else
+          let cmd = 'edit'
+        endif
       endif
 
       if a:mode == "tab"
@@ -193,14 +197,16 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
         vsplit
       endif
 
-      " open the file and jump to line and column
-      try
-        exec cmd fnameescape(fnamemodify(filename, ':.'))
-      catch
-        if stridx(v:exception, ':E325:') < 0
-          call go#util#EchoError(v:exception)
-        endif
-      endtry
+      if !same_file || a:mode == "tab"
+        " open the file and jump to line and column
+        try
+          exec cmd fnameescape(fnamemodify(filename, ':.'))
+        catch
+          if stridx(v:exception, ':E325:') < 0
+            call go#util#EchoError(v:exception)
+          endif
+        endtry
+      endif
     endif
   endif
   call cursor(line, col)
