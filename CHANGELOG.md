@@ -22,6 +22,8 @@ BUG FIXES:
   [[GH-3449]](https://github.com/fatih/vim-go/pull/3449)
 * Remove support for /* */ comments in go.mod files.
   [[GH-3460]](https://github.com/fatih/vim-go/pull/3460)
+* Fix go.work syntax support.
+  [[GH-3461]](https://github.com/fatih/vim-go/pull/3461)
 
 ## v1.26 - (April 23, 2022)
 
