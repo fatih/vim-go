@@ -20,6 +20,8 @@ BUG FIXES:
   [[GH-3422]](https://github.com/fatih/vim-go/pull/3422)
 * Use -mod=mod instead of -mod=readonly when installing tools.
   [[GH-3449]](https://github.com/fatih/vim-go/pull/3449)
+* Remove support for /* */ comments in go.mod files.
+  [[GH-3460]](https://github.com/fatih/vim-go/pull/3460)
 
 ## v1.26 - (April 23, 2022)
 
