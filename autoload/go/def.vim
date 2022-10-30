@@ -5,6 +5,8 @@ set cpo&vim
 let s:go_stack = []
 let s:go_stack_level = 0
 
+" go#def#Jump jumps to a definition. Valid modes are 'tab', 'split', 'vsplit',
+" and the empty string, ''.
 function! go#def#Jump(mode, type) abort
   let l:fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
 
@@ -167,7 +169,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let old_switchbuf = &switchbuf
 
   normal! m'
-  if filename != fnamemodify(expand("%"), ':p:gs?\\?/?')
+  if a:mode != '' || filename != fnamemodify(expand("%"), ':p:gs?\\?/?')
     " jump to existing buffer if, 1. we have enabled it, 2. the buffer is loaded
     " and 3. there is buffer window number we switch to
     if go#config#DefReuseBuffer() && bufwinnr(filename) != -1
