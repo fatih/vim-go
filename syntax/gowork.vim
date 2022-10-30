@@ -12,13 +12,11 @@ syntax case match
 
 " match keywords
 syntax keyword goworkGo      go      contained
-syntax keyword goworkUse use
-syntax keyword goworkExclude exclude
+syntax keyword goworkUse     use
 syntax keyword goworkReplace replace
-syntax keyword goworkRetract retract
 
-" require, exclude, replace, and go can be also grouped into block
-syntax region goworkUse start='require (' end=')' transparent contains=goworkUse,goworkPath
+" use, exclude, replace, and go can be also grouped into block
+syntax region goworkUse     start='use (' end=')'     transparent contains=goworkUse
 syntax region goworkReplace start='replace (' end=')' transparent contains=goworkReplace,goworkVersion
 syntax match  goworkGo            '^go .*$'           transparent contains=goworkGo,goworkGoVersion
 
@@ -43,11 +41,6 @@ highlight default link goworkReplaceOperator Operator
 syntax match goworkGoVersion "1\.\d\+" contained
 highlight default link goworkGoVersion Identifier
 
-
-" match paths in use directives
-syntax match goworkPath "\f\+"
-
-highlight default link goworkPath Identifier
 " highlight versions:
 "  * vX.Y.Z-pre
 "  * vX.Y.Z
