@@ -24,6 +24,9 @@ BUG FIXES:
   [[GH-3460]](https://github.com/fatih/vim-go/pull/3460)
 * Fix go.work syntax support.
   [[GH-3461]](https://github.com/fatih/vim-go/pull/3461)
+* Split the buffer without considering the current buffer when a mapping to
+  split and jump to definition is used.
+  [[GH-3462]](https://github.com/fatih/vim-go/pull/3462)
 
 ## v1.26 - (April 23, 2022)
 
