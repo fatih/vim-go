@@ -16,10 +16,10 @@ command! -nargs=? -complete=customlist,go#rename#Complete GoRename call go#renam
 
 command! -range=% GoImplements call go#implements#Implements(<count>)
 command! -range=% GoReferrers call go#referrers#Referrers(<count>)
-command! -range=0 GoSameIds call go#guru#SameIds(1)
-command! -range=0 GoSameIdsClear call go#guru#ClearSameIds()
-command! -range=0 GoSameIdsToggle call go#guru#ToggleSameIds()
-command! -range=0 GoSameIdsAutoToggle call go#guru#AutoToggleSameIds()
+command! -range=0 GoSameIds call go#sameids#SameIds(1)
+command! -range=0 GoSameIdsClear call go#sameids#ClearSameIds()
+command! -range=0 GoSameIdsToggle call go#sameids#ToggleSameIds()
+command! -range=0 GoSameIdsAutoToggle call go#sameids#AutoToggleSameIds()
 
 " -- calls
 command! -nargs=0 GoCallers call go#calls#Callers()
