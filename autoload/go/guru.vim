@@ -468,7 +468,8 @@ function! s:same_ids_highlight(exit_val, output, mode) abort
   let l:matches = []
   for item in same_ids
     let pos = split(item, ':')
-    let l:matches = add(l:matches, [str2nr(pos[-2]), str2nr(pos[-1]), str2nr(poslen)])
+    let poslen = str2nr(pos[-1]) - str2nr(pos[-2])
+    let l:matches = add(l:matches, [str2nr(pos[-3]), str2nr(pos[-2]), poslen])
   endfor
 
   call go#util#HighlightPositions('goSameId', l:matches)

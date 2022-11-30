@@ -881,7 +881,7 @@ function! s:sameIDsHandler(next, msg) abort dict
           \ }]
     endif
 
-    let l:result.sameids = add(l:result.sameids, printf('%s:%s:%s', go#path#FromURI(l:loc.uri), l:loc.range.start.line+1, l:loc.range.start.character+1))
+    let l:result.sameids = add(l:result.sameids, printf('%s:%d:%d:%d', go#path#FromURI(l:loc.uri), l:loc.range.start.line+1, l:loc.range.start.character+1, l:loc.range.end.character+1))
   endfor
 
   call call(a:next, [0, json_encode(l:result), ''])
