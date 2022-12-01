@@ -27,6 +27,8 @@ BUG FIXES:
 * Split the buffer without considering the current buffer when a mapping to
   split and jump to definition is used.
   [[GH-3462]](https://github.com/fatih/vim-go/pull/3462)
+* Fix hilighting of package references via `:GoSameIds`.
+  [[GH-3469]](https://github.com/fatih/vim-go/pull/3469)
 
 ## v1.26 - (April 23, 2022)
 
