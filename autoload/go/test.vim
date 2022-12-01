@@ -122,6 +122,31 @@ function! go#test#Func(bang, ...) abort
   call call('go#test#Test', args)
 endfunction
 
+" Testcase runs a single subtest of a function for a subtest name on the
+" current cursor line.
+" Arguments are passed to the `go test` command.
+function! go#test#Case(bang, ...) abort
+  let l:testParent = go#util#TestName()
+
+  " Check for a struct initialization on the line, and take its value
+  let l:searchPattern = '\s*\:\s*"\zs\w*\ze'
+  let l:subTestName = matchstr(getline("."), l:searchPattern)
+  if l:subTestName == ""
+    call go#util#EchoError('[test] no name for test case found on cursor line')
+    return
+  endif
+
+  let l:args = [a:bang, 0, "-run", l:testParent . "/" . l:subTestName . "$"]
+  if a:0
+    call extend(l:args, a:000)
+  else
+    let l:timeout = go#config#TestTimeout()
+    call add(l:args, printf("-timeout=%s", l:timeout))
+  endif
+
+  call call('go#test#Test', l:args)
+endfunction
+
 function! s:test_job(cmd, args) abort
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()

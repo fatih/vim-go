@@ -423,6 +423,19 @@ CTRL-t
 
     If [!] is not given the first error is jumped to.
 
+
+:GoTestCase[!] [expand]                                          *:GoTestCase*
+
+    Runs :GoTest, but only for a single test case within a single test
+    function immediate to your cursor using 'go test's '-run' flag.
+
+    Lookup of the parent test function is as in `:GoTestFunc`. The test case
+    name lookup is done by taking the cursor line, checking for a struct
+    varliabe initialization, and taking the value of the name. The test
+    is then identified in the format of ``TestFunctionName/TestCaseName$` .
+
+    if [!] is not given the first error is jumped to.
+
                                                               *:GoTestCompile*
 :GoTestCompile[!] [expand]
 
