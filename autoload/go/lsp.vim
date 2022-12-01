@@ -860,7 +860,6 @@ function! s:sameIDsHandler(next, msg) abort dict
 
   let l:result = {
         \ 'sameids': [],
-        \ 'enclosing': [],
       \ }
 
   let l:msg = a:msg
@@ -873,18 +872,10 @@ function! s:sameIDsHandler(next, msg) abort dict
       continue
     endif
 
-    if len(l:result.enclosing) == 0
-      let l:result.enclosing = [{
-            \ 'desc': 'identifier',
-            \ 'start': l:loc.range.start.character+1,
-            \ 'end': l:loc.range.end.character+1,
-          \ }]
-    endif
-
-    let l:result.sameids = add(l:result.sameids, printf('%s:%s:%s', go#path#FromURI(l:loc.uri), l:loc.range.start.line+1, l:loc.range.start.character+1))
+    let l:result.sameids = add(l:result.sameids, [l:loc.range.start.line+1, l:loc.range.start.character+1, l:loc.range.end.character+1])
   endfor
 
-  call call(a:next, [0, json_encode(l:result), ''])
+  call call(a:next, [0, l:result, ''])
 endfunction
 
 " go#lsp#Referrers calls gopls to get the references to the identifier at line

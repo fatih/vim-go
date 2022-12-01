@@ -113,10 +113,10 @@ augroup vim-go-buffer
     " clear SameIds when the buffer is unloaded from its last window so that
     " loading another buffer (especially of a different filetype) in the same
     " window doesn't highlight the most recently matched identifier's positions.
-    autocmd BufWinLeave <buffer> call go#guru#ClearSameIds()
+    autocmd BufWinLeave <buffer> call go#sameids#ClearSameIds()
     " clear SameIds when a new buffer is loaded in the window so that the
     " previous buffer's highlighting isn't used.
-    autocmd BufWinEnter <buffer> call go#guru#ClearSameIds()
+    autocmd BufWinEnter <buffer> call go#sameids#ClearSameIds()
 
     " clear diagnostics when the buffer is unloaded from its last window so that
     " loading another buffer (especially of a different filetype) in the same

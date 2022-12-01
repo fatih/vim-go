@@ -131,7 +131,7 @@ function! s:handler(timer_id)
     call go#tool#Info(0)
   endif
   if go#config#AutoSameids()
-    call go#guru#SameIds(0)
+    call go#sameids#SameIds(0)
   endif
   let s:timer_id = 0
 endfunction
