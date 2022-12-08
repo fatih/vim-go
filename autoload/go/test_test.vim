@@ -125,6 +125,25 @@ func! Test_GoTestExample() abort
   call s:test('example/example_test.go', expected)
 endfunc
 
+" Non exhaustive set of tests, to show behaviour and common cases
+func! Test_GoSubTestUnderCursor() abort
+  let l:testCases = [
+        \{'lineContent' : 'name: "myTest"', 'expected': "myTest", 'testName' : 'all letters'},
+        \{'lineContent' : 'nom: "my test"', 'expected' : "my test", 'testName' : 'with space'},
+        \{'lineContent' : 'nombre: "my1test"', 'expected' : "my1test", 'testName' : 'with number'},
+        \{'lineContent' : 'nome : "my_test"', 'expected' : "my_test", 'testName' : 'with underscore, and preceding `:` space'},
+        \{'lineContent' : '      enw :"myTest"', 'expected' : 'myTest', 'testName' : 'with starting tabs'},
+        \{'lineContent' : 'Though this be madness, yet there is method in [i]t.', 'expected' : '', 'testName' : 'no match'},
+        \{'lineContent' : 'namn: "myTest",', 'expected' : 'myTest', 'testName' : 'comma terminated'},
+        \{'lineContent' : 'naam: "myTest" ', 'expected' : 'myTest', 'testName' : 'space terminated'},
+        \{'lineContent' : 'ainm: "myTest",\n', 'expected' : 'myTest', 'testName' : 'newline terminated'},
+        \ ]
+  for l:tc in l:testCases
+    let l:actual = go#test#subtestUnderCursor(l:tc['lineContent'])
+    call assert_equal(l:actual, l:tc['expected'], 'SubTest: ' . l:tc['testName'])
+  endfor
+endfunction
+
 func! s:test(file, expected, ...) abort
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/test'
   call go#util#Chdir(printf('%s/src/%s', $GOPATH, fnamemodify(a:file, ':h')))

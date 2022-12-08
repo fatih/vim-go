@@ -431,7 +431,7 @@ CTRL-t
 
     Lookup of the parent test function is as in `:GoTestFunc`. The test case
     name lookup is done by taking the cursor line, checking for a struct
-    varliabe initialization, and taking the value of the name. The test
+    variable initialization, and taking the value of the name. The test
     is then identified in the format of `TestFunctionName/TestCaseName$` .
 
     if [!] is not given the first error is jumped to.

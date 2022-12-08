@@ -127,16 +127,24 @@ endfunction
 " Arguments are passed to the `go test` command.
 function! go#test#Case(bang, ...) abort
   let l:testParent = go#util#TestName()
+  if l:testParent == ""
+    call go#util#EchoWarning("[test] no test found immediate to cursor")
+    return
+  endif
 
   " Check for a struct initialization on the line, and take its value
-  let l:searchPattern = '\s*\:\s*"\zs\w*\ze'
-  let l:subTestName = matchstr(getline("."), l:searchPattern)
+  " e.g. `name: \"test name\",` would extract 'testName'
+  let l:subTestName = go#test#subtestUnderCursor(getline("."))
   if l:subTestName == ""
     call go#util#EchoError('[test] no name for test case found on cursor line')
     return
   endif
 
-  let l:args = [a:bang, 0, "-run", l:testParent . "/" . l:subTestName . "$"]
+  " the pattern after l:testParent will allow testcases that are nested
+  " arbitrarily deep to be selected to run
+  let l:testParentPattern = l:testParent . "/\([^/]\+/\)*"
+
+  let l:args = [a:bang, 0, "-run", l:testParentPattern . "/" . l:subTestName . "$"]
   if a:0
     call extend(l:args, a:000)
   else
@@ -152,6 +160,13 @@ function! s:test_job(cmd, args) abort
   call go#cmd#autowrite()
 
   call go#job#Spawn(a:cmd, a:args)
+endfunction
+
+function! go#test#subtestUnderCursor(cursorLine) abort
+  " e.g. `name: \"test name\",` would extract 'test name'
+  " e.g. `name: \"test_name\"` would extract 'test_name'
+  let l:structInitPattern =  '\:\s*\"\zs\(\w\|\s\)*\ze\"'
+  return matchstr(a:cursorLine, l:structInitPattern)
 endfunction
 
 let s:efm = ""
