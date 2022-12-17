@@ -3,6 +3,12 @@
 BACKWARDS INCOMPATIBILITIES:
 
 IMPROVEMENTS:
+
+## v1.27 - (December 17, 2022)
+
+BACKWARDS INCOMPATIBILITIES:
+
+IMPROVEMENTS:
 * Update documentation for installing tools.
   [[GH-3413]](https://github.com/fatih/vim-go/pull/3413)
 * Show diagnostics via go#tool#DescribeBalloon().
