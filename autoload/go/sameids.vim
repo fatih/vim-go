@@ -49,8 +49,6 @@ function! s:same_ids_highlight(exit_val, result, mode) abort
     let l:matches = add(l:matches, [pos[0], pos[1], poslen])
   endfor
 
-  call go#util#EchoInfo(printf('%s', l:matches))
-
   call go#util#HighlightPositions('goSameId', l:matches)
 
   if go#config#AutoSameids()
