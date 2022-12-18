@@ -4,6 +4,14 @@ BACKWARDS INCOMPATIBILITIES:
 
 IMPROVEMENTS:
 
+BUG FIXES:
+
+## v1.28 - (December 17, 2022)
+
+BUG FIXES:
+* Remove diagnostic message used during development.
+  [[GH-3476]](https://github.com/fatih/vim-go/pull/3476)
+
 ## v1.27 - (December 17, 2022)
 
 BACKWARDS INCOMPATIBILITIES:
