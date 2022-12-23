@@ -54,7 +54,7 @@ let s:packages = {
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
       \ 'gotags':        ['github.com/jstemmer/gotags@master'],
       \ 'guru':          ['golang.org/x/tools/cmd/guru@master'],
-      \ 'impl':          ['github.com/josharian/impl@master'],
+      \ 'impl':          ['github.com/josharian/impl@main'],
       \ 'keyify':        ['honnef.co/go/tools/cmd/keyify@master'],
       \ 'motion':        ['github.com/fatih/motion@latest'],
       \ 'iferr':         ['github.com/koron/iferr@master'],
