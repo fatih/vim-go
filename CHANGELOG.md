@@ -5,6 +5,9 @@ BACKWARDS INCOMPATIBILITIES:
 IMPROVEMENTS:
 
 BUG FIXES:
+* Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
+  [[GH-3477]](https://github.com/fatih/vim-go/pull/3477)
+
 
 ## v1.28 - (December 17, 2022)
 
