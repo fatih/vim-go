@@ -6,6 +6,6 @@ syn match godebugStacktrace '^\S\+'
 
 let b:current_syntax = "godebugoutput"
 
-hi def link godebugStacktrace SpecialKey
+hi def link godebugStacktrace Function
 
 " vim: sw=2 ts=2 et
