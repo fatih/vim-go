@@ -5,6 +5,8 @@ BACKWARDS INCOMPATIBILITIES:
 IMPROVEMENTS:
 * Change the group that godebugStracktrace is default linked to.
   [[GH-3483]](https://github.com/fatih/vim-go/pull/3483)
+* Add `:GoCoverageOverlay`.
+  [[GH-3485]](https://github.com/fatih/vim-go/pull/3485)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
