@@ -46,8 +46,9 @@ command! -nargs=* -bang GoInstall call go#cmd#Install(<bang>0, <f-args>)
 
 " -- test
 command! -nargs=* -bang GoTest call go#test#Test(<bang>0, 0, <f-args>)
-command! -nargs=* -bang GoTestFunc call go#test#Func(<bang>0, <f-args>)
 command! -nargs=* -bang GoTestCompile call go#test#Test(<bang>0, 1, <f-args>)
+command! -nargs=* -bang GoTestFile call go#test#File(<bang>0, <f-args>)
+command! -nargs=* -bang GoTestFunc call go#test#Func(<bang>0, <f-args>)
 
 " -- cover
 command! -nargs=* -bang GoCoverage call go#coverage#Buffer(<bang>0, <f-args>)

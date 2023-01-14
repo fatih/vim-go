@@ -101,7 +101,7 @@ function! go#test#Test(bang, compile, ...) abort
   call go#util#Chdir(l:dir)
 endfunction
 
-" Testfunc runs a single test that surrounds the current cursor position.
+" go#test#Func runs a single test that surrounds the current cursor position.
 " Arguments are passed to the `go test` command.
 function! go#test#Func(bang, ...) abort
   let l:test = go#util#TestName()
@@ -109,7 +109,29 @@ function! go#test#Func(bang, ...) abort
     call go#util#EchoWarning("[test] no test found immediate to cursor")
     return
   endif
-  let args = [a:bang, 0, "-run", l:test . "$"]
+  let args = [a:bang, 0, "-run", printf('^%s$', l:test)]
+
+  if a:0
+    call extend(args, a:000)
+  else
+    " only add this if no custom flags are passed
+    let timeout = go#config#TestTimeout()
+    call add(args, printf("-timeout=%s", timeout))
+  endif
+
+  call call('go#test#Test', args)
+endfunction
+
+" go#test#File runs all the tests in the current file.
+" Arguments are passed to the `go test` command.
+function! go#test#File(bang, ...) abort
+  let l:tests = go#util#TestNamesInFile()
+  if len(l:tests) is 0
+    call go#util#EchoWarning("[test] no tests found")
+    return
+  endif
+
+  let args = [a:bang, 0, "-run", printf('^Test(%s)$', join(map(l:tests, 'substitute(v:val, "^Test", "", "")'), '|'))]
 
   if a:0
     call extend(args, a:000)

@@ -740,9 +740,7 @@ function! go#util#Chdir(dir) abort
   return chdir(a:dir)
 endfunction
 
-" go#util#TestName returns the name of the test function that preceeds the
-" cursor.
-function go#util#TestName() abort
+function! go#util#testLine() abort
   " search flags legend (used only)
   " 'b' search backward instead of forward
   " 'c' accept a match at the cursor position
@@ -751,7 +749,14 @@ function go#util#TestName() abort
   "
   " for the full list
   " :help search
-  let l:line = search('func \(Test\|Example\)', "bcnW")
+  let l:line = search('^func \(Test\|Example\)', "bcnW")
+  return l:line
+endfunction
+
+" go#util#TestName returns the name of the test function that preceeds the
+" cursor.
+function! go#util#TestName() abort
+  let l:line = go#util#testLine()
 
   if l:line == 0
     return ''
@@ -761,7 +766,36 @@ function go#util#TestName() abort
   return split(split(l:decl, " ")[1], "(")[0]
 endfunction
 
-function go#util#ExpandPattern(...) abort
+" go#util#TestNamesInFile returns the names of the test function in the
+" current file.
+function! go#util#TestNamesInFile() abort
+  let l:startpos = getpos('.')
+
+  let l:lines = []
+  call cursor('$', 1)
+  let l:line = go#util#testLine()
+  while l:line isnot 0
+    let l:lines = add(l:lines, l:line)
+    call cursor(l:line-1, 1)
+    let l:line = go#util#testLine()
+  endwhile
+ 
+  call setpos('.', l:startpos)
+
+  let l:tests = []
+
+  " iterate over the lines in their reverse order, because they'll be in
+  " reverse order, but returning the test names in file order makes the most
+  " sense.
+  for l:line in reverse(l:lines)
+    let l:decl = getline(l:line)
+    let l:tests = add(l:tests, split(split(l:decl, " ")[1], "(")[0])
+  endfor
+
+  return l:tests
+endfunction
+
+function! go#util#ExpandPattern(...) abort
   let l:packages = []
   for l:pattern in a:000
     let l:pkgs = go#tool#List(l:pattern)
