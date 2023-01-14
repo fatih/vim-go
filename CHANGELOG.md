@@ -7,6 +7,10 @@ IMPROVEMENTS:
   [[GH-3483]](https://github.com/fatih/vim-go/pull/3483)
 * Add `:GoCoverageOverlay`.
   [[GH-3485]](https://github.com/fatih/vim-go/pull/3485)
+* Add `:GoTestFile`.
+  [[GH-3486]](https://github.com/fatih/vim-go/pull/3486)
+  [[GH-3487]](https://github.com/fatih/vim-go/pull/3487)
+
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
