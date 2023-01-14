@@ -467,6 +467,11 @@ CTRL-t
 
     If [!] is not given the first error is jumped to.
 
+                                                          *:GoCoverageOverlay*
+:GoCoverageOverlay file
+
+    Overlay the coverage profile from file.
+
                                                                  *:GoErrCheck*
 :GoErrCheck! [options]
 
