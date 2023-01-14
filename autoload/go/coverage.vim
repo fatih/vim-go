@@ -69,7 +69,7 @@ function! go#coverage#Buffer(bang, ...) abort
   let id = call('go#test#Test', args)
 
   if go#util#ShellError() == 0
-    call go#coverage#overlay(l:tmpname)
+    call go#coverage#Overlay(l:tmpname)
   endif
 
   call delete(l:tmpname)
@@ -185,7 +185,7 @@ function! go#coverage#genmatch(cov) abort
 endfunction
 
 " Reads the given coverprofile file and annotates the current buffer
-function! go#coverage#overlay(file) abort
+function! go#coverage#Overlay(file) abort
   if !filereadable(a:file)
     return
   endif
@@ -208,8 +208,7 @@ function! go#coverage#overlay(file) abort
 
   let fname = expand('%')
 
-  " when called for a _test.go file, run the coverage for the actuall file
-  " file
+  " when called for a test file, run the coverage for the actual file
   if fname =~# '^\f\+_test\.go$'
     let l:root = split(fname, '_test.go$')[0]
     let fname = l:root . ".go"
@@ -274,7 +273,7 @@ endfunction
 " coverage_callback is called when the coverage execution is finished
 function! s:coverage_callback(coverfile, job, exit_status, data)
   if a:exit_status == 0
-    call go#coverage#overlay(a:coverfile)
+    call go#coverage#Overlay(a:coverfile)
   endif
 
   call delete(a:coverfile)

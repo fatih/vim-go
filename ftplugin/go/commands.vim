@@ -54,6 +54,7 @@ command! -nargs=* -bang GoCoverage call go#coverage#Buffer(<bang>0, <f-args>)
 command! -nargs=* -bang GoCoverageClear call go#coverage#Clear()
 command! -nargs=* -bang GoCoverageToggle call go#coverage#BufferToggle(<bang>0, <f-args>)
 command! -nargs=* -bang GoCoverageBrowser call go#coverage#Browser(<bang>0, <f-args>)
+command! -nargs=1 -complete=file GoCoverageOverlay call go#coverage#Overlay(<f-args>)
 
 " -- play
 command! -nargs=0 -range=% GoPlay call go#play#Share(<count>, <line1>, <line2>)
