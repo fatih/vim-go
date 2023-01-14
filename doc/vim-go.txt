@@ -411,6 +411,14 @@ CTRL-t
     in the background according to |'g:go_term_enabled'|. You can set the mode
     of the new terminal with |'g:go_term_mode'|.
 
+                                                                 *:GoTestFile*
+:GoTestFile[!] [expand]
+
+    Runs :GoTest, but only on the tests in the current file using 'go test's
+    '-run' flag.
+
+    If [!] is not given the first error is jumped to.
+
                                                                  *:GoTestFunc*
 :GoTestFunc[!] [expand]
 
