@@ -10,7 +10,7 @@ func! Test_GoTermNewMode()
   try
     let l:filename = 'term/term.go'
     let l:tmp = gotest#load_fixture(l:filename)
-    exe 'cd ' . l:tmp . '/src/term'
+    call go#util#Chdir(l:tmp . '/src/term')
 
     let expected = expand('%:p')
 
@@ -35,7 +35,7 @@ func! Test_GoTermNewMode_SplitRight()
   try
     let l:filename = 'term/term.go'
     let l:tmp = gotest#load_fixture(l:filename)
-    exe 'cd ' . l:tmp . '/src/term'
+    call go#util#Chdir(l:tmp . '/src/term')
 
     let expected = expand('%:p')
 
@@ -61,7 +61,8 @@ func! Test_GoTermReuse()
   try
     let l:filename = 'term/term.go'
     let l:tmp = gotest#load_fixture(l:filename)
-    exe 'cd ' . l:tmp . '/src/term'
+
+    call go#util#Chdir(l:tmp . '/src/term')
 
     let expected = expand('%:p')
 
