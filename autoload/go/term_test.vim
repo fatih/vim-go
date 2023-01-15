@@ -22,12 +22,9 @@ func! Test_GoTermNewMode()
 
     set nosplitright
 
-    call go#term#new(0, cmd, &errorformat)
+    let l:jobid = go#term#new(0, cmd, &errorformat)
 
-    let l:start = reltime()
-    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
-      sleep 50m
-    endwhile
+    call go#job#Wait(l:jobid)
 
     let actual = expand('%:p')
     call assert_equal(actual, l:expected)
@@ -35,6 +32,7 @@ func! Test_GoTermNewMode()
 
   finally
     call win_gotoid(l:winid)
+    only!
     call delete(l:tmp, 'rf')
     unlet g:go_gopls_enabled
   endtry
@@ -60,12 +58,9 @@ func! Test_GoTermNewMode_SplitRight()
 
     set splitright
 
-    call go#term#new(0, cmd, &errorformat)
+    let l:jobid = go#term#new(0, cmd, &errorformat)
 
-    let l:start = reltime()
-    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
-      sleep 50m
-    endwhile
+    call go#job#Wait(l:jobid)
 
     let actual = expand('%:p')
     call assert_equal(actual, l:expected)
@@ -73,6 +68,7 @@ func! Test_GoTermNewMode_SplitRight()
 
   finally
     call win_gotoid(l:winid)
+    only!
     call delete(l:tmp, 'rf')
     set nosplitright
     unlet g:go_gopls_enabled
@@ -100,25 +96,24 @@ func! Test_GoTermReuse()
 
     set nosplitright
 
+    " prime the terminal window
+    let l:jobid = go#term#new(0, cmd, &errorformat)
+
+    call go#job#Wait(l:jobid)
+
     let g:go_term_reuse = 1
 
-    call go#term#new(0, cmd, &errorformat)
+    let l:jobid = go#term#new(0, cmd, &errorformat)
 
-    let l:start = reltime()
-    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
-      sleep 50m
-    endwhile
+    call go#job#Wait(l:jobid)
 
     let actual = expand('%:p')
     call assert_equal(actual, l:expected)
     call assert_equal(l:expectedwindows, len(getwininfo()))
 
-    call go#term#new(0, cmd, &errorformat)
+    let l:jobid = go#term#new(0, cmd, &errorformat)
 
-    let l:start = reltime()
-    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
-      sleep 50m
-    endwhile
+    call go#job#Wait(l:jobid)
 
     let actual = expand('%:p')
     call assert_equal(actual, l:expected)
@@ -127,6 +122,7 @@ func! Test_GoTermReuse()
 
   finally
     call win_gotoid(l:winid)
+    only!
     unlet g:go_term_reuse
     call delete(l:tmp, 'rf')
     unlet g:go_gopls_enabled
