@@ -39,8 +39,10 @@ fun! gotest#write_file(path, contents) abort
       call setline('.', substitute(getline('.'), "\x1f", '', ''))
       silent noautocmd w!
 
-      call go#lsp#DidClose(expand('%:p'))
-      call go#lsp#DidOpen(expand('%:p'))
+      if go#config#GoplsEnabled()
+        call go#lsp#DidClose(expand('%:p'))
+        call go#lsp#DidOpen(expand('%:p'))
+      endif
 
       break
     endif
@@ -63,7 +65,7 @@ endfun
 " The current directory will be changed to the parent directory of module
 " root.
 fun! gotest#load_fixture(path) abort
-  if go#util#has_job()
+  if go#util#has_job() && go#config#GoplsEnabled()
     call go#lsp#CleanWorkspaces()
   endif
   let l:dir = go#util#tempdir("vim-go-test/testrun/")
@@ -75,7 +77,7 @@ fun! gotest#load_fixture(path) abort
   silent exe 'noautocmd e! ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
-  if go#util#has_job()
+  if go#util#has_job() && go#config#GoplsEnabled()
     call go#lsp#AddWorkspaceDirectory(fnamemodify(l:full_path, ':p:h'))
   endif
 

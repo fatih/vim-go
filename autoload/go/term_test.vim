@@ -8,6 +8,7 @@ func! Test_GoTermNewMode()
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let l:filename = 'term/term.go'
     let l:tmp = gotest#load_fixture(l:filename)
     call go#util#Chdir(l:tmp . '/src/term')
@@ -24,6 +25,7 @@ func! Test_GoTermNewMode()
   finally
     sleep 50m
     call delete(l:tmp, 'rf')
+    unlet g:go_gopls_enabled
   endtry
 endfunc
 
@@ -33,6 +35,7 @@ func! Test_GoTermNewMode_SplitRight()
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let l:filename = 'term/term.go'
     let l:tmp = gotest#load_fixture(l:filename)
     call go#util#Chdir(l:tmp . '/src/term')
@@ -50,6 +53,7 @@ func! Test_GoTermNewMode_SplitRight()
     sleep 50m
     call delete(l:tmp, 'rf')
     set nosplitright
+    unlet g:go_gopls_enabled
   endtry
 endfunc
 
@@ -59,6 +63,7 @@ func! Test_GoTermReuse()
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let l:filename = 'term/term.go'
     let l:tmp = gotest#load_fixture(l:filename)
 
@@ -85,6 +90,7 @@ func! Test_GoTermReuse()
     sleep 50m
     unlet g:go_term_reuse
     call delete(l:tmp, 'rf')
+    unlet g:go_gopls_enabled
   endtry
 endfunc
 
