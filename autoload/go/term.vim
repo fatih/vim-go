@@ -88,8 +88,9 @@ function! go#term#newmode(bang, cmd, errorformat, mode) abort
       let l:term["vertical"] = l:mode
     endif
 
-    let l:state.id = term_start(a:cmd, l:term)
-    let l:state.termwinid = win_getid(bufwinnr(l:state.id))
+    let l:termbufnr = term_start(a:cmd, l:term)
+    let l:state.id = term_getjob(l:termbufnr)
+    let l:state.termwinid = win_getid(bufwinnr(l:termbufnr))
     let s:lasttermwinid = l:state.termwinid
     call go#util#Chdir(l:dir)
 
