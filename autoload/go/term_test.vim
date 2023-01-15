@@ -14,16 +14,27 @@ func! Test_GoTermNewMode()
     call go#util#Chdir(l:tmp . '/src/term')
 
     let expected = expand('%:p')
+    let l:winid = win_getid()
+
+    let l:expectedwindows = len(getwininfo()) + 1
 
     let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
 
     set nosplitright
+
     call go#term#new(0, cmd, &errorformat)
+
+    let l:start = reltime()
+    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
+      sleep 50m
+    endwhile
+
     let actual = expand('%:p')
     call assert_equal(actual, l:expected)
+    call assert_equal(l:expectedwindows, len(getwininfo()))
 
   finally
-    sleep 50m
+    call win_gotoid(l:winid)
     call delete(l:tmp, 'rf')
     unlet g:go_gopls_enabled
   endtry
@@ -41,16 +52,27 @@ func! Test_GoTermNewMode_SplitRight()
     call go#util#Chdir(l:tmp . '/src/term')
 
     let expected = expand('%:p')
+    let l:winid = win_getid()
+
+    let l:expectedwindows = len(getwininfo()) + 1
 
     let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
 
     set splitright
+
     call go#term#new(0, cmd, &errorformat)
+
+    let l:start = reltime()
+    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
+      sleep 50m
+    endwhile
+
     let actual = expand('%:p')
     call assert_equal(actual, l:expected)
+    call assert_equal(l:expectedwindows, len(getwininfo()))
 
   finally
-    sleep 50m
+    call win_gotoid(l:winid)
     call delete(l:tmp, 'rf')
     set nosplitright
     unlet g:go_gopls_enabled
@@ -69,25 +91,42 @@ func! Test_GoTermReuse()
 
     call go#util#Chdir(l:tmp . '/src/term')
 
+    let l:winid = win_getid()
     let expected = expand('%:p')
+
+    let l:expectedwindows = len(getwininfo())+1
 
     let cmd = "go run ".  go#util#Shelljoin(go#tool#Files())
 
     set nosplitright
 
     let g:go_term_reuse = 1
-    call go#term#new(0, cmd, &errorformat)
-    let actual = expand('%:p')
-    call assert_equal(actual, l:expected)
-    call assert_equal(3, len(getwininfo()))
 
     call go#term#new(0, cmd, &errorformat)
+
+    let l:start = reltime()
+    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
+      sleep 50m
+    endwhile
+
+    let actual = expand('%:p')
+    call assert_equal(actual, l:expected)
+    call assert_equal(l:expectedwindows, len(getwininfo()))
+
+    call go#term#new(0, cmd, &errorformat)
+
+    let l:start = reltime()
+    while len(getwininfo()) < l:expectedwindows && reltimefloat(reltime(l:start)) < 10
+      sleep 50m
+    endwhile
+
     let actual = expand('%:p')
     call assert_equal(actual, l:expected)
 
-    call assert_equal(3, len(getwininfo()))
+    call assert_equal(l:expectedwindows, len(getwininfo()))
+
   finally
-    sleep 50m
+    call win_gotoid(l:winid)
     unlet g:go_term_reuse
     call delete(l:tmp, 'rf')
     unlet g:go_gopls_enabled
