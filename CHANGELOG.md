@@ -10,6 +10,8 @@ IMPROVEMENTS:
 * Add `:GoTestFile`.
   [[GH-3486]](https://github.com/fatih/vim-go/pull/3486)
   [[GH-3487]](https://github.com/fatih/vim-go/pull/3487)
+* Make `:GoRun` async.
+  [[GH-3086]](https://github.com/fatih/vim-go/pull/3086)
 
 
 BUG FIXES:
