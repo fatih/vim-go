@@ -248,6 +248,8 @@ function! s:errorformat() abort
 
   " handle panics from test timeouts
   let format .= ",%+Gpanic: test timed out after %.%\\+"
+  " Go 1.20 started adding a list of the running tests when a timeout occurs
+  let format .= ",%+Grunning tests:"
 
   " handle non-timeout panics
   " In addition to 'panic', check for 'fatal error' to support older versions

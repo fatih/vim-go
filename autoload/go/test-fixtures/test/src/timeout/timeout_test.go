@@ -7,9 +7,14 @@
 package main
 
 import (
+	"runtime"
 	"testing"
 	"time"
 )
+
+func init() {
+	runtime.GOMAXPROCS(3)
+}
 
 func TestSleep(t *testing.T) {
 	t.Parallel()
