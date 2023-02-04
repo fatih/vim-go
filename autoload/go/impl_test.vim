@@ -4,6 +4,7 @@ set cpo&vim
 
 func! Test_impl() abort
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
           \ '',
@@ -21,6 +22,7 @@ endfunc
 
 func! Test_impl_get() abort
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
           \ '',

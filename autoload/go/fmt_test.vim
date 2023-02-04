@@ -3,6 +3,7 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 func! Test_run_fmt() abort
+  let g:go_gopls_enabled = 0
   let actual_file = tempname()
   call writefile(readfile("test-fixtures/fmt/hello.go"), actual_file)
 
@@ -18,6 +19,7 @@ func! Test_run_fmt() abort
 endfunc
 
 func! Test_update_file() abort
+  let g:go_gopls_enabled = 0
   let expected = join(readfile("test-fixtures/fmt/hello_golden.go"), "\n")
   let source_file = tempname()
   call writefile(readfile("test-fixtures/fmt/hello_golden.go"), source_file)
@@ -35,6 +37,7 @@ func! Test_update_file() abort
 endfunc
 
 func! Test_goimports() abort
+  let g:go_gopls_enabled = 0
   let $GOPATH = printf('%s/%s', fnamemodify(getcwd(), ':p'), 'test-fixtures/fmt')
   let actual_file = tempname()
   call writefile(readfile("test-fixtures/fmt/src/imports/goimports.go"), actual_file)

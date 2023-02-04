@@ -3,6 +3,7 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 func! Test_TemplateCreate() abort
+  let g:go_gopls_enabled = 0
   try
     let l:tmp = gotest#write_file('foo/empty.txt', [''])
 
@@ -31,6 +32,7 @@ endfunc
 
 func! Test_TemplateCreate_UsePkg() abort
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('foo/empty.txt', [''])
 
     let g:go_template_use_pkg = 1
@@ -38,13 +40,13 @@ func! Test_TemplateCreate_UsePkg() abort
 
     call gotest#assert_buffer(0, ['package foo'])
   finally
-    unlet g:go_template_use_pkg
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
 func! Test_TemplateCreate_PackageExists() abort
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('quux/quux.go', ['package foo'])
 
     edit quux/bar.go

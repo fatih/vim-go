@@ -3,10 +3,12 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 func! Test_GometaGolangciLint() abort
+  let g:go_gopls_enabled = 0
   call s:gometa('golangci-lint')
 endfunc
 
 func! Test_GometaStaticcheck() abort
+  let g:go_gopls_enabled = 0
   call s:gometa('staticcheck')
 endfunc
 
@@ -53,8 +55,6 @@ func! s:gometa(metalinter) abort
     call gotest#assert_quickfix(actual, expected)
   finally
       call call(RestoreGOPATH, [])
-      unlet g:go_metalinter_enabled
-      unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -90,16 +90,16 @@ endfunc
 "    call gotest#assert_quickfix(actual, expected)
 "  finally
 "      call call(RestoreGOPATH, [])
-"      unlet g:go_metalinter_enabled
-"      unlet g:go_metalinter_command
 "  endtry
 "endfunc
 
 func! Test_GometaAutoSaveGolangciLint() abort
+  let g:go_gopls_enabled = 0
   call s:gometaautosave('golangci-lint', 0)
 endfunc
 
 func! Test_GometaAutoSaveStaticcheck() abort
+  let g:go_gopls_enabled = 0
   call s:gometaautosave('staticcheck', 0)
 endfunc
 
@@ -107,15 +107,15 @@ func! Test_GometaAutoSaveGopls() abort
   let g:go_gopls_staticcheck = 1
   let g:go_diagnostics_level = 2
   call s:gometaautosave('gopls', 0)
-  unlet g:go_gopls_staticcheck
-  unlet g:go_diagnostics_level
 endfunc
 
 func! Test_GometaAutoSaveGolangciLintKeepsErrors() abort
+  let g:go_gopls_enabled = 0
   call s:gometaautosave('golangci-lint', 1)
 endfunc
 
 func! Test_GometaAutoSaveStaticcheckKeepsErrors() abort
+  let g:go_gopls_enabled = 0
   call s:gometaautosave('staticcheck', 1)
 endfunc
 
@@ -173,8 +173,6 @@ func! s:gometaautosave(metalinter, withList) abort
     call gotest#assert_quickfix(l:actual, l:expected)
   finally
     call delete(l:tmp, 'rf')
-    unlet g:go_metalinter_autosave_enabled
-    unlet g:go_metalinter_command
   endtry
 endfunc
 
@@ -214,8 +212,6 @@ endfunc
 "    call gotest#assert_quickfix(actual, expected)
 "  finally
 "      call call(RestoreGOPATH, [])
-"      unlet g:go_metalinter_enabled
-"      unlet g:go_metalinter_command
 "  endtry
 "endfunc
 "
@@ -251,8 +247,6 @@ endfunc
 "    call gotest#assert_quickfix(actual, expected)
 "  finally
 "    call call(RestoreGOPATH, [])
-"    unlet g:go_metalinter_autosave_enabled
-"    unlet g:go_metalinter_command
 "  endtry
 "endfunc
 "
@@ -294,12 +288,11 @@ func! s:gometa_multiple(metalinter) abort
     call gotest#assert_quickfix(actual, expected)
   finally
       call call(RestoreGOPATH, [])
-      unlet g:go_metalinter_enabled
-      unlet g:go_metalinter_command
   endtry
 endfunc
 
 func! Test_GometaAutoSaveGolangciLint_multiple() abort
+  let g:go_gopls_enabled = 0
   call s:gometaautosave_multiple('golangci-lint')
 endfunc
 
@@ -360,12 +353,11 @@ func! s:gometaautosave_multiple(metalinter) abort
     call gotest#assert_quickfix(actual, expected)
   finally
     call call(RestoreGOPATH, [])
-    unlet g:go_metalinter_autosave_enabled
-    unlet g:go_metalinter_command
   endtry
 endfunc
 
 func! Test_Vet() abort
+  let g:go_gopls_enabled = 0
   let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
 
   try
@@ -402,6 +394,7 @@ func! Test_Vet() abort
 endfunc
 
 func! Test_Vet_subdir() abort
+  let g:go_gopls_enabled = 0
   let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
 
   " go up one directory to easily test that go vet's file paths are handled
@@ -443,6 +436,7 @@ func! Test_Vet_subdir() abort
 endfunc
 
 func! Test_Vet_compilererror() abort
+  let g:go_gopls_enabled = 0
   let l:tmp = gotest#load_fixture('lint/src/vet/compilererror/compilererror.go')
 
   try
@@ -471,6 +465,7 @@ func! Test_Vet_compilererror() abort
 endfunc
 
 func! Test_Lint_GOPATH() abort
+  let g:go_gopls_enabled = 0
   let RestoreGO111MODULE = go#util#SetEnv('GO111MODULE', 'off')
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
 
@@ -512,6 +507,7 @@ func! Test_Lint_GOPATH() abort
 endfunc
 
 func! Test_Lint_NullModule() abort
+  let g:go_gopls_enabled = 0
   let RestoreGO111MODULE = go#util#SetEnv('GO111MODULE', 'off')
   silent exe 'e! ' . fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint/src/lint/baz.go'
   silent exe 'e! ' . fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint/src/lint/quux.go'
@@ -547,6 +543,7 @@ func! Test_Lint_NullModule() abort
 endfunc
 
 func! Test_Errcheck() abort
+  let g:go_gopls_enabled = 0
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
   silent exe 'e! ' . $GOPATH . '/src/errcheck/errcheck.go'
 
@@ -570,6 +567,7 @@ func! Test_Errcheck() abort
 endfunc
 
 func! Test_Errcheck_options() abort
+  let g:go_gopls_enabled = 0
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
   silent exe 'e! ' . $GOPATH . '/src/errcheck/errcheck.go'
 
@@ -592,6 +590,7 @@ func! Test_Errcheck_options() abort
 endfunc
 
 func! Test_Errcheck_compilererror() abort
+  let g:go_gopls_enabled = 0
   let l:tmp = gotest#load_fixture('lint/src/errcheck/compilererror/compilererror.go')
 
   try

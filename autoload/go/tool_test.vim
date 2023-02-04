@@ -3,6 +3,7 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 func! Test_ExecuteInDir() abort
+  let g:go_gopls_enabled = 0
   let l:tmp = gotest#write_file('a/a.go', ['package a'])
   try
     let l:cwd = go#util#Exec(['pwd'])
@@ -15,6 +16,7 @@ func! Test_ExecuteInDir() abort
 endfunc
 
 func! Test_ExecuteInDir_nodir() abort
+  let g:go_gopls_enabled = 0
   let l:tmp = go#util#tempdir("executeindir")
   exe ':e ' . l:tmp . '/new-dir/a'
 

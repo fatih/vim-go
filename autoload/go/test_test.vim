@@ -80,7 +80,6 @@ func! Test_GoTestTimeout() abort
 
   let g:go_test_timeout="500ms"
   call s:test('timeout/timeout_test.go', expected)
-  unlet g:go_test_timeout
 endfunc
 
 func! Test_GoTestShowName() abort
@@ -93,7 +92,6 @@ func! Test_GoTestShowName() abort
 
   let g:go_test_show_name=1
   call s:test('showname/showname_test.go', expected)
-  unlet g:go_test_show_name
 endfunc
 
 func! Test_GoTestVet() abort
@@ -137,6 +135,7 @@ func! Test_GoTestExample() abort
 endfunc
 
 func! s:test(file, expected, ...) abort
+  let g:go_gopls_enabled = 0
   let $GOPATH = fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/test'
   call go#util#Chdir(printf('%s/src/%s', $GOPATH, fnamemodify(a:file, ':h')))
   silent exe 'e ' . $GOPATH . '/src/' . a:file

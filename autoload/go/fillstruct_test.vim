@@ -4,6 +4,7 @@ set cpo&vim
 
 func! Test_fillstruct() abort
   try
+    let g:go_gopls_enabled = 0
     let g:go_fillstruct_mode = 'fillstruct'
     let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
@@ -17,13 +18,13 @@ func! Test_fillstruct() abort
           \ '\tAddress: "",',
           \ '}'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
 func! Test_fillstruct_line() abort
   try
+    let g:go_gopls_enabled = 0
     let g:go_fillstruct_mode = 'fillstruct'
     let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
@@ -37,7 +38,6 @@ func! Test_fillstruct_line() abort
           \ '\tAddress: "",',
           \ '}'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -45,6 +45,7 @@ endfunc
 func! Test_fillstruct_two_line() abort
   try
     let g:go_fillstruct_mode = 'fillstruct'
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
           \ 'import (',
@@ -67,7 +68,6 @@ func! Test_fillstruct_two_line() abort
           \ '\tAddress: "",',
           \ '}) }'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -75,6 +75,7 @@ endfunc
 func! Test_fillstruct_two_cursor() abort
   try
     let g:go_fillstruct_mode = 'fillstruct'
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
           \ 'import (',
@@ -94,7 +95,6 @@ func! Test_fillstruct_two_cursor() abort
           \ '\tAddress: "",',
           \ '}) }'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -120,7 +120,6 @@ func! Test_gopls_fillstruct() abort
           \ '\tAddress: "",',
           \ '}'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -146,7 +145,6 @@ func! Test_gopls_fillstruct_line() abort
           \ '\tAddress: "",',
           \ '}'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -179,7 +177,6 @@ func! Test_gopls_fillstruct_two_line() abort
           \ ')',
           \ 'func x() { fmt.Println(mail.Address{}, mail.Address{}) }'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -212,7 +209,6 @@ func! Test_gopls_fillstruct_two_cursor() abort
           \ '\tAddress: "",',
           \ '}) }'])
   finally
-    unlet g:go_fillstruct_mode
     call delete(l:tmp, 'rf')
   endtry
 endfunc

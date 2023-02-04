@@ -10,10 +10,6 @@ function Test_GuruScope_Set() abort
   silent call go#guru#Scope('""')
   silent let actual = go#config#GuruScope()
   call assert_equal([], actual, "setting scope to empty string should clear")
-
-  if exists('g:go_guru_scope')
-    unlet g:go_guru_scope
-  endif
 endfunction
 
 " restore Vi compatibility settings

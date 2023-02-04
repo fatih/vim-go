@@ -4,6 +4,7 @@ set cpo&vim
 
 func! Test_SwitchImportAddIgnoresCommented()
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('import/import.go', [
           \ 'package import',
           \ '',

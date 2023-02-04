@@ -88,8 +88,6 @@ for s:test in sort(s:tests)
     sleep 50m
   catch
     call assert_report(printf('at %s: %s', v:throwpoint, v:exception))
-  finally
-    call s:clearOptions()
   endtry
 
   let s:elapsed_time = substitute(reltimestr(reltime(s:started)), '^\s*\(.\{-}\)\s*$', '\1', '')
@@ -104,6 +102,8 @@ for s:test in sort(s:tests)
     call go#lsp#Exit()
   catch /^Vim(call):E900: Invalid channel id/
     " do nothing - gopls has stopped
+  finally
+    call s:clearOptions()
   endtry
 
   let s:done += 1

@@ -4,6 +4,7 @@ set cpo&vim
 
 func! Test_GoBuildErrors()
   try
+    let g:go_gopls_enabled = 0
     let l:filename = 'cmd/bad.go'
     let l:tmp = gotest#load_fixture(l:filename)
 
