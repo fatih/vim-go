@@ -267,8 +267,9 @@ func! s:gometa_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported and not used (typecheck)'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 24, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Millisecond undefined (type int has no field or method Millisecond) (typecheck)'},
           \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
-          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'}
         \ ]
 
     " clear the quickfix list
@@ -309,9 +310,19 @@ func! s:gometaautosave_multiple(metalinter) abort
   try
     let g:go_metalinter_command = a:metalinter
     let expected = [
-          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
-          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'}
+          \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported and not used'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 24, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Millisecond undefined (type int has no field or method Millisecond)'},
+          \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep)'},
         \ ]
+
+    let [l:goversion, l:err] = go#util#Exec(['go', 'env', 'GOVERSION'])
+    let l:goversion = split(l:goversion, "\n")[0]
+    if l:goversion < 'go1.20'
+      let expected = [
+            \ {'lnum': 4, 'bufnr': bufnr('%'), 'col': 2, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': '"time" imported but not used (typecheck)'},
+            \ {'lnum': 8, 'bufnr': bufnr('%'), 'col': 7, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'time.Sleep undefined (type int has no field or method Sleep) (typecheck)'},
+          \ ]
+    endif
 
     " clear the location list
     call setloclist(0, [], 'r')
@@ -327,8 +338,22 @@ func! s:gometaautosave_multiple(metalinter) abort
       let actual = copy(getloclist(0))
     endwhile
 
-    " sort the results, because golangci-lint doesn't always return notices in
-    " a deterministic order.
+
+    " golangci-lint does not always return notices in a determinstic order and
+    " at least with Go 1.20 removes only suffixes the last of the results from
+    " a checker with the checker name. Therefore:
+    " * strip off the checker name on Go 1.20 and above
+    " * sort the results.
+    if l:goversion >= 'go1.20'
+      for l:error in l:actual
+        for l:key in keys(l:error)
+          if l:key == 'text'
+            let l:error[l:key] = substitute(l:error[l:key], ' (typecheck)', '', '')
+          endif
+        endfor
+      endfor
+    endif
+
     call sort(l:actual)
     call sort(l:expected)
 

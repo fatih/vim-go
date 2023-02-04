@@ -451,10 +451,18 @@ function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, mes
     " leave in any messages that report errors about a:filepath or that report
     " more general problems that prevent golangci-lint from linting
     " a:filepath.
-    if l:item =~# '^' . a:filepath . ':' || (a:metalinter == 'golangci-lint' && l:item =~# '^level=')
+    "
+    " When given an absolute path to check, golangci-lint may return a lines
+    " that are basically just a comment and provide the package name. Ignore
+    " those.
+    "
+    " When given an absolute path to check, golangci-lint may provide a
+    " relative path to the file, so allow that, too.
+    if (l:item =~# '^\%(\.\' . go#util#PathSep() . '\)\?' . a:filepath . ':' && l:item !~# '^' . a:filepath . ':\d\+: : # ') || (a:metalinter == 'golangci-lint' && l:item =~# '^level=')
       let l:idx += 1
       continue
     endif
+
     call remove(a:messages, l:idx)
   endfor
 endfunction
@@ -464,7 +472,7 @@ function! s:errorformat(metalinter) abort
     " Golangci-lint can output the following:
     "   <file>:<line>:<column>: <message> (<linter>)
     " This can be defined by the following errorformat:
-    return 'level=%tarning\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%tarning\ msg="%m",level=%trror\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%trror\ msg="%m",%f:%l:%c:\ %m,%f:%l:\ %m,%f:%l\ %m'
+    return 'level=%tarning\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%tarning\ msg="%m",level=%trror\ msg="%m:\ [%f:%l:%c:\ %.%#]",level=%trror\ msg="%m",%-G%f:%l: : # %m,%f:%l:%c:\ %m,%f:%l:\ %m,%f:%l\ %m'
   elseif a:metalinter == 'staticcheck'
     return '%f:%l:%c:\ %m'
   elseif a:metalinter == 'gopls'
