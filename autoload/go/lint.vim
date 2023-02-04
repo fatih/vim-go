@@ -456,9 +456,10 @@ function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, mes
     " that are basically just a comment and provide the package name. Ignore
     " those.
     "
-    " When given an absolute path to check, golangci-lint may provide a
-    " relative path to the file, so allow that, too.
-    if (l:item =~# '^\%(\.\' . go#util#PathSep() . '\)\?' . a:filepath . ':' && l:item !~# '^' . a:filepath . ':\d\+: : # ') || (a:metalinter == 'golangci-lint' && l:item =~# '^level=')
+    " golangci-lint may provide a relative path to the file, so allow that,
+    " too.
+    let l:pathRE = printf('^\%%(\.%s\)\?%s', go#util#PathSep(), a:filepath)
+    if (l:item =~#  l:pathRE && l:item !~# l:pathRE . ':\d\+: : # ') || (a:metalinter == 'golangci-lint' && l:item =~# '^level=')
       let l:idx += 1
       continue
     endif
