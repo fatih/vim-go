@@ -43,7 +43,9 @@ nnoremap <silent> <Plug>(go-callers) :<C-u>call go#calls#Callers()<CR>
 nnoremap <silent> <Plug>(go-describe) :<C-u>call go#guru#Describe(-1)<CR>
 nnoremap <silent> <Plug>(go-callstack) :<C-u>call go#guru#Callstack(-1)<CR>
 xnoremap <silent> <Plug>(go-freevars) :<C-u>call go#guru#Freevars(0)<CR>
+" go-channelpeers is deprecated, but remains for backward compatibility
 nnoremap <silent> <Plug>(go-channelpeers) :<C-u>call go#guru#ChannelPeers(-1)<CR>
+nnoremap <silent> <Plug>(go-channel-peers) :<C-u>call go#guru#ChannelPeers(-1)<CR>
 nnoremap <silent> <Plug>(go-referrers) :<C-u>call go#referrers#Referrers(-1)<CR>
 nnoremap <silent> <Plug>(go-sameids) :<C-u>call go#sameids#SameIds(1)<CR>
 nnoremap <silent> <Plug>(go-pointsto) :<C-u>call go#guru#PointsTo(-1)<CR>
@@ -83,10 +85,12 @@ nnoremap <silent> <Plug>(go-alternate-edit) :<C-u>call go#alternate#Switch(0, "e
 nnoremap <silent> <Plug>(go-alternate-vertical) :<C-u>call go#alternate#Switch(0, "vsplit")<CR>
 nnoremap <silent> <Plug>(go-alternate-split) :<C-u>call go#alternate#Switch(0, "split")<CR>
 
+" go-iferr is deprecated, but remains for backward compatibility
 nnoremap <silent> <Plug>(go-iferr) :<C-u>call go#iferr#Generate()<CR>
+nnoremap <silent> <Plug>(go-if-err) :<C-u>call go#iferr#Generate()<CR>
 
 nnoremap <silent> <Plug>(go-diagnostics) :<C-u>call go#lint#Diagnostics(!g:go_jump_to_error)<CR>
 
-nnoremap <silent> <Plug>(go-fillstruct) :<C-u>call go#fillstruct#FillStruct()<CR>
+nnoremap <silent> <Plug>(go-fill-struct) :<C-u>call go#fillstruct#FillStruct()<CR>
 
 " vim: sw=2 ts=2 et
