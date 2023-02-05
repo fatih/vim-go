@@ -15,6 +15,9 @@ IMPROVEMENTS:
 * Add `(go-fill-struct)` mapping.
   [[GH-3502]](https://github.com/fatih/vim-go/pull/3502)
   [[GH-3503]](https://github.com/fatih/vim-go/pull/3503)
+* Output an error message when `g:go_fillstruct_mode` and `g:go_gopls_enabled`
+  conflict.
+  [[GH-3504]](https://github.com/fatih/vim-go/pull/3504)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
