@@ -149,7 +149,7 @@ func! Test_gopls_fillstruct_line() abort
   endtry
 endfunc
 
-func! Test_gopls_fillstruct_two_line() abort
+func! Test_gopls_fillstruct_two_cursor_first() abort
   try
     let g:go_fillstruct_mode = 'gopls'
     let l:tmp = gotest#write_file('a/a.go', [
@@ -158,7 +158,7 @@ func! Test_gopls_fillstruct_two_line() abort
           \ '"fmt"',
           \ '"net/mail"',
           \ ')',
-          \ "\x1f" . 'func x() { fmt.Println(mail.Address{}, mail.Address{}) }'])
+          \ "func x() { fmt.Println(mail.Addr\x1fess{}, mail.Address{}) }"])
 
     call go#fillstruct#FillStruct()
 
@@ -167,21 +167,21 @@ func! Test_gopls_fillstruct_two_line() abort
       sleep 100m
     endwhile
 
-    " the fillstruct behavior of gopls is different than fillstruct; the
-    " latter will not expand the struct when the cursor is not on a struct
-    " when there is more than one struct literal on the line.
     call gotest#assert_buffer(1, [
           \ 'import (',
           \ '"fmt"',
           \ '"net/mail"',
           \ ')',
-          \ 'func x() { fmt.Println(mail.Address{}, mail.Address{}) }'])
+          \ 'func x() { fmt.Println(mail.Address{',
+          \ '\tName:    "",',
+          \ '\tAddress: "",',
+          \ '}, mail.Address{}) }'])
   finally
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
-func! Test_gopls_fillstruct_two_cursor() abort
+func! Test_gopls_fillstruct_two_cursor_second() abort
   try
     let g:go_fillstruct_mode = 'gopls'
     let l:tmp = gotest#write_file('a/a.go', [
@@ -212,6 +212,7 @@ func! Test_gopls_fillstruct_two_cursor() abort
     call delete(l:tmp, 'rf')
   endtry
 endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
