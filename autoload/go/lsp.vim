@@ -1899,7 +1899,7 @@ function! s:handleFormatError(filename, msg) abort dict
 endfunction
 
 function! s:handleCodeActionError(filename, msg) abort dict
-  " TODO(bc): handle the error?
+  call go#util#EchoError(a:msg)
 endfunction
 
 function! s:handleRenameError(msg) abort dict
