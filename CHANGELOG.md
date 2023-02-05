@@ -12,7 +12,9 @@ IMPROVEMENTS:
   [[GH-3487]](https://github.com/fatih/vim-go/pull/3487)
 * Make `:GoRun` async.
   [[GH-3086]](https://github.com/fatih/vim-go/pull/3086)
-
+* Add `(go-fill-struct)` mapping.
+  [[GH-3502]](https://github.com/fatih/vim-go/pull/3502)
+  [[GH-3503]](https://github.com/fatih/vim-go/pull/3503)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
