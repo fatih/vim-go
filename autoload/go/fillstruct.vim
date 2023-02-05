@@ -5,6 +5,11 @@ set cpo&vim
 function! go#fillstruct#FillStruct() abort
   let l:mode = go#config#FillStructMode()
   if l:mode is 'gopls'
+    if !go#config#GoplsEnabled()
+      call go#util#EchoError("go_fillstruct_mode is 'gopls', but gopls is disabled")
+      return
+    endif
+
     call go#lsp#FillStruct()
     return
   endif
