@@ -6,6 +6,7 @@ function! Test_gomodVersion_highlight() abort
   try
     syntax on
 
+    let g:go_gopls_enabled = 0
     let l:dir = gotest#write_file('gomodtest/go.mod', [
           \ 'module github.com/fatih/vim-go',
           \ '',
@@ -58,6 +59,7 @@ function! Test_gomodVersion_incompatible_highlight() abort
   try
     syntax on
 
+    let g:go_gopls_enabled = 0
     let l:dir = gotest#write_file('gomodtest/go.mod', [
           \ 'module github.com/fatih/vim-go',
           \ '',
@@ -100,6 +102,7 @@ endfunc
 
 function! Test_numeric_literal_highlight() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:tests = {
         \ 'lone zero': {'group': 'goDecimalInt', 'value': '0'},
@@ -149,6 +152,7 @@ endfunction
 
 function! Test_zero_as_index_element() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:actual = s:numericHighlightGroupInSliceElement('zero-element', '0')
   call assert_equal('goDecimalInt', l:actual)
@@ -158,6 +162,7 @@ endfunction
 
 function! Test_zero_as_slice_index() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:actual = s:numericHighlightGroupInSliceIndex('zero-index', '0')
   call assert_equal('goDecimalInt', l:actual)
@@ -168,6 +173,7 @@ endfunction
 
 function! Test_zero_as_start_slicing_slice() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:actual = s:numericHighlightGroupInSliceSlicing('slice-slicing', '0', '1')
   call assert_equal('goDecimalInt', l:actual)
@@ -301,7 +307,6 @@ function! Test_diagnostic_after_fmt() abort
           \ '}',
           \ ], [])
   finally
-    unlet g:go_fmt_command
   endtry
 endfunction
 
@@ -320,7 +325,6 @@ function! Test_diagnostic_after_fmt_change() abort
           \ '}',
           \ ], [])
   finally
-    unlet g:go_fmt_command
   endtry
 endfunction
 
@@ -339,7 +343,6 @@ function! Test_diagnostic_after_fmt_cleared() abort
           \ '}',
           \ ], ['hello := "hello, vim-go"'])
   finally
-    unlet g:go_fmt_command
   endtry
 endfunction
 
@@ -442,6 +445,7 @@ endfunction
 
 function! Test_goStringHighlight() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:dir = gotest#write_file('highlight/gostring.go', [
         \ 'package highlight',
@@ -464,6 +468,7 @@ endfunc
 
 function! Test_goImportStringHighlight() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:dir = gotest#write_file('highlight/import.go', [
         \ 'package highlight',
@@ -486,6 +491,7 @@ endfunc
 
 function! Test_goReceiverHighlight() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:tests = {
       \ 'PointerReceiverVar': {'group': 'goReceiverVar', 'value': "t\x1f *T"},
@@ -507,7 +513,6 @@ function! Test_goReceiverHighlight() abort
     let l:actual = s:receiverHighlightGroup(l:kv[0], l:kv[1].value)
     call assert_equal(l:kv[1].group, l:actual, l:kv[0])
   endfor
-  unlet g:go_highlight_function_parameters
 endfunc
 
 function! s:receiverHighlightGroup(testname, value)
@@ -531,6 +536,7 @@ endfunc
 
 function! Test_GoTypeHighlight() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:tests = {
       \ 'StandardType': {'group': 'goTypeName', 'value': "T\x1f"},
@@ -542,7 +548,6 @@ function! Test_GoTypeHighlight() abort
     let l:actual = s:typeHighlightGroup(l:kv[0], l:kv[1].value)
     call assert_equal(l:kv[1].group, l:actual, l:kv[0])
   endfor
-  unlet g:go_highlight_types
 endfunc
 
 function! s:typeHighlightGroup(testname, value)
@@ -564,6 +569,7 @@ endfunc
 
 function! Test_goFunction() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:tests = {
         \ 'StandardFunction': {'group': 'goFunction', 'value': "F\x1f(){}"},
@@ -575,7 +581,6 @@ function! Test_goFunction() abort
     let l:actual = s:functionHighlightGroup(l:kv[0], l:kv[1].value)
     call assert_equal(l:kv[1].group, l:actual, l:kv[0])
   endfor
-  unlet g:go_highlight_functions
 endfunc
 
 function! s:functionHighlightGroup(testname, value)
@@ -597,6 +602,7 @@ endfunc
 
 function! Test_goFunctionCall() abort
   syntax on
+  let g:go_gopls_enabled = 0
 
   let l:tests = {
       \ 'StandardFunctionCall': {'group': 'goFunctionCall', 'value': "f\x1f()"},
@@ -608,7 +614,6 @@ function! Test_goFunctionCall() abort
     let l:actual = s:functionCallHighlightGroup(l:kv[0], l:kv[1].value)
     call assert_equal(l:kv[1].group, l:actual, l:kv[0])
   endfor
-  unlet g:go_highlight_function_calls
 endfunc
 
 function! s:functionCallHighlightGroup(testname, value)

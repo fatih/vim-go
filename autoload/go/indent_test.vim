@@ -5,6 +5,7 @@ set cpo&vim
 func! Test_indent_raw_string() abort
   " The goRawString discovery requires that syntax be enabled.
   syntax on
+  let g:go_gopls_enabled = 0
 
   try
     let l:dir= gotest#write_file('indent/indent.go', [

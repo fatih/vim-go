@@ -38,7 +38,6 @@ function! s:getinfo(str, name)
     call assert_equal(l:expected, l:actual)
   finally
     call delete(l:tmp, 'rf')
-    unlet g:go_info_mode
   endtry
 endfunction
 

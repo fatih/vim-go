@@ -24,6 +24,7 @@ function! Test_GoDebugStart_Errors() abort
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#load_fixture('debug/compilerror/main.go')
 
     let l:expected = [
@@ -71,6 +72,7 @@ function! Test_GoDebugModeRemapsAndRestoresKeys() abort
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let g:go_debug_mappings = {'(go-debug-continue)': {'key': 'q', 'arguments': '<nowait>'}}
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 
@@ -104,6 +106,7 @@ function! Test_GoDebugStopRemovesPlugMappings() abort
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 
     call assert_false(exists(':GoDebugStop'))
@@ -139,6 +142,7 @@ function! s:debug(...) abort
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let $oldgopath = $GOPATH
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 

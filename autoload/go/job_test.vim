@@ -8,6 +8,7 @@ func! Test_JobDirWithSpaces()
   endif
 
   try
+    let g:go_gopls_enabled = 0
     let l:filename = 'job/dir has spaces/main.go'
     let l:tmp = gotest#load_fixture(l:filename)
     call go#util#Chdir(printf('%s/src/job/dir has spaces', l:tmp))

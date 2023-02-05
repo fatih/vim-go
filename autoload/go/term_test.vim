@@ -34,7 +34,6 @@ func! Test_GoTermNewMode()
     call win_gotoid(l:winid)
     only!
     call delete(l:tmp, 'rf')
-    unlet g:go_gopls_enabled
   endtry
 endfunc
 
@@ -71,7 +70,6 @@ func! Test_GoTermNewMode_SplitRight()
     only!
     call delete(l:tmp, 'rf')
     set nosplitright
-    unlet g:go_gopls_enabled
   endtry
 endfunc
 
@@ -123,9 +121,7 @@ func! Test_GoTermReuse()
   finally
     call win_gotoid(l:winid)
     only!
-    unlet g:go_term_reuse
     call delete(l:tmp, 'rf')
-    unlet g:go_gopls_enabled
   endtry
 endfunc
 
