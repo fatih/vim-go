@@ -87,4 +87,6 @@ nnoremap <silent> <Plug>(go-iferr) :<C-u>call go#iferr#Generate()<CR>
 
 nnoremap <silent> <Plug>(go-diagnostics) :<C-u>call go#lint#Diagnostics(!g:go_jump_to_error)<CR>
 
+nnoremap <silent> <Plug>(go-fillstruct) :<C-u>call go#fillstruct#FillStruct()<CR>
+
 " vim: sw=2 ts=2 et
