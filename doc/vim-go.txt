@@ -62,7 +62,7 @@ experience.
     display `GOPATH` with |:GoPath|.
   * Integrated and improved snippets, supporting `ultisnips`, `neosnippet`,
     and `vim-minisnip`.
-  * Share your current code to play.golang.org with |:GoPlay|.
+  * Share your current code to `go.dev/play` with |:GoPlay|.
   * On-the-fly information about the word under the cursor. Plug it into your
     custom Vim function.
   * Text objects such as "a function" (|go-af|) or "inner function" (|go-if|).
@@ -216,7 +216,7 @@ COMMANDS                                                         *go-commands*
 
     Open the relevant GoDoc in browser for either the word[s] passed to the
     command or by default, the word under the cursor. By default it opens the
-    documentation in 'https://pkg.go.dev'. To change it see |'g:go_doc_url'|.
+    documentation in `https://pkg.go.dev`. To change it see |'g:go_doc_url'|.
 
                                                                       *:GoFmt*
 :GoFmt
@@ -234,10 +234,10 @@ COMMANDS                                                         *go-commands*
                                                                      *:GoPlay*
 :[range]GoPlay
 
-    Share snippet to play.golang.org. If no [range] is given it shares
-    the whole file, otherwise the selected lines are shared. Snippet URL
-    is copied to system clipboard if Vim is compiled with 'clipboard' or
-     'xterm-clipboard' otherwise it's get yanked into the `""` register.
+    Share snippet to `go.dev/play`. If no [range] is given it shares the whole
+    file, otherwise the selected lines are shared. Snippet URL is copied to
+    system clipboard if Vim is compiled with 'clipboard' or 'xterm-clipboard'
+    otherwise it's get yanked into the `""` register.
 
                                                                       *:GoVet*
 :GoVet[!] [options]
@@ -999,6 +999,10 @@ Calls `go test` for the current package.
 
 Calls `go test -run '...'` for the test function immediate to cursor
 
+                                                              *(go-test-file)*
+
+Calls `go test -run '...'` for all the tests in the current file.
+
                                                            *(go-test-compile)*
 
 Calls `go test -c` for the current package.
@@ -1145,6 +1149,7 @@ Show path from callgraph root to selected function
 Show free variables of selection
 
                                                            *(go-channelpeers)*
+                                                          *(go-channel-peers)*
 
 Show send/receive corresponding to selected channel op
 
@@ -1177,6 +1182,7 @@ Alternates between the implementation and test code in a new vertical split
 Calls `:GoImport` for the current package
 
                                                                   *(go-iferr)*
+                                                                 *(go-if-err)*
 
 Generate if err != nil { return ... } automatically which infer the type of
 return values and the numbers.
@@ -1187,6 +1193,10 @@ Calls |:GoModFmt| for the current buffer
 
                                                             *(go-diagnostics)*
 Calls `:GoDiagnostics`
+
+                                                             *(go-fillstruct)*
+                                                            *(go-fill-struct)*
+Calls `:GoFillStruct`
 
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
@@ -1314,7 +1324,7 @@ By default it tries to find it automatically for the current OS. >
 <
                                                     *'g:go_play_open_browser'*
 
-Use this option to open browser after posting the snippet to play.golang.org
+Use this option to open browser after posting the snippet to `go.dev/play`.
 with |:GoPlay|. By default it's enabled. >
 
   let g:go_play_open_browser = 1
