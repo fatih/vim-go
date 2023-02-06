@@ -18,11 +18,12 @@ IMPROVEMENTS:
 * Output an error message when `g:go_fillstruct_mode` and `g:go_gopls_enabled`
   conflict.
   [[GH-3504]](https://github.com/fatih/vim-go/pull/3504)
+* Add `:GoExtract` command and related mapping.
+  [[GH-3504]](https://github.com/fatih/vim-go/pull/3506)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
   [[GH-3477]](https://github.com/fatih/vim-go/pull/3477)
-
 
 ## v1.28 - (December 17, 2022)
 
