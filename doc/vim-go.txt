@@ -999,6 +999,10 @@ Calls `go test` for the current package.
 
 Calls `go test -run '...'` for the test function immediate to cursor
 
+                                                              *(go-test-file)*
+
+Calls `go test -run '...'` for all the tests in the current file.
+
                                                            *(go-test-compile)*
 
 Calls `go test -c` for the current package.
@@ -1145,6 +1149,7 @@ Show path from callgraph root to selected function
 Show free variables of selection
 
                                                            *(go-channelpeers)*
+                                                          *(go-channel-peers)*
 
 Show send/receive corresponding to selected channel op
 
@@ -1177,6 +1182,7 @@ Alternates between the implementation and test code in a new vertical split
 Calls `:GoImport` for the current package
 
                                                                   *(go-iferr)*
+                                                                 *(go-if-err)*
 
 Generate if err != nil { return ... } automatically which infer the type of
 return values and the numbers.
@@ -1187,6 +1193,10 @@ Calls |:GoModFmt| for the current buffer
 
                                                             *(go-diagnostics)*
 Calls `:GoDiagnostics`
+
+                                                             *(go-fillstruct)*
+                                                            *(go-fill-struct)*
+Calls `:GoFillStruct`
 
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
