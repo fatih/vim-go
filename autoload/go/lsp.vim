@@ -1630,6 +1630,39 @@ function! go#lsp#FillStruct() abort
   call l:handler.await()
 endfunction
 
+" Extract executes the refactor.extract code action for the current buffer
+" and configures the handler to only apply the fillstruct command for the
+" current location.
+function! go#lsp#Extract(selected) abort
+  let l:fname = expand('%:p')
+  " send the current file so that TextEdits will be relative to the current
+  " state of the buffer.
+  call go#lsp#DidChange(l:fname)
+
+  let l:lsp = s:lspfactory.get()
+
+  let l:state = s:newHandlerState('')
+  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.extract', 'apply_fix'], l:state), 10000, '')
+  let l:state.handleResult = l:handler.wrapper
+  let l:state.error = l:handler.wrapper
+  let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
+
+  if a:selected == -1
+    call go#util#EchoError('no range selected')
+    return
+  endif
+
+  let [l:startline, l:startcol] = go#lsp#lsp#Position(line("'<"), col("'<"))
+  let [l:endline, l:endcol] = go#lsp#lsp#Position(line("'>"), col("'>"))
+
+  let l:msg = go#lsp#message#CodeActionRefactorExtract(l:fname, l:startline, l:startcol, l:endline, l:endcol)
+  call l:lsp.sendMessage(l:msg, l:state)
+
+  " await the result to avoid any race conditions among autocmds (e.g.
+  " BufWritePre and BufWritePost)
+  call l:handler.await()
+endfunction
+
 function! go#lsp#Rename(newName) abort
   let l:fname = expand('%:p')
   let [l:line, l:col] = go#lsp#lsp#Position()

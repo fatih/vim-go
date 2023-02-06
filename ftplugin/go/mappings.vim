@@ -93,4 +93,6 @@ nnoremap <silent> <Plug>(go-diagnostics) :<C-u>call go#lint#Diagnostics(!g:go_ju
 
 nnoremap <silent> <Plug>(go-fill-struct) :<C-u>call go#fillstruct#FillStruct()<CR>
 
+xnoremap <silent> <Plug>(go-extract) :<C-u>call go#extract#Extract(0)<CR>
+
 " vim: sw=2 ts=2 et

@@ -137,4 +137,7 @@ command! -nargs=? GoModReload call go#lsp#ModReload()
 " -- term
 command! GoToggleTermCloseOnExit call go#term#ToggleCloseOnExit()
 
+" -- extract
+command! -range=% GoExtract call go#extract#Extract(<count>)
+
 " vim: sw=2 ts=2 et
