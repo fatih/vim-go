@@ -32,7 +32,7 @@ function! go#lsp#message#Initialize(wd) abort
                 \ 'codeAction': {
                 \   'codeActionLiteralSupport': {
                 \     'codeActionKind': {
-                \       'valueSet': ['source.organizeImports', 'refactor.rewrite'],
+                \       'valueSet': ['source.organizeImports', 'refactor.rewrite', 'refactor.extract'],
                 \     },
                 \   },
                 \ },
@@ -78,14 +78,18 @@ function! go#lsp#message#CodeActionImports(file) abort
 endfunction
 
 function! go#lsp#message#CodeActionFillStruct(file, line, col) abort
-  return go#lsp#message#CodeActionRefactorRewrite(a:file, a:line, a:col, a:line, a:col)
+  return go#lsp#message#CodeActionRefactor('rewrite', a:file, a:line, a:col, a:line, a:col)
 endfunction
 
-function! go#lsp#message#CodeActionRefactorRewrite(file, startline, startcol, endline, endcol) abort
+function! go#lsp#message#CodeActionRefactorExtract(file, startline, startcol, endline, endcol) abort
+  return go#lsp#message#CodeActionRefactor('extract', a:file, a:startline, a:startcol, a:endline, a:endcol)
+endfunction
+
+function! go#lsp#message#CodeActionRefactor(action, file, startline, startcol, endline, endcol) abort
   let l:startpos = s:position(a:startline, a:startcol)
   let l:endpos = s:position(a:endline, a:endcol)
 
-  let l:request = s:codeAction('refactor.rewrite', a:file)
+  let l:request = s:codeAction(printf('refactor.%s', a:action), a:file)
 
   let l:request.params = extend(l:request.params,
         \ {
