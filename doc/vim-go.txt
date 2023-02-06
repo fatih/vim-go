@@ -942,6 +942,12 @@ CTRL-t
 :GoLSPDebugBrowser
 
     Open a browser to see gopls debugging information.
+                                                                 *:GoExtract*
+:GoExtract
+
+    Extract the code fragment in the selected range to a new function and
+    replace the fragment with call to the function.
+
 
 ==============================================================================
 MAPPINGS                                                        *go-mappings*
@@ -1197,6 +1203,9 @@ Calls `:GoDiagnostics`
                                                              *(go-fillstruct)*
                                                             *(go-fill-struct)*
 Calls `:GoFillStruct`
+
+                                                                *(go-extract)*
+Calls `:GoExtract`
 
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
