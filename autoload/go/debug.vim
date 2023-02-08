@@ -522,11 +522,13 @@ function! s:start_cb() abort
 
   command! -nargs=0 GoDebugContinue   call go#debug#Stack('continue')
   command! -nargs=0 GoDebugStop       call go#debug#Stop()
+  command! -nargs=0 GoDebugHalt       call go#debug#Stack('halt')
 
   nnoremap <silent> <Plug>(go-debug-breakpoint) :<C-u>call go#debug#Breakpoint()<CR>
   nnoremap <silent> <Plug>(go-debug-continue)   :<C-u>call go#debug#Stack('continue')<CR>
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
 
+  call s:restoreMappings()
   augroup vim-go-debug
     autocmd! *
     call s:configureMappings('(go-debug-breakpoint)', '(go-debug-continue)')
@@ -541,7 +543,6 @@ function! s:continue()
   command! -nargs=0 GoDebugRestart    call go#debug#Restart()
   command! -nargs=* GoDebugSet        call go#debug#Set(<f-args>)
   command! -nargs=1 GoDebugPrint      call go#debug#Print(<q-args>)
-  command! -nargs=0 GoDebugHalt       call go#debug#Stack('halt')
 
   nnoremap <silent> <Plug>(go-debug-next)       :<C-u>call go#debug#Stack('next')<CR>
   nnoremap <silent> <Plug>(go-debug-step)       :<C-u>call go#debug#Stack('step')<CR>
@@ -620,9 +621,16 @@ function! s:connect(addr) abort
 
   let s:state['ch'] = l:ch
 
-  " After this block executes, Delve will be running with all the
-  " breakpoints setup, so this callback doesn't have to run again; just log
-  " future messages.
+  " Set running because so that the next go#debug#Stack call doesn't change
+  " operation to continue.
+  let s:state['running'] = 0
+
+  " It is ok to halt whether whether delve was started with connect, debug, or
+  " test and regardless of whether the the process is already halted.
+  call go#debug#Stack('halt')
+
+  " Set ready so that breakpoints will be setup and all output from dlv's
+  " stdout and stderr will be logged.
   let s:state['ready'] = 1
 
   " replace all the breakpoints set before delve started so that the ids won't overlap.
@@ -653,9 +661,8 @@ function! s:on_data(ch, data, ...) dict abort
       " in if s:handleRPCResult sleeps will be appended correctly.
       "
       " Because the current message is removed in the try immediately after
-      " decoding,  that l:messages contains all the messages that have not
-      " yet been decoded including the current message if decoding it
-      " failed.
+      " decoding, l:messages contains all the messages that have not yet been
+      " decoded including the current message if decoding it failed.
       let self.databuf = join(l:messages, "\n")
     endtry
 
@@ -1292,8 +1299,10 @@ function! go#debug#Stack(name) abort
 
   " Run continue if the program hasn't started yet.
   if s:state.running is 0
+    if l:name != 'halt'
+      let l:name = 'continue'
+    endif
     let s:state.running = 1
-    let l:name = 'continue'
     call s:continue()
   endif
 
@@ -1337,6 +1346,10 @@ endfunction
 function! s:handle_stack_response(command, check_errors, res) abort
   try
     call a:check_errors()
+
+    if s:state.running is 0 && a:command is# 'halt'
+      return
+    endif
 
     if a:command is# 'next'
       call s:handleNextInProgress(a:res)
