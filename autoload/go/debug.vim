@@ -35,10 +35,9 @@ function! s:goroutineID() abort
 endfunction
 
 function! s:complete(job, exit_status, data) abort
-  let l:gotready = get(s:state, 'ready', 0)
   " copy messages to a:data _only_ when dlv exited non-zero and it was never
   " detected as ready (e.g. there was a compiler error).
-  if a:exit_status > 0 && !l:gotready
+  if a:exit_status > 0 && !s:isReady()
       " copy messages to data so that vim-go's usual handling of errors from
       " async jobs will occur.
       call extend(a:data, s:state['message'])
@@ -570,7 +569,7 @@ function! s:continue()
 endfunction
 
 function! s:err_cb(ch, msg) abort
-  if get(s:state, 'ready', 0) != 0
+  if s:isReady()
     call s:logger('ERR: ', a:ch, a:msg)
     return
   endif
@@ -579,7 +578,7 @@ function! s:err_cb(ch, msg) abort
 endfunction
 
 function! s:out_cb(ch, msg) abort
-  if get(s:state, 'ready', 0) != 0
+  if s:isReady()
     call s:logger('OUT: ', a:ch, a:msg)
     return
   endif
