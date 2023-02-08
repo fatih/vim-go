@@ -1113,6 +1113,7 @@ function! s:show_goroutines(currentGoroutineID, res) abort
       return
     endif
 
+    let l:currentGoroutine = []
     for l:idx in range(len(l:goroutines))
       let l:goroutine = l:goroutines[l:idx]
       let l:goroutineType = ""
