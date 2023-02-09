@@ -463,7 +463,7 @@ function! s:expand_var() abort
   endif
 endfunction
 
-function! s:start_cb() abort
+function! s:create_layout() abort
   let l:winid = win_getid()
   let l:debugwindows = go#config#DebugWindows()
   let l:debugpreservelayout = go#config#DebugPreserveLayout()
@@ -639,7 +639,7 @@ function! s:connect(addr) abort
     call go#debug#Breakpoint(l:bt.line, l:bt.file)
   endfor
 
-  call s:start_cb()
+  call s:create_layout()
 endfunction
 
 " s:on_data's third optional argument is provided, but not used, so that the
@@ -1274,7 +1274,7 @@ function! s:update_stacktrace() abort
   endtry
 endfunction
 
-function! s:stack_cb(res) abort
+function! s:update_windows(res) abort
   let s:stack_name = ''
 
   if type(a:res) isnot type({}) || !has_key(a:res, 'result') || empty(a:res.result)
@@ -1316,7 +1316,7 @@ function! go#debug#Stack(name) abort
   endif
 
   try
-    " s:stack_name is reset in s:stack_cb(). While its value is 'next', the
+    " s:stack_name is reset in s:update_windows(). While its value is 'next', the
     " current operation being performed by delve is a next operation and it
     " must be cancelled before another next operation can start. See
     " https://github.com/go-delve/delve/blob/ab5713d3ec5d12754f4b2edf85e4b36a08b67c48/Documentation/api/ClientHowto.md#special-continue-commands-and-asynchronous-breakpoints
@@ -1355,7 +1355,7 @@ function! s:handle_stack_response(command, check_errors, res) abort
       call s:handleNextInProgress(a:res)
     endif
 
-    call s:stack_cb(a:res)
+    call s:update_windows(a:res)
   catch
     call go#util#EchoError(printf('rpc failure: %s', v:exception))
     call s:clearState()
@@ -1426,7 +1426,7 @@ function! go#debug#Goroutine() abort
     let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
     call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.Command', {'Name': 'switchGoroutine', 'GoroutineID': l:goroutineID})
     let l:res = l:promise.await()
-    call s:stack_cb(l:res)
+    call s:update_windows(l:res)
     call go#util#EchoInfo("Switched goroutine to: " . l:goroutineID)
   catch
     call go#util#EchoError(printf('could not switch goroutine: %s', v:exception))
