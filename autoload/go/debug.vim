@@ -634,7 +634,7 @@ function! s:connect(addr) abort
   let s:state['ready'] = 1
 
   " replace all the breakpoints set before delve started so that the ids won't overlap.
-  for l:bt in s:list_breakpoints()
+  for l:bt in s:list_breakpointsigns()
     call s:sign_unplace(l:bt.id, l:bt.file)
     call go#debug#Breakpoint(l:bt.line, l:bt.file)
   endfor
@@ -1308,7 +1308,7 @@ function! go#debug#Stack(name) abort
 
   " Add a breakpoint to the main.Main if the user didn't define any.
   " TODO(bc): actually set the breakpoint in main.Main
-  if len(s:list_breakpoints()) is 0
+  if len(s:list_breakpointsigns()) is 0
     if go#debug#Breakpoint() isnot 0
       let s:state.running = 0
       return
@@ -1453,7 +1453,7 @@ function! go#debug#Breakpoint(...) abort
   try
     " Check if we already have a breakpoint for this line.
     let l:found = {}
-    for l:bt in s:list_breakpoints()
+    for l:bt in s:list_breakpointsigns()
       if l:bt.file is# l:filename && l:bt.line is# l:linenr
         let l:found = l:bt
         break
@@ -1476,7 +1476,7 @@ function! go#debug#Breakpoint(...) abort
         let l:bt = l:res.result.Breakpoint
         call s:sign_place(l:bt.id, s:substituteRemotePath(l:bt.file), l:bt.line)
       else
-        let l:id = len(s:list_breakpoints()) + 1
+        let l:id = len(s:list_breakpointsigns()) + 1
         call s:sign_place(l:id, l:filename, l:linenr)
       endif
     endif
@@ -1506,7 +1506,7 @@ function! s:sign_place(id, expr, lnum) abort
   call sign_place(a:id, 'vim-go-debug', 'godebugbreakpoint', a:expr, {'lnum': a:lnum})
 endfunction
 
-function! s:list_breakpoints()
+function! s:list_breakpointsigns()
   let l:breakpoints = []
   let l:signs = s:sign_getplaced()
   for l:item in l:signs
