@@ -393,8 +393,8 @@ endfunction
 
 function! go#config#GorenamePrefill() abort
   return get(g:, "go_gorename_prefill", 'expand("<cword>") =~# "^[A-Z]"' .
-          \ '? go#util#pascalcase(expand("<cword>"))' .
-          \ ': go#util#camelcase(expand("<cword>"))')
+          \ '? go#util#camelcase(expand("<cword>"))' .
+          \ ': go#util#pascalcase(expand("<cword>"))')
 endfunction
 
 function! go#config#TextobjIncludeFunctionDoc() abort
