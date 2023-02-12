@@ -65,7 +65,7 @@ endfun
 " The current directory will be changed to the parent directory of module
 " root.
 fun! gotest#load_fixture(path) abort
-  if go#util#has_job() && go#config#GoplsEnabled()
+  if go#util#has_job()
     call go#lsp#CleanWorkspaces()
   endif
   let l:dir = go#util#tempdir("vim-go-test/testrun/")
@@ -77,7 +77,7 @@ fun! gotest#load_fixture(path) abort
   silent exe 'noautocmd e! ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
-  if go#util#has_job() && go#config#GoplsEnabled()
+  if go#util#has_job()
     call go#lsp#AddWorkspaceDirectory(fnamemodify(l:full_path, ':p:h'))
   endif
 
