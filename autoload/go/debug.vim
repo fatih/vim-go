@@ -120,7 +120,7 @@ function! s:call_jsonrpc(handle_result, method, ...) abort
 
     if go#util#HasDebug('debugger-commands')
       let g:go_debug_commands = add(go#config#DebugCommands(), {
-            \ 'request':  l:req_json,
+            \ 'request':  json_decode(l:req_json)
       \ })
     endif
 
@@ -662,7 +662,7 @@ function! s:on_data(ch, data, ...) dict abort
 
     if go#util#HasDebug('debugger-commands')
       let g:go_debug_commands = add(go#config#DebugCommands(), {
-            \ 'response': l:data,
+            \ 'response': l:res,
       \ })
     endif
     call s:handleRPCResult(l:res)
