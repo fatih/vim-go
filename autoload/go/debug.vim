@@ -157,7 +157,7 @@ function! s:update_breakpoint(res) abort
     return
   endif
 
-  exe bufs[0][0] 'wincmd w'
+  call win_gotoid(win_getid(bufs[0][0]))
   let filename = s:substituteRemotePath(state.currentThread.file)
   let linenr = state.currentThread.line
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
@@ -311,7 +311,7 @@ function! go#debug#Stop() abort
 
   let bufs = filter(map(range(1, winnr('$')), '[v:val,bufname(winbufnr(v:val))]'), 'v:val[1]=~"\.go$"')
   if len(bufs) > 0
-    exe bufs[0][0] 'wincmd w'
+    call win_gotoid(win_getid(bufs[0][0]))
   else
     wincmd p
   endif
@@ -356,7 +356,7 @@ function! s:goto_file() abort
   if len(bufs) == 0
     return
   endif
-  exe bufs[0][0] 'wincmd w'
+  call win_gotoid(win_getid(bufs[0][0]))
   let filename = s:substituteLocalPath(m[1])
   let linenr = m[2]
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
