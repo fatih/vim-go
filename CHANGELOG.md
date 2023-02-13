@@ -19,7 +19,7 @@ IMPROVEMENTS:
   conflict.
   [[GH-3504]](https://github.com/fatih/vim-go/pull/3504)
 * Add `:GoExtract` command and related mapping.
-  [[GH-3504]](https://github.com/fatih/vim-go/pull/3506)
+  [[GH-3506]](https://github.com/fatih/vim-go/pull/3506)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
