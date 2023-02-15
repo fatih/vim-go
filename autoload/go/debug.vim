@@ -151,13 +151,16 @@ function! s:update_breakpoint(res) abort
   endif
 
   let s:state['currentThread'] = state.currentThread
+  let filename = s:substituteRemotePath(state.currentThread.file)
+  if filename == ''
+    return
+  endif
   let bufs = filter(map(range(1, winnr('$')), '[v:val,bufname(winbufnr(v:val))]'), 'v:val[1]=~"\.go$"')
   if len(bufs) == 0
     return
   endif
 
   call win_gotoid(win_getid(bufs[0][0]))
-  let filename = s:substituteRemotePath(state.currentThread.file)
   let linenr = state.currentThread.line
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
   if oldfile != filename
