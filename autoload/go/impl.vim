@@ -29,7 +29,7 @@ function! go#impl#Impl(...) abort
     let recv = join(a:000[:-2], ' ')
     let iface = a:000[-1]
   else
-    call go#util#EchoError('usage: GoImpl {receiver} {interface}')
+    call go#util#EchoError('usage: GoImpl {receiver} {receiver type} {interface}')
     return
   endif
 
