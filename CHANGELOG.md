@@ -23,6 +23,8 @@ IMPROVEMENTS:
 * Halt the debugger after a connection is establish with `:GoDebugConnect`.
   [[GH-3514]](https://github.com/fatih/vim-go/pull/3514)
   [[GH-3520]](https://github.com/fatih/vim-go/pull/3520)
+* Clarify `:GoImpl` usage message.
+  [[GH-3522]](https://github.com/fatih/vim-go/pull/3522)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
