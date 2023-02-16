@@ -775,12 +775,13 @@ CTRL-t
     :Denite decls:foo
 <
                                                                      *:GoImpl*
-:GoImpl [receiver] [interface]
+:GoImpl [receiver] [receiver type] [interface]
 
     Generates method stubs for implementing an interface. If no arguments is
     passed it takes the identifier under the cursor to be the receiver and
     asks for the interface type to be generated. If used with arguments, the
-    receiver and the interface needs to be specified. Example usages:
+    receiver name, its type, and the interface needs to be specified. Example
+    usages:
 >
       :GoImpl f *Foo io.Writer
       :GoImpl t Type io.ReadWriteCloser
