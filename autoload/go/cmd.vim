@@ -138,6 +138,20 @@ function! go#cmd#Run(bang, ...) abort
     return
   endif
 
+  if go#util#has_job()
+    " NOTE(arslan): 'term': 'open' case is not implement for +jobs. This means
+    " executions waiting for stdin will not work. That's why we don't do
+    " anything. Once this is implemented we're going to make :GoRun async
+  endif
+
+  let l:status = {
+        \ 'desc': 'current status',
+        \ 'type': 'run',
+        \ 'state': "started",
+        \ }
+
+  call go#statusline#Update(expand('%:p:h'), l:status)
+
   let l:cmd = ['go', 'run']
   let l:tags = go#config#BuildTags()
   if len(l:tags) > 0
@@ -151,25 +165,6 @@ function! go#cmd#Run(bang, ...) abort
   endif
 
   let l:cmd = l:cmd + l:files
-  " NOTE(arslan): 'term': 'open' case is not implement for +jobs. This means
-  " executions waiting for stdin will not work.
-  if go#util#has_job()
-    call s:cmd_job({
-        \ 'cmd': l:cmd,
-        \ 'bang': a:bang,
-        \ 'for': 'GoRun',
-        \ 'statustype': 'run',
-        \ 'errorformat': s:runerrorformat()
-        \})
-    return
-  endif
-
-  let l:status = {
-        \ 'desc': 'current status',
-        \ 'type': 'run',
-        \ 'state': "started",
-        \ }
-  call go#statusline#Update(expand('%:p:h'), l:status)
 
   if go#util#IsWin()
     if go#util#HasDebug('shell-commands')
