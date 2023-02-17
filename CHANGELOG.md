@@ -23,6 +23,8 @@ IMPROVEMENTS:
   [[GH-3520]](https://github.com/fatih/vim-go/pull/3520)
 * Clarify `:GoImpl` usage message.
   [[GH-3522]](https://github.com/fatih/vim-go/pull/3522)
+* Add commands and mappings related to godoc to the godoc preview window.
+  [[GH-3527]](https://github.com/fatih/vim-go/pull/3527)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
