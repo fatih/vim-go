@@ -25,6 +25,8 @@ IMPROVEMENTS:
   [[GH-3522]](https://github.com/fatih/vim-go/pull/3522)
 * Add commands and mappings related to godoc to the godoc preview window.
   [[GH-3527]](https://github.com/fatih/vim-go/pull/3527)
+* Link goPredefinedIdentifiers to Constant instead of goBoolean by default.
+  [[GH-3528]](https://github.com/fatih/vim-go/pull/3528)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
