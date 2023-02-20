@@ -1,3 +1,0 @@
-package problems
-
-func bar() {}
