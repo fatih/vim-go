@@ -28,4 +28,18 @@ clean:
 	@echo "==> Cleaning /tmp/vim-go-test"
 	@rm -rf /tmp/vim-go-test
 
-.PHONY: all test install clean lint docker
+.PHONY: runtime/indent/go.vim
+runtime/indent/go.vim:
+	@git checkout master -- indent/go.vim
+	@git reset HEAD --  indent/go.vim
+
+.PHONY: runtime/syntax/go.vim
+runtime/syntax/go.vim:
+	@git checkout master -- syntax/go.vim
+	@git reset HEAD -- syntax/go.vim
+
+vim-runtime: runtime/indent/go.vim runtime/syntax/go.vim
+	@echo "==> fetching from vim/vim"
+	@echo "==> choose the hunks to apply with git add -pu"
+
+.PHONY: all test install clean lint docker vim-runtime
