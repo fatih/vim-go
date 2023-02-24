@@ -573,6 +573,10 @@ function! go#config#GoplsSettings() abort
   return get(g:, 'go_gopls_settings', v:null)
 endfunction
 
+function! go#config#GoplsInitializationOptions() abort
+    return get(g:, 'go_gopls_initialization_options', {})
+endfunction
+
 function! go#config#GoplsEnabled() abort
   return get(g:, 'go_gopls_enabled', 1)
 endfunction

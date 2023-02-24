@@ -1976,6 +1976,21 @@ default it is `v:null`.
 >
   let g:go_gopls_settings = v:null
 <
+                                        *'g:go_gopls_initialization_options'*
+
+Specifies `gopls` initialization options described here:
+https://github.com/golang/tools/blob/master/gopls/doc/settings.md
+
+For example, to set `directoryFilters`:
+>
+  let g:go_gopls_initialization_options = {
+    \ "build.directoryFilters": ["-", "+my_project"],
+    \ }
+<
+By default it is `{}`.
+>
+  let g:go_gopls_initialization_options = {}
+<
                                                  *'g:go_diagnostics_enabled'*
 
 Deprecated. See `'g:go_diagnostics_level'`. Specifies whether `gopls`

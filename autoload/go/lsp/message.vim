@@ -38,6 +38,7 @@ function! go#lsp#message#Initialize(wd) abort
                 \ },
               \ }
             \ },
+            \ 'initializationOptions': go#config#GoplsInitializationOptions(),
             \ 'workspaceFolders': [s:workspaceFolder(0, a:wd)],
           \ }
        \ }
