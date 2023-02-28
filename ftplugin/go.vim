@@ -39,6 +39,7 @@ if get(g:, "go_def_mapping_enabled", 1)
   " these are default Vim mappings, we're overriding them to make them
   " useful again for Go source code
   nnoremap <buffer> <silent> gd :GoDef<cr>
+  nnoremap <buffer> <silent> gD :GoDefType<cr>
   nnoremap <buffer> <silent> <C-]> :GoDef<cr>
   nnoremap <buffer> <silent> <C-LeftMouse> <LeftMouse>:GoDef<cr>
   nnoremap <buffer> <silent> g<LeftMouse> <LeftMouse>:GoDef<cr>
