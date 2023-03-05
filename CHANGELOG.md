@@ -28,6 +28,9 @@ IMPROVEMENTS:
   [[GH-3532]](https://github.com/fatih/vim-go/pull/3532)
 * Link goPredefinedIdentifiers to Constant instead of goBoolean by default.
   [[GH-3528]](https://github.com/fatih/vim-go/pull/3528)
+* Add `gD` mapping for `:GoDefType`.
+  [[GH-3531]](https://github.com/fatih/vim-go/pull/3531)
+
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
