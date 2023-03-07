@@ -261,9 +261,18 @@ endif
 if go#config#HighlightExtraTypes()
   syn match goExtraType /\<bytes\.\%(Buffer\)\>/
   syn match goExtraType /\<context\.\%(Context\)\>/
-  syn match goExtraType /\<io\.\%(Reader\|ReadSeeker\|ReadWriter\|ReadCloser\|ReadWriteCloser\|Writer\|WriteCloser\|Seeker\)\>/
+  syn match goExtraType /\<io\.\%(Reader\|ReadSeeker\|ReadWriter\|ReadCloser\|ReadWriteCloser\|Writer\|WriteCloser\|Seeker\|Copy\|ByteReader\|ByteScanner\|ByteWriter\)\>/
   syn match goExtraType /\<reflect\.\%(Kind\|Type\|Value\)\>/
-  syn match goExtraType /\<unsafe\.Pointer\>/
+  syn match goExtraType /\<unsafe\.\%(Pointer\)\>/
+  syn match goExtraType /\<bufio\.\%(Reader\|Scanner\|Writer\)\>/
+  syn match goExtraType /\<os\.\%(Getenv\)\>/
+  syn match goExtraType /\<strconv\.\%(Atoi\|ParseFloat\)\>/
+  syn match goExtraType /\<strings\.\%(Split\|ToLower\|ToUpper\|Trim\)\>/
+  syn match goExtraType /\<fmt\.\%(Scan\|Scanf\|Scanln\)\>/
+  syn match goExtraType /\<http\.\%(Handle\|HandleFunc\|FileServer\|Error\|ListenAndServe\|NotFound\|Redirect\|Header\|ServeMux\|Get\|Post\)\>/
+  syn match goExtraType /\<log\.\%(Fatalf\|Printf\|Println\)\>/
+  syn match goExtraType /\<json\.\%(Deocder\|Encoder\)\>/
+  syn match goExtraType /\<
 endif
 
 " Space-tab error
