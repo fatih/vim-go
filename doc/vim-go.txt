@@ -664,12 +664,10 @@ CTRL-t
                                                                *:GoMetaLinter*
 :GoMetaLinter! [path]
 
-    Calls the underlying `golangci-lint` tool and displays all warnings and
-    errors in the |quickfix| window. By default the following linters are
-    enabled: `vet`, `golint`, and `errcheck`. This can be changed with the
-    |'g:go_metalinter_enabled'| variable. To override the command completely
-    use the variable |'g:go_metalinter_command'|. To override the maximum
-    linters execution time use |'g:go_metalinter_deadline'| variable.
+    Calls a metalinter tool and displays all warnings and errors in the
+    |quickfix| window. The linters that are enabled by default vary depending
+    on the value of `g:go_metalinter_command` and can be changed with
+    `g:go_metalinter_enabled`.
 
     If [!] is not given the first error is jumped to.
 
