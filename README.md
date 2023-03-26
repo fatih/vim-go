@@ -23,15 +23,9 @@ This plugin adds Go language support for Vim, with the following main features:
 * Precise type-safe renaming of identifiers with `:GoRename`.
 * See which code is covered by tests with `:GoCoverage`.
 * Add or remove tags on struct fields with `:GoAddTags` and `:GoRemoveTags`.
-* Call [`staticcheck`](https://staticcheck.io/) with `:GoMetaLinter` to invoke all possible linters
-  (e.g. `golint`, `vet`, `errcheck`, `deadcode`, etc.) and put the result in the
-  quickfix or location list.
-* Lint your code with `:GoLint`, run your code through `:GoVet` to catch static
-  errors, or make sure errors are checked with `:GoErrCheck`.
-* Advanced source analysis tools utilizing `guru`, such as `:GoImplements`,
-  `:GoCallees`, and `:GoReferrers`.
-* ... and many more! Please see [doc/vim-go.txt](doc/vim-go.txt) for more
-  information.
+* Lint your code with `:GoLint` or `:GoMetaLinter`, run your code through `:GoVet` to catch static errors, or make sure errors are checked with `:GoErrCheck`.
+* Advanced source analysis utilizing `gopls`, such as `:GoImplements`, `:GoCallees`, and `:GoReferrers`.
+* ... and many more! Please see [doc/vim-go.txt](doc/vim-go.txt) for more information.
 * Integration with [`gopls`](https://github.com/golang/tools/blob/master/gopls/README.md).
 * The `gopls` instance can be shared with other Vim plugins.
 * Vim-go's use of `gopls` can be disabled and alternative tools can be used when desired.
