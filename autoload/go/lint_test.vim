@@ -613,8 +613,8 @@ func! s:vimdir()
   let l:vim = "vim-8.2"
   if has('nvim')
     let l:vim = 'nvim'
-  elseif v:version == 800
-    let l:vim = 'vim-8.0'
+  elseif v:version == 810
+    let l:vim = 'vim-8.1'
   endif
 
   return l:vim
