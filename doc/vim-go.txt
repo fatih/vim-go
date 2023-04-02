@@ -2737,7 +2737,7 @@ a reasonable amount of performance `guru` limits this analysis to a selected
 list of packages. This is known as the "guru scope".
 
 The default is to use the package the current buffer belongs to, but this may
-not always be correct. For example for the file `guthub.com/user/pkg/a/a.go`
+not always be correct. For example for the file `github.com/user/pkg/a/a.go`
 the scope will be set to `github.com/user/pkg/a`, but you probably want
 `github.com/user/pkg`
 
