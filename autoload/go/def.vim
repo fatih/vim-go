@@ -149,20 +149,25 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     let ident = parts[3]
   endif
 
-  " Remove anything newer than the current position, just like basic
-  " vim tag support
-  if s:go_stack_level == 0
-    let s:go_stack = []
+  if exists('*settagstack')
+    let l:tag = expand('<cword>')
+    let l:pos = [bufnr('')] + getcurpos()[1:]
+    let l:stack_entry = {'bufnr': l:pos[0], 'from': l:pos, 'tagname': l:tag}
   else
-    let s:go_stack = s:go_stack[0:s:go_stack_level-1]
+    " Remove anything newer than the current position, just like basic
+    " vim tag support
+    if s:go_stack_level == 0
+      let s:go_stack = []
+    else
+      let s:go_stack = s:go_stack[0:s:go_stack_level-1]
+    endif
+
+    " increment the stack counter
+    let s:go_stack_level += 1
+
+    " push it on to the jumpstack
+    let l:stack_entry = {'line': line("."), 'col': col("."), 'file': expand('%:p'), 'ident': ident}
   endif
-
-  " increment the stack counter
-  let s:go_stack_level += 1
-
-  " push it on to the jumpstack
-  let stack_entry = {'line': line("."), 'col': col("."), 'file': expand('%:p'), 'ident': ident}
-  call add(s:go_stack, stack_entry)
 
   " needed for restoring back user setting this is because there are two
   " modes of switchbuf which we need based on the split mode
@@ -206,9 +211,21 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     endif
   endif
   call cursor(line, col)
-
   " also align the line to middle of the view
   normal! zz
+
+  if exists('*settagstack')
+		" Jump was successful, write previous location to tag stack.
+		let l:winid = win_getid()
+		let l:stack = gettagstack(l:winid)
+		let l:stack['items'] = [l:stack_entry]
+		call settagstack(l:winid, l:stack, 't')
+    call go#util#EchoInfo('builtin stack')
+  else
+    call add(s:go_stack, l:stack_entry)
+    call go#util#EchoInfo('custom stack')
+  endif
+  call go#util#EchoInfo(printf('pushed %s onto stack', l:stack_entry))
 
   let &switchbuf = old_switchbuf
 endfunction
