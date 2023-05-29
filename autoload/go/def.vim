@@ -215,17 +215,14 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   normal! zz
 
   if exists('*settagstack')
-		" Jump was successful, write previous location to tag stack.
-		let l:winid = win_getid()
-		let l:stack = gettagstack(l:winid)
-		let l:stack['items'] = [l:stack_entry]
-		call settagstack(l:winid, l:stack, 't')
-    call go#util#EchoInfo('builtin stack')
+    " Jump was successful, write previous location to tag stack.
+    let l:winid = win_getid()
+    let l:stack = gettagstack(l:winid)
+    let l:stack['items'] = [l:stack_entry]
+    call settagstack(l:winid, l:stack, 't')
   else
     call add(s:go_stack, l:stack_entry)
-    call go#util#EchoInfo('custom stack')
   endif
-  call go#util#EchoInfo(printf('pushed %s onto stack', l:stack_entry))
 
   let &switchbuf = old_switchbuf
 endfunction
