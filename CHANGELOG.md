@@ -32,6 +32,8 @@ IMPROVEMENTS:
   [[GH-3531]](https://github.com/fatih/vim-go/pull/3531)
 * Use Vim's native tag stack when possible.
   [[GH-3548]](https://github.com/fatih/vim-go/pull/3548)
+* Update codeAction response handling to work with gopls v0.12.0.
+  [[GH-3555]](https://github.com/fatih/vim-go/pull/3555)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
