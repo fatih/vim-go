@@ -149,7 +149,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     let ident = parts[3]
   endif
 
-  if exists('*settagstack')
+  if exists('*settagstack') && has('patch-8.2.0077')
     let l:tag = expand('<cword>')
     let l:pos = [bufnr('')] + getcurpos()[1:]
     let l:stack_entry = {'bufnr': l:pos[0], 'from': l:pos, 'tagname': l:tag}
