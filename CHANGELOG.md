@@ -33,6 +33,7 @@ IMPROVEMENTS:
 * Use Vim's native tag stack when possible.
   [[GH-3548]](https://github.com/fatih/vim-go/pull/3548)
   [[GH-3554]](https://github.com/fatih/vim-go/pull/3554)
+  [[GH-3556]](https://github.com/fatih/vim-go/pull/3556)
 * Update codeAction response handling to work with gopls v0.12.0.
   [[GH-3555]](https://github.com/fatih/vim-go/pull/3555)
 
