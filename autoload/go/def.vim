@@ -214,7 +214,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   " also align the line to middle of the view
   normal! zz
 
-  if exists('*settagstack')
+  if exists('*settagstack') && has('patch-8.2.0077')
     " Jump was successful, write previous location to tag stack.
     let l:winid = win_getid()
     let l:stack = gettagstack(l:winid)
