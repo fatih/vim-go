@@ -45,7 +45,7 @@ if get(g:, "go_def_mapping_enabled", 1)
   nnoremap <buffer> <silent> g<LeftMouse> <LeftMouse>:GoDef<cr>
   nnoremap <buffer> <silent> <C-w><C-]> :<C-u>call go#def#Jump("split", 0)<CR>
   nnoremap <buffer> <silent> <C-w>] :<C-u>call go#def#Jump("split", 0)<CR>
-  if exists('*settagstack') is 0
+  if exists('*settagstack') is 0 || has('patch-8.2.0077') is 0
     nnoremap <buffer> <silent> <C-t> :<C-U>call go#def#StackPop(v:count1)<cr>
   endif
 endif
