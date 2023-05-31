@@ -154,18 +154,6 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     let l:pos = [bufnr('')] + getcurpos()[1:]
     let l:stack_entry = {'bufnr': l:pos[0], 'from': l:pos, 'tagname': l:tag}
   else
-    " Remove anything newer than the current position, just like basic
-    " vim tag support
-    if s:go_stack_level == 0
-      let s:go_stack = []
-    else
-      let s:go_stack = s:go_stack[0:s:go_stack_level-1]
-    endif
-
-    " increment the stack counter
-    let s:go_stack_level += 1
-
-    " push it on to the jumpstack
     let l:stack_entry = {'line': line("."), 'col': col("."), 'file': expand('%:p'), 'ident': ident}
   endif
 
@@ -221,6 +209,18 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     let l:stack['items'] = [l:stack_entry]
     call settagstack(l:winid, l:stack, 't')
   else
+    " Remove anything newer than the current position, just like basic
+    " vim tag support
+    if s:go_stack_level == 0
+      let s:go_stack = []
+    else
+      let s:go_stack = s:go_stack[0:s:go_stack_level-1]
+    endif
+
+    " increment the stack counter
+    let s:go_stack_level += 1
+
+    " push it on to the jumpstack
     call add(s:go_stack, l:stack_entry)
   endif
 
