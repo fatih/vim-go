@@ -1794,10 +1794,6 @@ function! s:handleCodeAction(kind, cmd, msg) abort dict
 
   for l:item in a:msg
     if get(l:item, 'kind', '') is a:kind
-      if !has_key(l:item, 'edit')
-        continue
-      endif
-
       if has_key(l:item, 'disabled') && get(l:item.disabled, 'reason', '') isnot ''
         call go#util#EchoWarning(printf('code action is disabled: %s', l:item.disabled.reason))
         continue
@@ -1808,6 +1804,10 @@ function! s:handleCodeAction(kind, cmd, msg) abort dict
           call s:executeCommand(l:item.command.command, l:item.command.arguments)
           continue
         endif
+      endif
+
+      if !has_key(l:item, 'edit')
+        continue
       endif
 
       if !has_key(l:item.edit, 'documentChanges')
