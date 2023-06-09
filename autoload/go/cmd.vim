@@ -340,8 +340,39 @@ function! go#cmd#Generate(bang, ...) abort
 endfunction
 
 function! s:runerrorformat()
-  let l:panicaddress = "%\\t%#%f:%l +0x%[0-9A-Fa-f]%\\+"
-  let l:errorformat = '%A' . l:panicaddress . "," . &errorformat
+  let goroot = go#util#goroot()
+
+  let stdlibaddress = "%\\t" . goroot . "%\\f%\\+:%\\d%\\+ +0x%[0-9A-Fa-f]%\\+"
+
+  " panicaddress and readyaddress are identical except for
+  " panicaddress sets the filename and line number.
+  let l:panicaddress = '%\\t%f:%l%\\%( +0x%[0-9A-Fa-f]%\\+%\\)%\\='
+  let l:readyaddress = '%\\t%\\f%\\+:%\\d%\\+%\\%( +0x%[0-9A-Fa-f]%\\+%\\)%\\='
+  " stdlib address is identical to readyaddress, except it matches files
+  " inside GOROOT.
+  let l:stdlibaddress = '%\\t' . goroot . '%\\f%\\+:%\\d%\\+%\\%( +0x%[0-9A-Fa-f]%\\+%\\)%\\='
+
+  let l:errorformat = ''
+  let l:errorformat .= '%-Cexit status 2'
+  let l:errorformat .= ",%-C" . stdlibaddress
+  " Match address lines in the first matching goroutine. This means the panic
+  " message will only be shown as the error message in the first address of
+  " the running goroutine's stack.
+  let l:errorformat .= ',%Z' . l:panicaddress
+
+  " Match and ignore panic address without being part of a multi-line message.
+  " This is to catch those lines that come after the top most non-standard
+  " library line in stack traces.
+  let l:errorformat .= ",%-G" . l:panicaddress
+
+  " Match and discard empty lines in a multi-line message.
+  let l:errorformat .= ',%-C'
+  " Match and ignore the goroutine lines.
+  let l:errorformat .= ',%-Cgoroutine %\\d%\\+%.%#:'
+  " Match and discard lines containing function names in multi-line messages.
+  let l:errorformat .= ',%-C%.%#(%\\%(%\\.%\\.%\\.%\\)%\\=)'
+  let l:errorformat .= ',%+Epanic: %m'
+  let l:errorformat .= "," . &errorformat
   return l:errorformat
 endfunction
 
