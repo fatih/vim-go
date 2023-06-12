@@ -3,6 +3,7 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 func! Test_GoBuildErrors()
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:filename = 'cmd/bad.go'
@@ -27,6 +28,7 @@ func! Test_GoBuildErrors()
 
     call gotest#assert_quickfix(actual, l:expected)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc

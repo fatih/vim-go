@@ -7,6 +7,7 @@ func! Test_GoTermNewMode()
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:filename = 'term/term.go'
@@ -33,6 +34,7 @@ func! Test_GoTermNewMode()
   finally
     call win_gotoid(l:winid)
     only!
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -42,6 +44,7 @@ func! Test_GoTermNewMode_SplitRight()
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:filename = 'term/term.go'
@@ -68,6 +71,7 @@ func! Test_GoTermNewMode_SplitRight()
   finally
     call win_gotoid(l:winid)
     only!
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
     set nosplitright
   endtry
@@ -78,6 +82,7 @@ func! Test_GoTermReuse()
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:filename = 'term/term.go'
@@ -121,6 +126,7 @@ func! Test_GoTermReuse()
   finally
     call win_gotoid(l:winid)
     only!
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc

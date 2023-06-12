@@ -7,6 +7,7 @@ func! Test_indent_raw_string() abort
   syntax on
   let g:go_gopls_enabled = 0
 
+  let l:wd = getcwd()
   try
     let l:dir= gotest#write_file('indent/indent.go', [
           \ 'package main',
@@ -23,9 +24,11 @@ func! Test_indent_raw_string() abort
     let l:indent = indent(line('.'))
     call assert_equal(0, l:indent)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 
+  let l:wd = getcwd()
   try
     let l:dir= gotest#write_file('indent/indent.go', [
           \ 'package main',
@@ -43,8 +46,10 @@ func! Test_indent_raw_string() abort
     call assert_equal(0, l:indent)
   finally
     call delete(l:dir, 'rf')
+    call go#util#Chdir(l:wd)
   endtry
 
+  let l:wd = getcwd()
   try
     let l:dir= gotest#write_file('indent/indent.go', [
           \ 'package main',
@@ -62,6 +67,7 @@ func! Test_indent_raw_string() abort
     let l:indent = indent(line('.'))
     call assert_equal(shiftwidth(), l:indent)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc

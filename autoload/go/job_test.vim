@@ -7,6 +7,7 @@ func! Test_JobDirWithSpaces()
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:filename = 'job/dir has spaces/main.go'
@@ -40,6 +41,7 @@ func! Test_JobDirWithSpaces()
 
     call gotest#assert_quickfix(actual, l:expected)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc

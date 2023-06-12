@@ -82,6 +82,7 @@ func! Test_GoplsEnabled_Clear() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
 
@@ -94,6 +95,7 @@ func! Test_GoplsEnabled_Clear() abort
           \ ] )
 
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
