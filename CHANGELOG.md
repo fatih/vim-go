@@ -38,6 +38,8 @@ IMPROVEMENTS:
   [[GH-3558]](https://github.com/fatih/vim-go/pull/3558)
 * Update codeAction response handling to work with gopls v0.12.0.
   [[GH-3555]](https://github.com/fatih/vim-go/pull/3555)
+* Drop support for Vim 8.0.
+  [[GH-3538]](https://github.com/fatih/vim-go/pull/3538)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
