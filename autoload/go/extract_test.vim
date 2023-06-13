@@ -3,6 +3,7 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 func! Test_Extract() abort
+  let l:wd = getcwd()
   try
     let l:tmp = gotest#write_file('a/a.go', [
           \ 'package a',
@@ -36,6 +37,7 @@ func! Test_Extract() abort
           \ '}'])
 
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc

@@ -7,6 +7,7 @@ function! Test_gomodVersion_highlight() abort
     syntax on
 
     let g:go_gopls_enabled = 0
+    let l:wd = getcwd()
     let l:dir = gotest#write_file('gomodtest/go.mod', [
           \ 'module github.com/fatih/vim-go',
           \ '',
@@ -51,6 +52,7 @@ function! Test_gomodVersion_highlight() abort
       let l:lineno += 1
     endwhile
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc
@@ -60,6 +62,7 @@ function! Test_gomodVersion_incompatible_highlight() abort
     syntax on
 
     let g:go_gopls_enabled = 0
+    let l:wd = getcwd()
     let l:dir = gotest#write_file('gomodtest/go.mod', [
           \ 'module github.com/fatih/vim-go',
           \ '',
@@ -96,6 +99,7 @@ function! Test_gomodVersion_incompatible_highlight() abort
       let l:lineno += 1
     endwhile
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc
@@ -180,6 +184,7 @@ function! Test_zero_as_start_slicing_slice() abort
 endfunction
 
 function! s:numericHighlightGroupInAssignment(testname, value)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('numeric/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
@@ -191,11 +196,13 @@ function! s:numericHighlightGroupInAssignment(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
 
 function! s:stringHighlightGroupInAssignment(testname, value)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('numeric/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
@@ -207,11 +214,13 @@ function! s:stringHighlightGroupInAssignment(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
 
 function! s:numericHighlightGroupInSliceElement(testname, value)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('numeric/slice-element/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
@@ -223,11 +232,13 @@ function! s:numericHighlightGroupInSliceElement(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
 
 function! s:numericHighlightGroupInMultidimensionalSliceElement(testname, value)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('numeric/slice-multidimensional-element/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
@@ -239,11 +250,13 @@ function! s:numericHighlightGroupInMultidimensionalSliceElement(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
 
 function! s:numericHighlightGroupInSliceIndex(testname, value)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('numeric/slice-index/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
@@ -256,11 +269,13 @@ function! s:numericHighlightGroupInSliceIndex(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
 
 function! s:numericHighlightGroupInMultidimensionalSliceIndex(testname, first, second)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('numeric/slice-multidimensional-index/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
@@ -273,11 +288,13 @@ function! s:numericHighlightGroupInMultidimensionalSliceIndex(testname, first, s
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
 
 function! s:numericHighlightGroupInSliceSlicing(testname, from, to)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('numeric/slice-slicing/%s.go', a:testname), [
         \ 'package numeric',
         \ '',
@@ -289,6 +306,7 @@ function! s:numericHighlightGroupInSliceSlicing(testname, from, to)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
@@ -348,6 +366,7 @@ endfunction
 
 function! Test_diagnostic_after_reload() abort
   let g:go_diagnostics_level = 2
+  let l:wd = getcwd()
   let l:dir = gotest#write_file('diagnostic/after-reload.go', [
               \ 'package main',
               \ 'import "fmt"',
@@ -364,6 +383,7 @@ function! Test_diagnostic_after_reload() abort
     call setpos('.', l:pos)
     call s:check_diagnostics('', 'goDiagnosticError', 'after-reload')
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
@@ -372,6 +392,7 @@ function! s:diagnostic_after_write(contents, changes) abort
   syntax on
 
   let g:go_diagnostics_level = 2
+  let l:wd = getcwd()
   let l:dir = gotest#write_file('diagnostic/after-write.go', a:contents)
 
   try
@@ -394,6 +415,7 @@ function! s:diagnostic_after_write(contents, changes) abort
 
     call s:check_diagnostics(l:actual, l:expected, 'after-write')
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunction
@@ -447,6 +469,7 @@ function! Test_goStringHighlight() abort
   syntax on
   let g:go_gopls_enabled = 0
 
+  let l:wd = getcwd()
   let l:dir = gotest#write_file('highlight/gostring.go', [
         \ 'package highlight',
         \ '',
@@ -462,6 +485,7 @@ function! Test_goStringHighlight() abort
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     call assert_equal('goString', l:actual)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc
@@ -470,6 +494,7 @@ function! Test_goImportStringHighlight() abort
   syntax on
   let g:go_gopls_enabled = 0
 
+  let l:wd = getcwd()
   let l:dir = gotest#write_file('highlight/import.go', [
         \ 'package highlight',
         \ '',
@@ -485,6 +510,7 @@ function! Test_goImportStringHighlight() abort
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     call assert_equal('goImportString', l:actual)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc
@@ -517,6 +543,7 @@ endfunc
 
 function! s:receiverHighlightGroup(testname, value)
   let l:package = tolower(a:testname)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
         \ printf('package %s', l:package),
         \ '',
@@ -530,6 +557,7 @@ function! s:receiverHighlightGroup(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc
@@ -552,6 +580,7 @@ endfunc
 
 function! s:typeHighlightGroup(testname, value)
   let l:package = tolower(a:testname)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
         \ printf('package %s', l:package),
         \ '',
@@ -563,6 +592,7 @@ function! s:typeHighlightGroup(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc
@@ -585,6 +615,7 @@ endfunc
 
 function! s:functionHighlightGroup(testname, value)
   let l:package = tolower(a:testname)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
         \ printf('package %s', l:package),
         \ '',
@@ -596,6 +627,7 @@ function! s:functionHighlightGroup(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc
@@ -618,6 +650,7 @@ endfunc
 
 function! s:functionCallHighlightGroup(testname, value)
   let l:package = tolower(a:testname)
+  let l:wd = getcwd()
   let l:dir = gotest#write_file(printf('%s/%s.go', l:package, a:testname), [
         \ printf('package %s', l:package),
         \ '',
@@ -633,6 +666,7 @@ function! s:functionCallHighlightGroup(testname, value)
     let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
     return l:actual
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:dir, 'rf')
   endtry
 endfunc

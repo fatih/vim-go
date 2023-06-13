@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         go: ['1.19','1.20']
-        vim: ['vim-8.0', 'vim-8.2', 'nvim']
+        vim: ['vim-8.1', 'vim-8.2', 'nvim']
     steps:
     - name: setup Go
       uses: actions/setup-go@v2.1.3

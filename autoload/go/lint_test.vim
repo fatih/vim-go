@@ -120,6 +120,7 @@ func! Test_GometaAutoSaveStaticcheckKeepsErrors() abort
 endfunc
 
 func! s:gometaautosave(metalinter, withList) abort
+  let l:wd = getcwd()
   let l:tmp = gotest#load_fixture('lint/src/lint/lint.go')
 
   try
@@ -172,6 +173,7 @@ func! s:gometaautosave(metalinter, withList) abort
 
     call gotest#assert_quickfix(l:actual, l:expected)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -358,6 +360,7 @@ endfunc
 
 func! Test_Vet() abort
   let g:go_gopls_enabled = 0
+  let l:wd = getcwd()
   let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
 
   try
@@ -389,12 +392,14 @@ func! Test_Vet() abort
 
     call gotest#assert_quickfix(actual, expected)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
 func! Test_Vet_subdir() abort
   let g:go_gopls_enabled = 0
+  let l:wd = getcwd()
   let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
 
   " go up one directory to easily test that go vet's file paths are handled
@@ -431,12 +436,14 @@ func! Test_Vet_subdir() abort
 
     call gotest#assert_quickfix(actual, expected)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
 func! Test_Vet_compilererror() abort
   let g:go_gopls_enabled = 0
+  let l:wd = getcwd()
   let l:tmp = gotest#load_fixture('lint/src/vet/compilererror/compilererror.go')
 
   try
@@ -460,6 +467,7 @@ func! Test_Vet_compilererror() abort
 
     call gotest#assert_quickfix(actual, expected)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -591,6 +599,7 @@ endfunc
 
 func! Test_Errcheck_compilererror() abort
   let g:go_gopls_enabled = 0
+  let l:wd = getcwd()
   let l:tmp = gotest#load_fixture('lint/src/errcheck/compilererror/compilererror.go')
 
   try
@@ -605,6 +614,7 @@ func! Test_Errcheck_compilererror() abort
     call gotest#assert_quickfix(getqflist(), expected)
     call assert_equal(l:bufnr, bufnr(''))
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -613,8 +623,8 @@ func! s:vimdir()
   let l:vim = "vim-8.2"
   if has('nvim')
     let l:vim = 'nvim'
-  elseif v:version == 800
-    let l:vim = 'vim-8.0'
+  elseif v:version == 810
+    let l:vim = 'vim-8.1'
   endif
 
   return l:vim

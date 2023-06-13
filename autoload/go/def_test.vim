@@ -5,6 +5,7 @@ set cpo&vim
 scriptencoding utf-8
 
 func! Test_jump_to_declaration_guru() abort
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:filename = 'def/jump.go'
@@ -19,11 +20,13 @@ func! Test_jump_to_declaration_guru() abort
     call assert_equal(l:lnum, getcurpos()[1])
     call assert_equal(l:col, getcurpos()[2])
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
 func! Test_jump_to_declaration_godef() abort
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:filename = 'def/jump.go'
@@ -38,11 +41,13 @@ func! Test_jump_to_declaration_godef() abort
     call assert_equal(l:lnum, getcurpos()[1])
     call assert_equal(l:col, getcurpos()[2])
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
 func! Test_Jump_leaves_lists() abort
+  let l:wd = getcwd()
   try
     let l:filename = 'def/jump.go'
     let l:tmp = gotest#load_fixture(l:filename)
@@ -74,6 +79,7 @@ func! Test_Jump_leaves_lists() abort
     let l:actual = getqflist()
     call gotest#assert_quickfix(l:actual, l:expected)
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -83,6 +89,7 @@ func! Test_DefJump_gopls_simple_first() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_def_mode = 'gopls'
 
@@ -108,6 +115,7 @@ func! Test_DefJump_gopls_simple_first() abort
 
     call assert_equal(l:expected, getpos('.'))
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -117,6 +125,7 @@ func! Test_DefJump_gopls_simple_last() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_def_mode = 'gopls'
 
@@ -142,6 +151,7 @@ func! Test_DefJump_gopls_simple_last() abort
 
     call assert_equal(l:expected, getpos('.'))
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -151,6 +161,7 @@ func! Test_DefJump_gopls_MultipleCodeUnit_first() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_def_mode = 'gopls'
 
@@ -175,6 +186,7 @@ func! Test_DefJump_gopls_MultipleCodeUnit_first() abort
 
     call assert_equal(l:expected, getpos('.'))
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
@@ -185,6 +197,7 @@ func! Test_DefJump_gopls_MultipleCodeUnit_last() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
     let g:go_def_mode = 'gopls'
 
@@ -209,6 +222,7 @@ func! Test_DefJump_gopls_MultipleCodeUnit_last() abort
 
     call assert_equal(l:expected, getpos('.'))
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc

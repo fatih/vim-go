@@ -3,6 +3,7 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 func! Test_impl() abort
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('a/a.go', [
@@ -16,11 +17,13 @@ func! Test_impl() abort
           \ '	panic("not implemented") // TODO: Implement',
           \ '}'])
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc
 
 func! Test_impl_get() abort
+  let l:wd = getcwd()
   try
     let g:go_gopls_enabled = 0
     let l:tmp = gotest#write_file('a/a.go', [
@@ -38,6 +41,7 @@ func! Test_impl_get() abort
           \ '	panic("not implemented") // TODO: Implement',
           \ '}'])
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunc

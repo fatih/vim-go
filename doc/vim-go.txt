@@ -77,7 +77,7 @@ experience.
 ==============================================================================
 INSTALL                                                           *go-install*
 
-vim-go requires at least Vim 8.0.1453 or Neovim 0.4.0. On macOS, if you are
+vim-go requires at least Vim 8.1.2269 or Neovim 0.4.0. On macOS, if you are
 still using your system version of vim, you can use homebrew to keep your
 version of Vim up-to-date with the following terminal command:
 >
