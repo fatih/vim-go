@@ -26,6 +26,7 @@ IMPROVEMENTS:
 * Add commands and mappings related to godoc to the godoc preview window.
   [[GH-3527]](https://github.com/fatih/vim-go/pull/3527)
   [[GH-3532]](https://github.com/fatih/vim-go/pull/3532)
+  [[GH-3559]](https://github.com/fatih/vim-go/pull/3559)
 * Link goPredefinedIdentifiers to Constant instead of goBoolean by default.
   [[GH-3528]](https://github.com/fatih/vim-go/pull/3528)
 * Add `gD` mapping for `:GoDefType`.
