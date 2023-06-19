@@ -11,42 +11,56 @@ scriptencoding utf-8
 let s:buf_nr = -1
 
 function! go#doc#OpenBrowser(...) abort
+  let l:url = call('s:docURL', a:000)
+  if l:url is ''
+    call go#util#EchoWarning("could not find path for doc URL")
+    return
+  endif
+  call go#util#OpenBrowser(l:url)
+endfunction
+
+function! s:docURL() abort
   if len(a:000) == 0
+    " call go#lsp#DocLink directly instead of s:docURLFor, because s:docURLFor
+    " will strip any version information from the URL.
     let [l:out, l:err] = go#lsp#DocLink()
-    if l:err
-      call go#util#EchoError(l:out)
-      return
+    if !(l:err || len(l:out) is 0)
+      let l:url = printf('%s/%s', go#config#DocUrl(), l:out)
+    else
+      let l:url = ''
     endif
-
-    if len(l:out) == 0
-      call go#util#EchoWarning("could not find path for doc URL")
-      return
-    endif
-
-    let l:godoc_url = printf('%s/%s', go#config#DocUrl(), l:out)
-
-    call go#util#OpenBrowser(l:godoc_url)
-    return
+  else
+    let l:url = call('s:docURLFor', a:000)
   endif
 
-  let pkgs = s:godocWord(a:000)
-  if empty(pkgs)
-    return
+  return l:url
+endfunction
+
+function! s:docURLFor(...) abort
+  let l:identifier = call('s:godocIdentifier', a:000)
+  if empty(l:identifier)
+    return ''
   endif
 
-  let pkg = pkgs[0]
-  let exported_name = pkgs[1]
+  let l:pkg = l:identifier[0]
+  let l:exported_name = ''
+  if len(l:identifier) > 1
+    let l:exported_name = l:identifier[1]
+  endif
 
   " example url: https://godoc.org/github.com/fatih/set#Set
-  let godoc_url = printf('%s/%s#%s', go#config#DocUrl(), pkg, exported_name)
-  call go#util#OpenBrowser(godoc_url)
+  return printf('%s/%s#%s', go#config#DocUrl(), l:pkg, l:exported_name)
 endfunction
 
 function! go#doc#Open(newmode, mode, ...) abort
   let l:words = a:000
   let l:package = ''
   if a:0 is 0
-    let l:words = s:godocWord()
+    let l:words = s:godocIdentifier()
+    if len(l:words) is 0
+      call go#util#EchoWarning("could not find doc identifier")
+      return
+    endif
     let l:package = l:words[0]
   endif
 
@@ -200,19 +214,9 @@ endfunction
 " returns the package and exported name. exported name might be empty.
 " ie: fmt and Println
 " ie: github.com/fatih/set and New
-function! s:godocWord(...) abort
-  let words = a:000
-  if a:0 is 0
-    let oldiskeyword = &iskeyword
-    " TODO(bc): include / in iskeyword when filetype is godoc?
-    setlocal iskeyword+=.
-    let word = expand('<cword>')
-    let &iskeyword = oldiskeyword
-    let word = substitute(word, '[^a-zA-Z0-9\\/._~-]', '', 'g')
-    let words = split(word, '\.\ze[^./]\+$')
-  endif
-
-  if !len(words)
+function s:godocIdentifier(...) abort
+  let l:words = call('s:godocWord', a:000)
+  if empty(l:words)
     return []
   endif
 
@@ -229,15 +233,37 @@ function! s:godocWord(...) abort
     let exported_name = words[1]
   endif
 
-  if &filetype isnot 'godoc'
-    let packages = go#tool#Imports()
-    if has_key(packages, pkg)
-      let pkg = packages[pkg]
+  return [pkg, exported_name]
+endfunction
+
+function! s:godocWord(...) abort
+  let l:words = a:000
+  if a:0 is 0
+    if &filetype isnot 'godoc'
+      let [l:out, l:err] = go#lsp#DocLink()
+      if !(l:err || len(l:out) is 0)
+        " strip out any version string in the doc link path.
+        let l:out = substitute(l:out, '@v[^/]\+', '', '')
+        let words = split(l:out, '#')
+      else
+        let l:words = s:godocCursorWord()
+      endif
+    else
+      let l:words = s:godocCursorWord()
     endif
   endif
 
+  return l:words
+endfunction
 
-  return [pkg, exported_name]
+function! s:godocCursorWord() abort
+  let l:oldiskeyword = &iskeyword
+  " TODO(bc): include / in iskeyword when filetype is godoc?
+  setlocal iskeyword+=.
+  let l:word = expand('<cword>')
+  let &iskeyword = l:oldiskeyword
+  let l:word = substitute(l:word, '[^a-zA-Z0-9\\/._~-]', '', 'g')
+  return split(l:word, '\.\ze[^./]\+$')
 endfunction
 
 " restore Vi compatibility settings
