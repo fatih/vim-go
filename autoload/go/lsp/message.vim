@@ -8,6 +8,9 @@ function! go#lsp#message#Initialize(wd) abort
           \ 'method': 'initialize',
           \ 'params': {
             \ 'processId': getpid(),
+            \ 'clientInfo': {
+              \ 'name': 'vim-go',
+            \ },
             \ 'rootUri': go#path#ToURI(a:wd),
             \ 'capabilities': {
               \ 'workspace': {
