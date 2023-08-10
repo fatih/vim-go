@@ -41,6 +41,8 @@ IMPROVEMENTS:
   [[GH-3555]](https://github.com/fatih/vim-go/pull/3555)
 * Drop support for Vim 8.0.
   [[GH-3538]](https://github.com/fatih/vim-go/pull/3538)
+* Set gopls clientInfo field.
+  [[GH-3567]](https://github.com/fatih/vim-go/pull/3567)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
