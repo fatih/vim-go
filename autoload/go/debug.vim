@@ -630,8 +630,8 @@ function! s:connect(addr) abort
 
   let s:state['ch'] = l:ch
 
-  " Set running because so that the next go#debug#Stack call doesn't change
-  " operation to continue.
+  " Set running so that the next go#debug#Stack call doesn't change operation
+  " to continue.
   let s:state['running'] = 0
 
   " It is ok to halt whether whether delve was started with connect, debug, or
@@ -1370,9 +1370,9 @@ function! go#debug#Stack(name) abort
   if s:state.running is 0
     if l:name != 'halt'
       let l:name = 'continue'
+      let s:state.running = 1
+      call s:continue()
     endif
-    let s:state.running = 1
-    call s:continue()
   endif
 
   " Add a breakpoint to the main.Main if the user didn't define any.
