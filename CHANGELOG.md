@@ -44,12 +44,16 @@ IMPROVEMENTS:
   [[GH-3538]](https://github.com/fatih/vim-go/pull/3538)
 * Set gopls clientInfo field.
   [[GH-3567]](https://github.com/fatih/vim-go/pull/3567)
+* Add support for the Go 1.21's new builtin functions.
+  [[GH-3578]](https://github.com/fatih/vim-go/pull/3578)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
   [[GH-3477]](https://github.com/fatih/vim-go/pull/3477)
 * Update `:GoMetaLinter` help.
   [[GH-3534]](https://github.com/fatih/vim-go/pull/3534)
+* Update syntax file for empty const, var, and import lists.
+  [[GH-3577]](https://github.com/fatih/vim-go/pull/3577)
 
 ## v1.28 - (December 17, 2022)
 
