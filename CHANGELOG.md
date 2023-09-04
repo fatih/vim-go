@@ -54,6 +54,7 @@ BUG FIXES:
   [[GH-3534]](https://github.com/fatih/vim-go/pull/3534)
 * Update syntax file for empty const, var, and import lists.
   [[GH-3577]](https://github.com/fatih/vim-go/pull/3577)
+  [[GH-3579]](https://github.com/fatih/vim-go/pull/3579)
 
 ## v1.28 - (December 17, 2022)
 
