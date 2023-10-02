@@ -55,6 +55,8 @@ BUG FIXES:
 * Update syntax file for empty const, var, and import lists.
   [[GH-3577]](https://github.com/fatih/vim-go/pull/3577)
   [[GH-3579]](https://github.com/fatih/vim-go/pull/3579)
+* Fix sameids highlighting when id is preceded with multi-byte characters.
+  [[GH-3587]](https://github.com/fatih/vim-go/pull/3587)
 
 ## v1.28 - (December 17, 2022)
 
