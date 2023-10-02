@@ -872,7 +872,10 @@ function! s:sameIDsHandler(next, msg) abort dict
       continue
     endif
 
-    let l:result.sameids = add(l:result.sameids, [l:loc.range.start.line+1, l:loc.range.start.character+1, l:loc.range.end.character+1])
+    let l:line = getline(l:loc.range.start.line + 1)
+    let l:start = go#lsp#lsp#PositionOf(l:line, l:loc.range.start.character)
+    let l:end = go#lsp#lsp#PositionOf(l:line, l:loc.range.end.character)
+    let l:result.sameids = add(l:result.sameids, [l:loc.range.start.line+1, l:start, l:end])
   endfor
 
   call call(a:next, [0, l:result, ''])
