@@ -114,6 +114,11 @@ manager's install command.
 *  https://github.com/gmarik/vundle >
 
     Plugin 'fatih/vim-go'
+
+*  https://github.com/wbthomason/packer.nvim
+
+    use('fatih/vim-go', {run = ':GoUpdateBinaries'})
+<
 <
 *  Manual (not recommended) >
 

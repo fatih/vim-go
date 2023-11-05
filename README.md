@@ -54,6 +54,8 @@ for popular package managers:
   * `Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }`
 * [Vundle](https://github.com/VundleVim/Vundle.vim)
   * `Plugin 'fatih/vim-go'`
+* [Packer](https://github.com/wbthomason/packer.nvim)
+  * `use('fatih/vim-go', {run = ':GoUpdateBinaries'})`
 
 You will also need to install all the necessary binaries. vim-go makes it easy
 to install all of them by providing a command, `:GoInstallBinaries`, which will
