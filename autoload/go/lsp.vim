@@ -1374,7 +1374,7 @@ function! s:debugasync(timer) abort
     " completion, because the window can not be changed while completion is in
     " progress.
     if len(s:log) != 0
-      let s:logtimer = timer_start(10, function('s:debugasync', []))
+      let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:debugasync', []))
     endif
   endtry
 endfunction
@@ -1384,7 +1384,7 @@ function! s:debug(event, data) abort
   let s:log = add(s:log, [a:event, a:data])
 
   if l:shouldStart
-    let s:logtimer = timer_start(10, function('s:debugasync', []))
+    let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:debugasync', []))
   endif
 endfunction
 
