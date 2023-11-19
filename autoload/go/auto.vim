@@ -35,6 +35,15 @@ function! s:ExpandSnippet() abort
     " the snippet may have a '{\}' in it. For UltiSnips, that should be spelled
     " \{}. fmt.Printf is such a snippet that can be used to demonstrate.
     let l:snippet = substitute(v:completed_item.word, '{\\}', '\{}', 'g')
+
+    " If there are no placeholders in the returned text, then do not expand
+    " the snippet, because Ultisnip does not support nested snippets, and the
+    " user may already be in an expanded snippet. While this isn't foolproof,
+    " because there may be placeholders in the snippet, it at least solves the
+    " simple case.
+    if stridx(l:snippet, '$') == -1
+      return
+    endif
     call UltiSnips#Anon(l:snippet, v:completed_item.word, '', 'i')
 "  elseif l:engine is 'neosnippet'
 "    " TODO(bc): make the anonymous expansion for neosnippet work
