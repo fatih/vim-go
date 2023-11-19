@@ -57,6 +57,9 @@ BUG FIXES:
   [[GH-3579]](https://github.com/fatih/vim-go/pull/3579)
 * Fix sameids highlighting when id is preceded with multi-byte characters.
   [[GH-3587]](https://github.com/fatih/vim-go/pull/3587)
+* Avoid creating an anonymous snippet when selected completion lacks
+  placeholders.
+  [[GH-3601]](https://github.com/fatih/vim-go/pull/3601)
 
 ## v1.28 - (December 17, 2022)
 
