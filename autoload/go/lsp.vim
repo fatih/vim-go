@@ -2049,7 +2049,11 @@ function! s:lineinfile(fname, line) abort
     if l:bufnr == -1 || len(l:bufinfo) == 0 || l:bufinfo[0].loaded == 0
       let l:filecontents = readfile(a:fname, '', a:line)
     else
-      let l:filecontents = getbufline(a:fname, a:line)
+      if exists('*getbufoneline')
+        let l:filecontents = [getbufoneline(a:fname, a:line)]
+      else
+        let l:filecontents = getbufline(a:fname, a:line)
+      endif
     endif
 
     if len(l:filecontents) == 0
