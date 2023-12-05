@@ -21,7 +21,7 @@ func! Test_SetBuildTags() abort
 
     let l:expectedfilename = printf('%s/foo.go', l:dir)
 
-    let l:expected = [0, 5, 1, 0]
+    let l:expected = [0, 5, 6, 0]
     call assert_notequal(l:expected, l:jumpstart)
 
     call go#def#Jump('', 0)
@@ -57,7 +57,7 @@ func! Test_SetBuildTags() abort
     call assert_equal(l:jumpstart, getpos('.'))
 
     let l:expectedfilename = printf('%s/constrainedfoo.go', l:dir)
-    let l:expected = [0, 6, 1, 0]
+    let l:expected = [0, 6, 6, 0]
     call assert_notequal(l:expected, l:jumpstart)
 
     call go#def#Jump('', 0)

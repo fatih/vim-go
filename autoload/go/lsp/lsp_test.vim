@@ -9,6 +9,23 @@ function! Test_PositionOf_Simple()
   call assert_equal(4, l:actual)
 endfunc
 
+function! Test_PositionOf_Start()
+  let l:str = 'abcd'
+  let l:actual = go#lsp#lsp#PositionOf(l:str, 0)
+  call assert_equal(l:actual, 1)
+  " subtract one, because PositionOf returns a one-based cursor position and
+  " while string indices are zero based.
+  call assert_equal(l:str[l:actual-1], 'a')
+endfunc
+
+function! Test_PositionOf_End()
+  let l:str = 'abcd'
+  let l:actual = go#lsp#lsp#PositionOf(l:str, 3)
+  call assert_equal(l:actual, 4)
+  " subtract one, because PositionOf returns a one-based cursor position and
+  " while string indices are zero based.
+  call assert_equal(l:str[l:actual-1], 'd')
+endfunc
 
 function! Test_PositionOf_MultiByte()
   " ⌘ is U+2318, which encodes to three bytes in utf-8 and 1 code unit in
