@@ -60,6 +60,8 @@ BUG FIXES:
 * Avoid creating an anonymous snippet when selected completion lacks
   placeholders.
   [[GH-3601]](https://github.com/fatih/vim-go/pull/3601)
+* Fix sameids highlighting when identifier immediately precedes newline.
+  [[GH-3606]](https://github.com/fatih/vim-go/pull/3606)
 
 ## v1.28 - (December 17, 2022)
 
