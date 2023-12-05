@@ -615,7 +615,14 @@ function! s:definitionHandler(next, msg) abort dict
 
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
-  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(getline(l:msg.range.start.line+1), l:msg.range.start.character), 'lsp does not supply a description')]]
+
+  let l:line = s:lineinfile(go#path#FromURI(l:msg.uri), l:msg.range.start.line+1)
+  if l:line is -1
+    call go#util#Warn('could not find definition')
+    return
+  endif
+
+  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(l:line, l:msg.range.start.character), 'lsp does not supply a description')]]
   call call(a:next, l:args)
 endfunction
 
@@ -641,7 +648,14 @@ function! s:typeDefinitionHandler(next, msg) abort dict
 
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
-  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(getline(l:msg.range.start.line+1), l:msg.range.start.character), 'lsp does not supply a description')]]
+
+  let l:line = s:lineinfile(go#path#FromURI(l:msg.uri), l:msg.range.start.line+1)
+  if l:line is -1
+    call go#util#Warn('could not find definition')
+    return
+  endif
+
+  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(l:line, l:msg.range.start.character), 'lsp does not supply a description')]]
   call call(a:next, l:args)
 endfunction
 
