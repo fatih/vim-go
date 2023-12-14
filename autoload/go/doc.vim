@@ -208,7 +208,10 @@ function! s:GodocView(newposition, position, content, package) abort
   noremap <buffer> <silent> <Esc> :<C-U>close<CR>
   " make sure any key that sends an escape as a prefix (e.g. the arrow keys)
   " don't cause the window to close.
-  nnoremap <buffer> <silent> <Esc>[ <Esc>[
+  " exception on GitBash: https://stackoverflow.com/a/20458579
+  if system('uname') !~ 'MINGW'
+    nnoremap <buffer> <silent> <Esc>[ <Esc>[
+  endif
 endfunction
 
 " returns the package and exported name. exported name might be empty.
