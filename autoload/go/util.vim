@@ -37,9 +37,8 @@ endfunction
 
 " IsWin returns 1 if current OS is Windows or 0 otherwise
 " Note that has('win32') is always 1 when has('win64') is 1, so has('win32') is enough.
-" has('win32unix') for Cygwin (MSYS2, GitBash etc.)
 function! go#util#IsWin() abort
-  return has('win32') || has('win32unix')
+  return has('win32')
 endfunction
 
 " IsMac returns 1 if current OS is macOS or 0 otherwise.

@@ -100,7 +100,7 @@ function! go#config#SnippetEngine() abort
 endfunction
 
 function! go#config#PlayBrowserCommand() abort
-    if go#util#IsWin()
+    if go#util#IsWin() || system('uname') =~ 'MINGW'
         let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
     elseif go#util#IsMac()
         let go_play_browser_command = 'open %URL%'
