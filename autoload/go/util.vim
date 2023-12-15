@@ -529,6 +529,7 @@ function! go#util#OpenBrowser(url) abort
     if l:cmd =~ '^!'
         let l:cmd = substitute(l:cmd, '%URL%', '\=escape(shellescape(a:url), "#")', 'g')
         silent! exec l:cmd
+        redraw!
     elseif cmd =~ '^:[A-Z]'
         let l:cmd = substitute(l:cmd, '%URL%', '\=escape(a:url,"#")', 'g')
         exec l:cmd
