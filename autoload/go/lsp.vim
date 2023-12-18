@@ -618,7 +618,7 @@ function! s:definitionHandler(next, msg) abort dict
 
   let l:line = s:lineinfile(go#path#FromURI(l:msg.uri), l:msg.range.start.line+1)
   if l:line is -1
-    call go#util#Warn('could not find definition')
+    call go#util#EchoWarning('could not find definition')
     return
   endif
 
@@ -651,7 +651,7 @@ function! s:typeDefinitionHandler(next, msg) abort dict
 
   let l:line = s:lineinfile(go#path#FromURI(l:msg.uri), l:msg.range.start.line+1)
   if l:line is -1
-    call go#util#Warn('could not find definition')
+    call go#util#EchoWarning('could not find definition')
     return
   endif
 
@@ -1866,7 +1866,7 @@ function s:applyDocumentChanges(changes)
 
       let l:editbufnr = bufnr(l:bufname)
       if l:editbufnr == -1
-        call go#util#EchoWarn(printf('could not apply changes to %s', l:fname))
+        call go#util#EchoWarning(printf('could not apply changes to %s', l:fname))
         continue
       endif
 
