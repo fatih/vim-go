@@ -619,7 +619,7 @@ function! s:definitionHandler(next, msg) abort dict
   let l:msguri = go#path#FromURI(l:msg.uri)
   " remove the comma in cygwin unix-like windwos path
   " e.g. '/c:/path' to '/c/path'
-  if system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN'
+  if has('win32unix') && (system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN')
     if l:msguri[2:3] is# ':/'
       let l:msguri = l:msguri[0:1] . l:msguri[3:]
     endif
