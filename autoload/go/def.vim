@@ -126,8 +126,10 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   let out = split(final_out, go#util#LineEnding())[0]
   if go#util#IsWin()
     let parts = split(out, '\(^[a-zA-Z]\)\@<!:')
-  elseif (system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN')
-    let l:out = l:out[0:1] . l:out[3:]
+  elseif system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN'
+    if l:msguri[2:3] is# ':/'
+      let l:out = l:out[0:1] . l:out[3:]
+    endif
     let parts = split(out, ':')
   else
     let parts = split(out, ':')

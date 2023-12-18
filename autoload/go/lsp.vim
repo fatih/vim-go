@@ -616,7 +616,16 @@ function! s:definitionHandler(next, msg) abort dict
   " gopls returns a []Location; just take the first one.
   let l:msg = a:msg[0]
 
-  let l:line = s:lineinfile(go#path#FromURI(l:msg.uri), l:msg.range.start.line+1)
+  let l:msguri = go#path#FromURI(l:msg.uri)
+  " remove the comma in cygwin unix-like windwos path
+  " e.g. '/c:/path' to '/c/path'
+  if system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN'
+    if l:msguri[2:3] is# ':/'
+      let l:msguri = l:msguri[0:1] . l:msguri[3:]
+    endif
+  endif
+
+  let l:line = s:lineinfile(l:msguri, l:msg.range.start.line+1)
   if l:line is -1
     call go#util#Warn('could not find definition')
     return
