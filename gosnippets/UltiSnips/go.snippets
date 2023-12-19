@@ -545,7 +545,7 @@ import re
 
 def return_values(s):
 	# remove everything wrapped in parentheses
-	s = re.sub("\(.*?\)|\([^)]*$", "", s)
+	s = re.sub(r"\(.*?\)|\([^)]*$", "", s)
 	return len(s.split(","))
 
 def opening_par(snip, pos):
