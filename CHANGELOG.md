@@ -64,6 +64,9 @@ BUG FIXES:
   [[GH-3606]](https://github.com/fatih/vim-go/pull/3606)
 * Fix Python escape sequence in UltiSnips/go.snippets.
   [[GH-3614]](https://github.com/fatih/vim-go/pull/3614)
+* Do not attempt to use gopls for documentation when gopls is disabled.
+  [[GH-3610]](https://github.com/fatih/vim-go/pull/3610)
+
 
 
 ## v1.28 - (December 17, 2022)
