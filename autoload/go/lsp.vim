@@ -1332,6 +1332,15 @@ let s:logtimer = 0
 function! s:debugasync(timer) abort
   let s:logtimer = 0
 
+  " set the timer to try again if Vim is in a state where we don't want to
+  " change the window.
+  let l:state = state('a')
+  let l:mode = mode(1)
+  if len(l:state) > 0 || l:mode[0] == 'v' || l:mode[0] == 'V' || l:mode[0] == 's' || l:mode =~ 'CTRL-V'
+    let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:debugasync', []))
+    return
+  endif
+
   if !go#util#HasDebug('lsp')
     let s:log = []
     return
@@ -1347,30 +1356,35 @@ function! s:debugasync(timer) abort
       silent file `='__GOLSP_LOG__'`
       setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
       setlocal filetype=golsplog
-    else
-      call win_gotoid(l:log_winid)
+      call win_gotoid(l:winid)
     endif
 
+    let l:logwinid = bufwinid(l:name)
+
     try
-      setlocal modifiable
+      call setbufvar(l:name, '&modifiable', 1)
       for [l:event, l:data] in s:log
         call remove(s:log, 0)
-        if getline(1) == ''
-          call setline('$', printf('===== %s =====', l:event))
+        if getbufline(l:name, 1)[0] == ''
+          call setbufline(l:name, '$', printf('===== %s =====', l:event))
         else
-          call append('$', printf('===== %s =====', l:event))
+          call appendbufline(l:name, '$', printf('===== %s =====', l:event))
         endif
-        call append('$', split(l:data, "\r\n"))
+        call appendbufline(l:name, '$', split(l:data, "\r\n"))
       endfor
+
+      " TODO(bc): how to move the window's cursor position without switching
+      " to the window?
+      call win_gotoid(l:logwinid)
       normal! G
-      setlocal nomodifiable
-    finally
       call win_gotoid(l:winid)
+      call setbufvar(l:name, '&modifiable', 0)
+    finally
     endtry
   catch
-    call go#util#EchoError(v:exception)
+    call go#util#EchoError(printf('at %s: %s', v:throwpoint, v:exception))
   finally
-    " retry in when there's an exception. This can happen when trying to do
+    " retry when there's an exception. This can happen when trying to do
     " completion, because the window can not be changed while completion is in
     " progress.
     if len(s:log) != 0
