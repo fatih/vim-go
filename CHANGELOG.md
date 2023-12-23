@@ -62,6 +62,9 @@ BUG FIXES:
   [[GH-3603]](https://github.com/fatih/vim-go/pull/3603)
 * Fix sameids highlighting when identifier immediately precedes newline.
   [[GH-3606]](https://github.com/fatih/vim-go/pull/3606)
+* Fix Python escape sequence in UltiSnips/go.snippets.
+  [[GH-3614]](https://github.com/fatih/vim-go/pull/3614)
+
 
 ## v1.28 - (December 17, 2022)
 
