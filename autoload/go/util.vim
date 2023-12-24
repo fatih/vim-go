@@ -51,13 +51,7 @@ endfunction
 
 " IsCygwin returns 1 if current OS is Cygwin/MSYS2/GitBash, 0 otherwise
 function! go#util#IsCygwin()
-  return !has('win32') &&
-        \ has('win32unix') &&
-        \ (
-        \ system('uname') =~ 'CYGWIN' ||
-        \ system('uname') =~ 'MINGW' ||
-        \ system('uname') =~ 'MSYS'
-        \ )
+  return has('win32unix')
 endfunction
 
  " Checks if using:
