@@ -1332,17 +1332,17 @@ let s:logtimer = 0
 function! s:debugasync(timer) abort
   let s:logtimer = 0
 
+  if !go#util#HasDebug('lsp')
+    let s:log = []
+    return
+  endif
+
   " set the timer to try again if Vim is in a state where we don't want to
   " change the window.
   let l:state = state('a')
   let l:mode = mode(1)
   if len(l:state) > 0 || l:mode[0] == 'v' || l:mode[0] == 'V' || l:mode[0] == 's' || l:mode =~ 'CTRL-V'
     let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:debugasync', []))
-    return
-  endif
-
-  if !go#util#HasDebug('lsp')
-    let s:log = []
     return
   endif
 
