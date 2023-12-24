@@ -49,6 +49,17 @@ function! go#util#IsMac() abort
         \ go#util#Exec(['uname'])[0] =~? '^darwin'
 endfunction
 
+" IsCygwin returns 1 if current OS is Cygwin/MSYS2/GitBash, 0 otherwise
+function! go#util#IsCygwin()
+  return !has('win32') &&
+        \ has('win32unix') &&
+        \ (
+        \ system('uname') =~ 'CYGWIN' ||
+        \ system('uname') =~ 'MINGW' ||
+        \ system('uname') =~ 'MSYS'
+        \ )
+endfunction
+
  " Checks if using:
  " 1) Windows system,
  " 2) And has cygpath executable,
