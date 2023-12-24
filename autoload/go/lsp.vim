@@ -1339,7 +1339,14 @@ function! s:debugasync(timer) abort
 
   " set the timer to try again if Vim is in a state where we don't want to
   " change the window.
-  let l:state = state('a')
+  if exists('*state')
+    let l:state = state('a')
+  else
+    let l:state = mode(1)
+    if !(l:state == 'ic' || l:state == 'Rc' || l:state == 'Rvc')
+      let l:state = ''
+    endif
+  endif
   let l:mode = mode(1)
   if len(l:state) > 0 || l:mode[0] == 'v' || l:mode[0] == 'V' || l:mode[0] == 's' || l:mode =~ 'CTRL-V'
     let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:debugasync', []))
