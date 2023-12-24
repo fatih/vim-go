@@ -17,7 +17,7 @@ func! Test_Extract() abort
 
     silent! execute "normal vj$\<Esc>"
 
-    call go#extract#Extract(line('.'))
+    call go#extract#Extract(line("'<"), line("'>"))
 
     let start = reltime()
     while &modified == 0 && reltimefloat(reltime(start)) < 10

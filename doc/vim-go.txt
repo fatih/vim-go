@@ -942,9 +942,9 @@ CTRL-t
 
     Open a browser to see gopls debugging information.
                                                                  *:GoExtract*
-:GoExtract
+:[range]GoExtract
 
-    Extract the code fragment in the selected range to a new function and
+    Extract the code fragment in the selected line range to a new function and
     replace the fragment with call to the function.
 
 
