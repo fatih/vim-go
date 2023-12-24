@@ -1685,7 +1685,7 @@ endfunction
 " Extract executes the refactor.extract code action for the current buffer
 " and configures the handler to only apply the fillstruct command for the
 " current location.
-function! go#lsp#Extract(selected) abort
+function! go#lsp#Extract(line1, line2) abort
   let l:fname = expand('%:p')
   " send the current file so that TextEdits will be relative to the current
   " state of the buffer.
@@ -1699,13 +1699,16 @@ function! go#lsp#Extract(selected) abort
   let l:state.error = l:handler.wrapper
   let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
 
-  if a:selected == -1
-    call go#util#EchoError('no range selected')
-    return
+  if a:line1 == -1
+    let [l:startline, l:startcol] = go#lsp#lsp#Position(line('.'), 1)
+  else
+    let [l:startline, l:startcol] = go#lsp#lsp#Position(a:line1, 1)
   endif
-
-  let [l:startline, l:startcol] = go#lsp#lsp#Position(line("'<"), col("'<"))
-  let [l:endline, l:endcol] = go#lsp#lsp#Position(line("'>"), col("'>"))
+  if a:line2 == -1
+    let [l:endline, l:endcol] = go#lsp#lsp#Position(line('.'), col('$'))
+  else
+    let [l:endline, l:endcol] = go#lsp#lsp#Position(a:line2, col([a:line2, '$']))
+  endif
 
   let l:msg = go#lsp#message#CodeActionRefactorExtract(l:fname, l:startline, l:startcol, l:endline, l:endcol)
   call l:lsp.sendMessage(l:msg, l:state)
