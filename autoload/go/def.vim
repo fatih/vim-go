@@ -129,10 +129,8 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     let parts = split(out, '\(^[a-zA-Z]\)\@<!:')
   elseif has('win32unix')
     " remove comma in cygwin path e.g. '/c:/path'
-    if l:out[0:8] != '/cygdrive'
-      if l:out[2:3] is# ':/'
-        let l:out = l:out[0:1] . l:out[3:]
-      endif
+    if l:out[0:8] != '/cygdrive' && l:out[2:3] is# ':/'
+      let l:out = l:out[0:1] . l:out[3:]
     endif
     let parts = split(out, ':')
   else
