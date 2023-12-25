@@ -164,7 +164,7 @@ function! go#path#ToURI(path)
     let l:absolute = 1
     let l:prefix = '/' . l:path[0:1]
     let l:path = l:path[2:]
-  elseif system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN'
+  elseif has('win32unix')
     let l:absolute = 1
     if l:path[0:8] == '/cygdrive'
       let l:prefix = l:path[9:10] . ':'
