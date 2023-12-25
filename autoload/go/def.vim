@@ -127,7 +127,8 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   if go#util#IsWin()
     let parts = split(out, '\(^[a-zA-Z]\)\@<!:')
   elseif system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN'
-    if l:msguri[2:3] is# ':/'
+    " remove comma from path before split. e.g. /c:/path to /c/path
+    if l:out[2:3] is# ':/'
       let l:out = l:out[0:1] . l:out[3:]
     endif
     let parts = split(out, ':')
