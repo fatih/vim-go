@@ -617,11 +617,16 @@ function! s:definitionHandler(next, msg) abort dict
   let l:msg = a:msg[0]
 
   let l:msguri = go#path#FromURI(l:msg.uri)
-  " remove the comma in cygwin unix-like windwos path
-  " e.g. '/c:/path' to '/c/path'
-  if has('win32unix') && (system('uname') =~ 'MINGW' || system('uname') =~ 'CYGWIN')
+
+  if has('win32unix')
+    " remove comma in cygwin path e.g. '/c:/path'
     if l:msguri[2:3] is# ':/'
       let l:msguri = l:msguri[0:1] . l:msguri[3:]
+    endif
+
+    " add 'cygdrive' for CYGWIN rather than MSYS2/GitBash
+    if system('uname') =~ 'CYGWIN'
+      let l:msguri = '/cygdrive' . l:msguri
     endif
   endif
 
@@ -631,7 +636,7 @@ function! s:definitionHandler(next, msg) abort dict
     return
   endif
 
-  let l:args = [[printf('%s:%d:%d: %s', go#path#FromURI(l:msg.uri), l:msg.range.start.line+1, go#lsp#lsp#PositionOf(l:line, l:msg.range.start.character), 'lsp does not supply a description')]]
+  let l:args = [[printf('%s:%d:%d: %s', l:msguri, l:msg.range.start.line+1, go#lsp#lsp#PositionOf(l:line, l:msg.range.start.character), 'lsp does not supply a description')]]
   call call(a:next, l:args)
 endfunction
 
