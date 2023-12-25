@@ -100,8 +100,15 @@ function! go#config#SnippetEngine() abort
 endfunction
 
 function! go#config#PlayBrowserCommand() abort
-    if go#util#IsWin() || go#util#IsCygwin()
+    if go#util#IsWin()
         let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHandler %URL%'
+    elseif go#util#IsCygwin()
+      " CYGWIN uses 'cygstart', whereas MSYS2 and GitBash uses 'start'
+      if system('uname') =~ 'CYGWIN'
+        let go_play_browser_command = '!cygstart rundll32 url.dll,FileProtoco          lHandler %URL%'
+      else
+        let go_play_browser_command = '!start rundll32 url.dll,FileProtocolHa          ndler %URL%'
+      endif
     elseif go#util#IsMac()
         let go_play_browser_command = 'open %URL%'
     elseif executable('xdg-open')
