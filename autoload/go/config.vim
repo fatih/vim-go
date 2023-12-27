@@ -200,6 +200,10 @@ function! go#config#Debug() abort
   return get(g:, 'go_debug', [])
 endfunction
 
+function! go#config#DebugLogDelay() abort
+  return get(g:, 'go_debug_log_delay', 10)
+endfunction
+
 function! go#config#DebugWindows() abort
   return get(g:, 'go_debug_windows', {
             \ 'vars':  'leftabove 30vnew',
