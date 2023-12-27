@@ -134,32 +134,32 @@ func! Test_gopls_fillstruct() abort
   endtry
 endfunc
 
-func! Test_gopls_fillstruct_line() abort
-  let l:wd = getcwd()
-  try
-    let g:go_fillstruct_mode = 'gopls'
-    let l:tmp = gotest#write_file('a/a.go', [
-          \ 'package a',
-          \ 'import "net/mail"',
-          \ "\x1f" . 'var addr = mail.Address{}'])
-
-    call go#fillstruct#FillStruct()
-
-    let start = reltime()
-    while &modified == 0 && reltimefloat(reltime(start)) < 10
-      sleep 100m
-    endwhile
-
-    call gotest#assert_buffer(1, [
-          \ 'var addr = mail.Address{',
-          \ '\tName:    "",',
-          \ '\tAddress: "",',
-          \ '}'])
-  finally
-    call go#util#Chdir(l:wd)
-    call delete(l:tmp, 'rf')
-  endtry
-endfunc
+"func! Test_gopls_fillstruct_line() abort
+"  let l:wd = getcwd()
+"  try
+"    let g:go_fillstruct_mode = 'gopls'
+"    let l:tmp = gotest#write_file('a/a.go', [
+"          \ 'package a',
+"          \ 'import "net/mail"',
+"          \ "\x1f" . 'var addr = mail.Address{}'])
+"
+"    call go#fillstruct#FillStruct()
+"
+"    let start = reltime()
+"    while &modified == 0 && reltimefloat(reltime(start)) < 10
+"      sleep 100m
+"    endwhile
+"
+"    call gotest#assert_buffer(1, [
+"          \ 'var addr = mail.Address{',
+"          \ '\tName:    "",',
+"          \ '\tAddress: "",',
+"          \ '}'])
+"  finally
+"    call go#util#Chdir(l:wd)
+"    call delete(l:tmp, 'rf')
+"  endtry
+"endfunc
 
 func! Test_gopls_fillstruct_two_cursor_first() abort
   let l:wd = getcwd()

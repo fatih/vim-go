@@ -20,7 +20,7 @@ function! go#doc#OpenBrowser(...) abort
 endfunction
 
 function! s:docURL() abort
-  if len(a:000) == 0
+  if len(a:000) == 0 && go#config#GoplsEnabled()
     " call go#lsp#DocLink directly instead of s:docURLFor, because s:docURLFor
     " will strip any version information from the URL.
     let [l:out, l:err] = go#lsp#DocLink()
@@ -64,7 +64,7 @@ function! go#doc#Open(newmode, mode, ...) abort
     let l:package = l:words[0]
   endif
 
-  if a:0 is 0 && &filetype == 'go'
+  if a:0 is 0 && &filetype == 'go' && go#config#GoplsEnabled()
     " use gopls to get documentation for go files
     let [l:out, l:err] = go#lsp#Doc()
   else
@@ -239,7 +239,7 @@ endfunction
 function! s:godocWord(...) abort
   let l:words = a:000
   if a:0 is 0
-    if &filetype isnot 'godoc'
+    if &filetype isnot 'godoc' && go#config#GoplsEnabled()
       let [l:out, l:err] = go#lsp#DocLink()
       if !(l:err || len(l:out) is 0)
         " strip out any version string in the doc link path.

@@ -2,19 +2,13 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! go#extract#Extract(selected) abort
+function! go#extract#Extract(line1, line2) abort
   if !go#config#GoplsEnabled()
     call go#util#EchoError('GoExtract requires gopls, but gopls is disabled')
     return
   endif
 
-  " Extract requires a selection
-  if a:selected == -1
-    call go#util#EchoError('GoExtract requires a selection (range) of code')
-    return
-  endif
-
-  call go#lsp#Extract(a:selected)
+  call go#lsp#Extract(a:line1, a:line2)
   return
 endfunction
 

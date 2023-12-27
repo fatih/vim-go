@@ -812,7 +812,7 @@ endfunction
 function! go#debug#TestFunc(...) abort
   let l:test = go#util#TestName()
   if l:test is ''
-    call go#util#Warn("vim-go: [debug] no test found immediate to cursor")
+    call go#util#EchoWarning("vim-go: [debug] no test found immediate to cursor")
     return
   endif
   call call('go#debug#Start', extend(['test', '.', '-test.run', printf('%s$', l:test)], a:000))
