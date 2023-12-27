@@ -18,6 +18,7 @@ IMPROVEMENTS:
   [[GH-3504]](https://github.com/fatih/vim-go/pull/3504)
 * Add `:GoExtract` command and related mapping.
   [[GH-3506]](https://github.com/fatih/vim-go/pull/3506)
+  [[GH-3617]](https://github.com/fatih/vim-go/pull/3617)
 * Halt the debugger after a connection is establish with `:GoDebugConnect`.
   [[GH-3514]](https://github.com/fatih/vim-go/pull/3514)
   [[GH-3520]](https://github.com/fatih/vim-go/pull/3520)
@@ -62,6 +63,12 @@ BUG FIXES:
   [[GH-3603]](https://github.com/fatih/vim-go/pull/3603)
 * Fix sameids highlighting when identifier immediately precedes newline.
   [[GH-3606]](https://github.com/fatih/vim-go/pull/3606)
+* Fix Python escape sequence in UltiSnips/go.snippets.
+  [[GH-3614]](https://github.com/fatih/vim-go/pull/3614)
+* Do not attempt to use gopls for documentation when gopls is disabled.
+  [[GH-3610]](https://github.com/fatih/vim-go/pull/3610)
+* Fix spelling of go#util#EchoWarning in a few calls.
+  [[GH-3613]](https://github.com/fatih/vim-go/pull/3613)
 
 ## v1.28 - (December 17, 2022)
 

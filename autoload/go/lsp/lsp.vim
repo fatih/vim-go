@@ -12,10 +12,9 @@ function! go#lsp#lsp#Position(...)
     let l:line = a:1
     let l:col = a:2
   endif
-  let l:content = getline(l:line)
 
   " LSP uses 0-based lines.
-  return [l:line - 1, s:character(l:line, l:col-1)]
+  return [l:line - 1, s:character(l:line, l:col)]
 endfunction
 
 function! s:strlen(str) abort
