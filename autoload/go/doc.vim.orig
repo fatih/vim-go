@@ -209,7 +209,13 @@ function! s:GodocView(newposition, position, content, package) abort
   " make sure any key that sends an escape as a prefix (e.g. the arrow keys)
   " don't cause the window to close.
   " exception on GitBash: https://stackoverflow.com/a/20458579
+<<<<<<< Updated upstream
+  if system('uname') !~ 'MINGW' && system('uname') !~ 'CYGWIN'
+||||||| Stash base
+  if system('uname') !~ 'MINGW'
+=======
   if !has('win32unix')
+>>>>>>> Stashed changes
     nnoremap <buffer> <silent> <Esc>[ <Esc>[
   endif
 endfunction
