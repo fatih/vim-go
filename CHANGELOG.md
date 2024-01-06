@@ -19,6 +19,7 @@ IMPROVEMENTS:
 * Add `:GoExtract` command and related mapping.
   [[GH-3506]](https://github.com/fatih/vim-go/pull/3506)
   [[GH-3617]](https://github.com/fatih/vim-go/pull/3617)
+  [[GH-3626]](https://github.com/fatih/vim-go/pull/3626)
 * Halt the debugger after a connection is establish with `:GoDebugConnect`.
   [[GH-3514]](https://github.com/fatih/vim-go/pull/3514)
   [[GH-3520]](https://github.com/fatih/vim-go/pull/3520)
