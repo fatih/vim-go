@@ -671,6 +671,120 @@ function! s:functionCallHighlightGroup(testname, value)
   endtry
 endfunc
 
+function! Test_gomodToolchainVersion_highlight() abort
+  try
+    syntax on
+
+    let g:go_gopls_enabled = 0
+    let l:wd = getcwd()
+    let l:dir = gotest#write_file('gomodtest/go.mod', [
+          \ 'module github.com/fatih/vim-go',
+          \ '',
+          \ 'toolchain default',
+          \ 'toolchain go1',
+          \ 'toolchain go1',
+          \ 'toolchain go1.21',
+          \ 'toolchain go1.21rc3',
+          \ 'toolchain go1.21.3-somesuffix',
+          \ 'toolchain go1.21rc2-somesuffix',
+          \ 'toolchain go1.21 some-suffix',
+          \ ''])
+
+    let l:lineno = 3
+    let l:lineclose = line('$')
+    while l:lineno < l:lineclose
+      let l:line = getline(l:lineno)
+      let l:split_idx = stridx(l:line, ' ')
+      let l:idx = 0
+      let l:col = 1
+
+      while l:idx < len(l:line) - 1
+        call cursor(l:lineno, l:col)
+        let l:synname = synIDattr(synID(l:lineno, l:col, 1), 'name')
+        let l:errlen = len(v:errors)
+
+        if l:idx < l:split_idx
+          call assert_equal('gomodToolchain', l:synname, 'toolchain on line ' . l:lineno . ' and col ' . l:col)
+        elseif l:idx > l:split_idx
+          call assert_equal('gomodToolchainVersion', l:synname, 'version on line ' . l:lineno . ' and col ' . l:col)
+        endif
+
+        if l:errlen < len(v:errors)
+          break
+        endif
+
+        let l:col += 1
+        let l:idx += 1
+      endwhile
+      let l:lineno += 1
+    endwhile
+
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
+function! Test_gomodToolchainVersion_invalid_highlight() abort
+  try
+    syntax on
+    let g:go_gopls_enabled = 0
+    let l:wd = getcwd()
+
+    " 1. No release candidate for patch versions
+    " 2+3. Release version can only be followed by 'rcN' or a valid suffix
+    " 4+5. toolchain version must start with 'go'
+    let l:dir = gotest#write_file('gomodtest/go.mod', [
+          \ 'module github.com/fatih/vim-go',
+          \ '',
+          \ 'toolchain go2',
+          \ 'toolchain go1.21.1.4',
+          \ 'toolchain go1.21.1blah',
+          \ 'toolchain go1.21!some-suffix',
+          \ 'toolchain something-else',
+          \ ''])
+
+    let l:lineno = 3
+    let l:lineclose = line('$')
+    while l:lineno < l:lineclose
+      let l:line = getline(l:lineno)
+      let l:col = col([l:lineno, '$']) - 1
+      let l:idx = len(l:line) - 1
+      " e.g. go1.21.1rc2 is valid until 'rc2'
+      " each 'go*' test above has last version number '1'
+      let l:valid_version_start_idx = strridx(l:line, '1')
+
+      if l:valid_version_start_idx != -1
+        let l:end_idx = l:valid_version_start_idx
+      else
+        " the whole version is invalid
+        let l:end_idx = stridx(l:line, ' ') + 1
+      endif
+
+      while l:idx > l:end_idx
+        call cursor(l:lineno, l:col)
+        let l:synname = synIDattr(synID(l:lineno, l:col, 1), 'name')
+        let l:errlen = len(v:errors)
+
+        call assert_notequal('gomodToolchainVersion', l:synname, 'version on line ' . l:lineno . ' and col ' . l:col)
+
+        if l:errlen < len(v:errors)
+          break
+        endif
+
+        let l:col -= 1
+        let l:idx -= 1
+      endwhile
+      let l:lineno += 1
+    endwhile
+
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
