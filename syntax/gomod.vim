@@ -61,7 +61,7 @@ syntax match gomodToolchainVersion "go1\(.\d\+\)\{,2\}\(rc\d\+\)\?\([ \t-].*\)\?
 highlight default link gomodToolchainVersion Identifier
 
 " match go versions
-syntax match gomodGoVersion "1\.\d\+" contained
+syntax match gomodGoVersion "\(1.\d\+\)\(\(.\d\+\)\|\(rc\d\+\)\)\?" contained
 highlight default link gomodGoVersion Identifier
 
 " highlight versions:
