@@ -784,6 +784,50 @@ function! Test_gomodToolchainVersion_invalid_highlight() abort
   endtry
 endfunc
 
+function! Test_gomodGoVersion() abort
+  try
+    syntax on
+
+    let g:go_gopls_enabled = 0
+    let l:wd = getcwd()
+    let l:dir = gotest#write_file('gomodtest/go.mod', [
+          \ 'module github.com/fatih/vim-go',
+          \ '',
+          \ 'go 1.20',
+          \ 'go 1.21',
+          \ 'go 1.21rc2',
+          \ 'go 1.21.1',
+          \ ''])
+
+    let l:lineno = 3
+    let l:lineclose = line('$')
+    while l:lineno < l:lineclose
+      let l:line = getline(l:lineno)
+      let l:split_idx = stridx(l:line, ' ')
+      let l:idx = len(l:line) - 1
+      let l:col = col([l:lineno, '$']) - 1
+
+      while l:idx > l:split_idx
+        call cursor(l:lineno, l:col)
+        let l:synname = synIDattr(synID(l:lineno, l:col, 1), 'name')
+        let l:errlen = len(v:errors)
+
+        call assert_equal('gomodGoVersion', l:synname, 'version on line ' . l:lineno . ' and col ' . l:col)
+        if l:errlen < len(v:errors)
+          break
+        endif
+
+        let l:col -= 1
+        let l:idx -= 1
+      endwhile
+      let l:lineno += 1
+    endwhile
+
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
 
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
