@@ -464,6 +464,14 @@ for _, tt := range tests {
 }
 endsnippet
 
+# fuzz function
+snippet fuzz "func FuzzXYZ(f *testing.F) { ... }"
+func Fuzz${1:Function}(f *testing.F) {
+	f.Fuzz(func(t *testing.T, ${2}) {
+		${0:${VISUAL}}
+	})
+}
+endsnippet
 
 snippet hf "http.HandlerFunc"
 func ${1:handler}(w http.ResponseWriter, r *http.Request) {
