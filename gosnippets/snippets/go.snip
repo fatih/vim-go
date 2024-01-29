@@ -340,6 +340,14 @@ abbr var test = {...}{...} for {t.Run(){...}}
             }
         })
     }
+# fuzz function
+snippet fuzz
+abbr func FuzzXYZ(f *testing.F) { ... }
+	func Fuzz${1:Function}(f *testing.F) {
+        f.Fuzz(func(t *testing.T, ${2:ff}) {
+            ${0}
+        })
+	}
 # test server
 snippet tsrv
 abbr ts := httptest.NewServer(...)
