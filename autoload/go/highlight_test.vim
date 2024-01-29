@@ -829,6 +829,77 @@ function! Test_gomodGoVersion() abort
   endtry
 endfunc
 
+
+function! Test_goPackageComment_highlight() abort
+  try
+    syntax on
+
+    let g:go_gopls_enabled = 0
+    let l:wd = getcwd()
+    let l:dir = gotest#write_file('packageTest.go', [
+          \ '// this is a package comment',
+          \ 'package somepkg',
+          \ '',
+          \ '/*',
+          \ 'this is also a package comment',
+          \ '*/',
+          \ 'package somepkg',
+          \ '',
+          \ 'var (',
+          \ '\t// this is a regular comment',
+          \ '\tpackages []string',
+          \ ')',
+          \ ''])
+
+    let l:package_comment_lines =  [1, 4, 5, 6]
+    for l:lineno in package_comment_lines
+      let l:line = getline(l:lineno)
+      let l:idx = 0
+      let l:end = len(l:line) - 1
+      let l:col = 1
+
+      while l:idx <= l:end
+        call cursor(l:lineno, l:col)
+        let l:synname = synIDattr(synID(l:lineno, l:col, 1), 'name')
+        let l:errlen = len(v:errors)
+
+        call assert_equal('goPackageComment', l:synname, 'version on line ' . l:lineno . ' and col ' . l:col)
+
+        if l:errlen < len(v:errors)
+          break
+        endif
+
+        let l:col += 1
+        let l:idx += 1
+      endwhile
+    endfor
+
+    let l:lineno = 10
+    let l:col = col([l:lineno, '$']) - 1
+    let l:end_idx = stridx(l:line, '\t')
+    let l:idx = len(l:line - 1)
+
+    while l:idx > l:end_idx
+      call cursor(l:lineno, l:col)
+      let l:synname = synIDattr(synID(l:lineno, l:col, 1), 'name')
+      let l:errlen = len(v:errors)
+
+      call assert_equal('goComment', l:synname, 'version on line ' . l:lineno . ' and col ' . l:col)
+
+      if l:errlen < len(v:errors)
+        break
+      endif
+
+      let l:col -= 1
+      let l:idx -= 1
+    endwhile
+
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
