@@ -446,7 +446,7 @@ CTRL-t
 :GoCoverage[!] [options]
 
     Create a coverage profile and annotates the current file's source code. If
-    called again it rerurns the tests.
+    called again it reruns the tests.
 
     If [!] is not given the first error is jumped to.
 
@@ -1262,8 +1262,8 @@ cleaned for each package after `60` seconds. This can be changed with the
 
                                                        *go#complete#GetInfo()*
 
-Returns the description of the identifer under the cursor. Can be used to plug
-into the statusline.
+Returns the description of the identifier under the cursor. Can be used
+to plug into the statusline.
 
                                                       *go#complete#Complete()*
 
@@ -1674,7 +1674,7 @@ an empty list; `staticcheck`'s `-checks` flag will not be used.
   let g:go_metalinter_autosave_enabled = ['all']
 <
 
-When `g:go_metalinter_command is set to `golangci-lint'`, the default value is
+When `g:go_metalinter_command is set to `golangci-lint`, the default value is
 >
   let g:go_metalinter_autosave_enabled = ['vet', 'revive']
 <
@@ -1690,7 +1690,7 @@ an empty list; `staticcheck`'s `-checks` flag will not be used.
   let g:go_metalinter_enabled = ['all']
 <
 
-When `g:go_metalinter_command` is set to `golangci-lint'`, the default value
+When `g:go_metalinter_command` is set to `golangci-lint`, the default value
 is
 >
   let g:go_metalinter_enabled = ['vet', 'revive', 'errcheck']
