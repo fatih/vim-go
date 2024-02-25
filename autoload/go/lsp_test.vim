@@ -79,6 +79,24 @@ func! Test_Format_SingleNewline() abort
   endtry
 endfunc
 
+func! Test_Format_Multibyte() abort
+  let l:wd = getcwd()
+  try
+    let expected = join(readfile("test-fixtures/lsp/fmt/multibyte_golden.go"), "\n")
+    let l:tmp = gotest#load_fixture('lsp/fmt/multibyte.go')
+
+    call go#lsp#Format()
+
+    " this should now contain the formatted code
+    let actual = join(go#util#GetLines(), "\n")
+
+    call assert_equal(expected, actual)
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 func! Test_Imports() abort
   let l:wd = getcwd()
   try
