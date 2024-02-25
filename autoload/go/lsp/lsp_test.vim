@@ -13,8 +13,8 @@ function! Test_PositionOf_Start()
   let l:str = 'abcd'
   let l:actual = go#lsp#lsp#PositionOf(l:str, 0)
   call assert_equal(l:actual, 1)
-  " subtract one, because PositionOf returns a one-based cursor position and
-  " while string indices are zero based.
+  " subtract one, because PositionOf returns a one-based cursor position while
+  " string indices are zero based.
   call assert_equal(l:str[l:actual-1], 'a')
 endfunc
 
