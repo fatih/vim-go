@@ -76,6 +76,8 @@ BUG FIXES:
   [[GH-3613]](https://github.com/fatih/vim-go/pull/3613)
 * Improve matching of package comments.
   [[GH-3637]](https://github.com/fatih/vim-go/pull/3637)
+* Fix editing of lines with multibyte characters.
+  [[GH-3644]](https://github.com/fatih/vim-go/pull/3644)
 
 ## v1.28 - (December 17, 2022)
 
