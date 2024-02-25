@@ -1363,6 +1363,7 @@ function! s:debugasync(timer) abort
       silent file `='__GOLSP_LOG__'`
       setlocal buftype=nofile bufhidden=wipe nomodified nobuflisted noswapfile nowrap nonumber nocursorline
       setlocal filetype=golsplog
+      setlocal fileencoding=utf-8
       call win_gotoid(l:winid)
     endif
 
@@ -1380,11 +1381,8 @@ function! s:debugasync(timer) abort
         call appendbufline(l:name, '$', split(l:data, "\r\n"))
       endfor
 
-      " TODO(bc): how to move the window's cursor position without switching
-      " to the window?
-      call win_gotoid(l:logwinid)
-      normal! G
-      call win_gotoid(l:winid)
+      " Move the window's cursor position without switching to the window
+      call win_execute(l:logwinid, 'normal! G')
       call setbufvar(l:name, '&modifiable', 0)
     finally
     endtry
