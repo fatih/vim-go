@@ -56,10 +56,8 @@ experience.
     quickfix or location list.
   * Lint your code with |:GoLint|, run your code through |:GoVet| to catch
     static errors, or make sure errors are checked with |:GoErrCheck|.
-  * Advanced source analysis tools utilizing `guru`, such as |:GoImplements|,
-    |:GoCallees|, and |:GoReferrers|.
-  * Automatic `GOPATH` detection which works with `gb` and `godep`. Change or
-    display `GOPATH` with |:GoPath|.
+  * Advanced source analysis tools utilizing ``gopls`, such as
+  * |:GoImplements| and |:GoReferrers|.
   * Integrated and improved snippets, supporting `ultisnips`, `neosnippet`,
     and `vim-minisnip`.
   * Share your current code to `go.dev/play` with |:GoPlay|.
@@ -376,10 +374,7 @@ CTRL-t
 :GoInfo
     Show type information about the identifier under the cursor. For example
     putting it above a function call is going to show the full function
-    signature. By default it uses `gopls` to get the type informations. To
-    change the underlying tool from `gopls` to another tool, see
-    |'g:go_info_mode'|.
-
+    signature. By default it uses `gopls` to get the type informations.
 
                                                                   *:GoInstall*
 :GoInstall[!] [options]
@@ -546,89 +541,6 @@ CTRL-t
     If [!] is not given the first error is jumped to.
 
 
-                                                                *:GoGuruScope*
-:GoGuruScope [pattern] ...
-
-    Changes the custom |'g:go_guru_scope'| setting and overrides it with the
-    given package patterns. The custom scope is cleared (unset) if `""` is
-    given as the only path. If no arguments is given it prints the current
-    custom scope. Example patterns are:
->
-      golang.org/x/tools/cmd/guru # a single package
-      golang.org/x/tools/...      # all packages beneath dir
-      ...                         # the entire workspace.
-<
-    Example usage, the following sets the scope to a `github.com/fatih/color`
-    and to all packages under `golang.org/x/tools/`:
->
-      :GoGuruScope github.com/fatih/color golang.org/x/tools/...
-<
-    The following sets it to the entire workspace:
->
-      :GoGuruScope ...
-<
-    Under the hood, the patterns are all joined to a comma-separated list and
-    passed to `guru`'s `-scope` flag.
-
-    Also see |go-guru-scope|.
-
-                                                                  *:GoCallees*
-:GoCallees
-
-    Show "callees" relation for a selected package. A list of possible call
-    targets for the type under the cursor (or selected package) is shown in a
-    location list.
-
-                                                                  *:GoCallers*
-:GoCallers
-
-    Show "callers" relation for a selected function. A list of possible
-    callers for the selected function under the cursor is shown in a location
-    list.
-
-                                                                 *:GoDescribe*
-:GoDescribe
-
-    Shows various properties of the selected syntax: its syntactic kind, its
-    type (for an expression), its value (for a constant expression), its size,
-    alignment, method set and interfaces (for a type), its declaration (for an
-    identifier), etc. Almost any piece of syntax may be described, and the
-    guru will try to print all the useful information it can.
-
-                                                                *:GoCallstack*
-:GoCallstack
-
-    Shows "callstack" relation for the selected function. An arbitrary path
-    from the root of the callgraph to the selected function is shown in a
-    location list. This may be useful to understand how the function is
-    reached in a given program.
-
-                                                                 *:GoFreevars*
-:GoFreevars
-
-    Enumerates the free variables of the selection. "Free variables" is a
-    technical term meaning the set of variables that are referenced but not
-    defined within the selection, or loosely speaking, its inputs.
-
-    This information is useful when considering whether to refactor the
-    selection into a function of its own, as the free variables would be the
-    necessary parameters of that function. It's also useful when you want to
-    understand what the inputs are to a complex block of code even if you
-    don’t plan to change it.
-
-                                                             *:GoChannelPeers*
-:GoChannelPeers
-
-    Shows the set of possible sends/receives on the channel operand of the
-    selected send or receive operation; the selection must be a `<-` token.
-
-    For example, visually select a channel operand in the form of:
->
-      done <- true
-<
-    And call |:GoChannelPeers| on it. It will show where it was allocated, and
-    the sending and receiving endings.
-
                                                                 *:GoReferrers*
 :GoReferrers
 
@@ -687,9 +599,9 @@ CTRL-t
 :GoBuildTags [tags]
 
     Changes the build tags for various commands. If you have any file that
-    uses a custom build tag, such as `// +build integration` , this command
+    uses a custom build tag, such as `// +build integration`, this command
     can be used to pass it to all tools that accepts tags, such as gopls,
-    guru, gorename, etc.
+    gorename, etc.
 
     The build tags is cleared (unset) if `""` is given. If no arguments are
     given it prints the current build tags.
@@ -721,17 +633,6 @@ CTRL-t
         \| command! -bang AS call go#alternate#Switch(<bang>0, 'split')
     augroup END
 <
-
-                                                                 *:GoPointsTo*
-:GoPointsTo
-
-    Show all variables to which the pointer under the cursor may point to.
-
-                                                                *:GoWhicherrs*
-:GoWhicherrs
-
-    Show the list of possible constants, global variables, and concrete types
-    for the error type under the cursor in a location list.
 
                                                                     *:GoDecls*
 :GoDecls [file]
@@ -1347,15 +1248,6 @@ updated. By default it's disabled. The delay can be configured with the
   let g:go_auto_type_info = 0
 <
 
-                                                            *'g:go_info_mode'*
-
-Use this option to define the command to be used for |:GoInfo|. By default
-`gopls` is used, because it is the fastest and is known to be highly accurate.
-One might also use `guru` for its accuracy.
-Valid options are `gopls` and `guru`.
->
-  let g:go_info_mode = 'gopls'
-<
                                                          *'g:go_auto_sameids'*
 
 Use this option to highlight all uses of the identifier under the cursor
@@ -1520,9 +1412,8 @@ Use this option to use the popup-window for |K| and |:GoDoc|, rather than the
                                                              *'g:go_def_mode'*
 
 Use this option to define the command to be used for |:GoDef|. By default
-`gopls` is used, because it is the fastest. One might also use `guru` for its
-accuracy or `godef` for its performance. Valid options are `godef`, `gopls`,
-and `guru`.
+`gopls` is used, because it is the fastest. Valid options are `godef` and
+`gopls`.
 >
   let g:go_def_mode = 'gopls'
 <
@@ -1533,22 +1424,6 @@ default `fillstruct` is used. Valid values are `fillstruct` and `gopls`. By
 default it is `fillstruct`.
 >
   let g:go_fillstruct_mode = 'fillstruct'
-<
-                                                       *'g:go_referrers_mode'*
-
-Use this option to define the command to be used for |:GoReferrers|. By
-default `gopls` is used, because it is the fastest and works with Go modules.
-Valid options are `gopls` and `guru`. By default it's `gopls`.
->
-  let g:go_referrers_mode = 'gopls'
-<
-                                                      *'g:go_implements_mode'*
-
-Use this option to define the command to be used for |:GoImplements|.
-The Implements feature in gopls is still new and being worked upon.
-Valid options are `gopls` and `guru`. By default it's `gopls`.
->
-  let g:go_implements_mode = 'gopls'
 <
                                                   *'g:go_def_mapping_enabled'*
 
@@ -1607,20 +1482,6 @@ Use this option to disable updating dependencies with |:GoInstallBinaries|. By
 default this is enabled.
 >
   let g:go_get_update = 1
-<
-                                                           *'g:go_guru_scope'*
-
-Use this option to define the scope of the analysis to be passed for guru
-related commands, such as |:GoImplements|, |:GoChannelPeers|, etc. You can
-change it on-the-fly with |:GoGuruScope|. The input should be a a list of
-package pattern. An example input might be:
-`["github.com/fatih/color","github.com/fatih/structs"]`
-
-Also see |go-guru-scope|.
-
-By default it's not set, so the relevant commands' defaults are being used.
->
-  let g:go_guru_scope = []
 <
                                                            *'g:go_build_tags'*
 
@@ -2665,10 +2526,10 @@ Completion and other functions that use `gopls` don't work~
 Vim-go is heavily reliant on `gopls` for completion and other functionality.
 Many of the features that use `gopls` (e.g. completion, jumping to
 definitions, showing identifier information, et al.) can be configured to
-delegate to other tools. e.g.  completion via 'omnifunc', |'g:go_info_mode'|
-and |'g:go_def_mode'| can be set to use other tools for now (though some of
-the alternatives to `gopls` are effectively at their end of life and support
-for them from within vim-go may be removed soon).
+delegate to other tools. e.g.  completion via 'omnifunc' and |'g:go_def_mode'|
+can be set to use other tools for now (though some of the alternatives to
+`gopls` are effectively at their end of life and support for them from within
+vim-go may be removed soon).
 
 I want to disable `gopls`~
 
@@ -2728,36 +2589,6 @@ After opening vim, run `:echo $PATH`, the output must be your current `$PATH`
 plus `$GOPATH/bin` (the location where |:GoInstallBinaries| installed the
 binaries).
 
-                                                               *go-guru-scope*
-What is the guru scope and how do I set it?~
-
-Many vim-go commands use the `guru` commandline tool to get information. Some
-`guru` commands require an expensive analysis of the source code. To still get
-a reasonable amount of performance `guru` limits this analysis to a selected
-list of packages. This is known as the "guru scope".
-
-The default is to use the package the current buffer belongs to, but this may
-not always be correct. For example for the file `github.com/user/pkg/a/a.go`
-the scope will be set to `github.com/user/pkg/a`, but you probably want
-`github.com/user/pkg`
-
-Guessing what package(s) you do want is not easy so you may need to set this
-manually, usually from an |autocommand|:
->
-  autocmd BufRead /home/martin/go/src/github.com/user/pkg/*.go
-        \ :GoGuruScope github.com/user/pkg
-<
-
-If you have a lot of packages with the same prefix (`github.com/user`) you can
-use a single autocommand:
->
-  autocmd BufRead /home/martin/go/src/*.go
-        \  let s:tmp = matchlist(expand('%:p'),
-            \ '/home/martin/go/src/\(github.com/user/[^/]\+\)')
-        \| if len(s:tmp) > 1 |  exe 'silent :GoGuruScope ' . s:tmp[1] | endif
-        \| unlet s:tmp
-<
-Also see |:GoGuruScope| and |'g:go_guru_scope'|.
 
 
 Vim becomes slow while editing Go files~
@@ -2770,8 +2601,7 @@ the problem should be restricted to a short period when the first buffer in a
 package is first loaded.
 
 If you see unexpected characters rendered in the current window, the problem
-is most likely due to |'g:go_auto_sameids'| or |'g:go_auto_type_info'|. First,
-try using another mode for |'g:go_info_mode'|. If that doesn't work, try
+is most likely due to |'g:go_auto_sameids'| or |'g:go_auto_type_info'|. Try
 disabling |'g:go_auto_sameids'| and |'g:go_auto_type_info'|.
 
 To a lesser extent, this can be caused by `g:go_highlight_*` options. If Vim

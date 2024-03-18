@@ -10,10 +10,6 @@ let s:go_stack_level = 0
 function! go#def#Jump(mode, type) abort
   let l:fname = fnamemodify(expand("%"), ':p:gs?\\?/?')
 
-  " so guru right now is slow for some people. previously we were using
-  " godef which also has it's own quirks. But this issue come up so many
-  " times I've decided to support both. By default we still use guru as it
-  " covers all edge cases, but now anyone can switch to godef if they wish
   let bin_name = go#config#DefMode()
   if bin_name == 'godef'
     let l:cmd = ['godef',
@@ -24,45 +20,6 @@ function! go#def#Jump(mode, type) abort
     if &modified
       let l:stdin_content = join(go#util#GetLines(), "\n")
       call add(l:cmd, "-i")
-      let [l:out, l:err] = go#util#ExecInDir(l:cmd, l:stdin_content)
-    else
-      let [l:out, l:err] = go#util#ExecInDir(l:cmd)
-    endif
-  elseif bin_name == 'guru'
-    let cmd = [go#path#CheckBinPath(bin_name)]
-    let buildtags = go#config#BuildTags()
-    if buildtags isnot ''
-      let cmd += ['-tags', buildtags]
-    endif
-
-    let stdin_content = ""
-
-    if &modified
-      let content = join(go#util#GetLines(), "\n")
-      let stdin_content = fname . "\n" . strlen(content) . "\n" . content
-      call add(cmd, "-modified")
-    endif
-
-    call extend(cmd, ["definition", fname . ':#' . go#util#OffsetCursor()])
-
-    if go#util#has_job()
-      let l:state = {}
-      let l:spawn_args = {
-            \ 'cmd': cmd,
-            \ 'complete': function('s:jump_to_declaration_cb', [a:mode, bin_name], l:state),
-            \ 'for': '_',
-            \ 'statustype': 'searching declaration',
-            \ }
-
-      if &modified
-        let l:spawn_args.input = stdin_content
-      endif
-
-      call s:def_job(spawn_args, l:state)
-      return
-    endif
-
-    if &modified
       let [l:out, l:err] = go#util#ExecInDir(l:cmd, l:stdin_content)
     else
       let [l:out, l:err] = go#util#ExecInDir(l:cmd)
@@ -86,7 +43,7 @@ function! go#def#Jump(mode, type) abort
     endif
     return
   else
-    call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, guru, gopls]')
+    call go#util#EchoError('go_def_mode value: '. bin_name .' is not valid. Valid values are: [godef, gopls]')
     return
   endif
 

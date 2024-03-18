@@ -25,7 +25,7 @@ function! go#sameids#SameIds(showstatus) abort
   call go#lsp#SameIDs(0, expand('%:p'), l:line, l:col, funcref('s:same_ids_highlight'))
 endfunction
 
-function! s:same_ids_highlight(exit_val, result, mode) abort
+function! s:same_ids_highlight(exit_val, result) abort
   call go#sameids#ClearSameIds() " clear at the start to reduce flicker
 
   if type(a:result) != type({}) && !go#config#AutoSameids()
