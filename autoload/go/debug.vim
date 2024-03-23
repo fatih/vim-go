@@ -1567,6 +1567,11 @@ function! s:sign_unplace(id, file) abort
 endfunction
 
 function! s:sign_place(id, expr, lnum) abort
+  " Check if lnum is less than 1 or expr is empty or null
+  if a:lnum < 1 || empty(a:expr)
+    return
+  endif
+
   if !exists('*sign_place')
     exe 'sign place ' . a:id . ' line=' . a:lnum . ' name=godebugbreakpoint file=' . a:expr
     return
