@@ -38,18 +38,8 @@ nnoremap <silent> <Plug>(go-imports) :<C-u>call go#fmt#Format(1)<CR>
 nnoremap <silent> <Plug>(go-fmt) :<C-u>call go#fmt#Format(0)<CR>
 
 nnoremap <silent> <Plug>(go-implements) :<C-u>call go#implements#Implements(-1)<CR>
-nnoremap <silent> <Plug>(go-callees) :<C-u>call go#guru#Callees(-1)<CR>
-nnoremap <silent> <Plug>(go-callers) :<C-u>call go#calls#Callers()<CR>
-nnoremap <silent> <Plug>(go-describe) :<C-u>call go#guru#Describe(-1)<CR>
-nnoremap <silent> <Plug>(go-callstack) :<C-u>call go#guru#Callstack(-1)<CR>
-xnoremap <silent> <Plug>(go-freevars) :<C-u>call go#guru#Freevars(0)<CR>
-" go-channelpeers is deprecated, but remains for backward compatibility
-nnoremap <silent> <Plug>(go-channelpeers) :<C-u>call go#guru#ChannelPeers(-1)<CR>
-nnoremap <silent> <Plug>(go-channel-peers) :<C-u>call go#guru#ChannelPeers(-1)<CR>
 nnoremap <silent> <Plug>(go-referrers) :<C-u>call go#referrers#Referrers(-1)<CR>
 nnoremap <silent> <Plug>(go-sameids) :<C-u>call go#sameids#SameIds(1)<CR>
-nnoremap <silent> <Plug>(go-pointsto) :<C-u>call go#guru#PointsTo(-1)<CR>
-nnoremap <silent> <Plug>(go-whicherrs) :<C-u>call go#guru#Whicherrs(-1)<CR>
 nnoremap <silent> <Plug>(go-sameids-toggle) :<C-u>call go#sameids#ToggleSameIds()<CR>
 
 nnoremap <silent> <Plug>(go-rename) :<C-u>call go#rename#Rename(!g:go_jump_to_error)<CR>

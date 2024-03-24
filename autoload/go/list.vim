@@ -166,7 +166,6 @@ let s:default_list_type_commands = {
       \ "GoReferrers":          "locationlist",
       \ "GoImplements":         "locationlist",
       \ "GoCallers":            "locationlist",
-      \ "_guru":                "locationlist",
       \ "_term":                "locationlist",
       \ "_job":                 "locationlist",
   \ }

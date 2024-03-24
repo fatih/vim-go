@@ -1,19 +1,6 @@
 " -- gorename
 command! -nargs=? -complete=customlist,go#rename#Complete GoRename call go#rename#Rename(<bang>0, <f-args>)
 
-" -- guru
-" do not configure commands that _require_ guru when not in GOPATH mode.
-"if go#package#InGOPATH()
-  command! -nargs=* -complete=customlist,go#package#Complete GoGuruScope call go#guru#Scope(<f-args>)
-  command! -range=% GoPointsTo call go#guru#PointsTo(<count>)
-  command! -range=% GoWhicherrs call go#guru#Whicherrs(<count>)
-  command! -range=% GoCallees call go#guru#Callees(<count>)
-  command! -range=% GoDescribe call go#guru#Describe(<count>)
-  command! -range=% GoCallstack call go#guru#Callstack(<count>)
-  command! -range=% GoFreevars call go#guru#Freevars(<count>)
-  command! -range=% GoChannelPeers call go#guru#ChannelPeers(<count>)
-"endif
-
 command! -range=% GoImplements call go#implements#Implements(<count>)
 command! -range=% GoReferrers call go#referrers#Referrers(<count>)
 command! -range=0 GoSameIds call go#sameids#SameIds(1)

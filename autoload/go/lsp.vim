@@ -845,13 +845,11 @@ function! s:completionErrorHandler(next, error) abort dict
 endfunction
 
 " go#lsp#SameIDs calls gopls to get the references to the identifier at line
-" and col in fname. handler should be a dictionary function that takes a list
-" of strings in the form 'file:line:col: message'. handler will be attached to
-" a dictionary that manages state (statuslines, sets the winid, etc.). handler
-" should take three arguments: an exit_code, a JSON object encoded to a string
-" that mimics guru's ouput for `what`, and third mode parameter that only
-" exists for compatibility with the guru implementation of SameIDs.
-" TODO(bc): refactor to not need the guru adapter.
+" and col in fname. handler should be a dictionary function. handler will be
+" attached to a dictionary that manages state (statuslines, sets the winid,
+" etc.). handler should take two arguments: an exit_code and an object with
+" one property, sameids, whose value is an array of positions, [start line,
+" start col, end col].
 function! go#lsp#SameIDs(showstatus, fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
@@ -892,17 +890,14 @@ function! s:sameIDsHandler(next, msg) abort dict
     let l:result.sameids = add(l:result.sameids, [l:loc.range.start.line+1, l:start, l:end])
   endfor
 
-  call call(a:next, [0, l:result, ''])
+  call call(a:next, [0, l:result])
 endfunction
 
 " go#lsp#Referrers calls gopls to get the references to the identifier at line
-" and col in fname. handler should be a dictionary function that takes a list
-" of strings in the form 'file:line:col: message'. handler will be attached to
-" a dictionary that manages state (statuslines, sets the winid, etc.). handler
-" should take three arguments: an exit_code, a JSON object encoded to a string
-" that mimics guru's ouput for `what`, and third mode parameter that only
-" exists for compatibility with the guru implementation of SameIDs.
-" TODO(bc): refactor to not need the guru adapter.
+" and col in fname. handler should be a dictionary function. handler will be
+" attached to a dictionary that manages state (statuslines, sets the winid,
+" etc.). handler should take two arguments: an exit_code and a list of strings
+" in the form 'file:line:col: message'.
 function! go#lsp#Referrers(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 
@@ -948,12 +943,10 @@ function! s:handleLocations(next, msg) abort
 endfunction
 
 " go#lsp#Implementations calls gopls to get the implementations to the
-" identifier at line and col in fname. handler should be a dictionary function
-" that takes a list of strings in the form 'file:line:col: message'. handler
-" will be attached to a dictionary that manages state (statuslines, sets the
-" winid, etc.). handler should take three arguments: an exit_code, a JSON
-" object encoded to a string that mimics guru's ouput for guru implements, and
-" a third parameter that only exists for compatibility with guru implements.
+" identifier at line and col in fname. handler should be a dictionary
+" function. handler will be attached to a dictionary that manages state
+" (statuslines, sets the winid, etc.). handler should take two arguments: an
+" exit_code and a list of strings in the form 'file:line:col: message'.
 function! go#lsp#Implements(fname, line, col, handler) abort
   call go#lsp#DidChange(a:fname)
 

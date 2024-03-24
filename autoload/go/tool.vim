@@ -81,18 +81,11 @@ function! go#tool#Imports() abort
 endfunction
 
 function! go#tool#Info(showstatus) abort
-  let l:mode = go#config#InfoMode()
-  if l:mode == 'guru'
-    call go#guru#DescribeInfo(a:showstatus)
-  elseif l:mode == 'gopls'
-    if !go#config#GoplsEnabled()
-      call go#util#EchoError("go_info_mode is 'gopls', but gopls is disabled")
-      return
-    endif
-    call go#lsp#Info(a:showstatus)
-  else
-    call go#util#EchoError('go_info_mode value: '. l:mode .' is not valid. Valid values are: [guru, gopls]')
+  if !go#config#GoplsEnabled()
+    call go#util#EchoError("gopls is disabled")
+    return
   endif
+  call go#lsp#Info(a:showstatus)
 endfunction
 
 function! go#tool#PackageName() abort

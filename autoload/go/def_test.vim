@@ -4,27 +4,6 @@ set cpo&vim
 
 scriptencoding utf-8
 
-func! Test_jump_to_declaration_guru() abort
-  let l:wd = getcwd()
-  try
-    let g:go_gopls_enabled = 0
-    let l:filename = 'def/jump.go'
-    let l:lnum = 5
-    let l:col = 6
-    let l:tmp = gotest#load_fixture(l:filename)
-
-    let l:guru_out = printf("%s:%d:%d: defined here as func main", l:filename, l:lnum, l:col)
-    call go#def#jump_to_declaration(l:guru_out, "", 'guru')
-
-    call assert_equal(l:filename, bufname("%"))
-    call assert_equal(l:lnum, getcurpos()[1])
-    call assert_equal(l:col, getcurpos()[2])
-  finally
-    call go#util#Chdir(l:wd)
-    call delete(l:tmp, 'rf')
-  endtry
-endfunc
-
 func! Test_jump_to_declaration_godef() abort
   let l:wd = getcwd()
   try

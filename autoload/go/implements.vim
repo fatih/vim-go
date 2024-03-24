@@ -4,10 +4,7 @@ set cpo&vim
 
 function! go#implements#Implements(selected) abort
   let l:mode = go#config#ImplementsMode()
-  if l:mode == 'guru'
-		call go#guru#Implements(a:selected)
-    return
-  elseif l:mode == 'gopls'
+  if l:mode == 'gopls'
     if !go#config#GoplsEnabled()
       call go#util#EchoError("go_implements_mode is 'gopls', but gopls is disabled")
     endif
@@ -23,7 +20,7 @@ endfunction
 
 " This uses Vim's errorformat to parse the output and put it into a quickfix
 " or locationlist.
-function! s:parse_output(exit_val, output, title) abort
+function! s:parse_output(exit_val, output) abort
   if a:exit_val
     call go#util#EchoError(a:output)
     return
@@ -31,7 +28,7 @@ function! s:parse_output(exit_val, output, title) abort
 
   let errformat = ",%f:%l:%c:\ %m"
   let l:listtype = go#list#Type("GoImplements")
-  call go#list#ParseFormat(l:listtype, errformat, a:output, a:title, 0)
+  call go#list#ParseFormat(l:listtype, errformat, a:output, 'implements', 0)
 
   let errors = go#list#Get(l:listtype)
   call go#list#Window(l:listtype, len(errors))
