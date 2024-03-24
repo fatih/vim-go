@@ -80,6 +80,8 @@ BUG FIXES:
   [[GH-3637]](https://github.com/fatih/vim-go/pull/3637)
 * Fix editing of lines with multibyte characters.
   [[GH-3644]](https://github.com/fatih/vim-go/pull/3644)
+* Swallow delve errors when trying to place a breakpoint at an invalid location.
+  [[GH-3652]](https://github.com/fatih/vim-go/pull/3652)
 
 ## v1.28 - (December 17, 2022)
 
