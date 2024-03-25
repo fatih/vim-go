@@ -939,7 +939,7 @@ function! s:handleLocations(next, msg) abort
     let l:result = add(l:result, l:item)
   endfor
 
-  call call(a:next, [0, l:result, ''])
+  call call(a:next, [0, l:result])
 endfunction
 
 " go#lsp#Implementations calls gopls to get the implementations to the
