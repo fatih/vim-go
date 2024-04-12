@@ -107,7 +107,7 @@ else
   syn region      goRawString         start=+`+ end=+`+
 endif
 
-syn match       goImportString      /^\%(\s\+\|import \)\(\h\w* \)\?\zs"[^"]\+"$/ contained containedin=goImport
+syn match       goImportString      /^\%(\s\+\|import \)\(\h\w* \)\?\zs"[^"]\+"/ contained containedin=goImport
 
 if go#config#HighlightFormatStrings()
   " [n] notation is valid for specifying explicit argument indexes
