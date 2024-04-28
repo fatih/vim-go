@@ -228,7 +228,13 @@ function! go#job#Options(args)
     " only open the error window if user was still in the window from which
     " the job was started.
     if self.winid == l:winid
-      call go#list#Window(l:listtype, len(errors))
+      " height equal to sum of every error length divided by window width
+      let l:height = 0
+      for error in errors
+        let l:height += len(error.text) / winwidth(l:winid) + 1
+      endfor
+
+      call go#list#Window(l:listtype, l:height)
       if self.bang
         call win_gotoid(l:winid)
       else
