@@ -54,9 +54,9 @@ lint=$(sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint.sh"
   -c func_abort=1 \
   -e EVL110=1 -e EVL103=1 -e EVL104=1 -e EVL102=1 \
   "$vimgodir" \
-  2>&1 ||:)
-if [ -n "$lint" ]; then
-  echo "FAILED"
+  2>&1)
+result="$?"
+if [ "$result" -eq "2" ]; then
   echo "$lint"
   echo
   failed=6
