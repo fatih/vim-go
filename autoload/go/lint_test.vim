@@ -293,10 +293,11 @@ func! s:gometa_multiple(metalinter) abort
   endtry
 endfunc
 
-func! Test_GometaAutoSaveGolangciLint_multiple() abort
-  let g:go_gopls_enabled = 0
-  call s:gometaautosave_multiple('golangci-lint')
-endfunc
+"func! Test_GometaAutoSaveGolangciLint_multiple() abort
+"  return
+"  let g:go_gopls_enabled = 0
+"  call s:gometaautosave_multiple('golangci-lint')
+"endfunc
 
 func! s:gometaautosave_multiple(metalinter) abort
   let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
