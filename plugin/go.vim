@@ -132,6 +132,11 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     let l:packages = s:packages
   endif
 
+  " Filter packages from exclude list
+  for l:bin in go#config#GoExcludeBinaries()
+    call remove(l:bin, l:packages)
+  endfor
+
   let l:platform = ''
   if go#util#IsWin()
     let l:platform = 'windows'

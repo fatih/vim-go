@@ -512,6 +512,7 @@ CTRL-t
     syntax to the binary name. e.g. `:GoInstallBinaries gopls@v0.9.1`.
 
     Set |'g:go_get_update'| to disable updating dependencies.
+    Set |'g:go_exclude_binaries'| to disable installing specific binaries.
 
                                                            *:GoUpdateBinaries*
 :GoUpdateBinaries [binaries]
@@ -525,6 +526,7 @@ CTRL-t
     syntax to the binary name. e.g. `:GoUpdateBinaries gopls@v0.9.1`.
 
     Set |'g:go_get_update'| to disable updating dependencies.
+    Set |'g:go_exclude_binaries'| to disable updating specific binaries.
 
                                                                *:GoImplements*
 :GoImplements
@@ -2489,12 +2491,51 @@ Highlight the current line and breakpoints in the debugger.
   let g:go_highlight_debug = 1
 <
 
-                                         *'go:go_debug_breakpoint_sign_text'*
+                                         *'g:go_debug_breakpoint_sign_text'*
 
 Set the sign text used for breakpoints in the debugger. By default it's '>'.
 
 >
   let g:go_debug_breakpoint_sign_text = '>'
+<
+
+                                         *'g:go_exclude_binaries'*
+
+Set a list of binaries to exclude from installing/updating when running either
+|:GoInstallBinaries| or |:GoUpdateBinaries|. Possible values are all keys used
+in the `s:packages` dictionary:
+
+>
+ let g:go_exclude_binaries = [
+      \ 'asmfmt',
+      \ 'dlv',
+      \ 'errcheck',
+      \ 'fillstruct',
+      \ 'godef',
+      \ 'goimports',
+      \ 'revive',
+      \ 'gopls',
+      \ 'golangci-lint',
+      \ 'staticcheck',
+      \ 'gomodifytags',
+      \ 'gorename',
+      \ 'gotags',
+      \ 'impl',
+      \ 'motion',
+      \ 'iferr',
+      \]
+<
+
+Default:
+
+>
+  let g:go_exclude_binaries = []
+<
+
+To exclude, for example, `errcheck`, `dlv`, and `golangci-lint`:
+
+>
+  let g:go_exclude_binaries = ['errcheck', 'dlv', 'golangci-lint']
 <
 
 ==============================================================================
