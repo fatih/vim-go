@@ -4,6 +4,8 @@ BACKWARDS INCOMPATIBILITIES:
 * Drop support for [guru](https://docs.google.com/document/d/1_Y9xCEMj5S-7rv2ooHpZNH15JgRT5iM742gJkw5LtmQ/edit?pli=1&tab=t.0#heading=h.ojv16z1d1gas).
   [[GH-3650]](https://github.com/fatih/vim-go/pull/3650)
   [[GH-3654]](https://github.com/fatih/vim-go/pull/3654)
+* Drop support for `keyify`.
+  [[GH-3665]](https://github.com/fatih/vim-go/pull/3665)
 
 IMPROVEMENTS:
 * Change the group that godebugStracktrace is default linked to.
