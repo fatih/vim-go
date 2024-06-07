@@ -2502,8 +2502,9 @@ Set the sign text used for breakpoints in the debugger. By default it's '>'.
                                          *'g:go_exclude_binaries'*
 
 Set a list of binaries to exclude from installing/updating when running either
-|:GoInstallBinaries| or |:GoUpdateBinaries|. Possible values are all keys used
-in the `s:packages` dictionary:
+|:GoInstallBinaries| or |:GoUpdateBinaries| without specifying a specific
+binary. This list is ignored when installing or updating specific binaries to
+specific versions. Possible values are all keys used in the `s:packages` dictionary:
 
 >
  let g:go_exclude_binaries = [

@@ -130,12 +130,13 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     endfor
   else
     let l:packages = s:packages
+    " Filter packages from exclude list, if no binaries were explicitly
+    " specified.
+    for l:bin in go#config#GoExcludeBinaries()
+      call remove(l:bin, l:packages)
+    endfor
   endif
 
-  " Filter packages from exclude list
-  for l:bin in go#config#GoExcludeBinaries()
-    call remove(l:bin, l:packages)
-  endfor
 
   let l:platform = ''
   if go#util#IsWin()
