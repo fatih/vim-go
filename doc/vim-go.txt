@@ -389,7 +389,7 @@ CTRL-t
                                                                      *:GoTest*
 :GoTest[!] [expand]
 
-    Run the tests on your _test.go files via in your current directory. Errors
+    Run the tests on your _test.go files in your current directory. Errors
     are populated in the quickfix window.  If an argument is passed, [expand]
     is used as file selector (useful for cases like `:GoTest ./...`).
 
@@ -429,7 +429,7 @@ CTRL-t
                                                               *:GoTestCompile*
 :GoTestCompile[!] [expand]
 
-    Compile your _test.go files via in your current directory. Errors are
+    Compile your _test.go files in your current directory. Errors are
     populated in the quickfix window.  If an argument is passed, [expand] is
     used as file selector (useful for cases like `:GoTest ./...`). Useful to
     not run the tests and capture/fix errors before running the tests or to
