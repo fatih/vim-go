@@ -469,8 +469,12 @@ function! s:newlsp() abort
   endfunction
 
   function! l:lsp.err_cb(ch, msg) dict abort
-    if a:msg =~ '^\d\{4}/\d\d/\d\d\ \d\d:\d\d:\d\d debug server listening on port \d\+$' && !get(self, 'debugport', 0)
-      let self.debugport = substitute(a:msg, '\d\{4}/\d\d/\d\d\ \d\d:\d\d:\d\d debug server listening on port \(\d\+\).*$', '\1', '')
+    if !get(self, 'debugport', 0)
+      if a:msg =~ '.*debug server listening at http://localhost:\d\+$' " current log for debug server
+        let self.debugport = substitute(a:msg, '.*debug server listening at http://localhost:\(\d\+\)$', '\1', '')
+      elseif a:msg =~ '^\d\{4}/\d\d/\d\d\ \d\d:\d\d:\d\d debug server listening on port \d\+$' " old gopls log for debug server
+        let self.debugport = substitute(a:msg, '\d\{4}/\d\d/\d\d\ \d\d:\d\d:\d\d debug server listening on port \(\d\+\).*$', '\1', '')
+      endif
     endif
 
     call s:debug('stderr', a:msg)
