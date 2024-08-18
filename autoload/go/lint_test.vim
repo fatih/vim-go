@@ -474,51 +474,7 @@ func! Test_Vet_compilererror() abort
   endtry
 endfunc
 
-func! Test_Lint_GOPATH() abort
-  let g:go_gopls_enabled = 0
-  let RestoreGO111MODULE = go#util#SetEnv('GO111MODULE', 'off')
-  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-
-  silent exe 'e! ' . $GOPATH . '/src/lint/baz.go'
-  silent exe 'e! ' . $GOPATH . '/src/lint/quux.go'
-  silent exe 'e! ' . $GOPATH . '/src/lint/lint.go'
-  compiler go
-
-  let expected = [
-          \ {'lnum': 1, 'bufnr': bufnr('test-fixtures/lint/src/lint/baz.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'should have a package comment'},
-          \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported'},
-          \ {'lnum': 5, 'bufnr': bufnr('test-fixtures/lint/src/lint/quux.go'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function AlsoMissingDoc should have comment or be unexported'}
-      \ ]
-
-  let winnr = winnr()
-
-  " clear the quickfix list
-  call setqflist([], 'r')
-
-  call go#lint#Golint(1)
-
-  let actual = getqflist()
-  let start = reltime()
-  while len(actual) == 0 && reltimefloat(reltime(start)) < 10
-    sleep 100m
-    let actual = getqflist()
-  endwhile
-
-  " sort the results for deterministic ordering
-  call sort(actual)
-  call sort(expected)
-
-  call gotest#assert_quickfix(actual, expected)
-
-  "call assert_report(execute('ls'))
-
-  call call(RestoreGOPATH, [])
-  call call(RestoreGO111MODULE, [])
-endfunc
-
-func! Test_Lint_NullModule() abort
-  let g:go_gopls_enabled = 0
-  let RestoreGO111MODULE = go#util#SetEnv('GO111MODULE', 'off')
+func! s:testLint() abort
   silent exe 'e! ' . fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint/src/lint/baz.go'
   silent exe 'e! ' . fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint/src/lint/quux.go'
   silent exe 'e! ' . fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint/src/lint/lint.go'
@@ -549,6 +505,30 @@ func! Test_Lint_NullModule() abort
   call sort(expected)
 
   call gotest#assert_quickfix(actual, expected)
+endfunc
+
+func! Test_Lint() abort
+  let g:go_gopls_enabled = 0
+  call s:testLint()
+endfunc
+
+func! Test_Lint_GOPATH() abort
+  let g:go_gopls_enabled = 0
+  let RestoreGO111MODULE = go#util#SetEnv('GO111MODULE', 'off')
+  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
+
+  call s:testLint()
+
+  call call(RestoreGOPATH, [])
+  call call(RestoreGO111MODULE, [])
+endfunc
+
+func! Test_Lint_NullModule() abort
+  let g:go_gopls_enabled = 0
+  let RestoreGO111MODULE = go#util#SetEnv('GO111MODULE', 'off')
+
+  call s:testLint()
+
   call call(RestoreGO111MODULE, [])
 endfunc
 
