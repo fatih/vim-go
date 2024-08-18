@@ -89,6 +89,8 @@ BUG FIXES:
   [[GH-3672]](https://github.com/fatih/vim-go/pull/3672)
 * Handle unexpected code action commands from `gopls`.
   [[GH-3678]](https://github.com/fatih/vim-go/pull/3678)
+* Fix substitution paths in debug stacktrace window.
+  [[GH-3675]](https://github.com/fatih/vim-go/pull/3675)
 
 ## v1.28 - (December 17, 2022)
 
