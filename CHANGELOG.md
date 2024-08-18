@@ -87,6 +87,8 @@ BUG FIXES:
   [[GH-3652]](https://github.com/fatih/vim-go/pull/3652)
 * Fix parsing of gopls error message to determine debug port.
   [[GH-3672]](https://github.com/fatih/vim-go/pull/3672)
+* Handle unexpected code action commands from `gopls`.
+  [[GH-3678]](https://github.com/fatih/vim-go/pull/3678)
 
 ## v1.28 - (December 17, 2022)
 
