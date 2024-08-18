@@ -362,7 +362,7 @@ function! s:goto_file() abort
     return
   endif
   call win_gotoid(win_getid(bufs[0][0]))
-  let filename = s:substituteLocalPath(m[1])
+  let filename = m[1]
   let linenr = m[2]
   let oldfile = fnamemodify(expand('%'), ':p:gs!\\!/!')
   if oldfile != filename
