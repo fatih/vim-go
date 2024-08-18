@@ -1639,7 +1639,7 @@ function! go#lsp#Imports() abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('')
-  let l:handler = go#promise#New(function('s:handleCodeAction', ['source.organizeImports', ''], l:state), 10000, '')
+  let l:handler = go#promise#New(function('s:handleCodeAction', ['source.organizeImports', '', ''], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
   let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
@@ -1663,7 +1663,7 @@ function! go#lsp#FillStruct() abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('')
-  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.rewrite', 'apply_fix'], l:state), 10000, '')
+  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.rewrite', 'apply_fix', 'fillstruct'], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
   let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
@@ -1689,7 +1689,7 @@ function! go#lsp#Extract(line1, line2) abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('')
-  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.extract', 'apply_fix'], l:state), 10000, '')
+  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.extract', 'apply_fix', ''], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
   let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
@@ -1818,7 +1818,7 @@ function! s:handleFormat(msg) abort dict
   call s:applyTextEdits(bufnr(''), a:msg)
 endfunction
 
-function! s:handleCodeAction(kind, cmd, msg) abort dict
+function! s:handleCodeAction(kind, cmd, fix, msg) abort dict
   if type(a:msg) is type('')
     call self.handleError(a:msg)
     return
@@ -1829,14 +1829,26 @@ function! s:handleCodeAction(kind, cmd, msg) abort dict
   endif
 
   for l:item in a:msg
-    if get(l:item, 'kind', '') is a:kind
+    " TODO(bc): always pass in exactly the right kind and remove the fix
+    " paramter entirely after
+    " https://github.com/golang/go/issues/68791 is merged and released.
+    if get(l:item, 'kind', '') is a:kind || l:item.kind is printf('%s.%s', a:kind, a:fix)
       if has_key(l:item, 'disabled') && get(l:item.disabled, 'reason', '') isnot ''
         call go#util#EchoWarning(printf('code action is disabled: %s', l:item.disabled.reason))
         continue
       endif
 
       if has_key(l:item, 'command')
-        if has_key(l:item.command, 'command') && (l:item.command.command is a:cmd || l:item.command.command is printf('gopls.%s', a:cmd))
+        if has_key(l:item.command, 'command') &&
+              \ (l:item.command.command is a:cmd ||
+                \ (l:item.command.command is printf('gopls.%s', a:cmd) &&
+                  \ (a:fix is '' ||
+                    \ (has_key(l:item.command, 'arguments') &&
+                    \ type(l:item.command.arguments) is type([]) &&
+                    \ len(l:item.command.arguments) > 0 &&
+                    \ type(l:item.command.arguments[0]) is type({}) &&
+                    \ has_key(l:item.command.arguments[0], 'Fix') &&
+                    \ a:fix == l:item.command.arguments[0].Fix))))
           call s:executeCommand(l:item.command.command, l:item.command.arguments)
           continue
         endif
