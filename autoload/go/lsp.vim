@@ -363,7 +363,7 @@ function! s:newlsp() abort
           \ }
       call go#statusline#Update(l:wd, l:status)
 
-      let self.workspaceDirectories = add(self.workspaceDirectories, l:wd)
+      let self.workspaceDirectories = s:dedup(add(self.workspaceDirectories, l:wd))
       let l:msg = self.newMessage(go#lsp#message#Initialize(l:wd))
 
       let l:state = s:newHandlerState('')
@@ -458,7 +458,7 @@ function! s:newlsp() abort
     call call('go#lsp#AddWorkspaceDirectory', l:workspaces)
     " * send DidOpen messages for all buffers that have b:did_lsp_open set
     " TODO(bc): check modifiable and filetype, too?
-    bufdo if get(b:, 'go_lsp_did_open', 0) | if &modified | call go#lsp#DidOpen(expand('%:p')) | else | call go#lsp#DidChange(expand('%:p')) | endif | endif
+    bufdo! if get(b:, 'go_lsp_did_open', 0) | let b:go_lsp_did_open = 0 | if &modified | call go#lsp#DidOpen(expand('%:p')) | else | call go#lsp#DidChange(expand('%:p')) | endif | endif
     let l:lsp.queue = extend(l:lsp.queue, l:queue)
     return
   endfunction
