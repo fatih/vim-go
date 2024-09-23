@@ -2580,7 +2580,7 @@ Vim becomes slow while editing Go files~
 
 The most common cause for this is using an older version of Vim that doesn't
 support asynchronous jobs. |'g:go_auto_sameids'| and |'g:go_auto_type_info'|
-run jobs that can cause noticable delays when used with vim74. The problem is
+run jobs that can cause noticeable delays when used with vim74. The problem is
 most pronounced on vim74, but can occur on vim8 and nvim. On vim8 and nvim,
 the problem should be restricted to a short period when the first buffer in a
 package is first loaded.
@@ -2591,7 +2591,7 @@ disabling |'g:go_auto_sameids'| and |'g:go_auto_type_info'|.
 
 To a lesser extent, this can be caused by `g:go_highlight_*` options. If Vim
 is just slower than normal, but doesn't render unexpected characters in the
-currrent window, then the problem is most likely the `g:go_highlight_*`
+current window, then the problem is most likely the `g:go_highlight_*`
 options. Try disabling them if you've enabled some of them.
 
 I get errors when using GoInstallBinaries~
