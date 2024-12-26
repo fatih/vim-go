@@ -51,7 +51,6 @@ let s:packages = {
       \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@latest'],
       \ 'staticcheck':   ['honnef.co/go/tools/cmd/staticcheck@latest'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags@latest'],
-      \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
       \ 'gotags':        ['github.com/jstemmer/gotags@master'],
       \ 'impl':          ['github.com/josharian/impl@main'],
       \ 'motion':        ['github.com/fatih/motion@latest'],
