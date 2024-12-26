@@ -1663,7 +1663,7 @@ function! go#lsp#FillStruct() abort
   let l:lsp = s:lspfactory.get()
 
   let l:state = s:newHandlerState('')
-  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.rewrite', 'apply_fix', 'fillstruct'], l:state), 10000, '')
+  let l:handler = go#promise#New(function('s:handleCodeAction', ['refactor.rewrite.fillStruct', 'apply_fix', 'fillstruct'], l:state), 10000, '')
   let l:state.handleResult = l:handler.wrapper
   let l:state.error = l:handler.wrapper
   let l:state.handleError = function('s:handleCodeActionError', [l:fname], l:state)
