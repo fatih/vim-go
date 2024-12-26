@@ -43,7 +43,6 @@ function! go#complete#Complete(findstart, base) abort
     let s:completions = l:state.matches
 
     return go#lsp#lsp#PositionOf(getline(l:line+1), l:state.start-1)
-
   else "findstart = 0 when we need to return the list of completions
     return s:completions
   endif
