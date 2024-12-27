@@ -61,6 +61,8 @@ IMPROVEMENTS:
   [[GH-3695]](https://github.com/fatih/vim-go/pull/3695)
 * Remove installation of `gorename`.
   [[GH-3697]](https://github.com/fatih/vim-go/pull/3697)
+* Add support for `gopls rename`.
+  [[GH-3698]](https://github.com/fatih/vim-go/pull/3698)
 
 BUG FIXES:
 * Update [impl](https://github.com/josharian/impl) source path after its default branch was changed from master to main.
