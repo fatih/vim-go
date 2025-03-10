@@ -578,6 +578,10 @@ function! go#config#FillStructMode() abort
   return get(g:, 'go_fillstruct_mode', 'fillstruct')
 endfunction
 
+function! go#config#GoExcludeBinaries() abort
+  return get(g:, 'go_exclude_binaries', [])
+endfunction
+
 function! go#config#DebugMappings() abort
   let l:default = {
      \ '(go-debug-continue)':   {'key': '<F5>'},
