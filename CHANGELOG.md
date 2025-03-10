@@ -99,6 +99,8 @@ BUG FIXES:
   [[GH-3675]](https://github.com/fatih/vim-go/pull/3675)
 * Fix handling of gopls restarts.
   [[GH-3685]](https://github.com/fatih/vim-go/pull/3685)
+* Fix :GoDocBrowser's handling of arguments.
+  [[GH-3703]](https://github.com/fatih/vim-go/pull/3703)
 
 ## v1.28 - (December 17, 2022)
 
