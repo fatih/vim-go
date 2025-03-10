@@ -94,8 +94,9 @@ function! s:GodocView(newposition, position, content, package) abort
 
       let borderchars = ['-', '|', '-', '|', '+', '+', '+', '+']
       if &encoding == "utf-8"
-        let borderchars = ['─', '│', '─', '│', '┌', '┐', '┘', '└']
+        let borderchars = [ "═", "║", "═", "║", "╔","╗", "╝", "╚" ]
       endif
+
       call popup_atcursor(split(a:content, '\n'), {
             \ 'padding': [1, 1, 1, 1],
             \ 'borderchars': borderchars,
@@ -127,6 +128,7 @@ function! s:GodocView(newposition, position, content, package) abort
             \ 'width': width,
             \ 'height': height,
             \ 'style': 'minimal',
+            \ 'border': 'double',
             \ }
       call nvim_open_win(buf, v:true, opts)
       setlocal nomodified nomodifiable filetype=godoc
