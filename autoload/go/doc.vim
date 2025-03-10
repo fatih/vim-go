@@ -19,7 +19,7 @@ function! go#doc#OpenBrowser(...) abort
   call go#util#OpenBrowser(l:url)
 endfunction
 
-function! s:docURL() abort
+function! s:docURL(...) abort
   if len(a:000) == 0 && go#config#GoplsEnabled()
     " call go#lsp#DocLink directly instead of s:docURLFor, because s:docURLFor
     " will strip any version information from the URL.
