@@ -262,7 +262,7 @@ endfunction
 function! go#config#MetalinterEnabled() abort
   let l:default = []
   if get(g:, 'go_metalinter_command', s:default_metalinter) == 'golangci-lint'
-    let l:default = ['vet', 'revive', 'errcheck']
+    let l:default = ['govet', 'revive', 'errcheck']
   endif
 
   return get(g:, 'go_metalinter_enabled', l:default)

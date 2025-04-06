@@ -48,7 +48,7 @@ let s:packages = {
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
       \ 'revive':        ['github.com/mgechev/revive@latest'],
       \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
-      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@latest'],
+      \ 'golangci-lint': ['github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest'],
       \ 'staticcheck':   ['honnef.co/go/tools/cmd/staticcheck@latest'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags@latest'],
       \ 'gotags':        ['github.com/jstemmer/gotags@master'],
