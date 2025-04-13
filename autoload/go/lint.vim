@@ -426,6 +426,7 @@ function! s:golangcilintcmd(bin_path, haslinter)
   let l:cmd += ["--show-stats=false"]
   let l:cmd += ["--output.text.print-issued-lines=false"]
   let l:cmd += ['--build-tags', go#config#BuildTags()]
+  let l:cmd += ['--path-mode', 'abs']
   " do not use the default exclude patterns, because doing so causes golint
   " problems about missing doc strings to be ignored and other things that
   " golint identifies.
