@@ -602,11 +602,11 @@ func! Test_Errcheck_compilererror() abort
 endfunc
 
 func! s:vimdir()
-  let l:vim = "vim-8.2"
+  let l:vim = "vim-9.1"
   if has('nvim')
     let l:vim = 'nvim'
-  elseif v:version == 810
-    let l:vim = 'vim-8.1'
+  elseif v:version == 820
+    let l:vim = 'vim-8.2'
   endif
 
   return l:vim
