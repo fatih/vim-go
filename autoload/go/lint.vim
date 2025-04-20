@@ -110,7 +110,11 @@ function! go#lint#Gometa(bang, autosave, ...) abort
     " Parse and populate our location list
 
     if a:autosave
-      call s:metalinterautosavecomplete(l:metalinter, fnamemodify(expand('%:p'), ':.'), 0, 1, l:messages)
+      if l:metalinter == 'golangci-lint'
+        call s:metalinterautosavecomplete(l:metalinter, expand('%:p'), 0, 1, l:messages)
+      elseif l:metalinter == 'staticcheck'
+        call s:metalinterautosavecomplete(l:metalinter, fnamemodify(expand('%:p'), ':.'), 0, 1, l:messages)
+      endif
     endif
     call go#list#ParseFormat(l:listtype, l:errformat, l:messages, l:for, s:preserveerrors(a:autosave, l:listtype))
 
@@ -396,7 +400,11 @@ function! s:lint_job(metalinter, args, bang, autosave)
   if a:autosave
     let l:opts.for = 'GoMetaLinterAutoSave'
     " s:metalinterautosavecomplete is needed for staticcheck and golangci-lint
-    let l:opts.complete = funcref('s:metalinterautosavecomplete', [a:metalinter, expand('%:p:t')])
+    if a:metalinter == 'golangci-lint'
+      let l:opts.complete = funcref('s:metalinterautosavecomplete', [a:metalinter, expand('%:p')])
+    elseif a:metalinter == 'staticcheck'
+      let l:opts.complete = funcref('s:metalinterautosavecomplete', [a:metalinter, expand('%:p:t')])
+    endif
     let l:opts.preserveerrors = funcref('s:preserveerrors', [a:autosave])
   endif
 
@@ -423,15 +431,17 @@ endfunction
 function! s:golangcilintcmd(bin_path, haslinter)
   let l:cmd = [a:bin_path]
   let l:cmd += ["run"]
-  let l:cmd += ["--print-issued-lines=false"]
+  let l:cmd += ["--show-stats=false"]
+  let l:cmd += ["--output.text.print-issued-lines=false"]
   let l:cmd += ['--build-tags', go#config#BuildTags()]
+  let l:cmd += ['--path-mode', 'abs']
   " do not use the default exclude patterns, because doing so causes golint
   " problems about missing doc strings to be ignored and other things that
   " golint identifies.
-  let l:cmd += ["--exclude-use-default=false"]
+  "let l:cmd += ["--exclude-use-default=false"]
 
   if a:haslinter
-    let l:cmd += ["--disable-all"]
+    let l:cmd += ["--default=none"]
   endif
 
   return l:cmd
@@ -446,6 +456,8 @@ function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, mes
     return
   endif
 
+  let l:pathRE = printf('^%s:', a:filepath)
+
   let l:idx = 0
   for l:item in a:messages
     " leave in any messages that report errors about a:filepath or that report
@@ -458,7 +470,6 @@ function! s:metalinterautosavecomplete(metalinter, filepath, job, exit_code, mes
     "
     " golangci-lint may provide a relative path to the file, so allow that,
     " too.
-    let l:pathRE = printf('^\%%(\.%s\)\?%s', go#util#PathSep(), a:filepath)
     if (l:item =~#  l:pathRE && l:item !~# l:pathRE . ':\d\+: : # ') || (a:metalinter == 'golangci-lint' && l:item =~# '^level=')
       let l:idx += 1
       continue
