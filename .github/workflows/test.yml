@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: set up python
-      uses: actions/setup-python@v2.1.4
+      uses: actions/setup-python@v5.5.0
       with:
-        python-version: 3.6
+        python-version: 3.7
     - name: install vim-vint
       run: |
         python -m pip install --upgrade pip
@@ -35,9 +35,9 @@ jobs:
       with:
         go-version: ${{ matrix.go }}
     - name: set up python
-      uses: actions/setup-python@v2.1.4
+      uses: actions/setup-python@v5.5.0
       with:
-        python-version: 3.6
+        python-version: 3.7
     - name: install covimerage
       run: |
         python -m pip install --upgrade pip
