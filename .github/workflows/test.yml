@@ -3,12 +3,12 @@ on: [push, pull_request]
 jobs:
   lint:
     name: lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: set up python
-      uses: actions/setup-python@v2.1.4
+      uses: actions/setup-python@v5.5.0
       with:
-        python-version: 3.6
+        python-version: 3.7
     - name: install vim-vint
       run: |
         python -m pip install --upgrade pip
@@ -16,28 +16,28 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2.1.0
     - name: install vim
-      run: $GITHUB_WORKSPACE/scripts/install-vim vim-8.2
+      run: $GITHUB_WORKSPACE/scripts/install-vim vim-9.1
     - name: install tools
-      run: $GITHUB_WORKSPACE/scripts/install-tools vim-8.2
+      run: $GITHUB_WORKSPACE/scripts/install-tools vim-9.1
     - name: lint
-      run: $GITHUB_WORKSPACE/scripts/lint vim-8.2
+      run: $GITHUB_WORKSPACE/scripts/lint vim-9.1
   test:
     name: test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         go: ['1.23','1.24']
-        vim: ['vim-8.1', 'vim-8.2', 'nvim']
+        vim: ['vim-8.2', 'vim-9.1', 'nvim']
     steps:
     - name: setup Go
       uses: actions/setup-go@v2.1.3
       with:
         go-version: ${{ matrix.go }}
     - name: set up python
-      uses: actions/setup-python@v2.1.4
+      uses: actions/setup-python@v5.5.0
       with:
-        python-version: 3.6
+        python-version: 3.7
     - name: install covimerage
       run: |
         python -m pip install --upgrade pip
