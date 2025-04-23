@@ -2481,7 +2481,7 @@ will suppress logging entirely.  Default: `'debugger,rpc'`:
   let g:go_debug_log_output = 'debugger,rpc'
 <
 
-                                                     *'g:go_highlight_debug'*
+                                                      *'g:go_highlight_debug'*
 
 Highlight the current line and breakpoints in the debugger.
 
@@ -2489,12 +2489,26 @@ Highlight the current line and breakpoints in the debugger.
   let g:go_highlight_debug = 1
 <
 
-                                         *'go:go_debug_breakpoint_sign_text'*
+                                           *'g:go_debug_breakpoint_sign_text'*
 
 Set the sign text used for breakpoints in the debugger. By default it's '>'.
 
 >
   let g:go_debug_breakpoint_sign_text = '>'
+<
+
+                                    *'g:go_debug_local_variables_load_config'*
+
+Set load configuration that is used to retrieve and display local variables in
+the variable window. For details about the values, refer to
+https://pkg.go.dev/github.com/go-delve/delve/service/api#LoadConfig .
+
+>
+  let g:go_debug_local_variables_load_config = {
+    \ 'MaxStringLen':       20,
+    \ 'MaxArrayValues':     20,
+    \ 'MaxVariableRecurse': 10,
+  \ }
 <
 
 ==============================================================================
