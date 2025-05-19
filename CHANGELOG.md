@@ -1,6 +1,8 @@
 ## unplanned
 
 BACKWARDS INCOMPATIBILITIES:
+* Update golangci-lint support to expect golangci-lint/v2.
+  [[GH-3710]](https://github.com/fatih/vim-go/pull/3710)
 
 IMPROVEMENTS:
 
