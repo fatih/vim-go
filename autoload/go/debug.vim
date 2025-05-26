@@ -650,9 +650,18 @@ endfunction
 function! s:sync_breakpoints()
   try
     " get the breakpoints
-    let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
-    call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.ListBreakpoints', {'All': v:true})
-    let l:res = l:promise.await()
+    call s:call_jsonrpc(function('s:handle_list_breakpoints'), 'RPCServer.ListBreakpoints', {'All': v:true})
+  catch
+    call go#util#EchoError(printf('failed to sync breakpoints (%s): %s', v:throwpoint, v:exception))
+  finally
+  endtry
+endfunction
+
+function! s:handle_list_breakpoints(check_errors, res)
+  try
+    call a:check_errors()
+
+    let l:res = a:res
     if type(l:res) != v:t_dict || !has_key(l:res, 'result') || type(l:res.result) != v:t_dict || !has_key(l:res.result, 'Breakpoints')
       call go#util#EchoError('could not list breakpoints')
     endif
@@ -664,7 +673,6 @@ function! s:sync_breakpoints()
     let l:signsByBreakpointID = {}
     " the signs with a breakpoint
     let l:breakpointsBySignID = {}
-
 
     " replace the sign when the id of the breakpoint and the sign are
     " different
@@ -702,7 +710,7 @@ function! s:sync_breakpoints()
       if empty(get(l:breakpointsBySignID, l:sign.id, ''))
         let l:promise = go#promise#New(function('s:rpc_response'), 20000, {})
         call s:call_jsonrpc(l:promise.wrapper, 'RPCServer.CreateBreakpoint', {'Breakpoint': {'file': s:substituteLocalPath(l:sign.file), 'line': l:sign.line}})
-        let l:res = l:promise.await()
+        "let l:res = l:promise.await()
       endif
     endfor
   catch
@@ -771,7 +779,6 @@ function! s:message(buf, data) abort
     " and
     "     for every list you receive in a callback, all items except the first
     "     represent newlines.
-    call s:logger('DATA: ', '', printf('%s', a:data))
     let l:data = printf('%s%s', a:buf, a:data[0])
     for l:msg in a:data[1:]
       let l:data = printf("%s\n%s", l:data, l:msg)
