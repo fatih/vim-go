@@ -6,7 +6,7 @@ scriptencoding utf-8
 
 if !exists('s:state')
   let s:state = {
-        \ 'rpcid': 1,
+        \ 'rpcid': 0,
         \ 'running': 0,
         \ 'currentThread': {},
         \ 'localVars': {},
@@ -1493,7 +1493,7 @@ function! go#debug#Restart() abort
     call s:stop()
 
     let s:state = {
-          \ 'rpcid': 1,
+          \ 'rpcid': 0,
           \ 'running': 0,
           \ 'currentThread': {},
           \ 'localVars': {},
