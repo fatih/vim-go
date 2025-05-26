@@ -7,6 +7,8 @@ BACKWARDS INCOMPATIBILITIES:
 IMPROVEMENTS:
 
 BUG FIXES:
+* Fix delay when listing breakpoints when stepping in Neovim.
+  [[GH-3714]](https://github.com/fatih/vim-go/pull/3714)
 
 ## v1.29 - (April 18, 2025)
 
