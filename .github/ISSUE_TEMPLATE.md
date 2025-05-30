@@ -1,3 +1,7 @@
+---
+name: Bug Report
+about: Use this template for all issues
+---
 <!--
 Before filing an issue, please check if vim-go's help addresses your problem (see `:help go-troubleshooting`).
 
