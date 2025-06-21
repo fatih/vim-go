@@ -320,7 +320,13 @@ endfunction
 function! go#debug#Stop() abort
   " Remove all commands and add back the default commands.
   for k in map(split(execute('command GoDebug'), "\n")[1:], 'matchstr(v:val, "^\\s*\\zs\\S\\+")')
-    exe 'delcommand' k
+    try
+      if k is 'Name'
+        continue
+      endif
+      execute(printf('delcommand %s', k))
+    catch
+    endtry
   endfor
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start('debug', <f-args>)
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start('test', <f-args>)
@@ -334,7 +340,10 @@ function! go#debug#Stop() abort
 
   " remove plug mappings
   for k in map(split(execute('nmap <Plug>(go-debug-'), "\n"), 'matchstr(v:val, "^n\\s\\+\\zs\\S\\+")')
-    execute(printf('nunmap %s', k))
+    try
+      execute(printf('nunmap %s', k))
+    catch
+    endtry
   endfor
 
   call s:stop()
