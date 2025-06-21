@@ -72,6 +72,9 @@ function! s:logasync(timer) abort
     let l:name = '__GODEBUG_OUTPUT__'
     let l:log_winid = bufwinid(l:name)
     if l:log_winid == -1
+      if !s:isReady() && !has_key(s:state, 'job')
+        return
+      endif
       let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:logasync', []))
       return
     endif
