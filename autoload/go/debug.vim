@@ -6,7 +6,7 @@ scriptencoding utf-8
 
 if !exists('s:state')
   let s:state = {
-        \ 'rpcid': 1,
+        \ 'rpcid': 0,
         \ 'running': 0,
         \ 'currentThread': {},
         \ 'localVars': {},
@@ -64,26 +64,54 @@ function! s:complete(job, exit_status, data) abort
   call s:clearState()
 endfunction
 
-function! s:logger(prefix, ch, msg) abort
-  let l:cur_win = bufwinnr('')
-  let l:log_win = bufwinnr(bufnr('__GODEBUG_OUTPUT__'))
-  if l:log_win == -1
-    return
-  endif
-  exe l:log_win 'wincmd w'
-
+let s:log = []
+let s:logtimer = 0
+function! s:logasync(timer) abort
+  let s:logtimer = 0
   try
-    setlocal modifiable
-    if getline(1) == ''
-      call setline('$', a:prefix . a:msg)
-    else
-      call append('$', a:prefix . a:msg)
+    let l:name = '__GODEBUG_OUTPUT__'
+    let l:log_winid = bufwinid(l:name)
+    if l:log_winid == -1
+      if !s:isReady() && !has_key(s:state, 'job')
+        return
+      endif
+      let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:logasync', []))
+      return
     endif
-    normal! G
-    setlocal nomodifiable
+
+    try
+      call setbufvar(l:name, '&modifiable', 1)
+      for [l:prefix, l:data] in s:log
+        call remove(s:log, 0)
+        if getbufline(l:name, 1)[0] == ''
+          call setbufline(l:name, '$', printf('%s%s', l:prefix, l:data))
+        else
+          call appendbufline(l:name, '$', printf('%s%s', l:prefix, l:data))
+        endif
+      endfor
+
+      " Move the window's cursor position without switching to the window
+      call win_execute(l:log_winid, 'normal! G')
+      call setbufvar(l:name, '&modifiable', 0)
+    finally
+    endtry
+  catch
+    call go#util#EchoError(printf('at %s: %s', v:throwpoint, v:exception))
   finally
-    exe l:cur_win 'wincmd w'
+    " retry when there's an exception.
+    if len(s:log) != 0
+      let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:logasync', []))
+    endif
   endtry
+endfunction
+
+function! s:logger(prefix, ch, data) abort
+  let l:shouldStart = s:logtimer is 0
+  let s:log = add(s:log, [a:prefix, a:data])
+
+  if l:shouldStart
+    let s:logtimer = timer_start(go#config#DebugLogDelay(), function('s:logasync', []))
+  endif
 endfunction
 
 " s:call_jsonrpc will call method, passing all of s:call_jsonrpc's optional
@@ -295,7 +323,13 @@ endfunction
 function! go#debug#Stop() abort
   " Remove all commands and add back the default commands.
   for k in map(split(execute('command GoDebug'), "\n")[1:], 'matchstr(v:val, "^\\s*\\zs\\S\\+")')
-    exe 'delcommand' k
+    try
+      if k is 'Name'
+        continue
+      endif
+      execute(printf('delcommand %s', k))
+    catch
+    endtry
   endfor
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugStart call go#debug#Start('debug', <f-args>)
   command! -nargs=* -complete=customlist,go#package#Complete GoDebugTest  call go#debug#Start('test', <f-args>)
@@ -309,7 +343,10 @@ function! go#debug#Stop() abort
 
   " remove plug mappings
   for k in map(split(execute('nmap <Plug>(go-debug-'), "\n"), 'matchstr(v:val, "^n\\s\\+\\zs\\S\\+")')
-    execute(printf('nunmap %s', k))
+    try
+      execute(printf('nunmap %s', k))
+    catch
+    endtry
   endfor
 
   call s:stop()
@@ -1468,7 +1505,7 @@ function! go#debug#Restart() abort
     call s:stop()
 
     let s:state = {
-          \ 'rpcid': 1,
+          \ 'rpcid': 0,
           \ 'running': 0,
           \ 'currentThread': {},
           \ 'localVars': {},
