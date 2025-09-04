@@ -217,6 +217,10 @@ function! go#config#LspLog() abort
   return g:go_lsp_log
 endfunction
 
+function! go#config#DebugLocalVariablesLoadConfig() abort
+  return get(g:, 'go_debug_local_variables_load_config', {'MaxStringLen': 20, 'MaxArrayValues': 20, 'MaxVariableRecurse': 10})
+endfunction
+
 function! go#config#SetDebugDiag(value) abort
   let g:go_debug_diag = a:value
 endfunction
