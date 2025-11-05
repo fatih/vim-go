@@ -1394,6 +1394,21 @@ Use this option to use the popup-window for |K| and |:GoDoc|, rather than the
   let g:go_doc_popup_window = 0
 <
 
+                                                        *'g:go_borderchars'*
+
+Use this option to control the border chars for the popup window, if enabled.
+Default is:
+>
+  ['-', '|', '-', '|', '+', '+', '+', '+']
+<
+And if UTF is enabled: 
+>
+  [ "═", "║", "═", "║", "╔","╗", "╝", "╚" ]
+>
+>
+  let g:go_borderchars = ['─', '│', '─', '│', '┌', '┐', '┘', '└']
+<
+
                                                              *'g:go_def_mode'*
 
 Use this option to define the command to be used for |:GoDef|. By default
