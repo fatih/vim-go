@@ -39,7 +39,7 @@ a number of tools developed by the Go community to provide a seamless Vim
 experience.
 
   * Compile your package with |:GoBuild|, install it with |:GoInstall| or
-    test it with |:GoTest|. Run a single test with |:GoTestFunc|).
+    test it with |:GoTest|. Run a single test with |:GoTestFunc|.
   * Quickly execute your current file(s) with |:GoRun|.
   * Improved syntax highlighting and folding.
   * Debug programs with integrated `delve` support with |:GoDebugStart|.
@@ -56,15 +56,15 @@ experience.
     quickfix or location list.
   * Lint your code with |:GoLint|, run your code through |:GoVet| to catch
     static errors, or make sure errors are checked with |:GoErrCheck|.
-  * Advanced source analysis tools utilizing ``gopls`, such as
-  * |:GoImplements| and |:GoReferrers|.
+  * Advanced source analysis tools utilizing `gopls`, such as |:GoImplements|
+    and |:GoReferrers|.
   * Integrated and improved snippets, supporting `ultisnips`, `neosnippet`,
     and `vim-minisnip`.
   * Share your current code to `go.dev/play` with |:GoPlay|.
   * On-the-fly information about the word under the cursor. Plug it into your
     custom Vim function.
   * Text objects such as "a function" (|go-af|) or "inner function" (|go-if|).
-  * Most commands are run asynchronous in Neovim and Vim 8. Fully async
+  * Most commands are run asynchronously in Neovim and Vim 8. Fully async
     building and testing.
   * Integrated with the Neovim terminal, launch |:GoRun| and other Go commands
     in a terminal buffer.
@@ -76,7 +76,7 @@ experience.
 INSTALL                                                           *go-install*
 
 vim-go requires at least Vim 8.2.5072 or Neovim 0.4.0. On macOS, if you are
-still using your system version of vim, you can use homebrew to keep your
+still using your system version of Vim, you can use homebrew to keep your
 version of Vim up-to-date with the following terminal command:
 >
   brew install vim
@@ -88,9 +88,9 @@ instead, please do so with caution; it is a _development_ branch.
 vim-go follows the standard runtime path structure and should work with any of
 the major plugin managers.
 
-For Pathogen or Vim |packages|, just clone the repo. For other plugin managers
-you may also need to add the lines to your vimrc to execute the plugin
-manager's install command.
+For Pathogen or Vim |packages|, just clone the repo. For other plugin
+managers, you may also need to add the lines to your vimrc to execute the
+plugin manager's install command.
 
 *  Vim 8 |packages| >
 
@@ -163,30 +163,32 @@ COMMANDS                                                         *go-commands*
 
                                                         *:GoReportGitHubIssue*
 :GoReportGitHubIssue
+
     GoReportGitHubIssue opens the default browser and starts a new bug report
     with useful system information.
 
                                                                      *:GoPath*
 :GoPath [path]
 
-    GoPath sets and overrides GOPATH with the given {path}. If no {path} is
-    given it shows the current GOPATH. If `""` is given as path, it clears
-    current `GOPATH` which was set with |:GoPath| and restores `GOPATH` back
-    to the initial value which was sourced when Vim was started.
+    GoPath sets and overrides `GOPATH` with the given {path}. If no {path} is
+    given, it shows the current `GOPATH`. If `""` is given as path, it clears
+    the current `GOPATH` which was set with |:GoPath| and restores `GOPATH`
+    back to the initial value which was sourced when Vim was started.
 
                                                                    *:GoImport*
 :GoImport[!] [path]
 
-    Import ensures that the provided package {path} is imported in the current
-    Go buffer, using proper style and ordering. If {path} is already being
-    imported, an error will be displayed and the buffer will be untouched.
+    GoImport ensures that the provided package {path} is imported in the
+    current Go buffer, using proper style and ordering. If {path} is already
+    being imported, an error will be displayed and the buffer will be
+    untouched.
 
-    If [!] is given it will download the package with `go get`
+    If [!] is given, it will download the package with `go get`
 
                                                                  *:GoImportAs*
 :GoImportAs [localname] [path]
 
-    Same as Import, but uses a custom local name for the package.
+    Same as GoImport, but uses a custom local name for the package.
 
                                                                      *:GoDrop*
 :GoDrop [path]
@@ -201,7 +203,7 @@ COMMANDS                                                         *go-commands*
     Run the linter for the directory under your current file, or for the given
     packages.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                       *:GoDoc*
 :GoDoc [word]
@@ -225,17 +227,17 @@ COMMANDS                                                         *go-commands*
                                                                   *:GoImports*
 :GoImports
 
-    Adjust imports using the setting of `g:go_imports_mode`. Like |:GoFmt|, It
+    Adjust imports using the setting of `g:go_imports_mode`. Like |:GoFmt|, it
     tries to preserve cursor position and avoids replacing the buffer with
     stderr output.
 
                                                                      *:GoPlay*
 :[range]GoPlay
 
-    Share snippet to `go.dev/play`. If no [range] is given it shares the whole
-    file, otherwise the selected lines are shared. Snippet URL is copied to
-    system clipboard if Vim is compiled with 'clipboard' or 'xterm-clipboard'
-    otherwise it's get yanked into the `""` register.
+    Share snippet to `go.dev/play`. If no [range] is given, it shares the
+    whole file, otherwise the selected lines are shared. Snippet URL is copied
+    to system clipboard if Vim is compiled with 'clipboard' or
+    'xterm-clipboard' otherwise it gets yanked into the `""` register.
 
                                                                       *:GoVet*
 :GoVet[!] [options]
@@ -248,7 +250,7 @@ COMMANDS                                                         *go-commands*
 
     You may optionally pass any valid go vet flags/options.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                       *:GoDef*
 :GoDef
@@ -335,7 +337,7 @@ CTRL-t
     You may optionally pass any valid go run flags/options. For a full list
     please see `go help run`.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
     If using neovim then `:GoRun` will run in a new terminal according to
     |'g:go_term_mode'|.
@@ -347,14 +349,14 @@ CTRL-t
 :GoBuild[!] [expand]
 
     Build your package with `go build`. Errors are populated in the quickfix
-    window. It automatically builds only the files that depends on the current
+    window. It automatically builds only the files that depend on the current
     file. `:GoBuild` doesn't produce a result file.
     Use |:make| to create a result file.
 
     You may optionally pass any valid go build flags/options. For a full list
     please see `go help build`. Options are expanded with [expand].
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
     If using neovim then this command is fully async, it does not block the
     UI.
@@ -368,13 +370,14 @@ CTRL-t
     You may optionally pass any valid go generate flags/options. For a full
     list please see `go help generate`. Options are expanded with [expand].
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                      *:GoInfo*
 :GoInfo
+
     Show type information about the identifier under the cursor. For example
     putting it above a function call is going to show the full function
-    signature. By default it uses `gopls` to get the type informations.
+    signature. By default it uses `gopls` to get the type information.
 
                                                                   *:GoInstall*
 :GoInstall[!] [options]
@@ -384,7 +387,7 @@ CTRL-t
     You may optionally pass any valid go install flags/options. For a full
     list please see `go help install`.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                      *:GoTest*
 :GoTest[!] [expand]
@@ -400,7 +403,7 @@ CTRL-t
     use |'g:go_test_timeout'|. This feature is disabled if any arguments are
     passed to the `:GoTest` command.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
     If using neovim `:GoTest` will run in a new terminal or run asynchronously
     in the background according to |'g:go_term_enabled'|. You can set the mode
@@ -412,7 +415,7 @@ CTRL-t
     Runs :GoTest, but only on the tests in the current file using 'go test's
     '-run' flag.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                  *:GoTestFunc*
 :GoTestFunc[!] [expand]
@@ -424,7 +427,7 @@ CTRL-t
     a matching `func Test` pattern is found or top of file is reached. Search
     will not wrap around when at the top of the file.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                               *:GoTestCompile*
 :GoTestCompile[!] [expand]
@@ -435,7 +438,7 @@ CTRL-t
     not run the tests and capture/fix errors before running the tests or to
     create test binary.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                  *:GoCoverage*
 :GoCoverage[!] [options]
@@ -443,7 +446,7 @@ CTRL-t
     Create a coverage profile and annotates the current file's source code. If
     called again it reruns the tests.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                            *:GoCoverageToggle*
 :GoCoverageToggle[!] [options]
@@ -451,7 +454,7 @@ CTRL-t
     Create a coverage profile and annotates the current file's source code. If
     called again clears the annotation (works as a toggle).
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                             *:GoCoverageClear*
 :GoCoverageClear [options]
@@ -468,7 +471,7 @@ CTRL-t
     You may optionally pass any valid go test flags/options, such as
     `-covermode set,count,atomic`. For a full list please see `go help test`.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                           *:GoCoverageOverlay*
 :GoCoverageOverlay file
@@ -478,13 +481,13 @@ CTRL-t
                                                                  *:GoErrCheck*
 :GoErrCheck! [options]
 
-    Check for unchecked errors in you current package. Errors are populated in
+    Check for unchecked errors in the current package. Errors are populated in
     the quickfix window.
 
     You may optionally pass any valid errcheck flags/options. See
     `errcheck -h` for a full list.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                     *:GoFiles*
 :GoFiles [source_files]
@@ -536,9 +539,9 @@ CTRL-t
 :GoRename[!] [to]
 
     Rename the identifier under the cursor to the desired new name. If no
-    argument is given a prompt will ask for the desired identifier.
+    argument is given, a prompt will ask for the desired identifier.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
 
                                                                 *:GoReferrers*
@@ -581,7 +584,7 @@ CTRL-t
     on the value of `g:go_metalinter_command` and can be changed with
     `g:go_metalinter_enabled`.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                               *:GoDiagnostics*
 :GoDiagnostics! [packages]
@@ -593,18 +596,18 @@ CTRL-t
 
     Disabled when |'g:go_diagnostics_enabled'| is not set.
 
-    If [!] is not given the first error is jumped to.
+    If [!] is not given, the first error is jumped to.
 
                                                                 *:GoBuildTags*
 :GoBuildTags [tags]
 
     Changes the build tags for various commands. If you have any file that
     uses a custom build tag, such as `// +build integration`, this command
-    can be used to pass it to all tools that accepts tags, such as gopls,
+    can be used to pass it to all tools that accept tags, such as gopls,
     go test, etc.
 
-    The build tags is cleared (unset) if `""` is given. If no arguments are
-    given it prints the current build tags.
+    The build tags are cleared (unset) if `""` is given. If no arguments are
+    given, it prints the current build tags.
 
                                                                      *:AsmFmt*
 :AsmFmt
@@ -619,7 +622,7 @@ CTRL-t
     main.go, switch to main_test.go. Uses the |'g:go_alternate_mode'| setting
     as the command to open the file.
 
-    If [!] is given then it switches to the new file even if it does not
+    If [!] is given, then it switches to the new file even if it does not
     exist.
 
     If you would like to override the traditional commands for alternating,
@@ -676,7 +679,7 @@ CTRL-t
                                                                      *:GoImpl*
 :GoImpl [receiver] [receiver type] [interface]
 
-    Generates method stubs for implementing an interface. If no arguments is
+    Generates method stubs for implementing an interface. If no arguments are
     passed it takes the identifier under the cursor to be the receiver and
     asks for the interface type to be generated. If used with arguments, the
     receiver name, its type, and the interface needs to be specified. Example
@@ -694,7 +697,7 @@ CTRL-t
     if it's called outside a struct definition or if the file is not correctly
     formatted.
 
-    If [range] is given, only the selected fields will be changed.
+    If [range] is given only the selected fields will be changed.
 
     The default `json` can be changed by providing one or more [key]
     arguments. An example of adding `xml` and `db` would be:
@@ -718,7 +721,7 @@ CTRL-t
     Remove field tags for the fields of a struct. If called inside a struct it
     automatically remove all field tags. An error message is given if it's
     called outside a struct definition or if the file is not correctly
-    formatted
+    formatted.
 
     If [range] is given, only the selected fields will be changed.
 
@@ -765,7 +768,6 @@ CTRL-t
 
     Toggles |'g:go_template_autocreate'|.
 
-<
                                                                *:GoFillStruct*
 :GoFillStruct
 
@@ -788,8 +790,8 @@ CTRL-t
                                                                     *:GoIfErr*
 :GoIfErr
 
-    Generate if err != nil { return ... } automatically which infer the type
-    of return values and the numbers.
+    Generate if err != nil { return ... } automatically which infers the types
+    and number of return values.
 
     For example:
 >
@@ -853,17 +855,17 @@ Calls `go run` for the current main package.
 
                                                                 *(go-run-tab)*
 
-Calls `go run` for the current file in a new terminal tab
+Calls `go run` for the current file in a new terminal tab.
 This option is neovim only.
 
                                                               *(go-run-split)*
 
-Calls `go run` for the current file in a new terminal horizontal split
+Calls `go run` for the current file in a new terminal horizontal split.
 This option is neovim only.
 
                                                            *(go-run-vertical)*
 
-Calls `go run` for the current file in a new terminal vertical split
+Calls `go run` for the current file in a new terminal vertical split.
 This option is neovim only.
 
                                                                   *(go-build)*
@@ -888,7 +890,7 @@ Calls `go test` for the current package.
 
                                                               *(go-test-func)*
 
-Calls `go test -run '...'` for the test function immediate to cursor
+Calls `go test -run '...'` for the test function immediate to cursor.
 
                                                               *(go-test-file)*
 
@@ -931,7 +933,7 @@ Calls `go vet` for the current package.
 
                                                                   *(go-files)*
 
-Show source files that depends for the current package.
+Show source files that depend on the current package.
 
 
                                                                    *(go-deps)*
@@ -960,7 +962,7 @@ Show the relevant GoDoc for the word under the cursor in a tab window.
 
                                                             *(go-doc-browser)*
 
-Show the relevant GoDoc for the word under in browser
+Show the relevant GoDoc for the word under the cursor in a browser.
 
                                                                     *(go-def)*
 
@@ -1001,15 +1003,15 @@ Jumps to an existing buffer if |'g:go_def_reuse_buffer'| is enabled.
 
                                                               *(go-def-stack)*
 
-Shows the godef tag stack
+Shows the godef tag stack.
 
                                                         *(go-def-stack-clear)*
 
-Resets and clears the tag stack
+Resets and clears the tag stack.
 
                                                                 *(go-def-pop)*
 
-Jump to previous entry in the tag stack
+Jump to previous entry in the tag stack.
 
                                                              *(go-implements)*
 
@@ -1017,80 +1019,80 @@ Show the interfaces that the type under the cursor implements.
 
                                                                  *(go-rename)*
 
-Rename the identifier under the cursor to the desired new name
+Rename the identifier under the cursor to the desired new name.
 
                                                                 *(go-callees)*
 
-Show the call targets for the type under the cursor
+Show the call targets for the type under the cursor.
 
                                                                 *(go-callers)*
 
-Show possible callers of selected function
+Show possible callers of selected function.
 
                                                                *(go-describe)*
 
-Describe selected syntax: definition, methods, etc
+Describe selected syntax: definition, methods, etc.
 
                                                               *(go-callstack)*
 
-Show path from callgraph root to selected function
+Show path from callgraph root to selected function.
 
                                                                *(go-freevars)*
 
-Show free variables of selection
+Show free variables of selection.
 
                                                            *(go-channelpeers)*
                                                           *(go-channel-peers)*
 
-Show send/receive corresponding to selected channel op
+Show send/receive corresponding to selected channel op.
 
                                                               *(go-referrers)*
 
-Show all refs to entity denoted by selected identifier
+Show all refs to entity denoted by selected identifier.
 
                                                                *(go-pointsto)*
 
-Show all variables to which the pointer under the cursor may point to.
+Show all variables to which the pointer under the cursor may point.
 
                                                              *(go-metalinter)*
 
-Calls `go-metalinter` for the current directory
+Calls `go-metalinter` for the current directory.
 
                                                          *(go-alternate-edit)*
 
-Alternates between the implementation and test code in the current window
+Alternates between the implementation and test code in the current window.
 
                                                         *(go-alternate-split)*
 
-Alternates between the implementation and test code in a new horizontal split
+Alternates between the implementation and test code in a new horizontal split.
 
                                                      *(go-alternate-vertical)*
 
-Alternates between the implementation and test code in a new vertical split
+Alternates between the implementation and test code in a new vertical split.
 
                                                                  *(go-import)*
 
-Calls `:GoImport` for the current package
+Calls `:GoImport` for the current package.
 
                                                                   *(go-iferr)*
                                                                  *(go-if-err)*
 
-Generate if err != nil { return ... } automatically which infer the type of
-return values and the numbers.
+Generate if err != nil { return ... } automatically which infers the type and
+number of return values.
 
                                                                 *(go-mod-fmt)*
 
-Calls |:GoModFmt| for the current buffer
+Calls |:GoModFmt| for the current buffer.
 
                                                             *(go-diagnostics)*
-Calls `:GoDiagnostics`
+Calls `:GoDiagnostics`.
 
                                                              *(go-fillstruct)*
                                                             *(go-fill-struct)*
-Calls `:GoFillStruct`
+Calls `:GoFillStruct`.
 
                                                                 *(go-extract)*
-Calls `:GoExtract`
+Calls `:GoExtract`.
 
 ==============================================================================
 TEXT OBJECTS                                                 *go-text-objects*
@@ -1104,12 +1106,12 @@ af            "a function", select contents from a function definition to the
                enabled it also includes the comment doc for a function
                declaration. This text-object also supports literal functions.
                If |'g:go_textobj_include_variable'| is enabled it also
-               includes the variable of an function assignment
+               includes the variable of a function assignment.
 
                                                *go-v_if* *go-if*
 if            "inside a function", select contents of a function,
               excluding the function definition and the closing bracket. This
-              text-object also supports literal functions
+              text-object also supports literal functions.
 
                                                *go-v_ac* *go-ac*
 ac            "a comment", select contents of the current comment block.
@@ -1122,7 +1124,7 @@ vim-go also defines the following text motion objects:
 
                                                *go-v_]]* *go-]]*
 ]]            [count] forward to next function declaration. If
-              |'g:go_textobj_include_function_doc'| is enabled and if your
+              |'g:go_textobj_include_function_doc'| is enabled and if you're
               on a comment, it skips the function which the comment
               belongs and forwards to the next function declaration.
 
@@ -1159,7 +1161,7 @@ Uses `gopls` for autocompletion. By default, it is hooked up to 'omnifunc'.
 
 Suitable to be used as an expression to show the evaluation balloon. By
 default only relevant diagnostics and the type information is shown.
-|'g:go_doc_balloon'| can be used to also included partial documentation. See
+|'g:go_doc_balloon'| can be used to also include partial documentation. See
 `help balloonexpr`.
 
 ==============================================================================
@@ -1206,7 +1208,7 @@ set to 10 seconds . >
                                                  *'g:go_play_browser_command'*
 
 Browser to use for |:GoPlay|, |:GoDocBrowser|, and |:GoLSPDebugBrowser|. The
-url must be added with `%URL%`, and it's advisable to include `&` to make sure
+URL must be added with `%URL%`, and it's advisable to include `&` to make sure
 the shell returns. For example:
 >
   let g:go_play_browser_command = 'firefox-developer %URL% &'
@@ -1218,7 +1220,7 @@ By default it tries to find it automatically for the current OS. >
 <
                                                     *'g:go_play_open_browser'*
 
-Use this option to open browser after posting the snippet to `go.dev/play`.
+Use this option to open browser after posting the snippet to `go.dev/play`
 with |:GoPlay|. By default it's enabled. >
 
   let g:go_play_open_browser = 1
@@ -1254,8 +1256,8 @@ value from 'updatetime'. By default it's set to 800ms.
 Use this option to enable/disable passing the bang attribute to the mappings
 (e.g. |(go-build)|, |(go-run)|, etc.) and the metalinter on save.  When
 enabled it will jump to the first error automatically (means it will NOT pass
-the bang attribute to the appropriate command, i.e: (go-run) -> :GoRun ).
-Note, that calling this doesn't have any affect on calling the commands
+the bang attribute to the appropriate command, i.e.: (go-run) -> :GoRun ).
+Note, that calling this doesn't have any effect on calling the commands
 manually. This setting is only useful for changing the behaviour of our custom
 static mappings. By default it's enabled.
 >
@@ -1266,8 +1268,8 @@ static mappings. By default it's enabled.
 Use this option to auto |:GoFmt| on save. When both 'g:go_imports_autosave'
 and 'g:go_fmt_autosave' are enabled and both 'g:go_fmt_command' and
 'g:go_imports_mode' are set to `goimports`, `goimports` will be run only once.
-By default it's enabled >
-
+By default it's enabled.
+>
   let g:go_fmt_autosave = 1
 <
                                                           *'g:go_fmt_command'*
@@ -1275,13 +1277,12 @@ By default it's enabled >
 Use this option to define which tool is used to format code. Valid options are
 `gofmt`, `goimports`, and `gopls`. By default `gopls` is used.
 >
-
   let g:go_fmt_command = 'gopls'
 <
                                                           *'g:go_fmt_options'*
 
-Use this option to add additional options to the |'g:go_fmt_command'|. It's
-value type can be either a string or a dictionary. This is due backwards
+Use this option to add additional options to the |'g:go_fmt_command'|. Its
+value type can be either a string or a dictionary. This is due to backwards
 compatibility. The string version will be removed in the future so please use
 the dictionary version. Default is empty.
 >
@@ -1492,7 +1493,7 @@ the `af` text object and `[[` motion. By default it's enabled. >
 <
                                              *'g:go_textobj_include_variable'*
 
-Consider the variable of an function assignment to be part of the anonymous
+Consider the variable of a function assignment to be part of the anonymous
 function when using the `af` text object. By default it's enabled. >
 
   let g:go_textobj_include_variable = 1
@@ -1520,7 +1521,7 @@ an empty list; `staticcheck`'s `-checks` flag will not be used.
   let g:go_metalinter_autosave_enabled = ['all']
 <
 
-When `g:go_metalinter_command is set to `golangci-lint`, the default value is
+When `g:go_metalinter_command` is set to `golangci-lint`, the default value is
 >
   let g:go_metalinter_autosave_enabled = ['govet', 'revive']
 <
@@ -1545,7 +1546,7 @@ is
 
 Overrides the command to be executed when |:GoMetaLinter| is called. By
 default it's `staticcheck`. Valid options are `golangci-lint`, `gopls`, and
-`staticcheck`..
+`staticcheck`.
 
 When the value is `gopls`, users may want to consider setting
 `g:go_gopls_staticcheck`. It can also be used as an advanced setting for users
@@ -1719,7 +1720,7 @@ By default, it is `['-remote=auto']`.
 
 The analyses settings for `gopls`.
 
-The Expected value is either `v:null` or a dictionary. The dictionary will be
+The expected value is either `v:null` or a dictionary. The dictionary will be
 provided to `gopls` via json-rpc, so dictionary values need to be of the
 appropriate type for Vim to convert to JSON (e.g. truthy dictionary values
 should be `v:true` or `v:false`). By default, it is `v:null`.
@@ -1885,7 +1886,6 @@ alternatively absolute paths can be used, too. Checkout
 Specifies that, rather than using a template, the package name is used if a
 new Go file is created. Checkout |'g:go_template_autocreate'| for more info.
 By default the template file specified by |'g:go_template_file'| is used.
-
 >
   let g:go_template_use_pkg = 0
 <
@@ -1910,15 +1910,15 @@ Define the tool to be used for |:GoDecls|. Valid options are `ctrlp.vim`,
 
 Echoes information about various Go commands, such as `:GoBuild`, `:GoTest`,
 `:GoCoverage`, etc... Useful to disable if you use the statusline integration,
-i.e: |go#statusline#Show()|. By default it's enabled
+i.e.: |go#statusline#Show()|. By default it's enabled
 >
       let g:go_echo_command_info = 1
 <
                                                        *'g:go_echo_go_info'*
 
 Use this option to show the identifier information when code completion is
-done. By default it's enabled. >
-
+done. By default it's enabled.
+>
       let g:go_echo_go_info = 1
 <
 Please note that 'noshowmode' must be set for this feature to work correctly.
@@ -2114,7 +2114,7 @@ Highlight printf-style formatting verbs inside string literals.
 <
                                       *'g:go_highlight_variable_declarations'*
 
-Highlight variable names in variable declarations (`x` in ` x :=`).
+Highlight variable names in variable declarations (`x` in `x :=`).
 >
   let g:go_highlight_variable_declarations = 0
 <
@@ -2179,7 +2179,7 @@ features:
   * Stack operation continue/next/step out.
 
 This feature requires either Vim 8.0.0087 or newer with the |+job| feature or
-Neovim. This features also requires Delve 1.0.0 or newer, and it is
+Neovim. This feature also requires Delve 1.0.0 or newer, and it is
 recommended to use Go 1.10 or newer, as its new caching will speed up
 recompiles.
 
@@ -2192,7 +2192,7 @@ to the program; for example:
 >
     :GoDebugStart . -someflag value
 <
-This may take few seconds. After the code is compiled you'll see three new
+This may take a few seconds. After the code is compiled you'll see three new
 windows: the stack trace on left side, the variable list on the bottom-left,
 and program output at the bottom.
 
@@ -2274,9 +2274,9 @@ rest of the commands and mappings become available after executing
 :GoDebugTestFunc [expand]
 
     Behaves the same as |:GoDebugTest| and implicitly adds `-test.run` to run
-    the nearest test or example function (i.e the nearest function declaration
-    that matches `func Test` or `func Example`) at or previous to the cursor.
-    Search will not wrap around when at the top of the file.
+    the nearest test or example function (i.e. the nearest function
+    declaration that matches `func Test` or `func Example`) at or previous to
+    the cursor.  Search will not wrap around when at the top of the file.
 
                                                              *:GoDebugRestart*
 :GoDebugRestart
@@ -2379,7 +2379,7 @@ DEBUGGER SETTINGS~
 
 Controls the window layout for debugging mode. This is a |dict| with four
 possible keys: "vars", "stack", "goroutines", and "out"; each of the new
-windows will be created in that that order with the commands in the value. The
+windows will be created in that order with the commands in the value. The
 current window is made the only window before creating the debug windows
 unless `g:go_debug_windows` is empty. See also |'g:go_debug_preserve_layout'|.
 
@@ -2428,19 +2428,19 @@ Only the customizations desired need to be provided; the debugger will use its
 default key mappings for any mapping not defined here.
 
 This value should be a dictionary whose keys are the plugin mapping commands
-(e.g.  `(go-debug-continue)`). The values are dictionaries with two keys.
+(e.g.  `(go-debug-continue)`). The values are dictionaries with two keys:
 `key` and `attributes`.
 
 `key` is expected to be the key to map (i.e. it's the `lhs` in a mapping).
 `key` can be empty or missing to prevent a key mapping from being applied for
-one the named mappings.
+one of the named mappings.
 
 `arguments` is the string of `map-arguments` for the mapping (e.g.
 `<nowait>`).
 
 The first item must be the `lhs` to use for the mapping. The optional
 second item is for `:map-arguments`. All mappings will always be `:map-local`,
-so there is never a need to include `"<buffer>"` in the the arguments.
+so there is never a need to include `"<buffer>"` in the arguments.
 >
   let g:go_debug_mappings = {
     \ '(go-debug-continue)': {'key': 'c', 'arguments': '<nowait>'},
@@ -2503,7 +2503,7 @@ FAQ TROUBLESHOOTING                                     *go-troubleshooting*
 How do I troubleshoot problems?~
 
 One of the best ways to understand what vim-go is doing and the output from
-the tools to which it delegates is to use leverage the features described in
+the tools to which it delegates is to leverage the features described in
 |'g:go_debug'|.
 
 Completion and other functions that use `gopls` don't work~
@@ -2525,7 +2525,7 @@ concurrently with an LSP client like vim-lsp. Instead of disabling vim-go's
 use of `gopls`, you may prefer to configure vim-go to share the `gopls`
 instance with other LSP plugins. 'g:go_gopls_options' can be used to configure
 how vim-go starts `gopls` so that the instance can be shared with other
-plugins and vim-go user's can leverage the full power of vim-go.
+plugins and vim-go users can leverage the full power of vim-go.
 
 I only want vim-go's syntax highlighting~
 
@@ -2549,7 +2549,7 @@ To see where vim-go is being loaded from run
 
 The output will show the path to the `autoload/go/config.vim` that was loaded
 by Vim. Make sure the root of the path to output by the command is the path
-from which vim-go is expected to sourced. If it is not rooted as expected,
+from which vim-go is expected to be sourced. If it is not rooted as expected,
 then there are multiple copies of vim-go installed; remove the unexpected
 copies.
 
@@ -2625,7 +2625,7 @@ wrapper script; for example if you would like to run `goapp` instead of `go`:
 >
      PATH="$HOME/gobin/:$PATH" vim
 <
-   Alternatively you you could set `$PATH` in your vimrc with an |:autocmd|.
+   Alternatively you could set `$PATH` in your vimrc with an |:autocmd|.
 
 
 How do I use vim-go with syntastic?~
