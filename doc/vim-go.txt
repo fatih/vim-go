@@ -88,9 +88,9 @@ instead, please do so with caution; it is a _development_ branch.
 vim-go follows the standard runtime path structure and should work with any of
 the major plugin managers.
 
-For Pathogen or Vim |packages|, just clone the repo. For other plugin managers,
-you may also need to add the lines to your vimrc to execute the plugin
-manager's install command.
+For Pathogen or Vim |packages|, just clone the repo. For other plugin
+managers, you may also need to add the lines to your vimrc to execute the
+plugin manager's install command.
 
 *  Vim 8 |packages| >
 
@@ -1268,7 +1268,7 @@ static mappings. By default it's enabled.
 Use this option to auto |:GoFmt| on save. When both 'g:go_imports_autosave'
 and 'g:go_fmt_autosave' are enabled and both 'g:go_fmt_command' and
 'g:go_imports_mode' are set to `goimports`, `goimports` will be run only once.
-By default it's enabled. 
+By default it's enabled.
 >
   let g:go_fmt_autosave = 1
 <
@@ -2274,9 +2274,9 @@ rest of the commands and mappings become available after executing
 :GoDebugTestFunc [expand]
 
     Behaves the same as |:GoDebugTest| and implicitly adds `-test.run` to run
-    the nearest test or example function (i.e. the nearest function declaration
-    that matches `func Test` or `func Example`) at or previous to the cursor.
-    Search will not wrap around when at the top of the file.
+    the nearest test or example function (i.e. the nearest function
+    declaration that matches `func Test` or `func Example`) at or previous to
+    the cursor.  Search will not wrap around when at the top of the file.
 
                                                              *:GoDebugRestart*
 :GoDebugRestart
