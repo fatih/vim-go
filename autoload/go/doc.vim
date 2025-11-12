@@ -93,7 +93,9 @@ function! s:GodocView(newposition, position, content, package) abort
       call popup_clear()
 
       let borderchars = ['-', '|', '-', '|', '+', '+', '+', '+']
-      if &encoding == "utf-8"
+      if exists('g:go_borderchars')
+        let borderchars = g:go_borderchars
+      elseif &encoding == "utf-8"
         let borderchars = [ "═", "║", "═", "║", "╔","╗", "╝", "╚" ]
       endif
 
