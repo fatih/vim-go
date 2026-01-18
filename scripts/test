@@ -26,7 +26,7 @@ uploadcoverage=""
 while getopts "hvcur:" option; do
   case "$option" in
       h) _usage; exit 0 ;;
-      v) verbose=1; ;;
+      v) verbose=1 ;;
       r) run=$OPTARG ;;
       c) coverage="-c" ;;
       u) uploadcoverage=1 ;;
