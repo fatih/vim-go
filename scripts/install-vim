@@ -19,7 +19,13 @@ case "$vim" in
     # This follows the version in Ubuntu LTS. Vim's master branch isn't always
     # stable, and we don't want to have the build fail because Vim introduced a
     # bug.
-    tag="v8.2.5072"
+    # Currently, 8.2.5072 is actually the greatest patch number applied in the
+    # vim installed by Ubuntu 22.04 LTS's package, so arguably v8.2.5072 should
+    # be used here, but there's a fix in v8.2.5135 that we need to compile on
+    # trixie and the distance between 8.2.5072 and 8.2.5135 is not too great,
+    # so use that instead.
+    # ref: https://stackoverflow.com/a/79376005
+    tag="v8.2.5135"
     giturl="https://github.com/vim/vim"
 
     ;;
