@@ -25,9 +25,9 @@ function! s:docURL(...) abort
     " will strip any version information from the URL.
     let [l:out, l:err] = go#lsp#DocLink()
     if !(l:err || len(l:out) is 0)
-      let l:url = printf('%s/%s', go#config#DocUrl(), l:out)
+      let l:url = l:out
     else
-      let l:url = ''
+      let l:url = call('s:docURLFor', a:000)
     endif
   else
     let l:url = call('s:docURLFor', a:000)
