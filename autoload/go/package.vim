@@ -320,7 +320,7 @@ function! go#package#Complete(ArgLead, CmdLine, CursorPos) abort
         endif
 
         if dir !=# path
-          let candidate = substitute(candidate, '^' . dir, path, 'g')
+          let candidate = substitute(candidate, '^' . escape(dir, '\\'), path, 'g')
         else
           let candidate = candidate[len(dir)+1:]
         endif
