@@ -19,7 +19,7 @@ endif
 
 let s:save_cpo = &cpo
 set cpo-=C
-if filereadable("makefile") || filereadable("Makefile")
+if filereadable("GNUmakefile") || filereadable("makefile") || filereadable("Makefile")
   CompilerSet makeprg=make
 else
   CompilerSet makeprg=go\ build
