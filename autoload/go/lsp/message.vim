@@ -269,6 +269,15 @@ function! go#lsp#message#Hover(file, line, col) abort
        \ }
 endfunction
 
+function! go#lsp#message#DocLink(file) abort
+  let l:params = s:textDocumentParams(a:file)
+  return {
+          \ 'notification': 0,
+          \ 'method': 'textDocument/documentLink',
+          \ 'params': l:params,
+       \ }
+endfunction
+
 function! go#lsp#message#Rename(file, line, col, newName) abort
   let l:params = s:textDocumentPositionParams(a:file,  a:line, a:col)
   let l:params.newName = a:newName
@@ -304,7 +313,8 @@ function! go#lsp#message#ConfigurationResult(items) abort
     let l:workspace = go#path#FromURI(l:item.scopeUri)
     let l:config = {
           \ 'buildFlags': [],
-          \ 'hoverKind': 'Structured',
+          \ 'hoverKind': 'FullDocumentation',
+          \ 'linkTarget': substitute(go#config#DocUrl(), 'https\?://', '', ''),
           \ }
     let l:buildtags = go#config#BuildTags()
     if buildtags isnot ''
@@ -427,6 +437,14 @@ endfunction
 
 function! s:position(line, col) abort
   return {'line': a:line, 'character': a:col}
+endfunction
+
+function! s:textDocumentParams(fname) abort
+  return {
+          \   'textDocument': {
+          \       'uri': go#path#ToURI(a:fname)
+          \   },
+       \ }
 endfunction
 
 function! s:textDocumentPositionParams(fname, line, col) abort
