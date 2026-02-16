@@ -49,7 +49,7 @@ fi
 ###################
 printf "Running vim-vimlint ... " >&2
 set +e
-lint=$(export VIMLINT_VIM='vim +"set maxfuncdepth=200"'; sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint.sh" \
+lint=$(export VIMLINT_VIM='vim +"set maxfuncdepth=200"'; sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint-grep.sh" \
   -p "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlparser" \
   -l "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint" \
   -u \

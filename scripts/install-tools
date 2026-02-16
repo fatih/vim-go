@@ -28,6 +28,8 @@ echo "Installing lint tools"
   [ -d "vim-vimhelplint" ] || git clone --depth 1 --quiet https://github.com/machakann/vim-vimhelplint
   [ -d "vim-vimlparser" ]  || git clone --depth 1 --quiet https://github.com/ynkdir/vim-vimlparser
   [ -d "vim-vimlint" ]     || git clone --depth 1 --quiet https://github.com/syngan/vim-vimlint
+  sed -e 's/^#set -x/set -x/g' -e 's/\<egrep\>/grep -E/g'  vim-vimlint/bin/vimlint.sh > vim-vimlint/bin/vimlint-grep.sh
+  chmod ugo+x vim-vimlint/bin/vimlint-grep.sh
 )
 
 echo "vim-go tools installed to: $installdir/share/vim/vimgo/pack/vim-go/start"
