@@ -10,9 +10,9 @@ cd "$vimgodir"
 ### Setup Vim and other dependencies.
 #####################################
 if [ -z "${1:-}" ]; then
-  echo "unknown version: '${1:-}'"
-  echo "First argument must be 'vim-8.2', 'vim-9.1' or 'nvim'."
-	exit 1
+  printf "unknown version: '%s'\n" "${1:-}" >&2
+  printf "First argument must be 'vim-8.2', 'vim-9.1' or 'nvim'.\n" >&2
+  exit 1
 fi
 
 vim=$1
@@ -21,33 +21,35 @@ export GOPATH=$vimdir
 export PATH="${GOPATH}/bin:$PATH"
 
 if [ ! -f "$vimdir/bin/vim" ]; then
-	echo "$vimdir/bin/vim doesn't exist; did you install it with the install-vim script?"
-	exit 1
+  printf "%s/bin/vim doesn't exist; did you install it with the install-vim script?\n" "$vimdir" >&2
+  exit 1
 fi
 
 ### Run vint
 ############
 failed=0
-printf "Running vint ... "
+printf "Running vint ... " >&2
 if [ -x "$(command -v vint)" ]; then
   lint=$(vint "$vimgodir" 2>&1 ||:)
   if [ -n "$lint" ]; then
-    echo "FAILED"
-    echo "$lint"
-    echo
-    failed=6
+    printf "FAILED\n" >&2
+    printf "$lint" >&2
+    printf "\n" >&2
+    # set failed to 3, because exit code 2 is used by python to indicate a problem running a command.
+    failed=3
   else
-    echo "PASSED"
+    printf "PASSED\n" >&2
   fi
 else
-  echo "SKIPPED"
-  echo "'vint' binary not found; use 'pip install vim-vint' to install it."
+  printf "SKIPPED\n" >&2
+  printf "vint binary not found; use 'pip install vim-vint' to install it.\n" >&2
 fi
 
 ### Run vim-vimlint
 ###################
-printf "Running vim-vimlint ... "
-lint=$(sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint.sh" \
+printf "Running vim-vimlint ... " >&2
+set +e
+lint=$(export VIMLINT_VIM='vim +"set maxfuncdepth=200"'; sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint-grep.sh" \
   -p "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlparser" \
   -l "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint" \
   -u \
@@ -56,17 +58,23 @@ lint=$(sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint.sh"
   "$vimgodir" \
   2>&1)
 result="$?"
+set -e
 if [ "$result" -eq "2" ]; then
-  echo "$lint"
-  echo
-  failed=6
+  printf "FAILED\n" >&2
+  printf "$lint" >&2
+  printf "\n" >&2
+  failed=4
+elif [ "$result" -ne "0" ]; then
+  printf "FAILED\n" >&2
+  printf "$lint" >&2
+  printf "\n" >&2
 else
-  echo "PASSED"
+  printf "PASSED\n" >&2
 fi
 
 ### Run vimhelplint.
 ####################
-printf "Running vimhelplint ... "
+printf "Running vimhelplint ... " >&2
 
 # set modeline explicitly so that the modeline will be respected when run as root.
 lint=$($vimdir/bin/vim -esNR \
@@ -78,11 +86,11 @@ lint=$($vimdir/bin/vim -esNR \
   +q \
   2>&1 ||:)
 if [ "$lint" ]; then
-  echo "FAILED"
-  echo "$lint"
-  failed=6
+  printf "FAILED\n" >&2
+  printf "$lint" >&2
+  failed=5
 else
-  echo "PASSED"
+  printf "PASSED\n" >&2
 fi
 
 exit "$failed"
