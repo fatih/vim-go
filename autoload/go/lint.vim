@@ -500,6 +500,8 @@ function! s:errorformat(metalinter) abort
     endif
     return l:efm . '%f:%l:%c:%t:\ %m,%f:%l:%c::\ %m,%f:%l::%t:\ %m'
   endif
+
+  return &errorformat
 endfunction
 
 function! s:preserveerrors(autosave, listtype) abort
