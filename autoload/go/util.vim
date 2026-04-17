@@ -76,7 +76,7 @@ function! go#util#env(key) abort
     return s:env_cache[l:key]
   endif
 
-  if executable('go')
+  if executable('go') && exists('*go#util#'.l:key)
     let l:var = call('go#util#'.l:key, [])
     if go#util#ShellError() != 0
       call go#util#EchoError(printf("'go env %s' failed", toupper(l:key)))
