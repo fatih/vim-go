@@ -7,8 +7,8 @@ install:
 	@echo "==> Installing Vims: $(VIMS)"
 	@for vim in $(VIMS); do \
 		./scripts/install-vim $$vim; \
-		./scripts/install-tools $$vim; \
 	done
+	./scripts/install-tools $(firstword $(VIMS));
 
 test:
 	@echo "==> Running tests for $(VIMS)"

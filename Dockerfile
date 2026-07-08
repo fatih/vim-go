@@ -20,8 +20,6 @@ RUN scripts/install-vim nvim
 COPY . /vim-go/
 WORKDIR /vim-go
 
-RUN scripts/install-tools vim-8.2
 RUN scripts/install-tools vim-9.1
-RUN scripts/install-tools nvim
 
 ENTRYPOINT ["make"]

@@ -22,7 +22,9 @@ if [ -z "${1:-}" ]; then
 fi
 
 dir="/tmp/vim-go-test/$1-install"
-export GOPATH=$dir
+toolsdir="/tmp/vim-go-test/tools-install"
+
+export GOPATH=$toolsdir
 export GO111MODULE=on
 export PATH="${GOPATH}/bin:$PATH"
 shift
@@ -35,13 +37,13 @@ fi
 if [ $coverage -eq 1 ]; then
   covimerage -q run --report-file /tmp/vim-go-test/cov-profile.txt --append \
     $dir/bin/vim --noplugin -u NONE -i NONE -N -n \
-      +"set shm+=WAFI rtp^=$vimgodir packpath=$dir/share/vim/vimgo" \
+      +"set shm+=WAFI rtp^=$vimgodir packpath=$toolsdir/share/vim/vimgo" \
       +'filetype plugin indent on' \
       +'packloadall!' \
       "$@"
 else
   $dir/bin/vim --noplugin -u NONE -i NONE -N -n \
-    +"set shm+=WAFI rtp^=$vimgodir packpath=$dir/share/vim/vimgo" \
+    +"set shm+=WAFI rtp^=$vimgodir packpath=$toolsdir/share/vim/vimgo" \
     +'filetype plugin indent on' \
     +'packloadall!' \
     "$@"

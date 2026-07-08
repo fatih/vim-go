@@ -49,7 +49,8 @@ fi
 
 vim=$1
 vimdir="/tmp/vim-go-test/$vim-install"
-export GOPATH=$vimdir
+toolsdir="/tmp/vim-go-test/tools-install"
+export GOPATH=$toolsdir
 export PATH="${GOPATH}/bin:$PATH"
 
 if [ ! -f "$vimdir/bin/vim" ]; then
