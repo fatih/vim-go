@@ -9,9 +9,6 @@
 
 set -euC
 
-vimgodir=$(cd -P "$(dirname "$0")/.." > /dev/null && pwd)
-cd "$vimgodir"
-
 vim=${1:-}
 
 case "$vim" in
@@ -54,6 +51,11 @@ esac
 
 srcdir="/tmp/vim-go-test/$1-src"
 installdir="/tmp/vim-go-test/$1-install"
+toolsdir="/tmp/vim-go-test/tools-install"
+
+if [ ! -d "$toolsdir" ]; then
+  mkdir -p "$toolsdir"
+fi
 
 # Use cached installdir.
 if [ -d "$installdir" ]; then
@@ -76,13 +78,9 @@ if [ "$1" = "nvim" ]; then
   curl -Ls https://github.com/neovim/neovim/releases/download/$tag/nvim-linux64.tar.gz |
     tar xzf - -C /tmp/vim-go-test/
   mv /tmp/vim-go-test/nvim-linux64 /tmp/vim-go-test/nvim-install
-  mkdir -p "$installdir/share/nvim/runtime/pack/vim-go/start"
-  ln -s "$vimgodir" "$installdir/share/nvim/runtime/pack/vim-go/start/vim-go"
 
   # Consistent paths makes calling things easier.
   mv "$installdir/bin/nvim" "$installdir/bin/vim"
-  mkdir -p "$installdir/share/vim/vimgo/pack"
-  ln -s "$installdir/share/nvim/runtime/pack/vim-go" "$installdir/share/vim/vimgo/pack/vim-go"
 
 # Build Vim from source.
 else
@@ -95,8 +93,6 @@ else
 
   ./configure --prefix="$installdir" --with-features=huge --disable-gui
   make install
-  mkdir -p "$installdir/share/vim/vimgo/pack/vim-go/start"
-  ln -s "$vimgodir" "$installdir/share/vim/vimgo/pack/vim-go/start/vim-go"
 fi
 
 # Don't really need source after successful install.

@@ -17,8 +17,9 @@ fi
 
 vim=$1
 vimdir="/tmp/vim-go-test/$vim-install"
-export GOPATH=$vimdir
-export PATH="${GOPATH}/bin:$PATH"
+toolsdir="/tmp/vim-go-test/tools-install"
+export GOPATH=$toolsdir
+export PATH="${GOPATH}/bin:$vimdir/bin:$PATH"
 
 if [ ! -f "$vimdir/bin/vim" ]; then
   printf "%s/bin/vim doesn't exist; did you install it with the install-vim script?\n" "$vimdir" >&2
@@ -31,9 +32,8 @@ failed=0
 printf "Running vint ... " >&2
 if [ -x "$(command -v vint)" ]; then
   lint=$(vint "$vimgodir" 2>&1 ||:)
-  if [ -n "$lint" ]; then
+  if ! vint "$vimgodir" 1>&2; then
     printf "FAILED\n" >&2
-    printf "$lint" >&2
     printf "\n" >&2
     # set failed to 3, because exit code 2 is used by python to indicate a problem running a command.
     failed=3
@@ -49,9 +49,9 @@ fi
 ###################
 printf "Running vim-vimlint ... " >&2
 set +e
-lint=$(export VIMLINT_VIM='vim +"set maxfuncdepth=200"'; sh "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint-grep.sh" \
-  -p "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlparser" \
-  -l "$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint" \
+lint=$(export VIMLINT_VIM="$vimdir"'/bin/vim +"set maxfuncdepth=200"'; sh "$toolsdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint/bin/vimlint-grep.sh" \
+  -p "$toolsdir/share/vim/vimgo/pack/vim-go/start/vim-vimlparser" \
+  -l "$toolsdir/share/vim/vimgo/pack/vim-go/start/vim-vimlint" \
   -u \
   -c func_abort=1 \
   -e EVL110=1 -e EVL103=1 -e EVL104=1 -e EVL102=1 \
@@ -78,7 +78,7 @@ printf "Running vimhelplint ... " >&2
 
 # set modeline explicitly so that the modeline will be respected when run as root.
 lint=$($vimdir/bin/vim -esNR \
-  --cmd "set rtp+=$vimdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
+  --cmd "set rtp+=$toolsdir/share/vim/vimgo/pack/vim-go/start/vim-vimhelplint/" \
   --cmd 'set modeline' \
   +'filetype plugin on' \
   +"e $vimgodir/doc/vim-go.txt" \
