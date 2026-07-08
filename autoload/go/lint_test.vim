@@ -54,7 +54,10 @@ func! s:gometa(metalinter) abort
 
     call gotest#assert_quickfix(actual, expected)
   finally
-      call call(RestoreGOPATH, [])
+    if a:metalinter == 'golangci-lint'
+      call go#util#Exec(['golangci-lint', 'cache', 'clean'])
+    endif
+    call call(RestoreGOPATH, [])
   endtry
 endfunc
 
@@ -173,6 +176,9 @@ func! s:gometaautosave(metalinter, withList) abort
 
     call gotest#assert_quickfix(l:actual, l:expected)
   finally
+    if a:metalinter == 'golangci-lint'
+      call go#util#Exec(['golangci-lint', 'cache', 'clean'])
+    endif
     call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
