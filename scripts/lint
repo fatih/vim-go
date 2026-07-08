@@ -31,9 +31,8 @@ failed=0
 printf "Running vint ... " >&2
 if [ -x "$(command -v vint)" ]; then
   lint=$(vint "$vimgodir" 2>&1 ||:)
-  if [ -n "$lint" ]; then
+  if ! vint "$vimgodir" 1>&2; then
     printf "FAILED\n" >&2
-    printf "$lint" >&2
     printf "\n" >&2
     # set failed to 3, because exit code 2 is used by python to indicate a problem running a command.
     failed=3

@@ -5,7 +5,7 @@ RUN apt-get update -y --allow-insecure-repositories && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN pip3 install vim-vint --break-system-packages
+RUN pip3 install setuptools==81.0.0 vim-vint --break-system-packages
 
 RUN useradd -ms /bin/bash -d /vim-go vim-go
 USER vim-go
