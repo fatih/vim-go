@@ -1949,15 +1949,15 @@ function s:applyTextEdits(bufnr, msg) abort
     let l:startcontent = ''
     if l:msg.range.start.character > 0
       let l:startcontent = getline(l:startline)
-      let l:preSliceEnd = go#lsp#lsp#PositionOf(l:startcontent, l:msg.range.start.character-1)
-      let l:startcontent = strcharpart(l:startcontent, 0, l:preSliceEnd) "l:startcontent[:l:preSliceEnd]
+      let l:preSliceEnd = go#lsp#lsp#PositionOf(l:startcontent, l:msg.range.start.character) - 1
+      let l:startcontent = strpart(l:startcontent, 0, l:preSliceEnd)
     endif
 
     let l:endcontent = getline(l:endline)
     let l:postSliceStart = 0
     if l:msg.range.end.character > 0
-      let l:postSliceStart = go#lsp#lsp#PositionOf(l:endcontent, l:msg.range.end.character-1)
-      let l:endcontent = strcharpart(l:endcontent, l:postSliceStart) "l:endcontent[(l:postSliceStart):]
+      let l:postSliceStart = go#lsp#lsp#PositionOf(l:endcontent, l:msg.range.end.character) - 1
+      let l:endcontent = strpart(l:endcontent, l:postSliceStart)
     endif
 
     " There isn't an easy way to replace the text in a byte or character

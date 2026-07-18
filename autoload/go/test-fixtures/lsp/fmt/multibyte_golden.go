@@ -21,4 +21,8 @@ func main() {
 	fmt.Println("vim-go") // é  	a
 	fmt.Println("vim-go") // é
 
+	_ = []string{"ÁÁÁ", "xxx"}
+	_ = []string{"中中中", "xxx"}
+	_ = []string{"⌘⌘⌘", "xxx"}
+
 }
