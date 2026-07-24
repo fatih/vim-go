@@ -515,6 +515,46 @@ function! Test_goImportStringHighlight() abort
   endtry
 endfunc
 
+function! Test_goStringContinuation_notImportHighlight() abort
+  syntax on
+  let g:go_gopls_enabled = 0
+
+  let l:wd = getcwd()
+  " A string with backslash escapes on a continuation line inside a var block
+  " should be highlighted as goString, not goImportString. See issue #3699.
+  let l:dir = gotest#write_file('highlight/string-continuation.go', [
+        \ 'package main',
+        \ '',
+        \ 'import "fmt"',
+        \ '',
+        \ 'var s = "" +',
+        \ "\t\"\\\"\\\"\"",
+        \ '',
+        \ 'var (',
+        \ "\tss string = \"\" +",
+        \ "\t\t\"\x1f\\\"\\\"\"",
+        \ ')',
+        \ '',
+        \ 'const (',
+        \ "\tcs string = \"\" +",
+        \ "\t\t\"\\\"\\\"\"",
+        \ ')',
+        \ '',
+        \ 'func main() {',
+        \ "\tfmt.Println(\"vim-go\")",
+        \ '}',
+        \ ])
+
+  try
+    let l:pos = getcurpos()
+    let l:actual = synIDattr(synID(l:pos[1], l:pos[2], 1), 'name')
+    call assert_equal('goString', l:actual)
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:dir, 'rf')
+  endtry
+endfunc
+
 function! Test_goReceiverHighlight() abort
   syntax on
   let g:go_gopls_enabled = 0
