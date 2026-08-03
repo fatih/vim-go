@@ -80,7 +80,11 @@ function! go#path#BinPath() abort
   " we can use it, otherwise use default GOPATH
   let l:bin_path = go#util#env('gobin')
   if l:bin_path isnot ''
-    let l:bin_path = $GOBIN
+    if $GOBIN isnot ''
+      return $GOBIN
+    else
+      return l:bin_path
+    endif
   else
     let l:go_paths = split(go#path#Default(), go#util#PathListSep())
     if len(l:go_paths) == 0
@@ -88,7 +92,6 @@ function! go#path#BinPath() abort
     endif
     let l:bin_path = expand(l:go_paths[0] . '/bin/')
   endif
-
   return l:bin_path
 endfunction
 
