@@ -273,6 +273,12 @@ g<C-LeftMouse>
 
     The per-window location stack is shared with |:GoDefType|.
 
+    When Vim supports |settagstack()| with the "t" action, the location stack
+    is Vim's own tag stack. It is then also shared with |:tag|, |:pop|,
+    |:tags|, CTRL-t, and any other plugin that uses the tag stack. The "t"
+    action was added by Vim patch 8.2.0077:
+    https://github.com/vim/vim/commit/271fa08a35b8d320d3a40db4ddae83b698fdd4fb
+
                                                                   *:GoDefType*
 :GoDefType
 
@@ -325,7 +331,9 @@ CTRL-t
 
     By default [count]CTRL-t is enabled to invoke :GoDefPop.  Similarly,
     hitting CTRL-t without a prior count is equivalent to `:GoDefPop 1`.  See
-    |'g:go_def_mapping_enabled'| to disable this.
+    |'g:go_def_mapping_enabled'| to disable this.  When the location stack is
+    Vim's own tag stack, CTRL-t is left alone, because Vim's builtin CTRL-t
+    already pops that stack.
 
                                                                       *:GoRun*
 :GoRun[!] [expand]
