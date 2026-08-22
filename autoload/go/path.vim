@@ -79,9 +79,7 @@ function! go#path#BinPath() abort
   " check if our global custom path is set, if not check if GOBIN is set so
   " we can use it, otherwise use default GOPATH
   let l:bin_path = go#util#env('gobin')
-  if l:bin_path isnot ''
-    let l:bin_path = $GOBIN
-  else
+  if l:bin_path is ''
     let l:go_paths = split(go#path#Default(), go#util#PathListSep())
     if len(l:go_paths) == 0
       return '' "nothing found
