@@ -8,6 +8,9 @@ IMPROVEMENTS:
 * Improving handling of strings from delve that Neovim marshals to a Blob
   value.
   [[GH-3744]](https://github.com/fatih/vim-go/pull/3744)
+* Handle Go 1.27's support for providing a default value for `go env GOBIN`
+  when GOBIN is otherwise undefined.
+  [[GH-3753]](https://github.com/fatih/vim-go/pull/3753)
 
 BUG FIXES:
 * Fix delay when listing breakpoints when stepping in Neovim.
