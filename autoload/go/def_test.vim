@@ -206,6 +206,92 @@ func! Test_DefJump_gopls_MultipleCodeUnit_last() abort
   endtry
 endfunc
 
+func! Test_DefStackPop() abort
+  if !go#util#has_job()
+    return
+  endif
+
+  let l:wd = getcwd()
+  try
+    let g:go_def_mode = 'gopls'
+
+    let l:tmp = gotest#write_file('defstack/pop/pop.go', [
+          \ 'package pop',
+          \ '',
+          \ 'func Example() {',
+          \ "\t\x1fcallee()",
+          \ '}',
+          \ '',
+          \ 'func callee() {',
+          \ '}',
+          \ ] )
+
+    let l:from = getpos('.')
+    let l:expected = [0, 7, 6, 0]
+
+    call go#def#Jump('', 0)
+
+    let l:start = reltime()
+    while getpos('.') != l:expected && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+
+    call assert_equal(l:expected, getpos('.'))
+
+    " popping the stack should return to the position that the jump was made
+    " from.
+    call go#def#StackPop()
+
+    call assert_equal(l:from, getpos('.'))
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
+func! Test_DefStackClear() abort
+  if !go#util#has_job()
+    return
+  endif
+
+  let l:wd = getcwd()
+  try
+    let g:go_def_mode = 'gopls'
+
+    let l:tmp = gotest#write_file('defstack/clear/clear.go', [
+          \ 'package clear',
+          \ '',
+          \ 'func Example() {',
+          \ "\t\x1fcallee()",
+          \ '}',
+          \ '',
+          \ 'func callee() {',
+          \ '}',
+          \ ] )
+
+    let l:expected = [0, 7, 6, 0]
+
+    call go#def#Jump('', 0)
+
+    let l:start = reltime()
+    while getpos('.') != l:expected && reltimefloat(reltime(l:start)) < 10
+      sleep 100m
+    endwhile
+
+    call assert_equal(l:expected, getpos('.'))
+
+    " once the stack has been cleared, there's nowhere to pop back to, so the
+    " cursor should not move.
+    call go#def#StackClear()
+    call go#def#StackPop()
+
+    call assert_equal(l:expected, getpos('.'))
+  finally
+    call go#util#Chdir(l:wd)
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

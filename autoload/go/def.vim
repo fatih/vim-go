@@ -5,6 +5,49 @@ set cpo&vim
 let s:go_stack = []
 let s:go_stack_level = 0
 
+" s:usetagstack returns 1 when Vim's native tag stack is used to record the
+" locations that jumps to definitions were made from and 0 when vim-go's own
+" stack is used instead. Recording a jump needs settagstack()'s "t" action,
+" which was added by patch 8.2.0077
+" (https://github.com/vim/vim/commit/271fa08a35b8d320d3a40db4ddae83b698fdd4fb).
+function! s:usetagstack() abort
+  return exists('*settagstack') && has('patch-8.2.0077')
+endfunction
+
+" s:stack returns the list of locations that jumps to definitions were made
+" from and the index of the active entry within it. Each entry is a dictionary
+" with file, line, col, and ident keys. The oldest entry is first.
+function! s:stack() abort
+  if !s:usetagstack()
+    return [s:go_stack, s:go_stack_level]
+  endif
+
+  let l:tagstack = gettagstack(win_getid())
+
+  let l:stack = []
+  for l:item in l:tagstack.items
+    call add(l:stack, {
+          \ 'file': fnamemodify(bufname(l:item.from[0]), ':p'),
+          \ 'line': l:item.from[1],
+          \ 'col': l:item.from[2],
+          \ 'ident': get(l:item, 'tagname', ''),
+        \ })
+  endfor
+
+  return [l:stack, l:tagstack.curidx - 1]
+endfunction
+
+" s:setstacklevel makes the entry at index level the active entry of the
+" stack.
+function! s:setstacklevel(level) abort
+  if s:usetagstack()
+    call settagstack(win_getid(), {'curidx': a:level + 1})
+    return
+  endif
+
+  let s:go_stack_level = a:level
+endfunction
+
 " go#def#Jump jumps to a definition. Valid modes are 'tab', 'split', 'vsplit',
 " and the empty string, ''.
 function! go#def#Jump(mode, type) abort
@@ -106,7 +149,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     let ident = parts[3]
   endif
 
-  if exists('*settagstack') && has('patch-8.2.0077')
+  if s:usetagstack()
     let l:tag = expand('<cword>')
     let l:pos = [bufnr('')] + getcurpos()[1:]
     let l:stack_entry = {'bufnr': l:pos[0], 'from': l:pos, 'tagname': l:tag}
@@ -159,7 +202,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
   " also align the line to middle of the view
   normal! zz
 
-  if exists('*settagstack') && has('patch-8.2.0077')
+  if s:usetagstack()
     " Jump was successful, write previous location to tag stack.
     let l:winid = win_getid()
     let l:stack = gettagstack(l:winid)
@@ -200,7 +243,9 @@ function! go#def#SelectStackEntry() abort
 endfunction
 
 function! go#def#StackUI() abort
-  if len(s:go_stack) == 0
+  let [l:stack, l:level] = s:stack()
+
+  if len(l:stack) == 0
     call go#util#EchoError("godef stack empty")
     return
   endif
@@ -208,11 +253,11 @@ function! go#def#StackUI() abort
   let stackOut = ['" <Up>,<Down>:navigate <Enter>:jump <Esc>,q:exit']
 
   let i = 0
-  while i < len(s:go_stack)
-    let entry = s:go_stack[i]
+  while i < len(l:stack)
+    let entry = l:stack[i]
     let prefix = ""
 
-    if i == s:go_stack_level
+    if i == l:level
       let prefix = ">"
     else
       let prefix = " "
@@ -223,7 +268,7 @@ function! go#def#StackUI() abort
     let i += 1
   endwhile
 
-  if s:go_stack_level == i
+  if l:level == i
     call add(stackOut, "> ")
   endif
 
@@ -235,17 +280,24 @@ function! go#def#StackUI() abort
 endfunction
 
 function! go#def#StackClear(...) abort
+  if s:usetagstack()
+    call settagstack(win_getid(), {'items': []}, 'r')
+    return
+  endif
+
   let s:go_stack = []
   let s:go_stack_level = 0
 endfunction
 
 function! go#def#StackPop(...) abort
-  if len(s:go_stack) == 0
+  let [l:stack, l:level] = s:stack()
+
+  if len(l:stack) == 0
     call go#util#EchoError("godef stack empty")
     return
   endif
 
-  if s:go_stack_level == 0
+  if l:level == 0
     call go#util#EchoError("at bottom of the godef stack")
     return
   endif
@@ -256,12 +308,14 @@ function! go#def#StackPop(...) abort
     let numPop = a:1
   endif
 
-  let newLevel = str2nr(s:go_stack_level) - str2nr(numPop)
+  let newLevel = str2nr(l:level) - str2nr(numPop)
   call go#def#Stack(newLevel + 1)
 endfunction
 
 function! go#def#Stack(...) abort
-  if len(s:go_stack) == 0
+  let [l:stack, l:level] = s:stack()
+
+  if len(l:stack) == 0
     call go#util#EchoError("godef stack empty")
     return
   endif
@@ -283,9 +337,9 @@ function! go#def#Stack(...) abort
 
   let jumpTarget = str2nr(jumpTarget) - 1
 
-  if jumpTarget >= 0 && jumpTarget < len(s:go_stack)
-    let s:go_stack_level = jumpTarget
-    let target = s:go_stack[s:go_stack_level]
+  if jumpTarget >= 0 && jumpTarget < len(l:stack)
+    call s:setstacklevel(jumpTarget)
+    let target = l:stack[jumpTarget]
 
     " jump
     if expand('%:p') != target["file"]
