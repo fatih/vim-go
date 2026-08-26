@@ -36,7 +36,7 @@ function! go#tool#Files(...) abort
     if go#util#IsWin()
       let combined .= '{{range $f := .' . sf . '}}{{$.Dir}}\{{$f}}{{printf \"\n\"}}{{end}}{{range $f := .CgoFiles}}{{$.Dir}}\{{$f}}{{printf \"\n\"}}{{end}}'
     else
-      let combined .= "{{range $f := ." . sf . "}}{{$.Dir}}/{{$f}}{{printf \"\\n\"}}{{end}}{{range $f := .CgoFiles}}{{$.Dir}}/{{$f}}{{printf \"\\n\"}}{{end}}"
+      let combined .= "{{range $f := ." . sf . "}}{{$.Dir}}/{{$f}}\n{{end}}{{range $f := .CgoFiles}}{{$.Dir}}/{{$f}}\n{{end}}"
     endif
   endfor
 
@@ -59,7 +59,7 @@ function! go#tool#Imports() abort
   if go#util#IsWin()
     let format = '{{range $f := .Imports}}{{$f}}{{printf \"\n\"}}{{end}}'
   else
-    let format = "{{range $f := .Imports}}{{$f}}{{printf \"\\n\"}}{{end}}"
+    let format = "{{range $f := .Imports}}{{$f}}\n{{end}}"
   endif
   let [l:out, l:err] = go#util#ExecInDir(['go', 'list', '-tags', go#config#BuildTags(), '-f', l:format])
   if l:err != 0
