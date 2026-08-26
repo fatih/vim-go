@@ -49,6 +49,11 @@ function! go#util#IsMac() abort
         \ go#util#Exec(['uname'])[0] =~? '^darwin'
 endfunction
 
+" IsCygwin returns 1 if current OS is Cygwin/MSYS2/GitBash, 0 otherwise
+function! go#util#IsCygwin()
+  return has('win32unix')
+endfunction
+
  " Checks if using:
  " 1) Windows system,
  " 2) And has cygpath executable,
@@ -533,6 +538,7 @@ function! go#util#OpenBrowser(url) abort
     if l:cmd =~ '^!'
         let l:cmd = substitute(l:cmd, '%URL%', '\=escape(shellescape(a:url), "#")', 'g')
         silent! exec l:cmd
+        redraw!
     elseif cmd =~ '^:[A-Z]'
         let l:cmd = substitute(l:cmd, '%URL%', '\=escape(a:url,"#")', 'g')
         exec l:cmd
