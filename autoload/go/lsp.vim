@@ -1004,21 +1004,22 @@ function! s:hoverHandler(next, diagnostic, msg) abort dict
   endif
 
   try
-    let l:value = json_decode(a:msg.contents.value)
-
     let l:msg = []
     if len(a:diagnostic) > 0
-      let l:msg = split(a:diagnostic, "\n")
+      let l:msg = split(a:diagnostic, '\n')
       let l:msg = add(l:msg, '')
     endif
-    let l:signature = split(l:value.signature, "\n")
-    let l:msg = extend(l:msg, l:signature)
+
+    let l:value = s:structuredHoverResult(a:msg.contents)
+
+    let l:msg = extend(l:msg, l:value.signature)
     if go#config#DocBalloon()
       " use synopsis instead of fullDocumentation to keep the hover window
       " small.
       let l:doc = l:value.synopsis
       if len(l:doc) isnot 0
-        let l:msg = extend(l:msg, ['', l:doc])
+        let l:msg = add(l:msg, '')
+        let l:msg = extend(l:msg, l:doc)
       endif
     endif
 
@@ -1065,13 +1066,86 @@ function! s:docFromHoverResult(msg) abort dict
     return ['Undocumented', 0]
   endif
 
-  let l:value = json_decode(a:msg.contents.value)
-  let l:doc = l:value.fullDocumentation
+  let l:value = s:structuredHoverResult(a:msg.contents)
+  let l:doc = join(l:value.fullDocumentation, "\n")
   if len(l:doc) is 0
     let l:doc = 'Undocumented'
   endif
-  let l:content = printf("%s\n\n%s", l:value.signature, l:doc)
+  let l:content = printf("%s\n\n%s", join(l:value.signature, "\n"), l:doc)
   return [l:content, 0]
+endfunction
+
+function! s:structuredHoverResult(contents) abort
+    let l:value = {
+                    \ 'fullDocumentation': [],
+                    \ 'synopsis': '',
+                    \ 'signature': [],
+                    \ 'singleLine': '',
+                    \ 'symbolName': '',
+                    \ 'linkPath': '',
+                    \ 'linkAnchor': ''
+                 \ }
+
+    if !has_key(a:contents, 'value')
+      return l:value
+    endif
+
+    let l:contents = a:contents.value
+
+    " The signature is either a multiline identifier (e.g. a struct or an
+    " interface and will therefore end with a } on a line by itself or it's a
+    " single line identifier. Check for the former first and fallback to the
+    " latter.
+    let l:parts = split(l:contents, '\n}\zs\n')
+    if len(l:parts) is 1
+      let l:parts = split(l:contents, '\n')
+    else
+      let l:parts = extend([l:parts[0]], split(l:parts[1], '\n'))
+    endif
+
+    " The first part will have been the signature. If it was a multiline
+    " signature, then it was split on '\n}\zs\n' and needs to be split again
+    " on '\n'. If it was a single line signature, then there's no harm in
+    " splitting on '\n' again. Either way, a list is returned from split.
+    let l:value.signature = split(l:parts[0], '\n')
+
+    if len(l:value.signature) is 1
+      let l:value.singleLine = s:prepareSingleLineFromSignature(0, l:value.signature[0])
+    else
+      let l:value.singleLine = join(map(copy(l:value.signature), function('s:prepareSingleLineFromSignature')), '')
+    endif
+    if l:value.singleLine[-1:] is ';'
+      let l:value.singleLine = l:value.singleLine[0:-2]
+    endif
+
+    let l:fullDocumentation = l:parts[1:]
+    let l:value.fullDocumentation = l:fullDocumentation
+
+    let l:idx= 0
+    for l:line in l:fullDocumentation
+      if l:line is ''
+        break
+      end
+      let l:idx += 1
+    endfor
+
+    let l:value.synopsis = l:fullDocumentation[0:(l:idx)]
+
+    return l:value
+endfunction
+
+function s:prepareSingleLineFromSignature(key, val) abort
+  let l:line = a:val
+  " remove comments
+  let l:line = substitute(l:line, '\s\+//.*','','g')
+  " end field lines that aren't the beginning of a struct with a semicolon
+  if l:line !~ '^\t\+{$'
+    let l:line = substitute(l:line, '$',';','')
+  endif
+  " replace leading tabs with a single space on field lines
+  let l:line = substitute(l:line,'^\t\+\ze[{}]',' ','g')
+
+  return l:line
 endfunction
 
 function! go#lsp#DocLink() abort
@@ -1081,35 +1155,33 @@ function! go#lsp#DocLink() abort
   call go#lsp#DidChange(l:fname)
 
   let l:lsp = s:lspfactory.get()
-  let l:msg = go#lsp#message#Hover(l:fname, l:line, l:col)
+  let l:msg = go#lsp#message#DocLink(l:fname)
   let l:state = s:newHandlerState('doc url')
-  let l:resultHandler = go#promise#New(function('s:docLinkFromHoverResult', [], l:state), 10000, '')
+  let l:resultHandler = go#promise#New(function('s:handleDocLink', [l:line, l:col], l:state), 10000, '')
   let l:state.handleResult = l:resultHandler.wrapper
   let l:state.error = l:resultHandler.wrapper
   call l:lsp.sendMessage(l:msg, l:state)
   return l:resultHandler.await()
 endfunction
 
-function! s:docLinkFromHoverResult(msg) abort dict
+function! s:handleDocLink(line, character, msg) abort dict
   if type(a:msg) is type('')
     return [a:msg, 1]
   endif
 
-  if a:msg is v:null || !has_key(a:msg, 'contents')
+  if a:msg is v:null || (type(a:msg) is type([]) && len(a:msg) == 0)
     return ['', 0]
   endif
-  let l:doc = json_decode(a:msg.contents.value)
 
-  " for backward compatibility with older gopls
-  if has_key(l:doc, 'link')
-    let l:link = l:doc.link
-    return [l:doc.link, 0]
-  endif
+  let l:link = ''
+  for l:item in a:msg
+    if !s:within(l:item.range, a:line, a:character)
+      continue
+    endif
+    let l:link = l:item.target
+    break
+  endfor
 
-  if !has_key(l:doc, 'linkPath') || empty(l:doc.linkPath)
-    return ['', 0]
-  endif
-  let l:link = l:doc.linkPath . "#" . l:doc.linkAnchor
   return [l:link, 0]
 endfunction
 
@@ -1183,7 +1255,7 @@ function! s:info(show, msg) abort dict
     return
   endif
 
-  let l:value = json_decode(a:msg.contents.value)
+  let l:value = s:structuredHoverResult(a:msg.contents)
   let l:content = [l:value.singleLine]
   let l:content = s:infoFromHoverContent(l:content)
 
@@ -1678,7 +1750,7 @@ function! go#lsp#FillStruct() abort
 endfunction
 
 " Extract executes the refactor.extract code action for the current buffer
-" and configures the handler to only apply the fillstruct command for the
+" and configures the handler to only apply the extract_function command for the
 " current location.
 function! go#lsp#Extract(line1, line2) abort
   let l:fname = expand('%:p')
